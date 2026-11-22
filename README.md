@@ -1,242 +1,228 @@
 # Enterprise Detection Engineering Lab
 
-**Production-like detection engineering for identity, endpoint, cloud, SaaS, and network telemetry — engineered like software.**
+A reproducible local lab for developing and testing enterprise detection content across identity, endpoint, cloud, SaaS, network, and Kubernetes telemetry.
 
-**Status:** foundation. Built in public. The first milestone is the three-domain core: identity, endpoint, and cloud, with six deep detections, two investigations, CI, and metrics.
+**Status:** Alpha. Identity and endpoint telemetry ingestion is complete. Cloud ingestion, detection content, investigations, CI, and detection metrics are in progress.
 
-[Capability matrix](docs/capability-matrix.md) · [Requirements traceability](docs/requirements-traceability.md) · [Artifact model](docs/artifact-model.md) · [Ingestion](docs/ingestion.md) · [CLI](docs/cli.md)
+[Quick start](#quick-start) · [Architecture](#architecture) · [Project status](#project-status) · [Documentation](#documentation)
 
----
+## Overview
 
-## Why this repo exists
+Detection content is often managed as disconnected rules, saved searches, and screenshots. This project treats detections as versioned software: each detection owns its telemetry contract, tests against positive, negative, and benign behavior, records quality metrics, and links to an investigation runbook.
 
-Most detection portfolios are collections of Sigma rules, screenshots, and SIEM queries. High-performing detection teams treat detections as production software: they own the telemetry contract, test against adversary and benign behavior, ship through CI/CD, measure precision and coverage, and investigate the result end to end.
+The lab provides:
 
-This repo is a working lab for that discipline.
+- Declarative telemetry contracts for source fields, event time, ingest time, deduplication, required fields, and known gaps.
+- A normalized ingestion pipeline with UTC timestamp enforcement, deterministic document IDs, and idempotent bulk writes.
+- Detection and investigation package formats with schema validation, fixtures, tests, and metrics.
+- A CLI for validation, reporting, ingestion, scaffolding, and local lab lifecycle.
+- A Docker Compose lab with OpenSearch, OpenSearch Dashboards, the Kusto emulator, and DuckDB.
 
-It is:
+All committed telemetry is synthetic or public, licensed, and small enough to inspect.
 
-- a portfolio for detection engineering, security engineering D&R, security automation, and cloud detection roles;
-- a reproducible lab for identity, endpoint, cloud, SaaS, network, and Kubernetes telemetry;
-- a place to document design decisions, trade-offs, and limitations.
-
-It is not:
-
-- a SIEM product;
-- a SOC tutorial or home-lab screenshot collection;
-- an OT/ICS lab;
-- an AI SOC wrapper;
-- a research paper;
-- a staff-level platform.
-
----
-
-## What this demonstrates
-
-The target portfolio is deliberately depth-first:
-
-| Area | Target | Current status |
-|---|---|---|
-| Identity detections | 4–5 deep detections across Entra ID / AD / Okta-like flows | Planned |
-| Endpoint detections | 4–5 deep detections across Windows/Sysmon and Linux | Planned |
-| Cloud detections | 4–5 deep detections across AWS, Azure, and GCP audit logs | Planned |
-| SaaS detections | 2–3 deep detections across M365, GitHub, and Salesforce-like logs | Planned |
-| Network detections | 2–3 deep detections across Zeek, Suricata, DNS, proxy, and firewall | Planned |
-| Investigations | 5–7 enterprise attack chains with evidence and response notes | Planned |
-| Telemetry contracts | 11 source contracts across identity, endpoint, cloud, SaaS, network, and Kubernetes; four ingested, one sampled | Complete |
-| Reference artifacts | One working detection template and one working investigation template | Complete |
-| Local lab | Reproducible Docker Compose lab with identity, endpoint, and cloud telemetry | In progress — identity and endpoint telemetry ingested; cloud next |
-| CI/CD | Lint, tests, conversion, replay, staged deployment, rollback, metrics | Planned |
-| Automation | Enrichment, triage, evidence capture, containment proposals, approval gates | Planned |
-| Design and ownership | Design memo, detection standards, operating model, cost model | Planned |
-| External validation | One meaningful open-source contribution, one blog post, one talk | Planned |
-
-### Current foundation
-
-- [x] Repository renamed and public
-- [x] README
-- [x] Capability matrix
-- [x] Requirements traceability matrix
-- [x] Detection and investigation artifact contracts
-- [x] Artifact validation CLI and reports
-- [x] Local lab skeleton and pinned tooling
-- [x] Telemetry source contracts and generated matrix
-- [x] Reference detection and investigation templates
-- [x] Scaffolding CLI (`edl new`)
-- [x] Identity telemetry ingestion (Entra sign-in and audit)
-- [x] Endpoint telemetry ingestion (Sysmon and Windows Security)
-- [ ] Three-domain telemetry ingestion
-- [ ] Three-domain lab
-- [ ] First six deep detections
-- [ ] First two investigations
-- [ ] CI/CD and metrics
-- [ ] Expanded portfolio
-- [ ] Automation
-- [ ] Design memo and standards
-- [ ] Open-source contribution, blog, and talk
-
-Artifacts marked **Planned** do not exist yet. The status will be updated as each artifact lands. The intent is to make the repo honest and inspectable at every stage, not to present a finished product.
-
----
-
-## How to evaluate this repo
-
-A hiring manager should be able to evaluate it in layers:
-
-**5 minutes**
-
-- Read this README.
-- Read the [capability matrix](docs/capability-matrix.md).
-- Check the current status table above.
-
-**15 minutes**
-
-- Read the [requirements traceability matrix](docs/requirements-traceability.md).
-- Run `uv run edl validate` and `uv run edl report --format markdown`.
-- Inspect the first available detections and investigations.
-- Check whether tests, replay, and metrics actually exist.
-
-**30 minutes**
-
-- Read the design memo and detection standards.
-- Walk through one detection lifecycle end to end.
-- Ask: “Show me a detection that failed. How did you find it, diagnose it, and fix it?”
-
-The questions I want to be asked are:
-
-- Show me a detection lifecycle, from hypothesis to retirement.
-- Show me how you test a detection against adversary behavior and a benign baseline.
-- Show me a detection that failed or was noisy. What did you change?
-- Show me an investigation across identity, endpoint, and cloud.
-- Show me how you measure detection quality.
-- Show me a trade-off you made and what you chose not to build.
-
----
-
-## Design principles
-
-1. **Depth over count.** Ten deep detections with tests and investigations beat one hundred shallow rules.
-2. **Detection-as-code.** Every detection is versioned, reviewed, tested, and deployed through CI.
-3. **Telemetry contracts.** Every detection states its source, fields, timing, quality assumptions, and failure modes.
-4. **Replay both sides.** Every detection is tested against adversary behavior and a benign baseline.
-5. **Measure quality.** Precision, recall, false positives, coverage, latency, and cost are first-class outputs.
-6. **Automate safely.** Enrichment, triage, evidence, and containment proposals are code; high-impact actions require human approval.
-7. **Document judgment.** Design memos, non-goals, trade-offs, and limitations are part of the artifact.
-8. **General enterprise.** No OT in this repo; OT experience stays in the interview narrative as a differentiator.
-
----
-
-## Scope and target roles
-
-### In scope
-
-- **Identity:** Entra ID, Active Directory, Okta-like flows.
-- **Endpoint:** Windows/Sysmon, Linux audit, EDR-like telemetry.
-- **Cloud:** AWS CloudTrail/IAM, Azure activity, GCP audit.
-- **SaaS:** M365, GitHub, Salesforce, Slack/Okta audit logs.
-- **Network:** Zeek, Suricata, DNS, proxy, firewall.
-- **Kubernetes:** audit logs, Falco, runtime telemetry.
-
-### Out of scope
-
-- OT/ICS telemetry.
-- Production deployment or real employer data.
-- Commercial EDR/SIEM licenses.
-- Autonomous response without human approval.
-- A full multi-tenant platform.
-- A research paper.
-
-### Target roles
-
-- Mid-level detection engineering / security engineering D&R / security automation at top-tier product companies.
-- Senior detection engineering at enterprises as a parallel path.
-- Staff-level is a design target, not a claim. The repo can show potential, not org-wide impact.
-
----
-
-## Repository map
+## Architecture
 
 ```text
-.
-├── README.md
-├── compose.yaml                     # OpenSearch, Dashboards, Kusto
-├── Makefile                         # install, check, lab targets
-├── pyproject.toml
-├── uv.lock
-├── src/edl/                         # CLI, validation, and lab lifecycle
-├── tests/                           # unit, integration, lab tests
-├── docs/
-│   ├── capability-matrix.md
-│   ├── requirements-traceability.md
-│   ├── artifact-model.md
-│   ├── ingestion.md                 # canonical events and bulk ingest
-│   ├── cli.md
-│   ├── telemetry-matrix.md          # generated from telemetry/sources
-│   ├── detection-lifecycle.md       # planned
-│   ├── testing-guide.md             # planned
-│   ├── detection-standards.md       # planned
-│   ├── operating-model.md           # planned
-│   ├── cost-model.md                # planned
-│   ├── threat-model.md              # planned
-│   └── blog/                        # planned
-├── schemas/                         # JSON schemas for artifact metadata
-├── telemetry/                       # source contracts; see telemetry/README.md
-├── detections/                      # detection packages incl. endpoint/_template
-├── investigations/                  # investigation packages incl. _template
-├── automation/                      # planned
-├── lab/                             # local lab bootstrap and synthetic data; see lab/README.md
-├── conformance/                     # planned; optional senior signal
-├── console/                         # planned; static report UI
-└── .github/workflows/               # planned
+telemetry/sources/*.yaml
+        │
+        ▼
+  edl ingest <domain>
+        │  validate → normalize → classify → deduplicate
+        ▼
+OpenSearch: edl-events-<source>-YYYY.MM.DD
+
+detections/<domain>/<slug>/
+        │
+        ▼
+  edl validate
+        │  schema → required files → fixtures → metrics → links
+        ▼
+  validation report / CI gate
 ```
 
----
+- `telemetry/sources/` defines the contract for each source. The generated [`docs/telemetry-matrix.md`](docs/telemetry-matrix.md) summarizes them.
+- `src/edl/ingest.py` normalizes events, assigns deterministic OpenSearch document IDs, and writes in batches.
+- `detections/` contains detection packages with Sigma rules, native queries, fixtures, tests, runbooks, and metrics.
+- `investigations/` contains evidence-backed incident scenarios and response notes.
+- `src/edl/validation.py` enforces the artifact contracts and repository-wide invariants.
+- `src/edl/lab.py` manages the local Docker Compose stack and bootstrap files.
 
-## Verify locally
+The local stack is for development and testing only. OpenSearch security is disabled, the Kusto emulator has no authentication, and all ports bind to `127.0.0.1`.
+
+## Quick start
 
 Requirements: Python 3.12, [uv](https://docs.astral.sh/uv/), and Docker Compose.
 
 ```bash
+git clone https://github.com/LiamCarPer/enterprise-detection-lab.git
+cd enterprise-detection-lab
+cp .env.example .env
 make install
-make check        # lint, types, validation, matrix freshness, tests
-make lab-up       # start OpenSearch, Dashboards, and Kusto
+make check
+```
+
+Run the lab and ingest the available telemetry:
+
+```bash
+make lab-up
 make lab-bootstrap
 make ingest-identity
 make ingest-endpoint
 make test-lab
+```
+
+Stop the lab without deleting data:
+
+```bash
 make lab-down
 ```
 
-`make check` enforces a **90% statement-coverage floor** on `src/edl`. Current
-coverage is **100%**. The lab tests are separate because they require the
-services to be running.
+`make check` runs linting, formatting, type checks, artifact validation, telemetry matrix freshness, and the test suite. It enforces a 90% statement-coverage floor on `src/edl`; current coverage is 100%. Lab tests are separate because they require running services.
 
----
+## Usage
 
-## Roadmap
+### Validate artifacts
 
-The roadmap is evidence-gated, not date-driven. Each gate has a definition of done and a kill criterion.
+```bash
+uv run edl validate
+uv run edl validate --strict
+uv run edl validate --json
+uv run edl report --format markdown
+```
 
-| Gate | Focus | Definition of done |
+### Ingest telemetry
+
+```bash
+uv run edl ingest identity
+uv run edl ingest endpoint
+uv run edl ingest endpoint --source sysmon --dry-run
+```
+
+See [`docs/ingestion.md`](docs/ingestion.md) for the canonical event model, time semantics, deduplication, and failure behavior.
+
+### Scaffold artifacts
+
+```bash
+uv run edl new detection \
+  --domain identity \
+  --slug oauth-consent \
+  --id DET-IDN-001 \
+  --title "OAuth consent grant"
+
+uv run edl new investigation \
+  --slug identity-to-cloud \
+  --id INV-001 \
+  --title "Identity to cloud"
+```
+
+### Manage the lab
+
+```bash
+uv run edl lab status
+uv run edl lab wait --timeout 180
+uv run edl lab logs opensearch
+uv run edl lab reset --yes   # deletes lab volumes
+```
+
+## Telemetry coverage
+
+| Domain | Sources | Status |
 |---|---|---|
-| **0 — Foundation** | Repository, README, matrices | README, capability matrix, and requirements traceability are public and honest. |
-| **1 — Core lab** | Identity, endpoint, cloud | Reproducible lab; six deep detections; two investigations; CI; metrics. |
-| **2 — Depth** | Enterprise breadth | 15–20 detections; 5–7 investigations; SaaS and network telemetry; automation. |
-| **3 — Senior signal** | Ownership and judgment | Design memo, detection standards, operating model, one meaningful open-source contribution, blog, talk. |
-| **4 — Application and iteration** | Hiring feedback | Apply to top-tier mid-level and senior enterprise roles; update the repo based on interview feedback. |
+| Identity | Entra ID sign-in, Entra ID audit | Ingested |
+| Endpoint | Sysmon, Windows Security | Ingested |
+| Cloud | AWS CloudTrail | Sampled |
+| SaaS | Microsoft 365 audit, GitHub audit | Documented |
+| Network | Zeek, Suricata | Documented |
+| Kubernetes | Kubernetes audit, Falco | Documented |
 
-Kill criteria:
+Each contract records event time and ingest time fields, deduplication keys, required fields, expected latency, retention, cost, and known gaps. The full matrix is generated from the contracts and checked in `make check`.
 
-- If the lab cannot produce stable, reproducible detection results, fix the lab before expanding.
-- If a detection cannot be tested against a benign baseline, do not count it as complete.
-- If an investigation cannot be explained with evidence, it is a story, not an artifact.
-- If the repo becomes a collection of shallow rules, stop and cut scope.
+## Repository layout
 
----
+```text
+.
+├── src/edl/                 # CLI, validation, ingestion, and lab lifecycle
+├── schemas/                 # JSON schemas for artifact metadata and metrics
+├── telemetry/               # Telemetry source contracts
+├── detections/              # Detection packages and the reference template
+├── investigations/          # Investigation packages and the reference template
+├── lab/                     # Compose bootstrap, synthetic datasets, and lab docs
+├── docs/                    # Architecture, ingestion, CLI, and status docs
+└── tests/                   # Unit, integration, and lab tests
+```
 
-## Related work
+## Project status
 
-This lab builds on and integrates with existing open standards and tools:
+| Component | Status | Notes |
+|---|---|---|
+| Telemetry contracts | Complete | 11 sources across six domains; 4 ingested, 1 sampled, 6 documented |
+| Identity ingestion | Complete | Entra sign-in and audit, normalized and replay-safe |
+| Endpoint ingestion | Complete | Sysmon and Windows Security, per-event classification |
+| Cloud ingestion | Next | AWS CloudTrail sample is ready |
+| Detection packages | In progress | Contract, fixtures, tests, metrics, and reference template exist |
+| Investigations | In progress | Package contract and reference template exist |
+| CI and detection metrics | Planned | Lint, validation, replay, and quality reporting |
+| SaaS, network, Kubernetes | Planned | Contracts and samples before detections |
+| Automation | Planned | Enrichment, triage, evidence, and approval-gated response |
+
+Current milestone: complete the three-domain core with identity, endpoint, and cloud ingestion, followed by six deep detections, two investigations, CI, and metrics.
+
+## Quality gates
+
+- `make check` must pass.
+- A detection is not complete until positive, negative, and benign fixtures pass.
+- A detection must include a Sigma rule, a native query, false-positive analysis, a runbook, and metrics.
+- A production detection must include measured precision, recall, false-positive rate, latency, and limitations.
+- An investigation must distinguish observed evidence from inference and include a timeline, queries, evidence, response, and lessons.
+- Telemetry changes must update the contract, sample hash, manifest, and generated matrix together.
+
+## Design principles
+
+1. **Contracts first.** Every detection declares the telemetry it needs, including timing, quality assumptions, and known gaps.
+2. **Reproducible by default.** The same commit, sample data, and commands produce the same local result.
+3. **Detection-as-code.** Rules, queries, tests, runbooks, and metrics are versioned and reviewed together.
+4. **Test both sides.** Every detection is exercised against adversary behavior and a benign baseline.
+5. **Measure quality.** Precision, recall, false positives, latency, and limitations are first-class outputs.
+6. **Idempotent operations.** Replaying a dataset overwrites deterministic document IDs rather than creating duplicates.
+7. **Document judgment.** Trade-offs, non-goals, and limitations are part of the artifact.
+8. **Synthetic or public data only.** No production, customer, or employer data in the repository.
+
+## Scope
+
+The project focuses on enterprise IT telemetry and detection engineering workflows: source contracts, normalization, detection packages, validation, investigations, and quality measurement. It runs locally and is not a production service.
+
+Out of scope for this repository:
+
+- Production deployment or production data.
+- Commercial EDR or SIEM content.
+- Autonomous containment without human approval.
+- Multi-tenant platform features.
+
+## Limitations
+
+- The repository is in alpha. Cloud ingestion, detections, investigations, CI, and metrics are not complete.
+- Samples contain two events per source. They demonstrate contract and pipeline behavior, not production volume.
+- The lab does not model production scale, backpressure, retries, dead-letter queues, or multi-tenant isolation.
+- Measurements are small and will be reported with confidence intervals and explicit limitations.
+- No commercial EDR or SIEM licenses are used. The lab relies on open-source tooling and a local Kusto emulator.
+- Ingestion is transactional per source. Cross-source ingestion can partially succeed; replay is safe because writes are idempotent.
+
+## Documentation
+
+| Document | Purpose |
+|---|---|
+| [`docs/ingestion.md`](docs/ingestion.md) | Canonical events, classification, deduplication, and ingest behavior |
+| [`docs/artifact-model.md`](docs/artifact-model.md) | Detection and investigation package contracts |
+| [`docs/cli.md`](docs/cli.md) | CLI commands, options, and exit codes |
+| [`docs/telemetry-matrix.md`](docs/telemetry-matrix.md) | Generated source contract matrix |
+| [`docs/capability-matrix.md`](docs/capability-matrix.md) | Implemented capabilities and evidence |
+| [`docs/requirements-traceability.md`](docs/requirements-traceability.md) | Engineering requirements mapped to artifacts |
+| [`lab/README.md`](lab/README.md) | Local lab setup, ports, reset, and troubleshooting |
+| [`telemetry/README.md`](telemetry/README.md) | Telemetry contract fields and status model |
+| [`detections/README.md`](detections/README.md) | Detection package layout and contribution steps |
+| [`investigations/README.md`](investigations/README.md) | Investigation package layout and evidence rules |
+
+## Related standards and tools
 
 - [SigmaHQ](https://github.com/SigmaHQ/sigma) and [pySigma](https://github.com/SigmaHQ/pySigma) for vendor-neutral detection rules and conversion.
 - [RSigma](https://github.com/timescale/rsigma) for Sigma evaluation, backtesting, and diagnostics.
@@ -246,30 +232,14 @@ This lab builds on and integrates with existing open standards and tools:
 - [OCSF](https://github.com/ocsf/ocsf-schema) for enterprise telemetry normalization.
 - [Falco](https://github.com/falcosecurity/falco), [Zeek](https://github.com/zeek/zeek), and [Suricata](https://github.com/OISF/suricata) for runtime and network telemetry.
 
-This is a portfolio lab, not a product. It does not claim novelty for basic detection validation; it demonstrates the engineering discipline around it.
+## Contributing
 
----
-
-## Limitations
-
-- The repository is at the foundation stage. Identity and endpoint telemetry are ingested, but cloud ingestion, detections, investigations, metrics, and automation are not yet implemented.
-- The lab will use local, synthetic, and public telemetry. It will not represent production scale.
-- Measurements will be small. Results will be reported with confidence intervals and explicit limitations.
-- No commercial EDR or SIEM licenses. The lab will use open-source/public tooling and a local Kusto emulator where possible.
-- No OT/ICS telemetry in this repo.
-- No autonomous response. Containment proposals will require human approval.
-- This repo is not a substitute for real operational experience.
-
----
+Open an issue for design discussion before large changes. Run `make check` before opening a pull request. Lab tests require `make lab-up` and `make lab-bootstrap`.
 
 ## License
 
 MIT. See [LICENSE](LICENSE).
 
----
+## Maintainer
 
-## Contact
-
-**Liam Carvajal** · [@LiamCarPer](https://github.com/LiamCarPer)
-
-Open to detection engineering, security engineering D&R, security automation, and cloud detection roles at top-tier product companies.
+Liam Carvajal · [@LiamCarPer](https://github.com/LiamCarPer)

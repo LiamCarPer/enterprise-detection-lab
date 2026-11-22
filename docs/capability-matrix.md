@@ -1,96 +1,64 @@
 # Capability Matrix
 
-This matrix maps the capabilities that top-tier detection and security engineering teams hire for to concrete artifacts in this repository. It is both a portfolio index and an honest status board.
+This matrix tracks the engineering capabilities implemented in the lab and the artifacts that provide evidence for each one. A capability is **Complete** only when the artifact exists, is tested, and can be inspected.
 
-The matrix is a contract: a capability is only **Complete** when the artifact exists, can be inspected, and has evidence.
+## Status meanings
 
----
-
-## How to read this
-
-- **Capability** — the hiring signal.
-- **What strong evidence looks like** — the bar, not a keyword.
-- **Artifacts** — where the evidence lives or will live.
-- **Status** — Foundation, Planned, In progress, Complete.
-- **Target level** — Mid, Senior, or Staff-potential.
-
-The target is **senior-level ownership evidence** for mid-level roles at top-tier product companies and senior roles at enterprises. Staff-level is a design target, not a claim.
-
----
+| Status | Meaning |
+|---|---|
+| **Complete** | Artifact exists, tests pass, and the behavior is documented. |
+| **In progress** | Part of the artifact exists; the remaining work is identified. |
+| **Planned** | Not implemented yet. |
 
 ## Matrix
 
-| Capability | What strong evidence looks like | Artifacts | Status | Target level |
-|---|---|---|---|---|
-| **Adversary understanding** | Threat hypotheses, ATT&CK mapping, attack chains, evasion paths, and investigations that explain what the adversary did and why it matters | `investigations/`, `docs/threat-model.md`, detection metadata | Planned | Mid / Senior |
-| **Telemetry expertise** | Identity, endpoint, cloud, SaaS, network, and Kubernetes telemetry; event-time vs ingest-time; schema, quality, gaps, retention, and cost | `telemetry/sources/`, `docs/telemetry-matrix.md`, `lab/`, normalization tests | In progress | Mid / Senior |
-| **Detection engineering** | 15–20 deep detections with hypothesis, telemetry contract, Sigma/native query, positive/negative fixtures, replay, benign baseline, false-positive analysis, ATT&CK mapping, runbook, and metrics | `detections/`, `docs/detection-lifecycle.md`, `docs/testing-guide.md`, reports | Planned | Mid / Senior |
-| **Software engineering** | Python/Go tooling, APIs, tests, CI/CD, reusable modules, observability, maintainability | `automation/`, `.github/workflows/`, `lab/`, tests | In progress | Mid / Senior |
-| **Response engineering** | Investigation automation, evidence capture, containment proposals, approval gates, and effect verification | `automation/`, `investigations/`, runbooks | Planned | Senior |
-| **Technical ownership** | Design memo, detection standards, operating model, SLOs, cost model, rollout/rollback, non-goals, and trade-offs | `DESIGN.md`, `docs/detection-standards.md`, `docs/operating-model.md`, `docs/cost-model.md` | Planned | Senior / Staff-potential |
-| **Communication** | Clear README, diagrams, investigation writeups, blog posts, talks, and hiring-manager navigation | `README.md`, `INVESTIGATIONS.md`, `docs/blog/`, `docs/talks/` | In progress | Mid / Senior |
-| **Collaboration** | One meaningful open-source contribution, code review, issue responses, and practitioner feedback | External PRs, `CONTRIBUTING.md`, feedback notes | Planned | Senior |
-| **AI/LLM enhancement** | AI-assisted investigation summaries, agent telemetry detections, and human approval — as an enhancement, not the foundation | `automation/ai/`, optional `detections/agent/`, docs | Optional | Senior / Staff-potential |
-
----
-
-## Level mapping
-
-| Level | What this repository should prove | Current status |
-|---|---|---|
-| **Mid** | Can write, test, tune, and investigate detections across multiple telemetry sources; can code useful automation; can communicate clearly | In progress |
-| **Senior** | Owns the full detection lifecycle; works across enterprise telemetry; builds production-grade tooling; measures quality; writes design docs and standards; mentors and communicates across teams | Planned |
-| **Staff** | Sets architecture across teams; defines org-wide standards; drives adoption; influences strategy | Not claimed. The repo can show potential, not org-wide impact. |
-
----
+| Capability | What good evidence looks like | Artifacts | Status |
+|---|---|---|---|
+| **Telemetry contracts** | Source fields, event time, ingest time, deduplication, required fields, latency, retention, cost, and known gaps | `telemetry/sources/`, `docs/telemetry-matrix.md` | Complete |
+| **Identity telemetry** | Normalized Entra sign-in and audit events, UTC enforcement, deterministic IDs, idempotent replay | `src/edl/ingest.py`, `lab/datasets/synthetic/entra-*`, `docs/ingestion.md` | Complete |
+| **Endpoint telemetry** | Normalized Sysmon and Windows Security events, per-event classification, declared dedup keys | `src/edl/ingest.py`, `lab/datasets/synthetic/sysmon`, `lab/datasets/synthetic/windows-security` | Complete |
+| **Cloud telemetry** | AWS CloudTrail normalization, identity and request context, replay verification | `telemetry/sources/aws-cloudtrail.yaml`, `src/edl/ingest.py` | In progress |
+| **Detection engineering** | Versioned packages with hypothesis, telemetry contract, Sigma rule, native query, fixtures, runbook, and metrics | `detections/`, `schemas/detection.schema.json` | In progress |
+| **Detection validation** | Positive, negative, and benign fixtures; schema checks; backend query checks; regression tests | `src/edl/validation.py`, `detections/*/tests/`, `tests/` | In progress |
+| **Investigation** | Timeline, queries, evidence, response, lessons, and an executive summary for a complete attack chain | `investigations/`, `schemas/investigation.schema.json` | In progress |
+| **Detection quality** | Precision, recall, false-positive rate, latency, sample size, method, and limitations | `schemas/metrics.schema.json`, `detections/*/metrics.json` | Planned |
+| **Automation** | Enrichment, triage, evidence capture, and approval-gated containment proposals | `automation/` | Planned |
+| **Software engineering** | Typed Python, focused modules, schema validation, unit and integration tests, deterministic outputs, coverage gate | `src/edl/`, `tests/`, `Makefile`, `pyproject.toml` | Complete |
+| **Documentation** | Architecture, contracts, operating instructions, limitations, and generated matrices | `README.md`, `docs/`, `lab/README.md` | Complete |
+| **SaaS, network, and Kubernetes** | Contracts and samples followed by domain-specific detections | `telemetry/sources/`, `detections/` | Planned |
 
 ## Current evidence
 
-| Artifact | Status | What it proves |
+| Artifact | Status | Evidence |
 |---|---|---|
-| `README.md` | Complete | Problem framing, scope, principles, evaluation paths, honesty about status |
-| `docs/capability-matrix.md` | Complete | Understanding of the capability bar and where the evidence will live |
-| `docs/requirements-traceability.md` | Complete | Understanding of job requirements and artifact mapping |
-| `compose.yaml` + `lab/` | Complete | Local OpenSearch, Dashboards, Kusto, and DuckDB lab skeleton with pinned versions and bootstrap |
-| `src/edl/` | Complete | Artifact discovery, schema/required-file validation, telemetry matrix, reports, and lab lifecycle |
-| `telemetry/sources/` + `docs/telemetry-matrix.md` | Complete | 11 telemetry source contracts (4 ingested, 1 sampled, 6 documented), with generated matrix and freshness check |
-| `detections/endpoint/_template` + `investigations/_template` | Complete | Working reference artifacts and `edl new` scaffolding for valid detection/investigation packages |
-| `src/edl/ingest.py` + `docs/ingestion.md` | Complete | Entra identity and Windows endpoint normalization, per-event classification, preflight validation, deterministic deduplication, idempotent bulk ingest, and queryable canonical events |
-| `tests/` + `Makefile` | Complete | Unit and integration coverage for CLI, validation, telemetry, templates, and lab lifecycle; `make check` enforces a 90% statement-coverage floor |
-| Public repository | Complete | Willingness to build in public and be inspected |
-
----
+| `README.md` | Complete | Project overview, architecture, quick start, scope, and limitations |
+| `docs/artifact-model.md` | Complete | Detection and investigation package contracts |
+| `compose.yaml` + `lab/` | Complete | Local OpenSearch, Dashboards, Kusto, and DuckDB stack with pinned images and bootstrap |
+| `src/edl/` | Complete | Validation, reporting, ingestion, scaffolding, and lab lifecycle |
+| `telemetry/sources/` + `docs/telemetry-matrix.md` | Complete | 11 contracts (4 ingested, 1 sampled, 6 documented) with generated matrix and freshness check |
+| `src/edl/ingest.py` + `docs/ingestion.md` | Complete | Identity and endpoint normalization, classification, deduplication, and idempotent bulk ingest |
+| `detections/endpoint/_template` + `investigations/_template` | Complete | Working reference packages and `edl new` scaffolding |
+| `tests/` + `Makefile` | Complete | Unit, integration, and lab tests; 90% statement-coverage gate |
+| `docs/capability-matrix.md` + `docs/requirements-traceability.md` | Complete | Capability and engineering-requirement traceability |
 
 ## Next evidence
 
-The local lab skeleton is healthy and identity and endpoint telemetry are ingested. The next milestone is the three-domain core. It will add:
+The next milestone is the three-domain core:
 
-- Telemetry ingestion for cloud sources; identity and endpoint are complete.
-- Six deep detections across the three domains.
-- Two enterprise investigations.
-- CI/CD, replay, benign baseline, and metrics.
-- A first honest results report, including limitations.
+- AWS CloudTrail ingestion.
+- Six deep detections across identity, endpoint, and cloud.
+- Two end-to-end investigations.
+- CI, replay, benign baseline, and detection metrics.
+- A first results report with limitations.
 
-After that, the portfolio expands to 15–20 detections, 5–7 investigations, SaaS and network telemetry, automation, and the senior-level design and ownership artifacts.
+After that, the lab expands to SaaS, network, and Kubernetes telemetry, followed by automation.
 
----
-
-## What would make this matrix credible
+## Evidence standards
 
 - Every **Complete** artifact exists and can be inspected.
-- Detections have tests, replay, benign baselines, and metrics.
-- Investigations have timelines, queries, evidence, response notes, and lessons learned.
-- Metrics are reported with confidence intervals and limitations.
-- Design documents include alternatives, non-goals, and trade-offs.
-- At least one external contribution or practitioner review exists.
+- Detections include tests, replay, benign baselines, and metrics before being marked production.
+- Investigations distinguish observed evidence from inference.
+- Metrics include sample size, method, and limitations.
+- Design documents record alternatives, non-goals, and trade-offs.
 
-## What would make it not credible
-
-- Capabilities mapped to keywords without artifacts.
-- Rules without tests or investigations.
-- Metrics without a labeled corpus or benign baseline.
-- A large platform with no evidence of doing the job.
-- Claims of staff-level impact from a solo repository.
-- Copy-pasted rules or AI-generated breadth without verification.
-
-This matrix will be updated as the evidence lands. Until then, **Planned** means planned.
+The matrix is updated as work lands. **Planned** means planned, not implemented.

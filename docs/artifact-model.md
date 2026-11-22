@@ -18,7 +18,7 @@ detections/<domain>/<slug>/
 ├── rule.sigma.yml       # vendor-neutral Sigma rule
 ├── queries/             # at least one native backend query
 │   ├── opensearch.json  # OpenSearch DSL
-│   ├── sentinel.kql     # optional in Gate 1, required when KQL support lands
+│   ├── sentinel.kql     # optional; required when KQL support lands
 │   └── splunk.spl       # optional
 ├── fixtures/
 │   ├── positive.json    # event(s) that must match
@@ -170,7 +170,7 @@ An investigation is done when:
 - Public datasets must include a license and provenance note.
 - Large datasets are downloaded by script; never commit raw datasets.
 - Attack simulation runs in an isolated lab and follows the repository's safety notes.
-- Do not commit job-search notes, CV strategy, or target-company research.
+- Do not commit unrelated personal or operational material.
 
 ---
 

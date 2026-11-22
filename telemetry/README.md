@@ -31,7 +31,7 @@ The machine-readable schema is [`schemas/telemetry-source.schema.json`](../schem
 | `ingested` | The sample has been loaded into the lab. |
 | `validated` | Replay and query tests pass. |
 
-Phase 1 has five sources with samples: Entra sign-in, Entra audit, Sysmon, Windows Security, and AWS CloudTrail. The other six are documented and receive samples with their detection commits.
+The repository currently has five sources with samples: Entra sign-in, Entra audit, Sysmon, Windows Security, and AWS CloudTrail. The other six are documented and receive samples with their detection commits.
 
 ## Ingest
 

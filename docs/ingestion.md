@@ -157,7 +157,7 @@ The two identity sources and two endpoint sources move from `sampled` to `ingest
 
 ## Known gaps
 
-- Only Entra identity and Windows endpoint sources are normalized in Gate 1; AWS CloudTrail is next.
+- Only Entra identity and Windows endpoint sources are normalized currently; AWS CloudTrail is next.
 - The sample has two events per source; it demonstrates semantics, not volume.
 - Sysmon field coverage depends on the Sysmon configuration; the sample covers process creation only.
 - Windows Security advanced audit policy determines which events exist; the sample covers logon success and failure.
