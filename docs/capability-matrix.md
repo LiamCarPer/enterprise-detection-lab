@@ -23,7 +23,7 @@ The target is **senior-level ownership evidence** for mid-level roles at top-tie
 | Capability | What strong evidence looks like | Artifacts | Status | Target level |
 |---|---|---|---|---|
 | **Adversary understanding** | Threat hypotheses, ATT&CK mapping, attack chains, evasion paths, and investigations that explain what the adversary did and why it matters | `investigations/`, `docs/threat-model.md`, detection metadata | Planned | Mid / Senior |
-| **Telemetry expertise** | Identity, endpoint, cloud, SaaS, network, and Kubernetes telemetry; event-time vs ingest-time; schema, quality, gaps, retention, and cost | `docs/telemetry-matrix.md`, `lab/`, normalization tests | Planned | Mid / Senior |
+| **Telemetry expertise** | Identity, endpoint, cloud, SaaS, network, and Kubernetes telemetry; event-time vs ingest-time; schema, quality, gaps, retention, and cost | `telemetry/sources/`, `docs/telemetry-matrix.md`, `lab/`, normalization tests | In progress | Mid / Senior |
 | **Detection engineering** | 15–20 deep detections with hypothesis, telemetry contract, Sigma/native query, positive/negative fixtures, replay, benign baseline, false-positive analysis, ATT&CK mapping, runbook, and metrics | `detections/`, `docs/detection-lifecycle.md`, `docs/testing-guide.md`, reports | Planned | Mid / Senior |
 | **Software engineering** | Python/Go tooling, APIs, tests, CI/CD, reusable modules, observability, maintainability | `automation/`, `.github/workflows/`, `lab/`, tests | In progress | Mid / Senior |
 | **Response engineering** | Investigation automation, evidence capture, containment proposals, approval gates, and effect verification | `automation/`, `investigations/`, runbooks | Planned | Senior |
@@ -53,6 +53,7 @@ The target is **senior-level ownership evidence** for mid-level roles at top-tie
 | `docs/requirements-traceability.md` | Complete | Understanding of job requirements and artifact mapping |
 | `compose.yaml` + `lab/` | Complete | Local OpenSearch, Dashboards, Kusto, and DuckDB lab skeleton with pinned versions and bootstrap |
 | `src/edl/` | Complete | Artifact discovery, schema/required-file validation, telemetry matrix, reports, and lab lifecycle |
+| `telemetry/sources/` + `docs/telemetry-matrix.md` | Complete | 11 telemetry source contracts, five sampled, with generated matrix and freshness check |
 | Public repository | Complete | Willingness to build in public and be inspected |
 
 ---

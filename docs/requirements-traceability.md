@@ -34,8 +34,8 @@ The target is **senior-level ownership evidence** for mid-level roles at top-tie
 | **Detection-as-code** | Rules are versioned, reviewed, tested, converted, deployed, and retired like software | `.github/workflows/`, `detections/`, `docs/detection-lifecycle.md` | CI pipeline, rule metadata, review checklist, rollback plan | Planned |
 | **Programming / production engineering** | Python/Go, APIs, tests, reusable modules, maintainability, observability | `automation/`, `lab/`, tests | Working tools with tests, error handling, retries/idempotency, docs | Planned |
 | **Detection depth / full lifecycle** | Hypothesis → telemetry → implementation → validation → deployment → tuning → measurement → retirement | `detections/`, `docs/detection-lifecycle.md` | 15–20 deep detections with lifecycle evidence | Planned |
-| **Enterprise telemetry breadth** | Identity, endpoint, cloud, SaaS, network, Kubernetes | `docs/telemetry-matrix.md`, `lab/`, detections | Telemetry matrix, mappings, tests, per-domain detections | Planned |
-| **Telemetry contracts / schema drift** | Required fields, semantics, timing, quality, versioning, failure modes | `docs/telemetry-matrix.md`, normalization tests, conformance layer | Contract definitions, schema-variant tests, impact reports | Planned |
+| **Enterprise telemetry breadth** | Identity, endpoint, cloud, SaaS, network, Kubernetes | `telemetry/sources/`, `docs/telemetry-matrix.md`, `lab/`, detections | Telemetry matrix, mappings, tests, per-domain detections | In progress |
+| **Telemetry contracts / schema drift** | Required fields, semantics, timing, quality, versioning, failure modes | `telemetry/sources/`, `docs/telemetry-matrix.md`, normalization tests, conformance layer | Contract definitions, schema-variant tests, impact reports | In progress |
 | **Detection validation / regression** | Replay, attack simulation, synthetic telemetry, unit tests, regression tests | `lab/`, `detections/tests/`, `conformance/` | Positive/negative fixtures, Atomic/Stratus replay, CI results | Planned |
 | **Benign baseline / false-positive control** | Measures noise against realistic benign activity, not an idle lab | `lab/`, `detections/tests/`, reports | Generated benign workload, false-positive rate, tuning notes | Planned |
 | **Detection quality metrics** | Precision, recall, false positives, coverage, latency, cost | `reports/`, `docs/operating-model.md` | Metrics report with confidence intervals and limitations | Planned |
@@ -64,8 +64,10 @@ The target is **senior-level ownership evidence** for mid-level roles at top-tie
 | Metric | Current |
 |---|---|
 | Requirements mapped | 15 / 15 |
-| Foundation artifacts complete | README, capability matrix, requirements traceability, artifact contracts, validation CLI, local lab skeleton |
+| Foundation artifacts complete | README, capability matrix, requirements traceability, artifact contracts, validation CLI, local lab skeleton, telemetry contracts |
 | Validation CLI implemented | Yes |
+| Telemetry source contracts | 11 (5 sampled, 6 documented) |
+| Telemetry matrix | Generated and freshness-checked |
 | Detections implemented | 0 |
 | Investigations implemented | 0 |
 | Lab implemented | Skeleton yes; telemetry ingestion no |
@@ -73,7 +75,7 @@ The target is **senior-level ownership evidence** for mid-level roles at top-tie
 | Metrics implemented | No |
 | Open-source contribution | Not yet |
 
-The mapping is complete. The implementation is not. The local lab skeleton is healthy; the next milestone is telemetry ingestion for identity, endpoint, and cloud, followed by six deep detections, two investigations, CI, and metrics.
+The mapping is complete. The implementation is not. The local lab skeleton is healthy and the telemetry contracts are in place; the next milestone is telemetry ingestion for identity, endpoint, and cloud, followed by six deep detections, two investigations, CI, and metrics.
 
 ---
 

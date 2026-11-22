@@ -1,0 +1,48 @@
+id: windows-security
+name: Windows Security event log
+provider: Microsoft
+product: Windows
+event_classes:
+  - authentication
+  - account_management
+schema_version: "1.0"
+status: sampled
+owner: detection-engineering
+event_time_field: TimeCreated
+ingest_time_field: ingest_time
+timezone: UTC
+ordering: unordered
+dedup_key:
+  - EventRecordID
+  - Computer
+  - Channel
+required_fields:
+  - TimeCreated
+  - EventID
+  - Computer
+  - EventRecordID
+  - TargetUserName
+  - IpAddress
+  - LogonType
+  - Status
+sensitive_fields:
+  - TargetUserName
+  - IpAddress
+  - SubjectUserName
+expected_volume: Host and domain-controller dependent; the lab sample is intentionally small.
+expected_latency: Seconds from the Windows event collector.
+retention: Lab retains normalized events until reset.
+cost: Included with Windows licensing; storage is the main lab cost.
+late_arrival: Expected; preserve TimeCreated and synthetic ingest time.
+duplicates: Possible; deduplicate by EventRecordID, Computer, and Channel.
+known_gaps:
+  - No live Windows VM in Phase 1; synthetic events only.
+  - Advanced audit policy changes which events exist.
+  - Domain-controller replication and log forwarding are not replicated.
+sample_data:
+  path: lab/datasets/synthetic/windows-security/reference.json
+  synthetic: true
+  license: synthetic
+  provenance: Generated for this repository. No real hosts or users.
+  sha256: 158d3289ac0caceb19aaf6a11c1dbe544b7e277b99ec213fe23a61b3534c1ef5
+notes: Phase 1 endpoint source.

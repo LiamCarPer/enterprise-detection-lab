@@ -1,0 +1,42 @@
+id: zeek
+name: Zeek network telemetry
+provider: Zeek Project
+product: Zeek
+event_classes:
+  - conn
+  - dns
+  - http
+  - ssl
+  - files
+schema_version: "1.0"
+status: documented
+owner: detection-engineering
+event_time_field: ts
+ingest_time_field: ingest_time
+timezone: UTC
+ordering: unordered
+dedup_key:
+  - uid
+required_fields:
+  - ts
+  - uid
+  - id.orig_h
+  - id.resp_h
+  - id.orig_p
+  - id.resp_p
+  - proto
+sensitive_fields:
+  - id.orig_h
+  - id.resp_h
+  - query
+expected_volume: Depends on sensor placement and traffic volume.
+expected_latency: Near-real-time from the Zeek log writer.
+retention: Lab retains normalized events until reset.
+cost: Open source; storage and packet capture are the main cost.
+late_arrival: Expected; use event time and synthetic ingest time.
+duplicates: Possible across log rotation or retries; deduplicate by uid.
+known_gaps:
+  - No Zeek sample data in Phase 1; PCAP/flow samples arrive with the network commit.
+  - Encrypted traffic limits payload-level visibility.
+  - Sensor placement and packet loss affect coverage.
+notes: Phase 1 contract; sample data arrives with network detections.

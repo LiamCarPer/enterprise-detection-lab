@@ -1,4 +1,4 @@
-.PHONY: install lint validate test test-lab check lab-up lab-down lab-status lab-wait lab-bootstrap lab-reset lab-logs
+.PHONY: install lint validate telemetry-check test test-lab check lab-up lab-down lab-status lab-wait lab-bootstrap lab-reset lab-logs
 
 install:
 	uv sync --all-extras
@@ -11,13 +11,16 @@ lint:
 validate:
 	PYTHONPATH= uv run edl validate
 
+telemetry-check:
+	PYTHONPATH= uv run edl telemetry matrix --check
+
 test:
 	PYTHONPATH= uv run pytest -m "not lab"
 
 test-lab:
 	PYTHONPATH= uv run pytest -m lab
 
-check: lint validate test
+check: lint validate telemetry-check test
 
 lab-up:
 	uv run edl lab up

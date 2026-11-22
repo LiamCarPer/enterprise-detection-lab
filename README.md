@@ -43,6 +43,7 @@ The target portfolio is deliberately depth-first:
 | SaaS detections | 2–3 deep detections across M365, GitHub, and Salesforce-like logs | Planned |
 | Network detections | 2–3 deep detections across Zeek, Suricata, DNS, proxy, and firewall | Planned |
 | Investigations | 5–7 enterprise attack chains with evidence and response notes | Planned |
+| Telemetry contracts | 11 source contracts across identity, endpoint, cloud, SaaS, network, and Kubernetes; five sampled | Complete |
 | Local lab | Reproducible Docker Compose lab with identity, endpoint, and cloud telemetry | In progress — skeleton healthy; telemetry ingestion next |
 | CI/CD | Lint, tests, conversion, replay, staged deployment, rollback, metrics | Planned |
 | Automation | Enrichment, triage, evidence capture, containment proposals, approval gates | Planned |
@@ -58,6 +59,7 @@ The target portfolio is deliberately depth-first:
 - [x] Detection and investigation artifact contracts
 - [x] Artifact validation CLI and reports
 - [x] Local lab skeleton and pinned tooling
+- [x] Telemetry source contracts and generated matrix
 - [ ] Three-domain telemetry ingestion
 - [ ] Three-domain lab
 - [ ] First six deep detections
@@ -163,7 +165,7 @@ The questions I want to be asked are:
 │   ├── requirements-traceability.md
 │   ├── artifact-model.md
 │   ├── cli.md
-│   ├── telemetry-matrix.md          # planned
+│   ├── telemetry-matrix.md          # generated from telemetry/sources
 │   ├── detection-lifecycle.md       # planned
 │   ├── testing-guide.md             # planned
 │   ├── detection-standards.md       # planned
@@ -172,6 +174,7 @@ The questions I want to be asked are:
 │   ├── threat-model.md              # planned
 │   └── blog/                        # planned
 ├── schemas/                         # JSON schemas for artifact metadata
+├── telemetry/                       # source contracts; see telemetry/README.md
 ├── detections/                      # detection packages; see detections/README.md
 ├── investigations/                  # investigation packages; see investigations/README.md
 ├── automation/                      # planned

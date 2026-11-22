@@ -1,0 +1,39 @@
+id: github-audit
+name: GitHub organization audit log
+provider: GitHub
+product: GitHub Enterprise Cloud
+event_classes:
+  - audit_log
+  - git
+  - authentication
+schema_version: "1.0"
+status: documented
+owner: detection-engineering
+event_time_field: created_at
+ingest_time_field: ingest_time
+timezone: UTC
+ordering: unordered
+dedup_key:
+  - id
+required_fields:
+  - action
+  - actor
+  - created_at
+  - id
+  - org
+  - repo
+sensitive_fields:
+  - actor
+  - actor_ip
+  - repo
+expected_volume: Organization-dependent; sample data is not committed in Phase 1.
+expected_latency: Seconds to minutes from the audit-log API or streaming export.
+retention: GitHub plan-dependent; the lab retains normalized events until reset.
+cost: Audit log access is plan-dependent; API rate limits apply.
+late_arrival: Expected; use event time and synthetic ingest time.
+duplicates: Possible during API pagination or retries; deduplicate by id.
+known_gaps:
+  - No GitHub sample data in Phase 1; synthetic events arrive with the SaaS commit.
+  - Audit-log schema varies by GitHub product and event type.
+  - API pagination and rate limiting are not replicated.
+notes: Phase 1 contract; sample data arrives with SaaS detections.

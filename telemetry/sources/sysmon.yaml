@@ -1,0 +1,51 @@
+id: sysmon
+name: Microsoft Sysmon event logs
+provider: Microsoft
+product: Sysmon
+event_classes:
+  - process_creation
+  - network_connection
+  - file_create
+  - registry_set
+  - dns_query
+  - process_access
+schema_version: "1.0"
+status: sampled
+owner: detection-engineering
+event_time_field: UtcTime
+ingest_time_field: ingest_time
+timezone: UTC
+ordering: unordered
+dedup_key:
+  - EventRecordID
+  - Computer
+  - Channel
+required_fields:
+  - UtcTime
+  - EventID
+  - Computer
+  - EventRecordID
+  - ProcessGuid
+  - Image
+  - CommandLine
+sensitive_fields:
+  - CommandLine
+  - User
+  - TargetImage
+expected_volume: Host-dependent; the lab sample is intentionally small.
+expected_latency: Seconds from the Windows event collector.
+retention: Lab retains normalized events until reset.
+cost: Open source; Windows licensing and storage are the main cost.
+late_arrival: Expected; UTC evtvmtime and collector ingest time differ.
+duplicates: Possible; deduplicate by EventRecordID, Computer, and Channel.
+known_gaps:
+  - No live Windows VM in Phase 1; synthetic events only.
+  - Sysmon configuration determines field coverage.
+  - Image-load and process-access events are high volume and not fully sampled.
+sample_data:
+  path: lab/datasets/synthetic/sysmon/reference.json
+  synthetic: true
+  license: synthetic
+  provenance: Generated for this repository. No real hosts or users.
+  sha256: 3d5be7bea511ecc1ffdf515dfe3a9bb69689d1b8ad3740527e25742ddb6a77d4
+notes: Phase 1 endpoint source.

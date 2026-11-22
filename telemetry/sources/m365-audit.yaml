@@ -1,0 +1,40 @@
+id: m365-audit
+name: Microsoft 365 unified audit log
+provider: Microsoft
+product: Microsoft 365
+event_classes:
+  - audit
+  - mailbox
+  - sharepoint
+  - teams
+schema_version: "1.0"
+status: documented
+owner: detection-engineering
+event_time_field: CreationTime
+ingest_time_field: ingest_time
+timezone: UTC
+ordering: unordered
+dedup_key:
+  - Id
+required_fields:
+  - CreationTime
+  - Id
+  - Operation
+  - UserId
+  - Workload
+  - RecordType
+sensitive_fields:
+  - UserId
+  - ClientIP
+  - ObjectId
+expected_volume: Tenant-dependent; sample data is not committed in Phase 1.
+expected_latency: Minutes from the unified audit pipeline.
+retention: Plan-dependent; the lab retains normalized events until reset.
+cost: Licensing and retention tier affect availability; export can be slow.
+late_arrival: Expected; use event time and synthetic ingest time.
+duplicates: Possible; deduplicate by Id.
+known_gaps:
+  - No M365 sample data in Phase 1; synthetic events arrive with the SaaS commit.
+  - Unified audit log licensing and retention vary by plan.
+  - Workload-specific schemas are not fully represented.
+notes: Phase 1 contract; sample data arrives with SaaS detections.

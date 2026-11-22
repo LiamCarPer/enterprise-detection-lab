@@ -1,0 +1,42 @@
+id: entra-audit
+name: Microsoft Entra ID audit logs
+provider: Microsoft
+product: Entra ID
+event_classes:
+  - audit
+schema_version: "1.0"
+status: sampled
+owner: detection-engineering
+event_time_field: activityDateTime
+ingest_time_field: ingest_time
+timezone: UTC
+ordering: unordered
+dedup_key:
+  - id
+required_fields:
+  - id
+  - activityDateTime
+  - operationName
+  - initiatedBy
+  - targetResources
+  - result
+sensitive_fields:
+  - initiatedBy
+  - targetResources
+expected_volume: Tenant-dependent; the lab sample is intentionally small.
+expected_latency: Seconds to minutes from the directory audit pipeline.
+retention: 7 days on Entra ID Free; 30 days with P1/P2; the lab retains until reset.
+cost: Included with the tenant license; export can require P1/P2.
+late_arrival: Expected; use event time and synthetic ingest time.
+duplicates: Possible during retries; deduplicate by id.
+known_gaps:
+  - No real tenant in the lab; synthetic events only.
+  - Free-tier retention is too short for long historical replay.
+  - Export licensing and throttling are not replicated.
+sample_data:
+  path: lab/datasets/synthetic/entra-audit/reference.json
+  synthetic: true
+  license: synthetic
+  provenance: Generated for this repository. No real users, tenants, or IPs.
+  sha256: 8d8fd62e2fa9c45f1834e58cf23ce05315bb2a0dc0b1eb995236e66fd1d3268a
+notes: Phase 1 identity source.

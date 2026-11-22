@@ -1,0 +1,42 @@
+id: suricata
+name: Suricata network events
+provider: OISF
+product: Suricata
+event_classes:
+  - alert
+  - flow
+  - dns
+  - http
+  - tls
+schema_version: "1.0"
+status: documented
+owner: detection-engineering
+event_time_field: timestamp
+ingest_time_field: ingest_time
+timezone: UTC
+ordering: unordered
+dedup_key:
+  - flow_id
+  - event_type
+required_fields:
+  - timestamp
+  - flow_id
+  - event_type
+  - src_ip
+  - dest_ip
+  - proto
+sensitive_fields:
+  - src_ip
+  - dest_ip
+  - http.hostname
+expected_volume: Depends on sensor placement and rule set.
+expected_latency: Near-real-time from EVE JSON output.
+retention: Lab retains normalized events until reset.
+cost: Open source; storage and packet capture are the main cost.
+late_arrival: Expected under load; preserve event time.
+duplicates: Possible; deduplicate by flow_id and event_type.
+known_gaps:
+  - No Suricata sample data in Phase 1; PCAP/flow samples arrive with the network commit.
+  - Rule quality and sensor placement dominate detection quality.
+  - Encrypted traffic limits payload-level visibility.
+notes: Phase 1 contract; sample data arrives with network detections.

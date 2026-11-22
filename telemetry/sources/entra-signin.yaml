@@ -1,0 +1,45 @@
+id: entra-signin
+name: Microsoft Entra ID sign-in logs
+provider: Microsoft
+product: Entra ID
+event_classes:
+  - sign_in
+schema_version: "1.0"
+status: sampled
+owner: detection-engineering
+event_time_field: createdDateTime
+ingest_time_field: ingest_time
+timezone: UTC
+ordering: unordered
+dedup_key:
+  - id
+required_fields:
+  - id
+  - createdDateTime
+  - userPrincipalName
+  - appDisplayName
+  - ipAddress
+  - status
+  - authenticationRequirement
+  - isInteractive
+sensitive_fields:
+  - userPrincipalName
+  - ipAddress
+  - deviceDetail
+expected_volume: Tenant-dependent; the lab sample is intentionally small.
+expected_latency: Seconds to minutes; export and Graph latency vary.
+retention: 7 days on Entra ID Free; 30 days with P1/P2; the lab retains until reset.
+cost: Included with the tenant license; export can require P1/P2.
+late_arrival: Expected; use event time and synthetic ingest time.
+duplicates: Possible during retries; deduplicate by id.
+known_gaps:
+  - No real tenant in the lab; synthetic events only.
+  - Conditional Access and risk fields are only partially represented.
+  - Free-tier retention is too short for long historical replay.
+sample_data:
+  path: lab/datasets/synthetic/entra-signin/reference.json
+  synthetic: true
+  license: synthetic
+  provenance: Generated for this repository. No real users, tenants, or IPs.
+  sha256: f5af073eb068e26dbb00d874848ec37b26983bc573efaeff75a6a9b521a6ec11
+notes: Phase 1 identity source.

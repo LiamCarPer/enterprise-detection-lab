@@ -1,0 +1,39 @@
+id: kubernetes-audit
+name: Kubernetes API server audit logs
+provider: CNCF
+product: Kubernetes
+event_classes:
+  - audit
+schema_version: "1.0"
+status: documented
+owner: detection-engineering
+event_time_field: requestReceivedTimestamp
+ingest_time_field: stageTimestamp
+timezone: UTC
+ordering: unordered
+dedup_key:
+  - auditID
+required_fields:
+  - auditID
+  - requestReceivedTimestamp
+  - stage
+  - verb
+  - user
+  - objectRef
+  - responseStatus
+  - sourceIPs
+sensitive_fields:
+  - sourceIPs
+  - user
+  - requestObject
+expected_volume: Cluster-dependent; the kind lab is small.
+expected_latency: Near-real-time from the API server audit webhook.
+retention: Lab retains normalized events until reset.
+cost: Open source; storage and audit-policy volume are the main cost.
+late_arrival: Expected; preserve requestReceivedTimestamp and stageTimestamp.
+duplicates: Possible across retries; deduplicate by auditID.
+known_gaps:
+  - No Kubernetes sample data in Phase 1; kind audit events arrive with the Kubernetes commit.
+  - Audit policy determines which stages and request bodies are present.
+  - API server audit logging has a performance cost at high volume.
+notes: Phase 1 contract; sample data arrives with Kubernetes detections.

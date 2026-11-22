@@ -1,0 +1,34 @@
+id: falco
+name: Falco runtime alerts
+provider: CNCF
+product: Falco
+event_classes:
+  - runtime_alert
+schema_version: "1.0"
+status: documented
+owner: detection-engineering
+event_time_field: time
+ingest_time_field: ingest_time
+timezone: UTC
+ordering: unordered
+dedup_key:
+  - uuid
+required_fields:
+  - time
+  - rule
+  - priority
+  - output_fields
+  - uuid
+sensitive_fields:
+  - output_fields
+expected_volume: Depends on the rule set and workload churn; lab is small.
+expected_latency: Near-real-time from the syscall/eBPF path.
+retention: Lab retains normalized alerts until reset.
+cost: Open source; telemetry volume and storage are the main cost.
+late_arrival: Expected under load; preserve event time.
+duplicates: Possible during retries; deduplicate by uuid.
+known_gaps:
+  - No Falco sample data in Phase 1; synthetic events arrive with the Kubernetes commit.
+  - eBPF and kernel-version behavior vary by host.
+  - Container isolation and host PID namespaces can hide context.
+notes: Phase 1 contract; sample data arrives with Kubernetes/Falco detections.
