@@ -64,15 +64,15 @@ The target is **senior-level ownership evidence** for mid-level roles at top-tie
 | Metric | Current |
 |---|---|
 | Requirements mapped | 15 / 15 |
-| Foundation artifacts complete | README, capability matrix, requirements traceability |
+| Foundation artifacts complete | README, capability matrix, requirements traceability, artifact contracts, local lab skeleton |
 | Detections implemented | 0 |
 | Investigations implemented | 0 |
-| Lab implemented | No |
+| Lab implemented | Skeleton yes; telemetry ingestion no |
 | CI/CD implemented | No |
 | Metrics implemented | No |
 | Open-source contribution | Not yet |
 
-The mapping is complete. The implementation is not. The next milestone is the three-domain core: identity, endpoint, and cloud, with six deep detections, two investigations, CI, and metrics.
+The mapping is complete. The implementation is not. The local lab skeleton is healthy; the next milestone is telemetry ingestion for identity, endpoint, and cloud, followed by six deep detections, two investigations, CI, and metrics.
 
 ---
 

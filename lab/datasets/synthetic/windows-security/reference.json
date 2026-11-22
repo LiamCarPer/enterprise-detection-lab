@@ -1,0 +1,28 @@
+[
+  {
+    "TimeCreated": "2026-11-01T09:20:00Z",
+    "EventID": 4624,
+    "Computer": "LAB-EP-01",
+    "EventRecordID": 2001,
+    "TargetUserName": "analyst",
+    "IpAddress": "203.0.113.10",
+    "LogonType": 3,
+    "Status": "0x0",
+    "SubjectUserName": "-",
+    "ServiceName": "-",
+    "TaskName": "-"
+  },
+  {
+    "TimeCreated": "2026-11-01T09:22:00Z",
+    "EventID": 4625,
+    "Computer": "LAB-EP-01",
+    "EventRecordID": 2002,
+    "TargetUserName": "analyst",
+    "IpAddress": "198.51.100.23",
+    "LogonType": 3,
+    "Status": "0xC000006D",
+    "SubjectUserName": "-",
+    "ServiceName": "-",
+    "TaskName": "-"
+  }
+]

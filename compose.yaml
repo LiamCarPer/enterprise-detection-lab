@@ -1,0 +1,53 @@
+name: enterprise-detection-lab
+
+services:
+  opensearch:
+    image: opensearchproject/opensearch@sha256:ffa260e43be96b49144fb7ececbb135c3fd7081567adc781c49ec9232ce1e47f
+    container_name: edl-opensearch
+    environment:
+      - discovery.type=single-node
+      - DISABLE_SECURITY_PLUGIN=true
+      - OPENSEARCH_JAVA_OPTS=${OPENSEARCH_JAVA_OPTS:--Xms2g -Xmx2g}
+      - bootstrap.memory_lock=true
+      - cluster.name=edl-local
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "127.0.0.1:${OPENSEARCH_PORT:-9200}:9200"
+    volumes:
+      - opensearch-data:/usr/share/opensearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:9200/_cluster/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards@sha256:a44c6ea4cc2e7013df4ff73b71e8718661b5ed68814aae91958e5a45c312b7e9
+    container_name: edl-opensearch-dashboards
+    environment:
+      - 'OPENSEARCH_HOSTS=["http://opensearch:9200"]'
+      - DISABLE_SECURITY_DASHBOARDS_PLUGIN=true
+    ports:
+      - "127.0.0.1:${OPENSEARCH_DASHBOARDS_PORT:-5601}:5601"
+    depends_on:
+      opensearch:
+        condition: service_healthy
+
+  kusto:
+    image: mcr.microsoft.com/azuredataexplorer/kustainer-linux@sha256:e3d385ffb242cea0173de79ba03c1e6b51d06d3e07b0728596178a521691c915
+    container_name: edl-kusto
+    environment:
+      - ACCEPT_EULA=Y
+    mem_limit: ${KUSTO_MEMORY:-4g}
+    ports:
+      - "127.0.0.1:${KUSTO_PORT:-18080}:8080"
+    volumes:
+      - kusto-data:/kustodata
+
+volumes:
+  opensearch-data:
+  kusto-data:

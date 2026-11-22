@@ -1,0 +1,34 @@
+[
+  {
+    "id": "00000000-0000-4000-8000-000000000001",
+    "createdDateTime": "2026-11-01T09:00:00Z",
+    "userPrincipalName": "analyst@example.test",
+    "appDisplayName": "Office 365",
+    "ipAddress": "203.0.113.10",
+    "status": "success",
+    "authenticationRequirement": "singleFactorAuthentication",
+    "isInteractive": true,
+    "conditionalAccessStatus": "success",
+    "riskLevelDuringSignIn": "none",
+    "deviceDetail": {
+      "operatingSystem": "Windows 11",
+      "browser": "Edge"
+    }
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000002",
+    "createdDateTime": "2026-11-01T09:05:00Z",
+    "userPrincipalName": "analyst@example.test",
+    "appDisplayName": "Azure Portal",
+    "ipAddress": "198.51.100.23",
+    "status": "success",
+    "authenticationRequirement": "multiFactorAuthentication",
+    "isInteractive": true,
+    "conditionalAccessStatus": "success",
+    "riskLevelDuringSignIn": "medium",
+    "deviceDetail": {
+      "operatingSystem": "Linux",
+      "browser": "Firefox"
+    }
+  }
+]

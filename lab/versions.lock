@@ -1,0 +1,15 @@
+version: 1
+platform: linux/amd64
+images:
+  opensearch:
+    repository: opensearchproject/opensearch
+    tag: "3.10.0"
+    digest: sha256:ffa260e43be96b49144fb7ececbb135c3fd7081567adc781c49ec9232ce1e47f
+  opensearch-dashboards:
+    repository: opensearchproject/opensearch-dashboards
+    tag: "3.10.0"
+    digest: sha256:a44c6ea4cc2e7013df4ff73b71e8718661b5ed68814aae91958e5a45c312b7e9
+  kustainer:
+    repository: mcr.microsoft.com/azuredataexplorer/kustainer-linux
+    tag: latest
+    digest: sha256:e3d385ffb242cea0173de79ba03c1e6b51d06d3e07b0728596178a521691c915

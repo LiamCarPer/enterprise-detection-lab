@@ -1,0 +1,27 @@
+{
+  "index_patterns": ["edl-events-*"],
+  "priority": 100,
+  "template": {
+    "settings": {
+      "index": {
+        "number_of_shards": 1,
+        "number_of_replicas": 0
+      }
+    },
+    "mappings": {
+      "dynamic": true,
+      "properties": {
+        "@timestamp": { "type": "date" },
+        "event_time": { "type": "date" },
+        "ingest_time": { "type": "date" },
+        "source": { "type": "keyword" },
+        "event_class": { "type": "keyword" },
+        "host": { "type": "keyword" },
+        "user": { "type": "keyword" },
+        "detection_id": { "type": "keyword" },
+        "raw": { "type": "object", "enabled": false },
+        "unmapped": { "type": "object", "enabled": false }
+      }
+    }
+  }
+}

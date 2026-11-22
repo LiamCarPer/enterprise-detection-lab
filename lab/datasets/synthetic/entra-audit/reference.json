@@ -1,0 +1,36 @@
+[
+  {
+    "id": "00000000-0000-4000-8000-000000000101",
+    "activityDateTime": "2026-11-01T09:10:00Z",
+    "operationName": "Add service principal",
+    "initiatedBy": {
+      "user": {
+        "userPrincipalName": "admin@example.test"
+      }
+    },
+    "targetResources": [
+      {
+        "displayName": "Lab Reporting App",
+        "type": "ServicePrincipal"
+      }
+    ],
+    "result": "success"
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000102",
+    "activityDateTime": "2026-11-01T09:12:00Z",
+    "operationName": "Add owner to service principal",
+    "initiatedBy": {
+      "user": {
+        "userPrincipalName": "admin@example.test"
+      }
+    },
+    "targetResources": [
+      {
+        "displayName": "Lab Reporting App",
+        "type": "ServicePrincipal"
+      }
+    ],
+    "result": "success"
+  }
+]

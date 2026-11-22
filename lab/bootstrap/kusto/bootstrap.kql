@@ -1,0 +1,9 @@
+.create-merge table EntraSignIn (TimeGenerated:datetime, id:string, createdDateTime:datetime, userPrincipalName:string, appDisplayName:string, ipAddress:string, status:string, authenticationRequirement:string, isInteractive:bool, conditionalAccessStatus:string, riskLevelDuringSignIn:string, deviceDetail:dynamic)
+
+.create-merge table EntraAudit (TimeGenerated:datetime, id:string, activityDateTime:datetime, operationName:string, initiatedBy:dynamic, targetResources:dynamic, result:string)
+
+.create-merge table Sysmon (TimeGenerated:datetime, UtcTime:datetime, EventID:int, Computer:string, EventRecordID:long, ProcessGuid:string, ProcessId:int, Image:string, CommandLine:string, ParentImage:string, ParentCommandLine:string, User:string, TargetImage:string, GrantedAccess:string, SourceImage:string, DestinationIp:string, DestinationPort:int, Protocol:string, QueryName:string)
+
+.create-merge table WindowsSecurity (TimeGenerated:datetime, TimeCreated:datetime, EventID:int, Computer:string, EventRecordID:long, TargetUserName:string, IpAddress:string, LogonType:int, Status:string, SubjectUserName:string, ServiceName:string, TaskName:string)
+
+.create-merge table CloudTrail (TimeGenerated:datetime, eventTime:datetime, eventVersion:string, eventSource:string, eventName:string, awsRegion:string, sourceIPAddress:string, userAgent:string, userIdentity:dynamic, requestParameters:dynamic, responseElements:dynamic, errorCode:string, errorMessage:string, eventID:string, recipientAccountId:string, sharedEventID:string)

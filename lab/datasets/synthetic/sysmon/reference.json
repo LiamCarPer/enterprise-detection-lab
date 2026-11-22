@@ -1,0 +1,28 @@
+[
+  {
+    "UtcTime": "2026-11-01T09:15:00Z",
+    "EventID": 1,
+    "Computer": "LAB-EP-01",
+    "EventRecordID": 1001,
+    "ProcessGuid": "{00000000-0000-4000-8000-000000000201}",
+    "ProcessId": 4242,
+    "Image": "C:\\Windows\\System32\\whoami.exe",
+    "CommandLine": "whoami /all",
+    "ParentImage": "C:\\Windows\\System32\\cmd.exe",
+    "ParentCommandLine": "cmd.exe /c whoami /all",
+    "User": "LAB\\analyst"
+  },
+  {
+    "UtcTime": "2026-11-01T09:18:00Z",
+    "EventID": 1,
+    "Computer": "LAB-EP-01",
+    "EventRecordID": 1002,
+    "ProcessGuid": "{00000000-0000-4000-8000-000000000202}",
+    "ProcessId": 4343,
+    "Image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "CommandLine": "powershell.exe -NoProfile -EncodedCommand ZQBjAGgAbwAgACIAbABhAGIAIgA=",
+    "ParentImage": "C:\\Windows\\System32\\cmd.exe",
+    "ParentCommandLine": "cmd.exe /c powershell.exe -NoProfile -EncodedCommand ZQBjAGgAbwAgACIAbABhAGIAIgA=",
+    "User": "LAB\\analyst"
+  }
+]

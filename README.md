@@ -43,7 +43,7 @@ The target portfolio is deliberately depth-first:
 | SaaS detections | 2–3 deep detections across M365, GitHub, and Salesforce-like logs | Planned |
 | Network detections | 2–3 deep detections across Zeek, Suricata, DNS, proxy, and firewall | Planned |
 | Investigations | 5–7 enterprise attack chains with evidence and response notes | Planned |
-| Local lab | Reproducible Docker Compose lab with identity, endpoint, and cloud telemetry | Planned |
+| Local lab | Reproducible Docker Compose lab with identity, endpoint, and cloud telemetry | In progress — skeleton healthy; telemetry ingestion next |
 | CI/CD | Lint, tests, conversion, replay, staged deployment, rollback, metrics | Planned |
 | Automation | Enrichment, triage, evidence capture, containment proposals, approval gates | Planned |
 | Design and ownership | Design memo, detection standards, operating model, cost model | Planned |
@@ -56,6 +56,8 @@ The target portfolio is deliberately depth-first:
 - [x] Capability matrix
 - [x] Requirements traceability matrix
 - [x] Detection and investigation artifact contracts
+- [x] Local lab skeleton and pinned tooling
+- [ ] Three-domain telemetry ingestion
 - [ ] Three-domain lab
 - [ ] First six deep detections
 - [ ] First two investigations
@@ -148,6 +150,12 @@ The questions I want to be asked are:
 ```text
 .
 ├── README.md
+├── compose.yaml                     # OpenSearch, Dashboards, Kusto
+├── Makefile                         # install, check, lab targets
+├── pyproject.toml
+├── uv.lock
+├── src/edl/                         # CLI and lab lifecycle
+├── tests/                           # unit, integration, lab tests
 ├── docs/
 │   ├── capability-matrix.md
 │   ├── requirements-traceability.md
@@ -164,7 +172,7 @@ The questions I want to be asked are:
 ├── detections/                      # detection packages; see detections/README.md
 ├── investigations/                  # investigation packages; see investigations/README.md
 ├── automation/                      # planned
-├── lab/                             # planned
+├── lab/                             # local lab bootstrap and synthetic data; see lab/README.md
 ├── conformance/                     # planned; optional senior signal
 ├── console/                         # planned; static report UI
 └── .github/workflows/               # planned
