@@ -69,6 +69,7 @@ The target is **senior-level ownership evidence** for mid-level roles at top-tie
 | Telemetry source contracts | 11 (5 sampled, 6 documented) |
 | Telemetry matrix | Generated and freshness-checked |
 | Reference templates | 1 detection + 1 investigation; `edl new` scaffolding |
+| Test suite coverage | 100% statement coverage on `src/edl`; `make check` enforces a 90% floor |
 | Detections implemented | 0 |
 | Investigations implemented | 0 |
 | Lab implemented | Skeleton yes; telemetry ingestion no |

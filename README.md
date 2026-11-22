@@ -189,6 +189,25 @@ The questions I want to be asked are:
 
 ---
 
+## Verify locally
+
+Requirements: Python 3.12, [uv](https://docs.astral.sh/uv/), and Docker Compose.
+
+```bash
+make install
+make check        # lint, types, validation, matrix freshness, tests
+make lab-up       # start OpenSearch, Dashboards, and Kusto
+make lab-bootstrap
+make test-lab
+make lab-down
+```
+
+`make check` enforces a **90% statement-coverage floor** on `src/edl`. Current
+coverage is **100%**. The lab tests are separate because they require the
+services to be running.
+
+---
+
 ## Roadmap
 
 The roadmap is evidence-gated, not date-driven. Each gate has a definition of done and a kill criterion.

@@ -3,6 +3,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
+
 from edl.validation import validate_repository
 
 
@@ -258,3 +260,252 @@ def test_missing_telemetry_sample_fails(tmp_path: Path) -> None:
     report = validate_repository(tmp_path)
     assert not report.ok
     assert any(issue.code == "telemetry.sample" for issue in report.errors)
+
+
+def test_missing_detection_files_fail(tmp_path: Path) -> None:
+    detection = _write_detection(tmp_path)
+    (detection / "rule.sigma.yml").unlink()
+    (detection / "runbook.md").unlink()
+    (detection / "notes.md").unlink()
+    (detection / "tests" / "test_detection.py").unlink()
+    report = validate_repository(tmp_path)
+    codes = {issue.code for issue in report.errors}
+    assert {"file.rule", "file.runbook", "file.notes", "file.tests"} <= codes
+
+
+def test_missing_and_empty_queries_fail(tmp_path: Path) -> None:
+    detection = _write_detection(tmp_path)
+    (detection / "queries" / "opensearch.json").unlink()
+    report = validate_repository(tmp_path)
+    assert any(issue.code == "file.queries" for issue in report.errors)
+
+    (detection / "queries").rmdir()
+    report = validate_repository(tmp_path)
+    assert any(issue.code == "file.queries" for issue in report.errors)
+
+
+def test_query_path_errors_fail(tmp_path: Path) -> None:
+    detection = _write_detection(tmp_path)
+    meta = detection / "meta.yaml"
+    meta.write_text(meta.read_text().replace("queries/opensearch.json", "../../escape.json"))
+    report = validate_repository(tmp_path)
+    assert any(issue.code == "query.path" for issue in report.errors)
+
+    meta.write_text(meta.read_text().replace("../../escape.json", "queries/missing.json"))
+    report = validate_repository(tmp_path)
+    assert any(issue.code == "query.missing" for issue in report.errors)
+
+
+def test_fixture_shape_and_schema_errors_fail(tmp_path: Path) -> None:
+    detection = _write_detection(tmp_path)
+    (detection / "fixtures" / "positive.json").write_text("{}", encoding="utf-8")
+    report = validate_repository(tmp_path)
+    assert any(issue.code == "fixture.shape" for issue in report.errors)
+
+    event = '{"event": {"id": "1"}, "source": "entra-audit", "synthetic": true}'
+    (detection / "fixtures" / "positive.json").write_text(f"[{event}]", encoding="utf-8")
+    (detection / "fixtures" / "negative.json").write_text(
+        '[{"event": {"id": "1"}}]', encoding="utf-8"
+    )
+    report = validate_repository(tmp_path)
+    assert any(issue.code == "schema" for issue in report.errors)
+
+
+def test_metrics_errors_fail(tmp_path: Path) -> None:
+    detection = _write_detection(tmp_path)
+    metrics_path = detection / "metrics.json"
+    metrics_path.write_text("{", encoding="utf-8")
+    report = validate_repository(tmp_path)
+    assert any(issue.code == "metrics.invalid" for issue in report.errors)
+
+    metrics_path.write_text('{"detection_id": "DET-IDN-001"}', encoding="utf-8")
+    report = validate_repository(tmp_path)
+    assert any(issue.code == "schema" for issue in report.errors)
+
+
+def test_production_detection_requires_metrics_and_notes(tmp_path: Path) -> None:
+    detection = _write_detection(tmp_path)
+    meta = detection / "meta.yaml"
+    meta.write_text(meta.read_text().replace("status: tested", "status: production"))
+    (detection / "metrics.json").unlink()
+    (detection / "notes.md").unlink()
+    report = validate_repository(tmp_path)
+    codes = {issue.code for issue in report.errors}
+    assert {"file.metrics", "file.notes", "status.metrics", "status.notes"} <= codes
+
+
+def test_sigma_missing_and_failure(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    _write_detection(tmp_path)
+    monkeypatch.setattr("edl.validation.shutil.which", lambda _name: None)
+    report = validate_repository(tmp_path, check_sigma=True)
+    assert any(issue.code == "sigma.missing" for issue in report.errors)
+
+    monkeypatch.setattr("edl.validation.shutil.which", lambda _name: "/bin/false")
+    report = validate_repository(tmp_path, check_sigma=True)
+    assert any(issue.code == "sigma" for issue in report.errors)
+
+
+def test_investigation_missing_files_and_directories(tmp_path: Path) -> None:
+    _write_detection(tmp_path)
+    investigation = _write_investigation(tmp_path)
+    for name in ("README.md", "timeline.md", "response.md", "lessons.md", "executive-summary.md"):
+        (investigation / name).unlink()
+    (investigation / "queries" / "opensearch.json").unlink()
+    (investigation / "evidence" / "e1.json").unlink()
+    report = validate_repository(tmp_path)
+    codes = {issue.code for issue in report.errors}
+    assert "file.queries" in codes
+    assert "file.evidence" in codes
+    assert any(code.startswith("file.") for code in codes)
+
+
+def test_investigation_evidence_and_timeline_errors(tmp_path: Path) -> None:
+    _write_detection(tmp_path)
+    investigation = _write_investigation(tmp_path)
+    meta = investigation / "meta.yaml"
+    meta.write_text(
+        meta.read_text()
+        .replace("path: evidence/e1.json", "path: ../escape.json")
+        .replace("path: ../escape.json", "path: evidence/missing.json")
+        .replace("evidence_id: e1", "evidence_id: e2"),
+        encoding="utf-8",
+    )
+    report = validate_repository(tmp_path)
+    codes = {issue.code for issue in report.errors}
+    assert "evidence.missing" in codes
+    assert "timeline.evidence" in codes
+
+
+def test_telemetry_schema_errors_and_load_error(tmp_path: Path) -> None:
+    source = _write_source(tmp_path)
+    source.write_text("id: [unterminated\n", encoding="utf-8")
+    report = validate_repository(tmp_path)
+    assert any(issue.code == "telemetry.load" for issue in report.errors)
+
+    source.write_text("id: bad\n", encoding="utf-8")
+    report = validate_repository(tmp_path)
+    assert any(issue.code == "schema" for issue in report.errors)
+    assert any(issue.code == "telemetry.source" for issue in report.errors)
+
+
+def test_include_path_file_and_schema_missing(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    detection = _write_detection(tmp_path)
+    report = validate_repository(tmp_path, include_path=detection / "meta.yaml")
+    assert report.ok
+    assert report.summary["detections"] == 1
+
+    monkeypatch.setattr("edl.validation.config.SCHEMAS_DIR", tmp_path / "missing-schemas")
+    report = validate_repository(tmp_path)
+    assert any(issue.code == "schema.missing" for issue in report.errors)
+
+
+def test_invalid_meta_yaml_fails(tmp_path: Path) -> None:
+    detection = _write_detection(tmp_path)
+    (detection / "meta.yaml").write_text("id: [unterminated\n", encoding="utf-8")
+    report = validate_repository(tmp_path)
+    assert any(issue.code == "meta" for issue in report.errors)
+
+
+def test_invalid_detection_id_is_reported(tmp_path: Path) -> None:
+    _write_detection(tmp_path, detection_id="BAD-001")
+    report = validate_repository(tmp_path)
+    assert any(issue.code == "id" for issue in report.errors)
+
+
+def test_query_value_must_be_a_path_string(tmp_path: Path) -> None:
+    detection = _write_detection(tmp_path)
+    meta = detection / "meta.yaml"
+    meta.write_text(
+        meta.read_text().replace(
+            "  opensearch: queries/opensearch.json",
+            "  opensearch: 123",
+        ),
+        encoding="utf-8",
+    )
+    report = validate_repository(tmp_path)
+    assert any(issue.code == "query.path" for issue in report.errors)
+
+
+def test_fixture_invalid_json_is_reported(tmp_path: Path) -> None:
+    detection = _write_detection(tmp_path)
+    (detection / "fixtures" / "positive.json").write_text("{", encoding="utf-8")
+    report = validate_repository(tmp_path)
+    assert any(issue.code == "fixture.invalid" for issue in report.errors)
+
+
+def test_metrics_id_mismatch_is_reported(tmp_path: Path) -> None:
+    detection = _write_detection(tmp_path)
+    metrics = json.loads((detection / "metrics.json").read_text(encoding="utf-8"))
+    metrics["detection_id"] = "DET-IDN-002"
+    (detection / "metrics.json").write_text(json.dumps(metrics), encoding="utf-8")
+    report = validate_repository(tmp_path)
+    assert any(issue.code == "metrics.id" for issue in report.errors)
+
+
+def test_unsafe_runbook_path_is_reported(tmp_path: Path) -> None:
+    detection = _write_detection(tmp_path)
+    meta = detection / "meta.yaml"
+    meta.write_text(
+        meta.read_text().replace("runbook: runbook.md", "runbook: ../../runbook.md"),
+        encoding="utf-8",
+    )
+    report = validate_repository(tmp_path)
+    assert any(issue.code == "runbook.path" for issue in report.errors)
+
+
+def test_invalid_investigation_meta_is_reported(tmp_path: Path) -> None:
+    _write_detection(tmp_path)
+    investigation = _write_investigation(tmp_path)
+    (investigation / "meta.yaml").write_text("id: [unterminated\n", encoding="utf-8")
+    report = validate_repository(tmp_path)
+    assert any(issue.code == "meta" for issue in report.errors)
+
+
+def test_investigation_non_mapping_items_are_ignored(tmp_path: Path) -> None:
+    _write_detection(tmp_path)
+    investigation = _write_investigation(tmp_path)
+    meta = investigation / "meta.yaml"
+    text = meta.read_text()
+    text = text.replace(
+        "    provenance: synthetic\n",
+        "    provenance: synthetic\n  - not-a-mapping\n",
+    )
+    text = text.replace(
+        "    evidence_id: e1\n",
+        "    evidence_id: e1\n  - not-a-mapping\n",
+    )
+    meta.write_text(text, encoding="utf-8")
+    report = validate_repository(tmp_path)
+    assert not report.ok
+    assert any(issue.code == "schema" for issue in report.errors)
+
+
+def test_unsafe_evidence_path_is_reported(tmp_path: Path) -> None:
+    _write_detection(tmp_path)
+    investigation = _write_investigation(tmp_path)
+    meta = investigation / "meta.yaml"
+    meta.write_text(
+        meta.read_text().replace("path: evidence/e1.json", "path: ../../escape.json"),
+        encoding="utf-8",
+    )
+    report = validate_repository(tmp_path)
+    assert any(issue.code == "evidence.path" for issue in report.errors)
+
+
+def test_invalid_schema_json_is_reported(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    _write_detection(tmp_path)
+    schemas = tmp_path / "schemas"
+    schemas.mkdir()
+    (schemas / "detection.schema.json").write_text("{", encoding="utf-8")
+    monkeypatch.setattr("edl.validation.config.SCHEMAS_DIR", schemas)
+    report = validate_repository(tmp_path)
+    assert any(issue.code == "schema.invalid" for issue in report.errors)
+
+
+def test_strict_validation_promotes_no_warnings_on_valid_repo(tmp_path: Path) -> None:
+    _valid_repo(tmp_path)
+    report = validate_repository(tmp_path, strict=True)
+    assert report.ok
+    assert report.summary["warnings"] == 0

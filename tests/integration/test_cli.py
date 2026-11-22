@@ -3,9 +3,13 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
 from typer.testing import CliRunner
 
 from edl.cli import app
+from edl.errors import LabError, ValidationError
+from edl.lab import ServiceStatus
+from edl.models import ArtifactResult, Issue, ValidationReport
 
 runner = CliRunner()
 
@@ -101,3 +105,288 @@ def test_lab_help() -> None:
     result = runner.invoke(app, ["lab", "--help"])
     assert result.exit_code == 0
     assert "Local lab lifecycle" in result.stdout
+
+
+def _failed_report() -> ValidationReport:
+    result = ArtifactResult(
+        artifact_type="detection",
+        artifact_id="DET-IDN-001",
+        path="detections/identity/oauth-consent",
+        status="tested",
+    )
+    result.issues.append(
+        Issue(
+            code="test",
+            message="forced failure",
+            severity="error",
+            artifact_type="detection",
+            artifact_id="DET-IDN-001",
+            path="detections/identity/oauth-consent",
+        )
+    )
+    report = ValidationReport(artifacts=[result])
+    report.recompute_summary()
+    return report
+
+
+def test_validate_handles_runtime_error(monkeypatch: pytest.MonkeyPatch) -> None:
+    def fail(*_args: object, **_kwargs: object) -> None:
+        raise ValidationError("cannot read repository")
+
+    monkeypatch.setattr("edl.cli.validate_repository", fail)
+    result = runner.invoke(app, ["validate"])
+    assert result.exit_code == 2
+    assert "cannot read repository" in result.stdout
+
+
+def test_validate_exits_one_for_failed_report(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("edl.cli.validate_repository", lambda *a, **k: _failed_report())
+    result = runner.invoke(app, ["validate"])
+    assert result.exit_code == 1
+
+
+def test_validate_json_failure(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("edl.cli.validate_repository", lambda *a, **k: _failed_report())
+    result = runner.invoke(app, ["validate", "--json"])
+    assert result.exit_code == 1
+    assert json.loads(result.stdout)["ok"] is False
+
+
+def test_report_rejects_unknown_format() -> None:
+    result = runner.invoke(app, ["report", "--format", "xml"])
+    assert result.exit_code == 2
+    assert "--format must be" in result.stdout
+
+
+def test_report_handles_runtime_error(monkeypatch: pytest.MonkeyPatch) -> None:
+    def fail(*_args: object, **_kwargs: object) -> None:
+        raise ValidationError("cannot read repository")
+
+    monkeypatch.setattr("edl.cli.validate_repository", fail)
+    result = runner.invoke(app, ["report"])
+    assert result.exit_code == 2
+    assert "cannot read repository" in result.stdout
+
+
+def test_report_markdown_and_table() -> None:
+    markdown = runner.invoke(app, ["report", "--format", "markdown"])
+    assert markdown.exit_code == 0
+    assert markdown.stdout.startswith("# Validation Report")
+
+    table = runner.invoke(app, ["report"])
+    assert table.exit_code == 0
+    assert "Validation Report" in table.stdout
+
+
+def test_report_exits_one_for_failed_report(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("edl.cli.validate_repository", lambda *a, **k: _failed_report())
+    result = runner.invoke(app, ["report", "--format", "json"])
+    assert result.exit_code == 1
+
+
+def test_telemetry_matrix_handles_load_error(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    def fail(_root: Path) -> None:
+        raise ValidationError("bad source")
+
+    monkeypatch.setattr("edl.cli.load_sources", fail)
+    result = runner.invoke(
+        app,
+        ["telemetry", "matrix", "--output", str(tmp_path / "matrix.md")],
+    )
+    assert result.exit_code == 2
+    assert "bad source" in result.stdout
+
+
+def test_telemetry_matrix_detects_stale_output(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    monkeypatch.setattr("edl.cli.load_sources", lambda _root: [])
+    monkeypatch.setattr("edl.cli.matrix_is_current", lambda _path, _sources: False)
+    result = runner.invoke(
+        app,
+        ["telemetry", "matrix", "--check", "--output", str(tmp_path / "matrix.md")],
+    )
+    assert result.exit_code == 1
+    assert "stale" in result.stdout
+
+
+def test_new_detection_reports_error(monkeypatch: pytest.MonkeyPatch) -> None:
+    def fail(**_kwargs: object) -> None:
+        raise ValidationError("invalid detection ID")
+
+    monkeypatch.setattr("edl.cli.create_detection", fail)
+    result = runner.invoke(
+        app,
+        [
+            "new",
+            "detection",
+            "--domain",
+            "identity",
+            "--slug",
+            "oauth-consent",
+            "--id",
+            "DET-BAD-001",
+            "--title",
+            "OAuth consent grant",
+        ],
+    )
+    assert result.exit_code == 1
+    assert "invalid detection ID" in result.stdout
+
+
+def test_new_detection_created(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    target = tmp_path / "detections" / "identity" / "oauth-consent"
+    monkeypatch.setattr("edl.cli.create_detection", lambda **_kwargs: target)
+    result = runner.invoke(
+        app,
+        [
+            "new",
+            "detection",
+            "--domain",
+            "identity",
+            "--slug",
+            "oauth-consent",
+            "--id",
+            "DET-IDN-001",
+            "--title",
+            "OAuth consent grant",
+        ],
+    )
+    assert result.exit_code == 0
+    assert "Created" in result.stdout
+
+
+def test_new_investigation_reports_error(monkeypatch: pytest.MonkeyPatch) -> None:
+    def fail(**_kwargs: object) -> None:
+        raise ValidationError("invalid investigation ID")
+
+    monkeypatch.setattr("edl.cli.create_investigation", fail)
+    result = runner.invoke(
+        app,
+        [
+            "new",
+            "investigation",
+            "--slug",
+            "identity-to-cloud",
+            "--id",
+            "BAD-001",
+            "--title",
+            "Identity to cloud",
+        ],
+    )
+    assert result.exit_code == 1
+    assert "invalid investigation ID" in result.stdout
+
+
+def test_new_investigation_created(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    target = tmp_path / "investigations" / "identity-to-cloud"
+    monkeypatch.setattr("edl.cli.create_investigation", lambda **_kwargs: target)
+    result = runner.invoke(
+        app,
+        [
+            "new",
+            "investigation",
+            "--slug",
+            "identity-to-cloud",
+            "--id",
+            "INV-001",
+            "--title",
+            "Identity to cloud",
+        ],
+    )
+    assert result.exit_code == 0
+    assert "Created" in result.stdout
+
+
+def test_lab_up_success_and_failure(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("edl.cli.lab_controller.up", lambda: None)
+    result = runner.invoke(app, ["lab", "up"])
+    assert result.exit_code == 0
+    assert "Lab is healthy" in result.stdout
+
+    def fail() -> None:
+        raise LabError("compose failed")
+
+    monkeypatch.setattr("edl.cli.lab_controller.up", fail)
+    result = runner.invoke(app, ["lab", "up"])
+    assert result.exit_code == 2
+    assert "compose failed" in result.stdout
+
+
+def test_lab_down(monkeypatch: pytest.MonkeyPatch) -> None:
+    calls: list[str] = []
+    monkeypatch.setattr("edl.cli.lab_controller.down", lambda: calls.append("down"))
+    result = runner.invoke(app, ["lab", "down"])
+    assert result.exit_code == 0
+    assert calls == ["down"]
+    assert "Lab stopped" in result.stdout
+
+
+def test_lab_status_healthy_and_unhealthy(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        "edl.cli.lab_controller.status",
+        lambda: [ServiceStatus("opensearch", "http://os", True, "green")],
+    )
+    result = runner.invoke(app, ["lab", "status"])
+    assert result.exit_code == 0
+    assert "healthy" in result.stdout
+
+    monkeypatch.setattr(
+        "edl.cli.lab_controller.status",
+        lambda: [ServiceStatus("opensearch", "http://os", False, "red")],
+    )
+    result = runner.invoke(app, ["lab", "status"])
+    assert result.exit_code == 1
+    assert "unhealthy" in result.stdout
+
+
+def test_lab_wait_success_and_failure(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("edl.cli.lab_controller.wait", lambda **_kwargs: [])
+    result = runner.invoke(app, ["lab", "wait", "--timeout", "1"])
+    assert result.exit_code == 0
+    assert "Lab is healthy" in result.stdout
+
+    def fail(**_kwargs: object) -> None:
+        raise LabError("timed out")
+
+    monkeypatch.setattr("edl.cli.lab_controller.wait", fail)
+    result = runner.invoke(app, ["lab", "wait"])
+    assert result.exit_code == 1
+    assert "timed out" in result.stdout
+
+
+def test_lab_bootstrap_success_and_failure(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("edl.cli.lab_controller.bootstrap", lambda: None)
+    result = runner.invoke(app, ["lab", "bootstrap"])
+    assert result.exit_code == 0
+    assert "bootstrap complete" in result.stdout
+
+    def fail() -> None:
+        raise LabError("schema failed")
+
+    monkeypatch.setattr("edl.cli.lab_controller.bootstrap", fail)
+    result = runner.invoke(app, ["lab", "bootstrap"])
+    assert result.exit_code == 2
+    assert "schema failed" in result.stdout
+
+
+def test_lab_reset_with_confirmation(monkeypatch: pytest.MonkeyPatch) -> None:
+    calls: list[str] = []
+    monkeypatch.setattr("edl.cli.lab_controller.reset", lambda: calls.append("reset"))
+    result = runner.invoke(app, ["lab", "reset", "--yes"])
+    assert result.exit_code == 0
+    assert calls == ["reset"]
+    assert "Volumes deleted" in result.stdout
+
+
+def test_lab_logs_forwards_arguments(monkeypatch: pytest.MonkeyPatch) -> None:
+    calls: list[tuple[str | None, bool]] = []
+    monkeypatch.setattr(
+        "edl.cli.lab_controller.logs",
+        lambda *, service, follow: calls.append((service, follow)),
+    )
+    result = runner.invoke(app, ["lab", "logs", "opensearch", "--no-follow"])
+    assert result.exit_code == 0
+    assert calls == [("opensearch", False)]
