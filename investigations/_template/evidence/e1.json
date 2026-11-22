@@ -1,0 +1,9 @@
+{
+  "id": "e1",
+  "synthetic": true,
+  "event": {
+    "activityDateTime": "2026-11-01T09:00:00Z",
+    "operationName": "Add service principal",
+    "result": "success"
+  }
+}

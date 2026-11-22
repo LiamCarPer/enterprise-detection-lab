@@ -1,0 +1,15 @@
+[
+  {
+    "event": {
+      "UtcTime": "2026-11-01T09:16:00Z",
+      "EventID": 1,
+      "Computer": "LAB-EP-01",
+      "EventRecordID": 1002,
+      "Image": "C:\\Windows\\System32\\notepad.exe",
+      "CommandLine": "notepad.exe"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Reference negative event"
+  }
+]

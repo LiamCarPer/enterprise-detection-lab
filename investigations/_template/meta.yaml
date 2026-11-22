@@ -1,0 +1,26 @@
+id: INV-000
+title: Reference Investigation — Synthetic Identity to Cloud
+version: 1.0.0
+status: draft
+domains:
+  - identity
+  - cloud
+scenario: Synthetic OAuth consent leading to a cloud role assumption.
+hypothesis: A consent grant can precede cloud role assumption and data access.
+detections:
+  - DET-END-000
+owner: detection-engineering
+evidence:
+  - id: e1
+    type: event
+    source: entra-audit
+    path: evidence/e1.json
+    provenance: synthetic
+timeline:
+  - timestamp: "2026-11-01T09:00:00Z"
+    event: Consent grant observed
+    source: entra-audit
+    evidence_id: e1
+lessons:
+  - The reference investigation is synthetic and exists to prove the package contract.
+executive_summary: Synthetic reference investigation for the investigation template.

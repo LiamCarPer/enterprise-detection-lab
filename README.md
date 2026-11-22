@@ -44,6 +44,7 @@ The target portfolio is deliberately depth-first:
 | Network detections | 2–3 deep detections across Zeek, Suricata, DNS, proxy, and firewall | Planned |
 | Investigations | 5–7 enterprise attack chains with evidence and response notes | Planned |
 | Telemetry contracts | 11 source contracts across identity, endpoint, cloud, SaaS, network, and Kubernetes; five sampled | Complete |
+| Reference artifacts | One working detection template and one working investigation template | Complete |
 | Local lab | Reproducible Docker Compose lab with identity, endpoint, and cloud telemetry | In progress — skeleton healthy; telemetry ingestion next |
 | CI/CD | Lint, tests, conversion, replay, staged deployment, rollback, metrics | Planned |
 | Automation | Enrichment, triage, evidence capture, containment proposals, approval gates | Planned |
@@ -60,6 +61,8 @@ The target portfolio is deliberately depth-first:
 - [x] Artifact validation CLI and reports
 - [x] Local lab skeleton and pinned tooling
 - [x] Telemetry source contracts and generated matrix
+- [x] Reference detection and investigation templates
+- [x] Scaffolding CLI (`edl new`)
 - [ ] Three-domain telemetry ingestion
 - [ ] Three-domain lab
 - [ ] First six deep detections
@@ -175,8 +178,8 @@ The questions I want to be asked are:
 │   └── blog/                        # planned
 ├── schemas/                         # JSON schemas for artifact metadata
 ├── telemetry/                       # source contracts; see telemetry/README.md
-├── detections/                      # detection packages; see detections/README.md
-├── investigations/                  # investigation packages; see investigations/README.md
+├── detections/                      # detection packages incl. endpoint/_template
+├── investigations/                  # investigation packages incl. _template
 ├── automation/                      # planned
 ├── lab/                             # local lab bootstrap and synthetic data; see lab/README.md
 ├── conformance/                     # planned; optional senior signal

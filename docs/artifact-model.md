@@ -17,7 +17,7 @@ detections/<domain>/<slug>/
 ├── meta.yaml            # machine-readable metadata, validated by schemas/detection.schema.json
 ├── rule.sigma.yml       # vendor-neutral Sigma rule
 ├── queries/             # at least one native backend query
-│   ├── opensearch.kql
+│   ├── opensearch.json  # OpenSearch DSL
 │   ├── sentinel.kql     # optional in Gate 1, required when KQL support lands
 │   └── splunk.spl       # optional
 ├── fixtures/
@@ -32,6 +32,10 @@ detections/<domain>/<slug>/
 ├── metrics.json         # measured precision/recall/FP/latency for this detection
 └── notes.md             # tuning history, known gaps, references
 ```
+
+The working reference artifact is [`detections/endpoint/_template`](../detections/endpoint/_template). Use `edl new detection` to copy it.
+
+Fixtures are validated by [`schemas/fixture.schema.json`](../schemas/fixture.schema.json). Metrics are validated by [`schemas/metrics.schema.json`](../schemas/metrics.schema.json).
 
 ### `meta.yaml`
 
@@ -153,7 +157,7 @@ An investigation is done when:
 - Directory slugs: lowercase, hyphen-separated, stable.
 - Detection versions: semver (`1.0.0`).
 - Investigation versions: semver (`1.0.0`).
-- Query filenames: `opensearch.kql`, `sentinel.kql`, `splunk.spl`, `sigma.yml`.
+- Query filenames: `opensearch.json`, `sentinel.kql`, `splunk.spl`, `sigma.yml`.
 - Fixture names: `positive.json`, `negative.json`, `benign.json`.
 - Do not rename an artifact ID after publication; create a new version or a retired note instead.
 

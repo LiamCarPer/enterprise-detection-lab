@@ -55,6 +55,7 @@ def render_markdown(report: ValidationReport) -> str:
         "",
         f"- Detections: {report.summary.get('detections', 0)}",
         f"- Investigations: {report.summary.get('investigations', 0)}",
+        f"- Templates: {report.summary.get('templates', 0)}",
         f"- Telemetry sources: {report.summary.get('telemetry_sources', 0)}",
         f"- Errors: {report.summary.get('errors', 0)}",
         f"- Warnings: {report.summary.get('warnings', 0)}",

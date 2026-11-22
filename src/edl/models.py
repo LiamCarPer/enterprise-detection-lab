@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any, Literal
 
 Severity = Literal["error", "warning"]
@@ -84,11 +85,19 @@ class ValidationReport:
         self.recompute_summary()
 
     def recompute_summary(self) -> None:
+        def is_template(artifact: ArtifactResult) -> bool:
+            return "_template" in Path(artifact.path).parts
+
         self.summary = {
-            "detections": sum(artifact.artifact_type == "detection" for artifact in self.artifacts),
-            "investigations": sum(
-                artifact.artifact_type == "investigation" for artifact in self.artifacts
+            "detections": sum(
+                artifact.artifact_type == "detection" and not is_template(artifact)
+                for artifact in self.artifacts
             ),
+            "investigations": sum(
+                artifact.artifact_type == "investigation" and not is_template(artifact)
+                for artifact in self.artifacts
+            ),
+            "templates": sum(is_template(artifact) for artifact in self.artifacts),
             "telemetry_sources": sum(
                 artifact.artifact_type == "telemetry-source" for artifact in self.artifacts
             ),

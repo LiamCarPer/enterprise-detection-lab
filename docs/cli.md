@@ -51,6 +51,17 @@ edl telemetry matrix --output docs/telemetry-matrix.md
 `--check` fails when the committed matrix is stale relative to
 `telemetry/sources/*.yaml`.
 
+## Scaffolding
+
+```bash
+edl new detection --domain identity --slug oauth-consent --id DET-IDN-001 --title "OAuth consent grant"
+edl new investigation --slug identity-to-cloud --id INV-001 --title "Identity to cloud"
+edl new detection --domain identity --slug test --id DET-IDN-999 --title "Test" --dry-run
+```
+
+The generated artifact is a valid copy of the working reference template. Edit
+the reference behavior before changing status from `draft` to `tested`.
+
 ## Lab
 
 ```bash

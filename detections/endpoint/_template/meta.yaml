@@ -1,0 +1,28 @@
+id: DET-END-000
+title: Reference Detection — Whoami Execution
+version: 1.0.0
+status: draft
+domain: endpoint
+severity: low
+hypothesis: Whoami execution can indicate host discovery or administrative activity.
+owner: detection-engineering
+attack:
+  - T1033
+telemetry:
+  - source: sysmon
+    event_class: process_creation
+    required_fields:
+      - UtcTime
+      - EventID
+      - Image
+      - CommandLine
+queries:
+  opensearch: queries/opensearch.json
+tests:
+  positive: 1
+  negative: 1
+  benign: 1
+false_positives:
+  - Administrative discovery commands
+runbook: runbook.md
+metrics: metrics.json

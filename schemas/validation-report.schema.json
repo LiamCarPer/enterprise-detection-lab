@@ -60,13 +60,24 @@
     "summary": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["detections", "investigations", "telemetry_sources", "errors", "warnings"],
+      "required": [
+        "detections",
+        "investigations",
+        "templates",
+        "telemetry_sources",
+        "errors",
+        "warnings"
+      ],
       "properties": {
         "detections": {
           "type": "integer",
           "minimum": 0
         },
         "investigations": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "templates": {
           "type": "integer",
           "minimum": 0
         },

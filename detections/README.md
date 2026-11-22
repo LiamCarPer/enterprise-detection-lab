@@ -11,7 +11,7 @@ detections/<domain>/<slug>/
 ├── meta.yaml
 ├── rule.sigma.yml
 ├── queries/
-│   ├── opensearch.kql
+│   ├── opensearch.json
 │   ├── sentinel.kql
 │   └── splunk.spl
 ├── fixtures/
@@ -24,11 +24,13 @@ detections/<domain>/<slug>/
 └── notes.md
 ```
 
+The working reference artifact is `detections/endpoint/_template`. Use `edl new detection` to copy it.
+
 ## Add a detection
 
 1. Pick the domain and a stable slug.
 2. Create the directory.
-3. Copy the detection template when it lands.
+3. Copy the detection template.
 4. Fill `meta.yaml` and validate it against the schema.
 5. Add the Sigma rule and at least one native query.
 6. Add positive, negative, and benign fixtures.

@@ -37,6 +37,46 @@ def test_report_json() -> None:
     assert payload["summary"]["errors"] == 0
 
 
+def test_new_detection_dry_run() -> None:
+    result = runner.invoke(
+        app,
+        [
+            "new",
+            "detection",
+            "--domain",
+            "identity",
+            "--slug",
+            "test-detection",
+            "--id",
+            "DET-IDN-999",
+            "--title",
+            "Test Detection",
+            "--dry-run",
+        ],
+    )
+    assert result.exit_code == 0
+    assert "Would create" in result.stdout
+
+
+def test_new_investigation_dry_run() -> None:
+    result = runner.invoke(
+        app,
+        [
+            "new",
+            "investigation",
+            "--slug",
+            "test-investigation",
+            "--id",
+            "INV-999",
+            "--title",
+            "Test Investigation",
+            "--dry-run",
+        ],
+    )
+    assert result.exit_code == 0
+    assert "Would create" in result.stdout
+
+
 def test_telemetry_matrix_write_and_check(tmp_path: Path) -> None:
     output = tmp_path / "telemetry-matrix.md"
     write_result = runner.invoke(app, ["telemetry", "matrix", "--output", str(output)])

@@ -190,6 +190,7 @@ def _validate_detection(
         if not isinstance(fixture_data, list):
             _issue(result, "fixture.shape", f"fixtures/{kind}.json must be a JSON array")
             continue
+        _schema_validate(fixture_data, "fixture.schema.json", result)
         tests = meta.get("tests")
         if isinstance(tests, dict):
             expected = tests.get(kind)
@@ -213,6 +214,7 @@ def _validate_detection(
             _issue(result, "metrics.invalid", str(exc))
         else:
             if isinstance(metrics_data, dict):
+                _schema_validate(metrics_data, "metrics.schema.json", result)
                 metric_id = metrics_data.get("detection_id")
                 if metric_id != detection_id:
                     _issue(
@@ -383,13 +385,25 @@ def validate_repository(
         if include_path.is_file():
             include_path = include_path.parent
 
+    all_refs = discover_artifacts(root, None)
+    detection_ids: set[str] = set()
+    for ref in all_refs:
+        if ref.kind != "detection":
+            continue
+        try:
+            meta = load_mapping(ref.meta_path)
+        except ValidationError:
+            continue
+        detection_id = meta.get("id")
+        if isinstance(detection_id, str):
+            detection_ids.add(detection_id)
+
     refs = discover_artifacts(root, include_path)
     detection_refs = [ref for ref in refs if ref.kind == "detection"]
     investigation_refs = [ref for ref in refs if ref.kind == "investigation"]
 
     report = ValidationReport()
     detection_results: list[ArtifactResult] = []
-    detection_ids: set[str] = set()
 
     for ref in detection_refs:
         result = ArtifactResult(
@@ -398,9 +412,7 @@ def validate_repository(
             path=relative_path(ref.path, root),
             status="unknown",
         )
-        meta = _validate_detection(ref, root, result, check_sigma)
-        if meta is not None and isinstance(meta.get("id"), str):
-            detection_ids.add(meta["id"])
+        _validate_detection(ref, root, result, check_sigma)
         detection_results.append(result)
 
     investigation_results: list[ArtifactResult] = []

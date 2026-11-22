@@ -1,0 +1,15 @@
+[
+  {
+    "event": {
+      "UtcTime": "2026-11-01T09:15:00Z",
+      "EventID": 1,
+      "Computer": "LAB-EP-01",
+      "EventRecordID": 1001,
+      "Image": "C:\\Windows\\System32\\whoami.exe",
+      "CommandLine": "whoami /all"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Reference positive event"
+  }
+]

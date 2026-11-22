@@ -54,6 +54,7 @@ The target is **senior-level ownership evidence** for mid-level roles at top-tie
 | `compose.yaml` + `lab/` | Complete | Local OpenSearch, Dashboards, Kusto, and DuckDB lab skeleton with pinned versions and bootstrap |
 | `src/edl/` | Complete | Artifact discovery, schema/required-file validation, telemetry matrix, reports, and lab lifecycle |
 | `telemetry/sources/` + `docs/telemetry-matrix.md` | Complete | 11 telemetry source contracts, five sampled, with generated matrix and freshness check |
+| `detections/endpoint/_template` + `investigations/_template` | Complete | Working reference artifacts and `edl new` scaffolding for valid detection/investigation packages |
 | Public repository | Complete | Willingness to build in public and be inspected |
 
 ---

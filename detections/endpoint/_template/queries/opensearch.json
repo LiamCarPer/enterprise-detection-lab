@@ -1,0 +1,10 @@
+{
+  "query": {
+    "bool": {
+      "filter": [
+        { "term": { "EventID": 1 } },
+        { "wildcard": { "Image": "*\\\\whoami.exe" } }
+      ]
+    }
+  }
+}

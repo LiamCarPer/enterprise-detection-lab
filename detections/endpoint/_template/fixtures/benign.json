@@ -1,0 +1,15 @@
+[
+  {
+    "event": {
+      "UtcTime": "2026-11-01T09:17:00Z",
+      "EventID": 1,
+      "Computer": "LAB-EP-01",
+      "EventRecordID": 1003,
+      "Image": "C:\\Windows\\explorer.exe",
+      "CommandLine": "explorer.exe"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Reference benign event"
+  }
+]

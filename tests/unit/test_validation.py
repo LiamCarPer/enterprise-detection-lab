@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 from edl.validation import validate_repository
@@ -74,10 +75,19 @@ level: high
         "def test_placeholder():\n    assert True\n", encoding="utf-8"
     )
     (detection / "runbook.md").write_text("Triage the consent grant.\n", encoding="utf-8")
-    (detection / "metrics.json").write_text(
-        f'{{"detection_id": "{detection_id}", "sample_size": 1, "precision": 1.0}}\n',
-        encoding="utf-8",
-    )
+    metrics = {
+        "detection_id": detection_id,
+        "measured_at": "2026-11-22T00:00:00Z",
+        "sample_size": 1,
+        "precision": 1.0,
+        "recall": 1.0,
+        "false_positive_rate": 0.0,
+        "latency_ms_p50": 0,
+        "latency_ms_p95": 0,
+        "method": "Reference fixture evaluation.",
+        "limitations": ["Synthetic fixtures only."],
+    }
+    (detection / "metrics.json").write_text(json.dumps(metrics, indent=2) + "\n", encoding="utf-8")
     (detection / "notes.md").write_text("Reference detection for tests.\n", encoding="utf-8")
     return detection
 
@@ -174,6 +184,7 @@ def test_valid_repository(tmp_path: Path) -> None:
     assert report.summary == {
         "detections": 1,
         "investigations": 1,
+        "templates": 0,
         "telemetry_sources": 1,
         "errors": 0,
         "warnings": 0,

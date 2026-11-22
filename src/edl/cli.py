@@ -14,14 +14,18 @@ from .errors import EDLError, ValidationError
 from .lab import ServiceStatus
 from .report import render_json, render_markdown, render_table
 from .telemetry import load_sources, matrix_is_current, write_matrix
+from .template import new_detection as create_detection
+from .template import new_investigation as create_investigation
 from .validation import validate_repository
 
 console = Console()
 app = typer.Typer(no_args_is_help=True, add_completion=False)
 lab_app = typer.Typer(no_args_is_help=True, help="Local lab lifecycle.")
 telemetry_app = typer.Typer(no_args_is_help=True, help="Telemetry source contracts.")
+new_app = typer.Typer(no_args_is_help=True, help="Scaffold reference artifacts.")
 app.add_typer(lab_app, name="lab")
 app.add_typer(telemetry_app, name="telemetry")
+app.add_typer(new_app, name="new")
 
 
 @app.command()
@@ -121,6 +125,64 @@ def telemetry_matrix(
 
     write_matrix(target, sources)
     console.print(f"[green]Wrote telemetry matrix:[/green] {target}")
+
+
+@new_app.command("detection")
+def new_detection(
+    domain: str = typer.Option(
+        ...,
+        "--domain",
+        help="identity, endpoint, cloud, saas, network, kubernetes, agent",
+    ),
+    slug: str = typer.Option(..., "--slug", help="Lowercase hyphen-separated slug."),
+    detection_id: str = typer.Option(..., "--id", help="Stable DET-XXX-NNN ID."),
+    title: str = typer.Option(..., "--title", help="Detection title."),
+    dry_run: bool = typer.Option(False, "--dry-run", help="Print the target without writing."),
+) -> None:
+    """Scaffold a valid detection package from the reference template."""
+    try:
+        target = create_detection(
+            domain=domain,
+            slug=slug,
+            detection_id=detection_id,
+            title=title,
+            dry_run=dry_run,
+        )
+    except EDLError as exc:
+        console.print(f"[red]Could not create detection:[/red] {exc}")
+        raise typer.Exit(1) from exc
+
+    if dry_run:
+        console.print(f"Would create: {target}")
+    else:
+        console.print(f"[green]Created:[/green] {target}")
+        console.print("Run `make validate` after editing the reference behavior.")
+
+
+@new_app.command("investigation")
+def new_investigation(
+    slug: str = typer.Option(..., "--slug", help="Lowercase hyphen-separated slug."),
+    investigation_id: str = typer.Option(..., "--id", help="Stable INV-NNN ID."),
+    title: str = typer.Option(..., "--title", help="Investigation title."),
+    dry_run: bool = typer.Option(False, "--dry-run", help="Print the target without writing."),
+) -> None:
+    """Scaffold a valid investigation package from the reference template."""
+    try:
+        target = create_investigation(
+            slug=slug,
+            investigation_id=investigation_id,
+            title=title,
+            dry_run=dry_run,
+        )
+    except EDLError as exc:
+        console.print(f"[red]Could not create investigation:[/red] {exc}")
+        raise typer.Exit(1) from exc
+
+    if dry_run:
+        console.print(f"Would create: {target}")
+    else:
+        console.print(f"[green]Created:[/green] {target}")
+        console.print("Run `make validate` after editing the reference scenario.")
 
 
 @lab_app.command("up")

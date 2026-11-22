@@ -1,0 +1,14 @@
+{
+  "detection_id": "DET-END-000",
+  "measured_at": "2026-11-22T00:00:00Z",
+  "sample_size": 3,
+  "precision": 1.0,
+  "recall": 1.0,
+  "false_positive_rate": 0.0,
+  "latency_ms_p50": 0,
+  "latency_ms_p95": 0,
+  "method": "Reference fixture evaluation; not a production measurement.",
+  "limitations": [
+    "Synthetic fixtures only; this is a reference artifact, not a production measurement."
+  ]
+}

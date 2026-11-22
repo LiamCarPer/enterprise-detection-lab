@@ -18,6 +18,8 @@ investigations/<nn-slug>/
 └── executive-summary.md
 ```
 
+The working reference artifact is `investigations/_template`. Use `edl new investigation` to copy it.
+
 ## Add an investigation
 
 1. Pick the scenario and a stable slug.
