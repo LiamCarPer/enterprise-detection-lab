@@ -64,7 +64,8 @@ The target is **senior-level ownership evidence** for mid-level roles at top-tie
 | Metric | Current |
 |---|---|
 | Requirements mapped | 15 / 15 |
-| Foundation artifacts complete | README, capability matrix, requirements traceability, artifact contracts, local lab skeleton |
+| Foundation artifacts complete | README, capability matrix, requirements traceability, artifact contracts, validation CLI, local lab skeleton |
+| Validation CLI implemented | Yes |
 | Detections implemented | 0 |
 | Investigations implemented | 0 |
 | Lab implemented | Skeleton yes; telemetry ingestion no |

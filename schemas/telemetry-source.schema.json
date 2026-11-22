@@ -1,0 +1,160 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/LiamCarPer/enterprise-detection-lab/main/schemas/telemetry-source.schema.json",
+  "title": "Telemetry source contract",
+  "description": "Schema for a telemetry source contract in telemetry/sources/*.yaml.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "name",
+    "provider",
+    "product",
+    "event_classes",
+    "schema_version",
+    "status",
+    "owner",
+    "event_time_field",
+    "ingest_time_field",
+    "timezone",
+    "ordering",
+    "dedup_key",
+    "required_fields",
+    "known_gaps"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,63}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 3
+    },
+    "provider": {
+      "type": "string",
+      "minLength": 2
+    },
+    "product": {
+      "type": "string",
+      "minLength": 2
+    },
+    "event_classes": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 2
+      }
+    },
+    "schema_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": ["documented", "sampled", "ingested", "validated"]
+    },
+    "owner": {
+      "type": "string",
+      "minLength": 2
+    },
+    "event_time_field": {
+      "type": "string",
+      "minLength": 1
+    },
+    "ingest_time_field": {
+      "type": "string",
+      "minLength": 1
+    },
+    "timezone": {
+      "type": "string",
+      "const": "UTC"
+    },
+    "ordering": {
+      "type": "string",
+      "enum": ["ordered", "unordered"]
+    },
+    "dedup_key": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "required_fields": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "sensitive_fields": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "expected_volume": {
+      "type": "string"
+    },
+    "expected_latency": {
+      "type": "string"
+    },
+    "retention": {
+      "type": "string"
+    },
+    "cost": {
+      "type": "string"
+    },
+    "late_arrival": {
+      "type": "string"
+    },
+    "duplicates": {
+      "type": "string"
+    },
+    "known_gaps": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 3
+      }
+    },
+    "sample_data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "synthetic", "license", "provenance"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "synthetic": {
+          "type": "boolean"
+        },
+        "license": {
+          "type": "string",
+          "minLength": 1
+        },
+        "provenance": {
+          "type": "string",
+          "minLength": 5
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{64}$"
+        }
+      }
+    },
+    "notes": {
+      "type": "string"
+    }
+  }
+}

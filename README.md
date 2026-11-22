@@ -4,7 +4,7 @@
 
 **Status:** foundation. Built in public. The first milestone is the three-domain core: identity, endpoint, and cloud, with six deep detections, two investigations, CI, and metrics.
 
-[Capability matrix](docs/capability-matrix.md) · [Requirements traceability](docs/requirements-traceability.md) · [Artifact model](docs/artifact-model.md)
+[Capability matrix](docs/capability-matrix.md) · [Requirements traceability](docs/requirements-traceability.md) · [Artifact model](docs/artifact-model.md) · [CLI](docs/cli.md)
 
 ---
 
@@ -56,6 +56,7 @@ The target portfolio is deliberately depth-first:
 - [x] Capability matrix
 - [x] Requirements traceability matrix
 - [x] Detection and investigation artifact contracts
+- [x] Artifact validation CLI and reports
 - [x] Local lab skeleton and pinned tooling
 - [ ] Three-domain telemetry ingestion
 - [ ] Three-domain lab
@@ -84,6 +85,7 @@ A hiring manager should be able to evaluate it in layers:
 **15 minutes**
 
 - Read the [requirements traceability matrix](docs/requirements-traceability.md).
+- Run `uv run edl validate` and `uv run edl report --format markdown`.
 - Inspect the first available detections and investigations.
 - Check whether tests, replay, and metrics actually exist.
 
@@ -154,12 +156,13 @@ The questions I want to be asked are:
 ├── Makefile                         # install, check, lab targets
 ├── pyproject.toml
 ├── uv.lock
-├── src/edl/                         # CLI and lab lifecycle
+├── src/edl/                         # CLI, validation, and lab lifecycle
 ├── tests/                           # unit, integration, lab tests
 ├── docs/
 │   ├── capability-matrix.md
 │   ├── requirements-traceability.md
 │   ├── artifact-model.md
+│   ├── cli.md
 │   ├── telemetry-matrix.md          # planned
 │   ├── detection-lifecycle.md       # planned
 │   ├── testing-guide.md             # planned

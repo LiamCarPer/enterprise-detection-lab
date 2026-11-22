@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/LiamCarPer/enterprise-detection-lab/main/schemas/validation-report.schema.json",
+  "title": "Validation report",
+  "description": "Machine-readable output of edl validate --json.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["ok", "artifacts", "errors", "warnings", "summary"],
+  "properties": {
+    "ok": {
+      "type": "boolean"
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "id", "path", "status", "errors", "warnings"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["detection", "investigation", "telemetry-source"]
+          },
+          "id": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["detections", "investigations", "telemetry_sources", "errors", "warnings"],
+      "properties": {
+        "detections": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "investigations": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "telemetry_sources": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "errors": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "warnings": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

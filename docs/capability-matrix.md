@@ -52,7 +52,7 @@ The target is **senior-level ownership evidence** for mid-level roles at top-tie
 | `docs/capability-matrix.md` | Complete | Understanding of the capability bar and where the evidence will live |
 | `docs/requirements-traceability.md` | Complete | Understanding of job requirements and artifact mapping |
 | `compose.yaml` + `lab/` | Complete | Local OpenSearch, Dashboards, Kusto, and DuckDB lab skeleton with pinned versions and bootstrap |
-| `src/edl/` | In progress | Lab lifecycle, health checks, bootstrap, and minimal schema validation |
+| `src/edl/` | Complete | Artifact discovery, schema/required-file validation, telemetry matrix, reports, and lab lifecycle |
 | Public repository | Complete | Willingness to build in public and be inspected |
 
 ---

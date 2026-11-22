@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import json
+from pathlib import Path
 
 import typer
 from rich.console import Console
@@ -10,12 +10,18 @@ from rich.table import Table
 
 from . import __version__, config
 from . import lab as lab_controller
-from .errors import EDLError
+from .errors import EDLError, ValidationError
+from .lab import ServiceStatus
+from .report import render_json, render_markdown, render_table
+from .telemetry import load_sources, matrix_is_current, write_matrix
+from .validation import validate_repository
 
 console = Console()
 app = typer.Typer(no_args_is_help=True, add_completion=False)
 lab_app = typer.Typer(no_args_is_help=True, help="Local lab lifecycle.")
+telemetry_app = typer.Typer(no_args_is_help=True, help="Telemetry source contracts.")
 app.add_typer(lab_app, name="lab")
+app.add_typer(telemetry_app, name="telemetry")
 
 
 @app.command()
@@ -25,42 +31,96 @@ def version() -> None:
 
 
 @app.command()
-def validate() -> None:
-    """Validate repository contracts that exist in this phase.
+def validate(
+    path: Path | None = typer.Option(
+        None,
+        "--path",
+        help="Only validate artifacts under this path.",
+    ),
+    json_output: bool = typer.Option(False, "--json", help="Emit machine-readable JSON."),
+    strict: bool = typer.Option(False, "--strict", help="Treat warnings as errors."),
+    sigma: bool = typer.Option(False, "--sigma", help="Run sigma check on rules."),
+) -> None:
+    """Validate detection, investigation, and telemetry artifacts."""
+    try:
+        report = validate_repository(
+            config.ROOT,
+            include_path=path,
+            check_sigma=sigma,
+            strict=strict,
+        )
+    except (EDLError, OSError) as exc:
+        console.print(f"[red]Validation failed to run:[/red] {exc}")
+        raise typer.Exit(2) from exc
 
-    This is intentionally narrow in Commit 2. Commit 3 replaces it with full
-    artifact, telemetry, fixture, and metrics validation.
-    """
-    errors: list[str] = []
+    if json_output:
+        typer.echo(render_json(report))
+    else:
+        console.print(render_table(report))
 
-    schemas = sorted(config.SCHEMAS_DIR.glob("*.json"))
-    if not schemas:
-        errors.append(f"No schemas found in {config.SCHEMAS_DIR}")
-    for schema in schemas:
-        try:
-            json.loads(schema.read_text(encoding="utf-8"))
-        except json.JSONDecodeError as exc:
-            errors.append(f"{schema.relative_to(config.ROOT)}: invalid JSON: {exc}")
-
-    required = [
-        config.ROOT / "README.md",
-        config.ROOT / "docs" / "artifact-model.md",
-        config.ROOT / "detections" / "README.md",
-        config.ROOT / "investigations" / "README.md",
-    ]
-    for path in required:
-        if not path.exists():
-            errors.append(f"Missing required file: {path.relative_to(config.ROOT)}")
-
-    if errors:
-        for error in errors:
-            console.print(f"[red]ERROR[/red] {error}")
+    if not report.ok:
         raise typer.Exit(1)
 
-    console.print(
-        f"[green]Repository checks passed[/green] "
-        f"({len(schemas)} schema(s), {len(required)} required file(s))"
-    )
+
+@app.command()
+def report(
+    output_format: str = typer.Option(
+        "table",
+        "--format",
+        case_sensitive=False,
+        help="table, json, or markdown",
+    ),
+) -> None:
+    """Validate the repository and render a report."""
+    selected = output_format.lower()
+    if selected not in {"table", "json", "markdown"}:
+        console.print("[red]--format must be table, json, or markdown[/red]")
+        raise typer.Exit(2)
+
+    try:
+        validation_report = validate_repository(config.ROOT)
+    except (EDLError, OSError) as exc:
+        console.print(f"[red]Validation failed to run:[/red] {exc}")
+        raise typer.Exit(2) from exc
+
+    if selected == "json":
+        typer.echo(render_json(validation_report))
+    elif selected == "markdown":
+        typer.echo(render_markdown(validation_report), nl=False)
+    else:
+        console.print(render_table(validation_report))
+
+    if not validation_report.ok:
+        raise typer.Exit(1)
+
+
+@telemetry_app.command("matrix")
+def telemetry_matrix(
+    check: bool = typer.Option(False, "--check", help="Fail if the committed matrix is stale."),
+    output: Path = typer.Option(
+        config.ROOT / "docs" / "telemetry-matrix.md",
+        "--output",
+        help="Matrix output path.",
+    ),
+) -> None:
+    """Generate or verify the telemetry source matrix."""
+    try:
+        sources = load_sources(config.ROOT)
+    except ValidationError as exc:
+        console.print(f"[red]Could not load telemetry sources:[/red] {exc}")
+        raise typer.Exit(2) from exc
+
+    target = output if output.is_absolute() else config.ROOT / output
+    if check:
+        if not matrix_is_current(target, sources):
+            console.print(f"[red]Telemetry matrix is stale:[/red] {target}")
+            console.print("Run `edl telemetry matrix` to regenerate it.")
+            raise typer.Exit(1)
+        console.print(f"[green]Telemetry matrix is current:[/green] {target}")
+        return
+
+    write_matrix(target, sources)
+    console.print(f"[green]Wrote telemetry matrix:[/green] {target}")
 
 
 @lab_app.command("up")
@@ -84,20 +144,24 @@ def lab_down() -> None:
 @lab_app.command("status")
 def lab_status() -> None:
     """Show the health of every lab component."""
+    statuses = lab_controller.status()
+    console.print(render_lab_table(statuses))
+    if not all(item.healthy for item in statuses):
+        raise typer.Exit(1)
+
+
+def render_lab_table(statuses: list[ServiceStatus]) -> Table:
+    """Render the lab health table."""
     table = Table(title="Enterprise Detection Lab")
     table.add_column("Service")
     table.add_column("URL")
     table.add_column("State")
     table.add_column("Detail")
 
-    statuses = lab_controller.status()
     for item in statuses:
         state = "[green]healthy[/green]" if item.healthy else "[red]unhealthy[/red]"
         table.add_row(item.name, item.url, state, item.detail)
-
-    console.print(table)
-    if not all(item.healthy for item in statuses):
-        raise typer.Exit(1)
+    return table
 
 
 @lab_app.command("wait")
