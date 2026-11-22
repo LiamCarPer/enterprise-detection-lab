@@ -9,8 +9,9 @@ event_classes:
   - registry_set
   - dns_query
   - process_access
+  - other
 schema_version: "1.0"
-status: sampled
+status: ingested
 owner: detection-engineering
 event_time_field: UtcTime
 ingest_time_field: ingest_time
@@ -28,6 +29,7 @@ required_fields:
   - ProcessGuid
   - Image
   - CommandLine
+  - Channel
 sensitive_fields:
   - CommandLine
   - User
@@ -47,5 +49,5 @@ sample_data:
   synthetic: true
   license: synthetic
   provenance: Generated for this repository. No real hosts or users.
-  sha256: 3d5be7bea511ecc1ffdf515dfe3a9bb69689d1b8ad3740527e25742ddb6a77d4
+  sha256: aa1da4571b0c806e9adbadaffa5872deed7abe1d8202b00ad320ee7c22ac9e3d
 notes: Phase 1 endpoint source.

@@ -53,9 +53,9 @@ The target is **senior-level ownership evidence** for mid-level roles at top-tie
 | `docs/requirements-traceability.md` | Complete | Understanding of job requirements and artifact mapping |
 | `compose.yaml` + `lab/` | Complete | Local OpenSearch, Dashboards, Kusto, and DuckDB lab skeleton with pinned versions and bootstrap |
 | `src/edl/` | Complete | Artifact discovery, schema/required-file validation, telemetry matrix, reports, and lab lifecycle |
-| `telemetry/sources/` + `docs/telemetry-matrix.md` | Complete | 11 telemetry source contracts (2 ingested, 3 sampled, 6 documented), with generated matrix and freshness check |
+| `telemetry/sources/` + `docs/telemetry-matrix.md` | Complete | 11 telemetry source contracts (4 ingested, 1 sampled, 6 documented), with generated matrix and freshness check |
 | `detections/endpoint/_template` + `investigations/_template` | Complete | Working reference artifacts and `edl new` scaffolding for valid detection/investigation packages |
-| `src/edl/ingest.py` + `docs/ingestion.md` | Complete | Entra identity normalization, preflight validation, deterministic deduplication, idempotent bulk ingest, and queryable canonical events |
+| `src/edl/ingest.py` + `docs/ingestion.md` | Complete | Entra identity and Windows endpoint normalization, per-event classification, preflight validation, deterministic deduplication, idempotent bulk ingest, and queryable canonical events |
 | `tests/` + `Makefile` | Complete | Unit and integration coverage for CLI, validation, telemetry, templates, and lab lifecycle; `make check` enforces a 90% statement-coverage floor |
 | Public repository | Complete | Willingness to build in public and be inspected |
 
@@ -63,9 +63,9 @@ The target is **senior-level ownership evidence** for mid-level roles at top-tie
 
 ## Next evidence
 
-The local lab skeleton is healthy and identity telemetry is ingested. The next milestone is the three-domain core. It will add:
+The local lab skeleton is healthy and identity and endpoint telemetry are ingested. The next milestone is the three-domain core. It will add:
 
-- Telemetry ingestion for endpoint and cloud sources; identity is complete.
+- Telemetry ingestion for cloud sources; identity and endpoint are complete.
 - Six deep detections across the three domains.
 - Two enterprise investigations.
 - CI/CD, replay, benign baseline, and metrics.

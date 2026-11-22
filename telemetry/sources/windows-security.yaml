@@ -5,8 +5,9 @@ product: Windows
 event_classes:
   - authentication
   - account_management
+  - other
 schema_version: "1.0"
-status: sampled
+status: ingested
 owner: detection-engineering
 event_time_field: TimeCreated
 ingest_time_field: ingest_time
@@ -25,6 +26,7 @@ required_fields:
   - IpAddress
   - LogonType
   - Status
+  - Channel
 sensitive_fields:
   - TargetUserName
   - IpAddress
@@ -44,5 +46,5 @@ sample_data:
   synthetic: true
   license: synthetic
   provenance: Generated for this repository. No real hosts or users.
-  sha256: 158d3289ac0caceb19aaf6a11c1dbe544b7e277b99ec213fe23a61b3534c1ef5
+  sha256: 51a4963cb0454b88d13f1cdbf6ce43d54281cac176800f1244c02d1e5d12af1c
 notes: Phase 1 endpoint source.

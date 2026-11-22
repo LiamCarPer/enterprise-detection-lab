@@ -8,19 +8,28 @@ import pytest
 
 from edl.errors import IngestError
 from edl.ingest import (
+    CLASSIFIERS,
     CanonicalEvent,
+    classify_sysmon,
+    classify_windows_security,
     dedup_fingerprint,
     deduplicate_events,
     format_timestamp,
     index_name,
+    ingest_domain,
+    ingest_endpoint,
     ingest_identity,
     ingest_source,
     load_dataset,
+    load_domain_sources,
+    load_endpoint_sources,
     load_identity_sources,
     normalize_dataset,
     normalize_entra_audit,
     normalize_entra_signin,
     normalize_event,
+    normalize_sysmon,
+    normalize_windows_security,
     parse_timestamp,
     write_events,
 )
@@ -585,6 +594,285 @@ def test_ingest_identity_opens_client_when_missing(
 
     monkeypatch.setattr("edl.ingest.OpenSearchClient", lambda: FakeContext())
     results = ingest_identity(
+        ingest_time=datetime(2026, 11, 22, tzinfo=UTC),
+        index_prefix="edl-events-test",
+    )
+    assert len(results) == 2
+    assert all(result.mode == "ingested" for result in results)
+    assert all(result.counts for result in results)
+
+
+SYSMON_RAW = {
+    "UtcTime": "2026-11-01T09:15:00Z",
+    "EventID": 1,
+    "Computer": "LAB-EP-01",
+    "Channel": "Microsoft-Windows-Sysmon/Operational",
+    "EventRecordID": 1001,
+    "ProcessGuid": "{00000000-0000-4000-8000-000000000201}",
+    "ProcessId": 4242,
+    "Image": "C:\\Windows\\System32\\whoami.exe",
+    "CommandLine": "whoami /all",
+    "ParentImage": "C:\\Windows\\System32\\cmd.exe",
+    "ParentCommandLine": "cmd.exe /c whoami /all",
+    "User": "LAB\\analyst",
+}
+
+SECURITY_RAW = {
+    "TimeCreated": "2026-11-01T09:20:00Z",
+    "EventID": 4624,
+    "Computer": "LAB-EP-01",
+    "Channel": "Security",
+    "EventRecordID": 2001,
+    "TargetUserName": "analyst",
+    "IpAddress": "203.0.113.10",
+    "LogonType": 3,
+    "Status": "0x0",
+    "SubjectUserName": "-",
+    "ServiceName": "-",
+    "TaskName": "-",
+}
+
+
+def _endpoint_source(source_id: str = "sysmon", **overrides: object) -> TelemetrySource:
+    sysmon = source_id == "sysmon"
+    data: dict[str, object] = {
+        "id": source_id,
+        "name": "Synthetic endpoint source",
+        "provider": "Microsoft",
+        "product": "Sysmon" if sysmon else "Windows",
+        "event_classes": (
+            ["process_creation", "network_connection", "other"]
+            if sysmon
+            else ["authentication", "account_management", "other"]
+        ),
+        "schema_version": "1.0",
+        "status": "sampled",
+        "owner": "detection-engineering",
+        "event_time_field": "UtcTime" if sysmon else "TimeCreated",
+        "ingest_time_field": "ingest_time",
+        "timezone": "UTC",
+        "ordering": "unordered",
+        "dedup_key": ["EventRecordID", "Computer", "Channel"],
+        "required_fields": [
+            "EventID",
+            "Computer",
+            "EventRecordID",
+            "Channel",
+            "UtcTime" if sysmon else "TimeCreated",
+        ],
+        "known_gaps": [],
+    }
+    data.update(overrides)
+    return TelemetrySource(Path(f"{source_id}.yaml"), data)
+
+
+@pytest.mark.parametrize(
+    ("event_id", "expected"),
+    [
+        (1, "process_creation"),
+        (3, "network_connection"),
+        (10, "process_access"),
+        (11, "file_create"),
+        (12, "registry_set"),
+        (13, "registry_set"),
+        (14, "registry_set"),
+        (22, "dns_query"),
+        (999, "other"),
+    ],
+)
+def test_classify_sysmon_maps_event_ids(event_id: int, expected: str) -> None:
+    assert classify_sysmon({"EventID": event_id}) == expected
+
+
+def test_classify_sysmon_handles_invalid_event_id() -> None:
+    assert classify_sysmon({"EventID": "not-an-int"}) == "other"
+    assert classify_sysmon({"EventID": True}) == "other"
+    assert classify_sysmon({}) == "other"
+    assert classify_sysmon({"EventID": 1.5}) == "other"
+
+
+@pytest.mark.parametrize(
+    ("event_id", "expected"),
+    [
+        (4624, "authentication"),
+        (4625, "authentication"),
+        (4720, "account_management"),
+        (4740, "account_management"),
+        (999, "other"),
+    ],
+)
+def test_classify_windows_security_maps_event_ids(event_id: int, expected: str) -> None:
+    assert classify_windows_security({"EventID": event_id}) == expected
+
+
+def test_classify_windows_security_handles_invalid_event_id() -> None:
+    assert classify_windows_security({"EventID": "bad"}) == "other"
+    assert classify_windows_security({}) == "other"
+
+
+def test_normalize_sysmon_process_event() -> None:
+    document = normalize_sysmon(SYSMON_RAW)
+    assert document["host"] == "LAB-EP-01"
+    assert document["user"] == "LAB\\analyst"
+    assert document["event_id"] == 1
+    assert document["process"] == {
+        "image": "C:\\Windows\\System32\\whoami.exe",
+        "command_line": "whoami /all",
+        "guid": "{00000000-0000-4000-8000-000000000201}",
+        "id": 4242,
+        "parent_image": "C:\\Windows\\System32\\cmd.exe",
+        "parent_command_line": "cmd.exe /c whoami /all",
+    }
+
+
+def test_normalize_sysmon_maps_network_file_registry_and_dns() -> None:
+    document = normalize_sysmon(
+        {
+            "EventID": 3,
+            "Computer": "LAB-EP-01",
+            "SourceIp": "10.0.0.5",
+            "SourcePort": 50000,
+            "DestinationIp": "198.51.100.25",
+            "DestinationPort": 443,
+            "Protocol": "tcp",
+            "TargetFilename": "C:\\Temp\\out.bin",
+            "TargetObject": "HKLM\\Software\\Run\\Lab",
+            "Details": "C:\\Temp\\out.bin",
+            "QueryName": "example.test",
+            "QueryResults": "203.0.113.10",
+        }
+    )
+    assert document["network"] == {
+        "source_ip": "10.0.0.5",
+        "source_port": 50000,
+        "destination_ip": "198.51.100.25",
+        "destination_port": 443,
+        "protocol": "tcp",
+    }
+    assert document["file"] == {"target_filename": "C:\\Temp\\out.bin"}
+    assert document["registry"] == {
+        "target_object": "HKLM\\Software\\Run\\Lab",
+        "details": "C:\\Temp\\out.bin",
+    }
+    assert document["dns"] == {
+        "query_name": "example.test",
+        "query_results": "203.0.113.10",
+    }
+
+
+def test_normalize_windows_security_successful_logon() -> None:
+    document = normalize_windows_security(SECURITY_RAW)
+    assert document["host"] == "LAB-EP-01"
+    assert document["user"] == "analyst"
+    assert document["event_id"] == 4624
+    assert document["action"] == "logon"
+    assert document["result"] == "success"
+    assert document["src_ip"] == "203.0.113.10"
+    assert document["logon_type"] == 3
+    assert document["status"] == "0x0"
+    assert "subject_user" not in document
+    assert "service_name" not in document
+    assert "task_name" not in document
+
+
+def test_normalize_windows_security_failure_and_account_management() -> None:
+    failure = normalize_windows_security({**SECURITY_RAW, "EventID": 4625})
+    assert failure["action"] == "logon_failure"
+    assert failure["result"] == "failure"
+
+    created = normalize_windows_security(
+        {
+            **SECURITY_RAW,
+            "EventID": 4720,
+            "TargetUserName": "new-user",
+            "SubjectUserName": "admin",
+        }
+    )
+    assert created["action"] == "user_created"
+    assert "result" not in created
+    assert created["subject_user"] == "admin"
+
+
+def test_normalize_event_endpoint_uses_classifier_and_declared_key() -> None:
+    event = normalize_event(
+        _endpoint_source(),
+        SYSMON_RAW,
+        ingest_time=datetime(2026, 11, 22, tzinfo=UTC),
+    )
+    assert event.event_class == "process_creation"
+    assert event.document["event_class"] == "process_creation"
+    assert event.document["dedup_origin"] == "declared"
+    assert event.document["dedup_key"]["Channel"] == "Microsoft-Windows-Sysmon/Operational"
+    assert event.document["process"]["image"].endswith("whoami.exe")
+
+
+def test_normalize_event_endpoint_marks_unknown_event_class_other() -> None:
+    event = normalize_event(
+        _endpoint_source(),
+        {**SYSMON_RAW, "EventID": 999},
+        ingest_time=datetime(2026, 11, 22, tzinfo=UTC),
+    )
+    assert event.event_class == "other"
+
+
+def test_normalize_event_rejects_undeclared_classifier_result(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setitem(CLASSIFIERS, "entra-signin", lambda _raw: "bogus")
+    with pytest.raises(IngestError, match="undeclared event class"):
+        normalize_event(
+            _source(),
+            SIGNIN_RAW,
+            ingest_time=datetime(2026, 11, 22, tzinfo=UTC),
+        )
+
+
+def test_load_endpoint_sources_defaults_and_filters() -> None:
+    assert [source.id for source in load_endpoint_sources()] == [
+        "sysmon",
+        "windows-security",
+    ]
+    assert [source.id for source in load_endpoint_sources(requested=("sysmon",))] == ["sysmon"]
+
+
+def test_load_endpoint_sources_rejects_non_endpoint() -> None:
+    with pytest.raises(IngestError, match="Not endpoint source"):
+        load_endpoint_sources(requested=("entra-signin",))
+
+
+def test_load_domain_sources_rejects_unknown_domain() -> None:
+    with pytest.raises(IngestError, match="Unknown ingest domain"):
+        load_domain_sources("mobile")
+
+
+def test_ingest_endpoint_dry_run_uses_repository_samples() -> None:
+    results = ingest_endpoint(dry_run=True)
+    assert [result.source for result in results] == ["sysmon", "windows-security"]
+    assert all(result.read == 2 for result in results)
+    assert all(result.unique == 2 for result in results)
+    assert results[0].indices == ("edl-events-sysmon-2026.11.01",)
+    assert results[1].indices == ("edl-events-windows-security-2026.11.01",)
+
+
+def test_ingest_domain_dry_run_accepts_endpoint() -> None:
+    results = ingest_domain("endpoint", dry_run=True, sources=("sysmon",))
+    assert [result.source for result in results] == ["sysmon"]
+
+
+def test_ingest_endpoint_opens_client_when_missing(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    client = FakeClient()
+
+    class FakeContext:
+        def __enter__(self) -> FakeClient:
+            return client
+
+        def __exit__(self, *_: object) -> None:
+            return None
+
+    monkeypatch.setattr("edl.ingest.OpenSearchClient", lambda: FakeContext())
+    results = ingest_endpoint(
         ingest_time=datetime(2026, 11, 22, tzinfo=UTC),
         index_prefix="edl-events-test",
     )

@@ -1,4 +1,4 @@
-.PHONY: install lint validate telemetry-check test test-lab coverage check lab-up lab-down lab-status lab-wait lab-bootstrap ingest-identity lab-reset lab-logs
+.PHONY: install lint validate telemetry-check test test-lab coverage check lab-up lab-down lab-status lab-wait lab-bootstrap ingest-identity ingest-endpoint lab-reset lab-logs
 
 install:
 	uv sync --all-extras
@@ -41,6 +41,9 @@ lab-bootstrap:
 
 ingest-identity:
 	PYTHONPATH= uv run edl ingest identity
+
+ingest-endpoint:
+	PYTHONPATH= uv run edl ingest endpoint
 
 lab-reset:
 	uv run edl lab reset --yes

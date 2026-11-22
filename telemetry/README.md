@@ -35,16 +35,20 @@ Phase 1 has five sources with samples: Entra sign-in, Entra audit, Sysmon, Windo
 
 ## Ingest
 
-Identity sources are loaded with:
+Identity and endpoint sources are loaded with:
 
 ```bash
 edl ingest identity
-edl ingest identity --source entra-signin --dry-run
+edl ingest endpoint
+edl ingest endpoint --source sysmon --dry-run
 ```
 
 Ingestion checks the sample hash and required fields, rejects naive timestamps,
-normalizes to the canonical event shape, and uses deterministic document IDs so
-replay is idempotent. See [`docs/ingestion.md`](../docs/ingestion.md).
+normalizes to the canonical event shape, classifies per-event where needed, and
+uses deterministic document IDs so replay is idempotent. Sysmon and Windows
+Security include the declared `Channel` field so the dedup key is exercised
+directly rather than falling back to a hash. See
+[`docs/ingestion.md`](../docs/ingestion.md).
 
 A source moves to `ingested` after a successful lab load and to `validated` only
 after replay and query tests pass. Update the contract and regenerate the matrix

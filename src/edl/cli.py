@@ -13,7 +13,7 @@ from . import __version__, config
 from . import lab as lab_controller
 from .errors import EDLError, ValidationError
 from .ingest import IngestResult
-from .ingest import ingest_identity as run_ingest_identity
+from .ingest import ingest_domain as run_ingest_domain
 from .lab import ServiceStatus
 from .report import render_json, render_markdown, render_table
 from .telemetry import load_sources, matrix_is_current, write_matrix
@@ -190,6 +190,40 @@ def new_investigation(
         console.print("Run `make validate` after editing the reference scenario.")
 
 
+def _run_ingest_command(
+    domain: str,
+    source: str | None,
+    dry_run: bool,
+    json_output: bool,
+    refresh: bool,
+    batch_size: int,
+) -> None:
+    requested = tuple(part.strip() for part in source.split(",") if part.strip()) if source else ()
+    try:
+        results = run_ingest_domain(
+            domain,
+            config.ROOT,
+            sources=requested,
+            dry_run=dry_run,
+            refresh=refresh,
+            batch_size=batch_size,
+        )
+    except EDLError as exc:
+        console.print(f"[red]Ingest failed:[/red] {exc}")
+        raise typer.Exit(2) from exc
+
+    if json_output:
+        typer.echo(
+            json.dumps(
+                [result.to_dict() for result in results],
+                indent=2,
+                sort_keys=True,
+            )
+        )
+    else:
+        console.print(render_ingest_table(results, title=f"{domain.title()} Telemetry Ingest"))
+
+
 @ingest_app.command("identity")
 def ingest_identity(
     source: str | None = typer.Option(
@@ -216,34 +250,41 @@ def ingest_identity(
     ),
 ) -> None:
     """Ingest Entra sign-in and audit telemetry into OpenSearch."""
-    requested = tuple(part.strip() for part in source.split(",") if part.strip()) if source else ()
-    try:
-        results = run_ingest_identity(
-            config.ROOT,
-            sources=requested,
-            dry_run=dry_run,
-            refresh=refresh,
-            batch_size=batch_size,
-        )
-    except EDLError as exc:
-        console.print(f"[red]Ingest failed:[/red] {exc}")
-        raise typer.Exit(2) from exc
-
-    if json_output:
-        typer.echo(
-            json.dumps(
-                [result.to_dict() for result in results],
-                indent=2,
-                sort_keys=True,
-            )
-        )
-    else:
-        console.print(render_ingest_table(results))
+    _run_ingest_command("identity", source, dry_run, json_output, refresh, batch_size)
 
 
-def render_ingest_table(results: list[IngestResult]) -> Table:
+@ingest_app.command("endpoint")
+def ingest_endpoint(
+    source: str | None = typer.Option(
+        None,
+        "--source",
+        help="Comma-separated endpoint source IDs; defaults to all.",
+    ),
+    dry_run: bool = typer.Option(
+        False,
+        "--dry-run",
+        help="Normalize and validate without writing to OpenSearch.",
+    ),
+    json_output: bool = typer.Option(False, "--json", help="Emit machine-readable JSON."),
+    refresh: bool = typer.Option(
+        True,
+        "--refresh/--no-refresh",
+        help="Refresh indices before counting documents.",
+    ),
+    batch_size: int = typer.Option(
+        500,
+        "--batch-size",
+        min=1,
+        help="Documents per bulk request.",
+    ),
+) -> None:
+    """Ingest Sysmon and Windows Security telemetry into OpenSearch."""
+    _run_ingest_command("endpoint", source, dry_run, json_output, refresh, batch_size)
+
+
+def render_ingest_table(results: list[IngestResult], *, title: str) -> Table:
     """Render ingest results as a compact table."""
-    table = Table(title="Identity Telemetry Ingest")
+    table = Table(title=title)
     table.add_column("Source")
     table.add_column("Events", justify="right")
     table.add_column("Unique", justify="right")

@@ -43,9 +43,9 @@ The target portfolio is deliberately depth-first:
 | SaaS detections | 2–3 deep detections across M365, GitHub, and Salesforce-like logs | Planned |
 | Network detections | 2–3 deep detections across Zeek, Suricata, DNS, proxy, and firewall | Planned |
 | Investigations | 5–7 enterprise attack chains with evidence and response notes | Planned |
-| Telemetry contracts | 11 source contracts across identity, endpoint, cloud, SaaS, network, and Kubernetes; two ingested, three sampled | Complete |
+| Telemetry contracts | 11 source contracts across identity, endpoint, cloud, SaaS, network, and Kubernetes; four ingested, one sampled | Complete |
 | Reference artifacts | One working detection template and one working investigation template | Complete |
-| Local lab | Reproducible Docker Compose lab with identity, endpoint, and cloud telemetry | In progress — identity telemetry ingested; endpoint and cloud next |
+| Local lab | Reproducible Docker Compose lab with identity, endpoint, and cloud telemetry | In progress — identity and endpoint telemetry ingested; cloud next |
 | CI/CD | Lint, tests, conversion, replay, staged deployment, rollback, metrics | Planned |
 | Automation | Enrichment, triage, evidence capture, containment proposals, approval gates | Planned |
 | Design and ownership | Design memo, detection standards, operating model, cost model | Planned |
@@ -64,6 +64,7 @@ The target portfolio is deliberately depth-first:
 - [x] Reference detection and investigation templates
 - [x] Scaffolding CLI (`edl new`)
 - [x] Identity telemetry ingestion (Entra sign-in and audit)
+- [x] Endpoint telemetry ingestion (Sysmon and Windows Security)
 - [ ] Three-domain telemetry ingestion
 - [ ] Three-domain lab
 - [ ] First six deep detections
@@ -201,6 +202,7 @@ make check        # lint, types, validation, matrix freshness, tests
 make lab-up       # start OpenSearch, Dashboards, and Kusto
 make lab-bootstrap
 make ingest-identity
+make ingest-endpoint
 make test-lab
 make lab-down
 ```
@@ -250,7 +252,7 @@ This is a portfolio lab, not a product. It does not claim novelty for basic dete
 
 ## Limitations
 
-- The repository is at the foundation stage. Identity telemetry is ingested, but endpoint and cloud ingestion, detections, investigations, metrics, and automation are not yet implemented.
+- The repository is at the foundation stage. Identity and endpoint telemetry are ingested, but cloud ingestion, detections, investigations, metrics, and automation are not yet implemented.
 - The lab will use local, synthetic, and public telemetry. It will not represent production scale.
 - Measurements will be small. Results will be reported with confidence intervals and explicit limitations.
 - No commercial EDR or SIEM licenses. The lab will use open-source/public tooling and a local Kusto emulator where possible.

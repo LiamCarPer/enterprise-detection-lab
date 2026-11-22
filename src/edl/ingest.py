@@ -18,8 +18,14 @@ from .telemetry import TelemetrySource, load_sources
 from .utils import read_json, sha256_file
 
 Normalizer = Callable[[Mapping[str, Any]], dict[str, Any]]
+Classifier = Callable[[Mapping[str, Any]], str]
 
 IDENTITY_SOURCES: tuple[str, ...] = ("entra-signin", "entra-audit")
+ENDPOINT_SOURCES: tuple[str, ...] = ("sysmon", "windows-security")
+DOMAIN_SOURCES: dict[str, tuple[str, ...]] = {
+    "identity": IDENTITY_SOURCES,
+    "endpoint": ENDPOINT_SOURCES,
+}
 
 
 @dataclass(frozen=True)
@@ -102,6 +108,101 @@ def _compact(values: Mapping[str, Any]) -> dict[str, Any]:
     return {key: value for key, value in values.items() if _present(value)}
 
 
+def _meaningful(value: Any) -> Any:
+    """Drop placeholders used by Windows event exports."""
+    if value is None or value == "" or value == "-":
+        return None
+    return value
+
+
+def _event_id(raw: Mapping[str, Any]) -> int | None:
+    value = raw.get("EventID")
+    if value is None or isinstance(value, bool):
+        return None
+    if isinstance(value, int):
+        return value
+    if isinstance(value, str):
+        try:
+            return int(value)
+        except ValueError:
+            return None
+    return None
+
+
+SYSMON_EVENT_CLASSES: dict[int, str] = {
+    1: "process_creation",
+    3: "network_connection",
+    10: "process_access",
+    11: "file_create",
+    12: "registry_set",
+    13: "registry_set",
+    14: "registry_set",
+    22: "dns_query",
+}
+
+WINDOWS_AUTHENTICATION_EVENT_IDS: frozenset[int] = frozenset(
+    {4624, 4625, 4634, 4647, 4648, 4672, 4768, 4769, 4776}
+)
+WINDOWS_ACCOUNT_MANAGEMENT_EVENT_IDS: frozenset[int] = frozenset(
+    {
+        4720,
+        4722,
+        4723,
+        4724,
+        4725,
+        4726,
+        4728,
+        4732,
+        4738,
+        4740,
+        4756,
+        4767,
+    }
+)
+
+WINDOWS_ACTIONS: dict[int, str] = {
+    4624: "logon",
+    4625: "logon_failure",
+    4634: "logoff",
+    4647: "user_initiated_logoff",
+    4648: "explicit_credential_logon",
+    4672: "special_privileges_assigned",
+    4720: "user_created",
+    4722: "user_enabled",
+    4723: "password_change_attempt",
+    4724: "password_reset",
+    4725: "user_disabled",
+    4726: "user_deleted",
+    4728: "member_added_to_global_group",
+    4732: "member_added_to_local_group",
+    4738: "user_changed",
+    4740: "user_locked",
+    4756: "member_added_to_universal_group",
+    4767: "user_unlocked",
+    4768: "kerberos_tgt_requested",
+    4769: "kerberos_service_ticket_requested",
+    4776: "ntlm_authentication",
+}
+
+
+def classify_sysmon(raw: Mapping[str, Any]) -> str:
+    """Map a Sysmon EventID to a declared event class."""
+    event_id = _event_id(raw)
+    if event_id is None:
+        return "other"
+    return SYSMON_EVENT_CLASSES.get(event_id, "other")
+
+
+def classify_windows_security(raw: Mapping[str, Any]) -> str:
+    """Map a Windows Security EventID to a declared event class."""
+    event_id = _event_id(raw)
+    if event_id in WINDOWS_AUTHENTICATION_EVENT_IDS:
+        return "authentication"
+    if event_id in WINDOWS_ACCOUNT_MANAGEMENT_EVENT_IDS:
+        return "account_management"
+    return "other"
+
+
 def normalize_entra_signin(raw: Mapping[str, Any]) -> dict[str, Any]:
     """Map Entra sign-in fields to the canonical identity shape."""
     document: dict[str, Any] = {
@@ -176,6 +277,103 @@ NORMALIZERS: dict[str, Normalizer] = {
 }
 
 
+def normalize_sysmon(raw: Mapping[str, Any]) -> dict[str, Any]:
+    """Map Sysmon fields to the canonical endpoint shape."""
+    document: dict[str, Any] = {
+        "host": raw.get("Computer"),
+        "user": raw.get("User"),
+        "event_id": _event_id(raw),
+    }
+
+    process = _compact(
+        {
+            "image": raw.get("Image"),
+            "command_line": raw.get("CommandLine"),
+            "guid": raw.get("ProcessGuid"),
+            "id": raw.get("ProcessId"),
+            "parent_image": raw.get("ParentImage"),
+            "parent_command_line": raw.get("ParentCommandLine"),
+        }
+    )
+    if process:
+        document["process"] = process
+
+    network = _compact(
+        {
+            "source_ip": raw.get("SourceIp"),
+            "source_port": raw.get("SourcePort"),
+            "destination_ip": raw.get("DestinationIp"),
+            "destination_port": raw.get("DestinationPort"),
+            "protocol": raw.get("Protocol"),
+        }
+    )
+    if network:
+        document["network"] = network
+
+    file_fields = _compact({"target_filename": raw.get("TargetFilename")})
+    if file_fields:
+        document["file"] = file_fields
+
+    registry = _compact(
+        {
+            "target_object": raw.get("TargetObject"),
+            "details": raw.get("Details"),
+        }
+    )
+    if registry:
+        document["registry"] = registry
+
+    dns = _compact(
+        {
+            "query_name": raw.get("QueryName"),
+            "query_results": raw.get("QueryResults"),
+        }
+    )
+    if dns:
+        document["dns"] = dns
+
+    return _compact(document)
+
+
+def normalize_windows_security(raw: Mapping[str, Any]) -> dict[str, Any]:
+    """Map Windows Security fields to the canonical endpoint shape."""
+    event_id = _event_id(raw)
+    if event_id == 4624:
+        result = "success"
+    elif event_id == 4625:
+        result = "failure"
+    else:
+        result = None
+
+    document: dict[str, Any] = {
+        "host": raw.get("Computer"),
+        "user": _meaningful(raw.get("TargetUserName")),
+        "event_id": event_id,
+        "action": WINDOWS_ACTIONS.get(event_id) if event_id is not None else None,
+        "result": result,
+        "src_ip": _meaningful(raw.get("IpAddress")),
+        "logon_type": raw.get("LogonType"),
+        "status": _meaningful(raw.get("Status")),
+        "subject_user": _meaningful(raw.get("SubjectUserName")),
+        "service_name": _meaningful(raw.get("ServiceName")),
+        "task_name": _meaningful(raw.get("TaskName")),
+    }
+    return _compact(document)
+
+
+NORMALIZERS.update(
+    {
+        "sysmon": normalize_sysmon,
+        "windows-security": normalize_windows_security,
+    }
+)
+
+CLASSIFIERS: dict[str, Classifier] = {
+    "sysmon": classify_sysmon,
+    "windows-security": classify_windows_security,
+}
+
+
 def _required_fields(source: TelemetrySource) -> list[str]:
     values = source.data.get("required_fields")
     if not isinstance(values, list):
@@ -247,13 +445,20 @@ def normalize_event(
     event_classes = source.data.get("event_classes")
     if not isinstance(event_classes, list) or not event_classes:
         raise IngestError(f"{source.id}: event_classes is not declared")
+    declared_classes = [str(item) for item in event_classes]
+    classifier = CLASSIFIERS.get(source.id)
+    event_class = classifier(raw) if classifier is not None else declared_classes[0]
+    if event_class not in declared_classes:
+        raise IngestError(
+            f"{source.id}: classifier returned undeclared event class {event_class!r}"
+        )
 
     document: dict[str, Any] = {
         "@timestamp": format_timestamp(event_time),
         "event_time": format_timestamp(event_time),
         "ingest_time": format_timestamp(ingest_time),
         "source": source.id,
-        "event_class": str(event_classes[0]),
+        "event_class": event_class,
         "schema_version": str(source.data.get("schema_version", "")),
         "dedup_key": dedup_key,
         "dedup_origin": dedup_origin,
@@ -263,7 +468,7 @@ def normalize_event(
 
     return CanonicalEvent(
         source=source.id,
-        event_class=str(event_classes[0]),
+        event_class=event_class,
         event_time=event_time,
         ingest_time=ingest_time,
         document=document,
@@ -548,26 +753,48 @@ def ingest_source(
     )
 
 
-def load_identity_sources(
+def load_domain_sources(
+    domain: str,
     root: Path = config.ROOT,
     requested: Sequence[str] = (),
 ) -> list[TelemetrySource]:
-    """Load and validate the selected identity source contracts."""
+    """Load and validate the selected source contracts for a domain."""
+    supported = DOMAIN_SOURCES.get(domain)
+    if supported is None:
+        raise IngestError(f"Unknown ingest domain: {domain}")
+
     sources = {source.id: source for source in load_sources(root)}
-    source_ids = list(dict.fromkeys(requested)) or list(IDENTITY_SOURCES)
+    source_ids = list(dict.fromkeys(requested)) or list(supported)
 
     unknown = [source_id for source_id in source_ids if source_id not in sources]
     if unknown:
         raise IngestError(f"Unknown telemetry source(s): {', '.join(unknown)}")
 
-    unsupported = [source_id for source_id in source_ids if source_id not in IDENTITY_SOURCES]
+    unsupported = [source_id for source_id in source_ids if source_id not in supported]
     if unsupported:
-        raise IngestError(f"Not identity source(s): {', '.join(unsupported)}")
+        raise IngestError(f"Not {domain} source(s): {', '.join(unsupported)}")
 
     return [sources[source_id] for source_id in source_ids]
 
 
-def ingest_identity(
+def load_identity_sources(
+    root: Path = config.ROOT,
+    requested: Sequence[str] = (),
+) -> list[TelemetrySource]:
+    """Load and validate the selected identity source contracts."""
+    return load_domain_sources("identity", root, requested)
+
+
+def load_endpoint_sources(
+    root: Path = config.ROOT,
+    requested: Sequence[str] = (),
+) -> list[TelemetrySource]:
+    """Load and validate the selected endpoint source contracts."""
+    return load_domain_sources("endpoint", root, requested)
+
+
+def ingest_domain(
+    domain: str,
     root: Path = config.ROOT,
     *,
     sources: Sequence[str] = (),
@@ -578,8 +805,8 @@ def ingest_identity(
     batch_size: int = 500,
     dry_run: bool = False,
 ) -> list[IngestResult]:
-    """Ingest all selected identity sources into OpenSearch."""
-    selected = load_identity_sources(root, sources)
+    """Ingest all selected sources for one telemetry domain."""
+    selected = load_domain_sources(domain, root, sources)
 
     def run(active: OpenSearchClient | None) -> list[IngestResult]:
         return [
@@ -600,3 +827,53 @@ def ingest_identity(
         return run(client)
     with OpenSearchClient() as active:
         return run(active)
+
+
+def ingest_identity(
+    root: Path = config.ROOT,
+    *,
+    sources: Sequence[str] = (),
+    client: OpenSearchClient | None = None,
+    ingest_time: datetime | None = None,
+    index_prefix: str = config.EVENTS_INDEX_PREFIX,
+    refresh: bool = True,
+    batch_size: int = 500,
+    dry_run: bool = False,
+) -> list[IngestResult]:
+    """Ingest all selected identity sources into OpenSearch."""
+    return ingest_domain(
+        "identity",
+        root,
+        sources=sources,
+        client=client,
+        ingest_time=ingest_time,
+        index_prefix=index_prefix,
+        refresh=refresh,
+        batch_size=batch_size,
+        dry_run=dry_run,
+    )
+
+
+def ingest_endpoint(
+    root: Path = config.ROOT,
+    *,
+    sources: Sequence[str] = (),
+    client: OpenSearchClient | None = None,
+    ingest_time: datetime | None = None,
+    index_prefix: str = config.EVENTS_INDEX_PREFIX,
+    refresh: bool = True,
+    batch_size: int = 500,
+    dry_run: bool = False,
+) -> list[IngestResult]:
+    """Ingest all selected endpoint sources into OpenSearch."""
+    return ingest_domain(
+        "endpoint",
+        root,
+        sources=sources,
+        client=client,
+        ingest_time=ingest_time,
+        index_prefix=index_prefix,
+        refresh=refresh,
+        batch_size=batch_size,
+        dry_run=dry_run,
+    )

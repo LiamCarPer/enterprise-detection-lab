@@ -424,7 +424,7 @@ def test_ingest_identity_reports_error(monkeypatch: pytest.MonkeyPatch) -> None:
     def fail(*_args: object, **_kwargs: object) -> None:
         raise IngestError("unknown source")
 
-    monkeypatch.setattr("edl.cli.run_ingest_identity", fail)
+    monkeypatch.setattr("edl.cli.run_ingest_domain", fail)
     result = runner.invoke(app, ["ingest", "identity", "--dry-run"])
     assert result.exit_code == 2
     assert "unknown source" in result.stdout
@@ -436,3 +436,31 @@ def test_ingest_identity_rejects_zero_batch_size() -> None:
         ["ingest", "identity", "--dry-run", "--batch-size", "0"],
     )
     assert result.exit_code == 2
+
+
+def test_ingest_endpoint_dry_run() -> None:
+    result = runner.invoke(app, ["ingest", "endpoint", "--dry-run"])
+    assert result.exit_code == 0
+    assert "Endpoint Telemetry Ingest" in result.stdout
+    assert "sysmon" in result.stdout
+    assert "windows" in result.stdout
+    assert "dry-run" in result.stdout
+
+
+def test_ingest_endpoint_json() -> None:
+    result = runner.invoke(app, ["ingest", "endpoint", "--dry-run", "--json"])
+    assert result.exit_code == 0
+    payload = json.loads(result.stdout)
+    assert [item["source"] for item in payload] == ["sysmon", "windows-security"]
+    assert payload[0]["indices"] == ["edl-events-sysmon-2026.11.01"]
+    assert payload[1]["indices"] == ["edl-events-windows-security-2026.11.01"]
+
+
+def test_ingest_endpoint_source_filter() -> None:
+    result = runner.invoke(
+        app,
+        ["ingest", "endpoint", "--source", "windows-security", "--dry-run", "--json"],
+    )
+    assert result.exit_code == 0
+    payload = json.loads(result.stdout)
+    assert [item["source"] for item in payload] == ["windows-security"]

@@ -10,7 +10,8 @@
     "CommandLine": "whoami /all",
     "ParentImage": "C:\\Windows\\System32\\cmd.exe",
     "ParentCommandLine": "cmd.exe /c whoami /all",
-    "User": "LAB\\analyst"
+    "User": "LAB\\analyst",
+    "Channel": "Microsoft-Windows-Sysmon/Operational"
   },
   {
     "UtcTime": "2026-11-01T09:18:00Z",
@@ -23,6 +24,7 @@
     "CommandLine": "powershell.exe -NoProfile -EncodedCommand ZQBjAGgAbwAgACIAbABhAGIAIgA=",
     "ParentImage": "C:\\Windows\\System32\\cmd.exe",
     "ParentCommandLine": "cmd.exe /c powershell.exe -NoProfile -EncodedCommand ZQBjAGgAbwAgACIAbABhAGIAIgA=",
-    "User": "LAB\\analyst"
+    "User": "LAB\\analyst",
+    "Channel": "Microsoft-Windows-Sysmon/Operational"
   }
 ]

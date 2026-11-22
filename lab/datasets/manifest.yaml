@@ -20,14 +20,14 @@ datasets:
     synthetic: true
     license: synthetic
     provenance: Generated for this repository. No real hosts or users.
-    sha256: 3d5be7bea511ecc1ffdf515dfe3a9bb69689d1b8ad3740527e25742ddb6a77d4
+    sha256: aa1da4571b0c806e9adbadaffa5872deed7abe1d8202b00ad320ee7c22ac9e3d
   - id: synthetic-windows-security-reference
     source: windows-security
     path: lab/datasets/synthetic/windows-security/reference.json
     synthetic: true
     license: synthetic
     provenance: Generated for this repository. No real hosts or users.
-    sha256: 158d3289ac0caceb19aaf6a11c1dbe544b7e277b99ec213fe23a61b3534c1ef5
+    sha256: 51a4963cb0454b88d13f1cdbf6ce43d54281cac176800f1244c02d1e5d12af1c
   - id: synthetic-aws-cloudtrail-reference
     source: aws-cloudtrail
     path: lab/datasets/synthetic/aws-cloudtrail/reference.json

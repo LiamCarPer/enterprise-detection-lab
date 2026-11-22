@@ -27,6 +27,63 @@
         "is_interactive": { "type": "boolean" },
         "conditional_access_status": { "type": "keyword" },
         "risk_level": { "type": "keyword" },
+        "event_id": { "type": "integer" },
+        "logon_type": { "type": "integer" },
+        "status": { "type": "keyword" },
+        "subject_user": { "type": "keyword" },
+        "service_name": { "type": "keyword" },
+        "task_name": { "type": "keyword" },
+        "process": {
+          "type": "object",
+          "properties": {
+            "image": { "type": "keyword" },
+            "command_line": {
+              "type": "text",
+              "fields": {
+                "keyword": { "type": "keyword", "ignore_above": 4096 }
+              }
+            },
+            "guid": { "type": "keyword" },
+            "id": { "type": "integer" },
+            "parent_image": { "type": "keyword" },
+            "parent_command_line": {
+              "type": "text",
+              "fields": {
+                "keyword": { "type": "keyword", "ignore_above": 4096 }
+              }
+            }
+          }
+        },
+        "network": {
+          "type": "object",
+          "properties": {
+            "source_ip": { "type": "keyword" },
+            "source_port": { "type": "integer" },
+            "destination_ip": { "type": "keyword" },
+            "destination_port": { "type": "integer" },
+            "protocol": { "type": "keyword" }
+          }
+        },
+        "file": {
+          "type": "object",
+          "properties": {
+            "target_filename": { "type": "keyword" }
+          }
+        },
+        "registry": {
+          "type": "object",
+          "properties": {
+            "target_object": { "type": "keyword" },
+            "details": { "type": "keyword" }
+          }
+        },
+        "dns": {
+          "type": "object",
+          "properties": {
+            "query_name": { "type": "keyword" },
+            "query_results": { "type": "keyword" }
+          }
+        },
         "dedup_origin": { "type": "keyword" },
         "dedup_key": { "type": "object", "enabled": false },
         "device": {
