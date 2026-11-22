@@ -13,3 +13,7 @@ class LabError(EDLError):
 
 class ValidationError(EDLError):
     """Raised when repository artifacts fail validation."""
+
+
+class IngestError(EDLError):
+    """Raised when telemetry cannot be normalized or ingested."""

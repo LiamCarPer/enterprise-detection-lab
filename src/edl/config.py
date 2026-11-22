@@ -14,6 +14,9 @@ DASHBOARDS_URL = os.getenv("EDL_DASHBOARDS_URL", "http://127.0.0.1:5601").rstrip
 KUSTO_URL = os.getenv("EDL_KUSTO_URL", "http://127.0.0.1:18080").rstrip("/")
 KUSTO_DB = os.getenv("EDL_KUSTO_DB", "NetDefaultDB")
 
+_index_prefix = os.getenv("EDL_EVENTS_INDEX_PREFIX", "edl-events").strip("-")
+EVENTS_INDEX_PREFIX = _index_prefix or "edl-events"
+
 _duckdb_path = Path(os.getenv("EDL_DUCKDB_PATH", "lab/data/duckdb/edl.duckdb"))
 DUCKDB_PATH = _duckdb_path if _duckdb_path.is_absolute() else ROOT / _duckdb_path
 

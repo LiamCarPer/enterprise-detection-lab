@@ -5,7 +5,7 @@ product: Entra ID
 event_classes:
   - audit
 schema_version: "1.0"
-status: sampled
+status: ingested
 owner: detection-engineering
 event_time_field: activityDateTime
 ingest_time_field: ingest_time

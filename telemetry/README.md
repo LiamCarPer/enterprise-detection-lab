@@ -31,7 +31,24 @@ The machine-readable schema is [`schemas/telemetry-source.schema.json`](../schem
 | `ingested` | The sample has been loaded into the lab. |
 | `validated` | Replay and query tests pass. |
 
-Phase 1 has five sampled sources: Entra sign-in, Entra audit, Sysmon, Windows Security, and AWS CloudTrail. The other six are documented and receive samples with their detection commits.
+Phase 1 has five sources with samples: Entra sign-in, Entra audit, Sysmon, Windows Security, and AWS CloudTrail. The other six are documented and receive samples with their detection commits.
+
+## Ingest
+
+Identity sources are loaded with:
+
+```bash
+edl ingest identity
+edl ingest identity --source entra-signin --dry-run
+```
+
+Ingestion checks the sample hash and required fields, rejects naive timestamps,
+normalizes to the canonical event shape, and uses deterministic document IDs so
+replay is idempotent. See [`docs/ingestion.md`](../docs/ingestion.md).
+
+A source moves to `ingested` after a successful lab load and to `validated` only
+after replay and query tests pass. Update the contract and regenerate the matrix
+when the status changes.
 
 ## Event time and deduplication
 

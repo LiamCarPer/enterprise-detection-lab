@@ -28,14 +28,15 @@ def test_all_source_contracts_validate() -> None:
         assert not errors, f"{path}: {[error.message for error in errors]}"
 
 
-def test_sampled_sources_have_samples() -> None:
+def test_sources_with_samples_have_files() -> None:
     sources = _sources()
-    sampled = [source for source in sources if source.status == "sampled"]
-    assert len(sampled) == 5
-    for source in sampled:
+    with_samples = [source for source in sources if "sample_data" in source.data]
+    assert len(with_samples) == 5
+    for source in with_samples:
         sample = source.data.get("sample_data")
         assert isinstance(sample, dict)
         assert (config.ROOT / sample["path"]).exists()
+        assert source.status in {"sampled", "ingested", "validated"}
 
 
 def test_generated_matrix_is_current() -> None:

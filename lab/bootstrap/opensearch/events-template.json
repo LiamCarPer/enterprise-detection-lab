@@ -16,8 +16,34 @@
         "ingest_time": { "type": "date" },
         "source": { "type": "keyword" },
         "event_class": { "type": "keyword" },
+        "schema_version": { "type": "keyword" },
         "host": { "type": "keyword" },
         "user": { "type": "keyword" },
+        "src_ip": { "type": "keyword" },
+        "action": { "type": "keyword" },
+        "result": { "type": "keyword" },
+        "app": { "type": "keyword" },
+        "auth_requirement": { "type": "keyword" },
+        "is_interactive": { "type": "boolean" },
+        "conditional_access_status": { "type": "keyword" },
+        "risk_level": { "type": "keyword" },
+        "dedup_origin": { "type": "keyword" },
+        "dedup_key": { "type": "object", "enabled": false },
+        "device": {
+          "type": "object",
+          "properties": {
+            "os": { "type": "keyword" },
+            "browser": { "type": "keyword" }
+          }
+        },
+        "resource": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "keyword" },
+            "type": { "type": "keyword" },
+            "count": { "type": "integer" }
+          }
+        },
         "detection_id": { "type": "keyword" },
         "raw": { "type": "object", "enabled": false },
         "unmapped": { "type": "object", "enabled": false }

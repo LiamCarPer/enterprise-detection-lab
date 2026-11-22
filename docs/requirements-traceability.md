@@ -64,20 +64,21 @@ The target is **senior-level ownership evidence** for mid-level roles at top-tie
 | Metric | Current |
 |---|---|
 | Requirements mapped | 15 / 15 |
-| Foundation artifacts complete | README, capability matrix, requirements traceability, artifact contracts, validation CLI, local lab skeleton, telemetry contracts, working templates |
+| Foundation artifacts complete | README, capability matrix, requirements traceability, artifact contracts, validation CLI, local lab skeleton, telemetry contracts, working templates, identity ingestion |
 | Validation CLI implemented | Yes |
-| Telemetry source contracts | 11 (5 sampled, 6 documented) |
+| Telemetry source contracts | 11 (2 ingested, 3 sampled, 6 documented) |
 | Telemetry matrix | Generated and freshness-checked |
 | Reference templates | 1 detection + 1 investigation; `edl new` scaffolding |
+| Identity telemetry ingestion | Entra sign-in and audit normalized, deduplicated, and loaded into OpenSearch |
 | Test suite coverage | 100% statement coverage on `src/edl`; `make check` enforces a 90% floor |
 | Detections implemented | 0 |
 | Investigations implemented | 0 |
-| Lab implemented | Skeleton yes; telemetry ingestion no |
+| Lab implemented | Identity ingestion yes; endpoint and cloud ingestion next |
 | CI/CD implemented | No |
 | Metrics implemented | No |
 | Open-source contribution | Not yet |
 
-The mapping is complete. The implementation is not. The local lab skeleton is healthy and the telemetry contracts are in place; the next milestone is telemetry ingestion for identity, endpoint, and cloud, followed by six deep detections, two investigations, CI, and metrics.
+The mapping is complete. The implementation is not. Identity telemetry is ingested; endpoint and cloud ingestion are next, followed by six deep detections, two investigations, CI, and metrics.
 
 ---
 

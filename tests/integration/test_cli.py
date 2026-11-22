@@ -7,7 +7,7 @@ import pytest
 from typer.testing import CliRunner
 
 from edl.cli import app
-from edl.errors import LabError, ValidationError
+from edl.errors import IngestError, LabError, ValidationError
 from edl.lab import ServiceStatus
 from edl.models import ArtifactResult, Issue, ValidationReport
 
@@ -390,3 +390,49 @@ def test_lab_logs_forwards_arguments(monkeypatch: pytest.MonkeyPatch) -> None:
     result = runner.invoke(app, ["lab", "logs", "opensearch", "--no-follow"])
     assert result.exit_code == 0
     assert calls == [("opensearch", False)]
+
+
+def test_ingest_identity_dry_run() -> None:
+    result = runner.invoke(app, ["ingest", "identity", "--dry-run"])
+    assert result.exit_code == 0
+    assert "Identity Telemetry Ingest" in result.stdout
+    assert "entra-signin" in result.stdout
+    assert "entra-audit" in result.stdout
+    assert "dry-run" in result.stdout
+
+
+def test_ingest_identity_json() -> None:
+    result = runner.invoke(app, ["ingest", "identity", "--dry-run", "--json"])
+    assert result.exit_code == 0
+    payload = json.loads(result.stdout)
+    assert [item["source"] for item in payload] == ["entra-signin", "entra-audit"]
+    assert all(item["dry_run"] for item in payload)
+    assert all(item["mode"] == "dry-run" for item in payload)
+
+
+def test_ingest_identity_source_filter() -> None:
+    result = runner.invoke(
+        app,
+        ["ingest", "identity", "--source", "entra-signin", "--dry-run", "--json"],
+    )
+    assert result.exit_code == 0
+    payload = json.loads(result.stdout)
+    assert [item["source"] for item in payload] == ["entra-signin"]
+
+
+def test_ingest_identity_reports_error(monkeypatch: pytest.MonkeyPatch) -> None:
+    def fail(*_args: object, **_kwargs: object) -> None:
+        raise IngestError("unknown source")
+
+    monkeypatch.setattr("edl.cli.run_ingest_identity", fail)
+    result = runner.invoke(app, ["ingest", "identity", "--dry-run"])
+    assert result.exit_code == 2
+    assert "unknown source" in result.stdout
+
+
+def test_ingest_identity_rejects_zero_batch_size() -> None:
+    result = runner.invoke(
+        app,
+        ["ingest", "identity", "--dry-run", "--batch-size", "0"],
+    )
+    assert result.exit_code == 2

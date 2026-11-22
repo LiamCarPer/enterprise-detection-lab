@@ -18,6 +18,7 @@ make install
 make lab-up
 make lab-status
 make lab-bootstrap
+make ingest-identity
 ```
 
 `make lab-up` starts:
@@ -29,6 +30,28 @@ make lab-bootstrap
 | Kusto emulator | http://127.0.0.1:18080 | No authentication; localhost only |
 
 `make lab-bootstrap` creates the OpenSearch index templates, the Kusto tables in `NetDefaultDB`, and the local DuckDB schema. The Kusto emulator uses `NetDefaultDB` as its default database; the bootstrap uses `create-merge` so it is safe to run repeatedly.
+
+## Ingest identity telemetry
+
+```bash
+make ingest-identity
+```
+
+This normalizes the Entra sign-in and audit samples, validates required fields
+and UTC timestamps, and bulk-indexes into daily
+`edl-events-entra-signin-*` and `edl-events-entra-audit-*` indices. Writes use
+deterministic document IDs, so replaying the same dataset is idempotent.
+
+Useful variants:
+
+```bash
+uv run edl ingest identity --dry-run
+uv run edl ingest identity --source entra-signin --json
+uv run edl ingest identity --no-refresh
+```
+
+See [`docs/ingestion.md`](../docs/ingestion.md) for the canonical event model,
+deduplication, index layout, and failure behavior.
 
 ## Stop
 

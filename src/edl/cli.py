@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import typer
@@ -11,6 +12,8 @@ from rich.table import Table
 from . import __version__, config
 from . import lab as lab_controller
 from .errors import EDLError, ValidationError
+from .ingest import IngestResult
+from .ingest import ingest_identity as run_ingest_identity
 from .lab import ServiceStatus
 from .report import render_json, render_markdown, render_table
 from .telemetry import load_sources, matrix_is_current, write_matrix
@@ -23,9 +26,11 @@ app = typer.Typer(no_args_is_help=True, add_completion=False)
 lab_app = typer.Typer(no_args_is_help=True, help="Local lab lifecycle.")
 telemetry_app = typer.Typer(no_args_is_help=True, help="Telemetry source contracts.")
 new_app = typer.Typer(no_args_is_help=True, help="Scaffold reference artifacts.")
+ingest_app = typer.Typer(no_args_is_help=True, help="Ingest telemetry into the local lab.")
 app.add_typer(lab_app, name="lab")
 app.add_typer(telemetry_app, name="telemetry")
 app.add_typer(new_app, name="new")
+app.add_typer(ingest_app, name="ingest")
 
 
 @app.command()
@@ -183,6 +188,81 @@ def new_investigation(
     else:
         console.print(f"[green]Created:[/green] {target}")
         console.print("Run `make validate` after editing the reference scenario.")
+
+
+@ingest_app.command("identity")
+def ingest_identity(
+    source: str | None = typer.Option(
+        None,
+        "--source",
+        help="Comma-separated identity source IDs; defaults to all.",
+    ),
+    dry_run: bool = typer.Option(
+        False,
+        "--dry-run",
+        help="Normalize and validate without writing to OpenSearch.",
+    ),
+    json_output: bool = typer.Option(False, "--json", help="Emit machine-readable JSON."),
+    refresh: bool = typer.Option(
+        True,
+        "--refresh/--no-refresh",
+        help="Refresh indices before counting documents.",
+    ),
+    batch_size: int = typer.Option(
+        500,
+        "--batch-size",
+        min=1,
+        help="Documents per bulk request.",
+    ),
+) -> None:
+    """Ingest Entra sign-in and audit telemetry into OpenSearch."""
+    requested = tuple(part.strip() for part in source.split(",") if part.strip()) if source else ()
+    try:
+        results = run_ingest_identity(
+            config.ROOT,
+            sources=requested,
+            dry_run=dry_run,
+            refresh=refresh,
+            batch_size=batch_size,
+        )
+    except EDLError as exc:
+        console.print(f"[red]Ingest failed:[/red] {exc}")
+        raise typer.Exit(2) from exc
+
+    if json_output:
+        typer.echo(
+            json.dumps(
+                [result.to_dict() for result in results],
+                indent=2,
+                sort_keys=True,
+            )
+        )
+    else:
+        console.print(render_ingest_table(results))
+
+
+def render_ingest_table(results: list[IngestResult]) -> Table:
+    """Render ingest results as a compact table."""
+    table = Table(title="Identity Telemetry Ingest")
+    table.add_column("Source")
+    table.add_column("Events", justify="right")
+    table.add_column("Unique", justify="right")
+    table.add_column("Dups", justify="right")
+    table.add_column("Written", justify="right")
+    table.add_column("Indices")
+    table.add_column("Mode")
+
+    for result in results:
+        table.add_row(
+            result.source,
+            str(result.read),
+            str(result.unique),
+            str(result.duplicates),
+            str(result.written),
+            ", ".join(result.indices),
+            result.mode,
+        )
+    return table
 
 
 @lab_app.command("up")

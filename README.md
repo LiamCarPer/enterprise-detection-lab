@@ -4,7 +4,7 @@
 
 **Status:** foundation. Built in public. The first milestone is the three-domain core: identity, endpoint, and cloud, with six deep detections, two investigations, CI, and metrics.
 
-[Capability matrix](docs/capability-matrix.md) · [Requirements traceability](docs/requirements-traceability.md) · [Artifact model](docs/artifact-model.md) · [CLI](docs/cli.md)
+[Capability matrix](docs/capability-matrix.md) · [Requirements traceability](docs/requirements-traceability.md) · [Artifact model](docs/artifact-model.md) · [Ingestion](docs/ingestion.md) · [CLI](docs/cli.md)
 
 ---
 
@@ -43,9 +43,9 @@ The target portfolio is deliberately depth-first:
 | SaaS detections | 2–3 deep detections across M365, GitHub, and Salesforce-like logs | Planned |
 | Network detections | 2–3 deep detections across Zeek, Suricata, DNS, proxy, and firewall | Planned |
 | Investigations | 5–7 enterprise attack chains with evidence and response notes | Planned |
-| Telemetry contracts | 11 source contracts across identity, endpoint, cloud, SaaS, network, and Kubernetes; five sampled | Complete |
+| Telemetry contracts | 11 source contracts across identity, endpoint, cloud, SaaS, network, and Kubernetes; two ingested, three sampled | Complete |
 | Reference artifacts | One working detection template and one working investigation template | Complete |
-| Local lab | Reproducible Docker Compose lab with identity, endpoint, and cloud telemetry | In progress — skeleton healthy; telemetry ingestion next |
+| Local lab | Reproducible Docker Compose lab with identity, endpoint, and cloud telemetry | In progress — identity telemetry ingested; endpoint and cloud next |
 | CI/CD | Lint, tests, conversion, replay, staged deployment, rollback, metrics | Planned |
 | Automation | Enrichment, triage, evidence capture, containment proposals, approval gates | Planned |
 | Design and ownership | Design memo, detection standards, operating model, cost model | Planned |
@@ -63,6 +63,7 @@ The target portfolio is deliberately depth-first:
 - [x] Telemetry source contracts and generated matrix
 - [x] Reference detection and investigation templates
 - [x] Scaffolding CLI (`edl new`)
+- [x] Identity telemetry ingestion (Entra sign-in and audit)
 - [ ] Three-domain telemetry ingestion
 - [ ] Three-domain lab
 - [ ] First six deep detections
@@ -167,6 +168,7 @@ The questions I want to be asked are:
 │   ├── capability-matrix.md
 │   ├── requirements-traceability.md
 │   ├── artifact-model.md
+│   ├── ingestion.md                 # canonical events and bulk ingest
 │   ├── cli.md
 │   ├── telemetry-matrix.md          # generated from telemetry/sources
 │   ├── detection-lifecycle.md       # planned
@@ -198,6 +200,7 @@ make install
 make check        # lint, types, validation, matrix freshness, tests
 make lab-up       # start OpenSearch, Dashboards, and Kusto
 make lab-bootstrap
+make ingest-identity
 make test-lab
 make lab-down
 ```
@@ -247,7 +250,7 @@ This is a portfolio lab, not a product. It does not claim novelty for basic dete
 
 ## Limitations
 
-- The repository is at the foundation stage. Detections, investigations, lab, metrics, and automation are not yet implemented.
+- The repository is at the foundation stage. Identity telemetry is ingested, but endpoint and cloud ingestion, detections, investigations, metrics, and automation are not yet implemented.
 - The lab will use local, synthetic, and public telemetry. It will not represent production scale.
 - Measurements will be small. Results will be reported with confidence intervals and explicit limitations.
 - No commercial EDR or SIEM licenses. The lab will use open-source/public tooling and a local Kusto emulator where possible.
