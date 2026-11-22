@@ -1,0 +1,193 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/LiamCarPer/enterprise-detection-lab/main/schemas/detection.schema.json",
+  "title": "Detection metadata",
+  "description": "Schema for meta.yaml in a detection package.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "title",
+    "version",
+    "status",
+    "domain",
+    "severity",
+    "hypothesis",
+    "owner",
+    "attack",
+    "telemetry",
+    "queries",
+    "tests",
+    "false_positives",
+    "runbook"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^DET-(IDN|END|CLD|SAA|NET|K8S|AGT)-[0-9]{3}$",
+      "description": "Stable detection ID, for example DET-IDN-001."
+    },
+    "title": {
+      "type": "string",
+      "minLength": 8
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "tested", "production", "retired"]
+    },
+    "domain": {
+      "type": "string",
+      "enum": ["identity", "endpoint", "cloud", "saas", "network", "kubernetes", "agent"]
+    },
+    "severity": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "critical"]
+    },
+    "hypothesis": {
+      "type": "string",
+      "minLength": 20
+    },
+    "description": {
+      "type": "string"
+    },
+    "owner": {
+      "type": "string",
+      "minLength": 2
+    },
+    "created": {
+      "type": "string",
+      "format": "date"
+    },
+    "updated": {
+      "type": "string",
+      "format": "date"
+    },
+    "attack": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^T[0-9]{4}(\\.[0-9]{3})?$"
+      }
+    },
+    "tags": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "telemetry": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source", "event_class", "required_fields"],
+        "properties": {
+          "source": {
+            "type": "string",
+            "minLength": 2
+          },
+          "event_class": {
+            "type": "string",
+            "minLength": 2
+          },
+          "required_fields": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "event_time_field": {
+            "type": "string"
+          },
+          "ingest_time_field": {
+            "type": "string"
+          },
+          "expected_volume": {
+            "type": "string"
+          },
+          "known_gaps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "queries": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "properties": {
+        "sigma": {
+          "type": "string"
+        },
+        "opensearch": {
+          "type": "string"
+        },
+        "kql": {
+          "type": "string"
+        },
+        "spl": {
+          "type": "string"
+        }
+      }
+    },
+    "tests": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["positive", "negative", "benign"],
+      "properties": {
+        "positive": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "negative": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "benign": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "false_positives": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 3
+      }
+    },
+    "runbook": {
+      "type": "string",
+      "minLength": 1
+    },
+    "metrics": {
+      "type": "string",
+      "minLength": 1
+    },
+    "references": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "format": "uri"
+      }
+    },
+    "notes": {
+      "type": "string"
+    }
+  }
+}

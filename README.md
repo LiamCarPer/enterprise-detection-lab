@@ -4,7 +4,7 @@
 
 **Status:** foundation. Built in public. The first milestone is the three-domain core: identity, endpoint, and cloud, with six deep detections, two investigations, CI, and metrics.
 
-[Capability matrix](docs/capability-matrix.md) · [Requirements traceability](docs/requirements-traceability.md)
+[Capability matrix](docs/capability-matrix.md) · [Requirements traceability](docs/requirements-traceability.md) · [Artifact model](docs/artifact-model.md)
 
 ---
 
@@ -55,6 +55,7 @@ The target portfolio is deliberately depth-first:
 - [x] README
 - [x] Capability matrix
 - [x] Requirements traceability matrix
+- [x] Detection and investigation artifact contracts
 - [ ] Three-domain lab
 - [ ] First six deep detections
 - [ ] First two investigations
@@ -150,6 +151,7 @@ The questions I want to be asked are:
 ├── docs/
 │   ├── capability-matrix.md
 │   ├── requirements-traceability.md
+│   ├── artifact-model.md
 │   ├── telemetry-matrix.md          # planned
 │   ├── detection-lifecycle.md       # planned
 │   ├── testing-guide.md             # planned
@@ -158,8 +160,9 @@ The questions I want to be asked are:
 │   ├── cost-model.md                # planned
 │   ├── threat-model.md              # planned
 │   └── blog/                        # planned
-├── detections/                      # planned
-├── investigations/                  # planned
+├── schemas/                         # JSON schemas for artifact metadata
+├── detections/                      # detection packages; see detections/README.md
+├── investigations/                  # investigation packages; see investigations/README.md
 ├── automation/                      # planned
 ├── lab/                             # planned
 ├── conformance/                     # planned; optional senior signal
