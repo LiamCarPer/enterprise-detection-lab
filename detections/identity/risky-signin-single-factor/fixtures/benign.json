@@ -1,0 +1,92 @@
+[
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001301",
+      "createdDateTime": "2026-11-05T07:10:00Z",
+      "userPrincipalName": "traveller@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.50",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium",
+      "deviceDetail": {"operatingSystem": "iOS", "browser": "Safari"}
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "note": "Known travel with elevated risk and successful MFA"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001302",
+      "createdDateTime": "2026-11-05T07:20:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.10",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "low",
+      "deviceDetail": {"operatingSystem": "Windows 11", "browser": "Edge"}
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "note": "Normal low-risk sign-in"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001303",
+      "createdDateTime": "2026-11-05T07:30:00Z",
+      "userPrincipalName": "sync@example.test",
+      "appDisplayName": "Exchange Online",
+      "ipAddress": "192.0.2.60",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": false,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium",
+      "deviceDetail": {"operatingSystem": "Windows Server", "browser": "None"}
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "note": "Scheduled background synchronization"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001304",
+      "createdDateTime": "2026-11-05T07:40:00Z",
+      "userPrincipalName": "admin@example.test",
+      "appDisplayName": "Azure Portal",
+      "ipAddress": "198.51.100.80",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "high",
+      "deviceDetail": {"operatingSystem": "Windows 11", "browser": "Chrome"}
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "note": "Risk false positive with MFA"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001305",
+      "createdDateTime": "2026-11-05T07:50:00Z",
+      "userPrincipalName": "contractor@example.test",
+      "appDisplayName": "SharePoint Online",
+      "ipAddress": "203.0.113.60",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "none",
+      "deviceDetail": {"operatingSystem": "Windows 11", "browser": "Chrome"}
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "note": "Routine partner access with no risk"
+  }
+]

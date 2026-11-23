@@ -1,0 +1,13 @@
+{
+  "query": {
+    "bool": {
+      "filter": [
+        { "term": { "source": "entra-signin" } },
+        { "term": { "result": "success" } },
+        { "terms": { "risk_level": ["medium", "high"] } },
+        { "term": { "auth_requirement": "singleFactorAuthentication" } },
+        { "term": { "is_interactive": true } }
+      ]
+    }
+  }
+}

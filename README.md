@@ -151,6 +151,14 @@ uv run edl lab reset --yes   # deletes lab volumes
 
 Each contract records event time and ingest time fields, deduplication keys, required fields, expected latency, retention, cost, and known gaps. The full matrix is generated from the contracts and checked in `make check`.
 
+## Detection coverage
+
+| ID | Domain | Detection | Status |
+|---|---|---|---|
+| [`DET-IDN-001`](detections/identity/risky-signin-single-factor/) | Identity | Successful risky sign-in with single-factor authentication | Tested |
+
+A detection is **Tested** when its positive, negative, and benign fixtures pass the OpenSearch replay runner. Production status additionally requires CI and measured operating data.
+
 ## Repository layout
 
 ```text
@@ -173,14 +181,15 @@ Each contract records event time and ingest time fields, deduplication keys, req
 | Identity ingestion | Complete | Entra sign-in and audit, normalized and replay-safe |
 | Endpoint ingestion | Complete | Sysmon and Windows Security, per-event classification |
 | Cloud ingestion | Complete | AWS CloudTrail, normalized and replay-safe |
-| Detection packages | In progress | Executable fixture runner and reference package exist |
+| Detection packages | In progress | One tested identity detection; five planned |
 | Detection testing | Complete | Normalized fixture replay, temporary-index isolation, pass/fail gate, and metrics generation |
+| Tested detections | 1 of 6 | `DET-IDN-001` passes fixture replay; five remaining |
 | Investigations | In progress | Package contract and reference template exist |
 | CI and metrics reporting | Planned | GitHub Actions, aggregated quality report |
 | SaaS, network, Kubernetes | Planned | Contracts and samples before detections |
 | Automation | Planned | Enrichment, triage, evidence, and approval-gated response |
 
-Current milestone: six deep detections across identity, endpoint, and cloud, followed by two investigations, CI, and detection metrics.
+Current milestone: five remaining detections across identity, endpoint, and cloud, followed by two investigations, CI, and aggregated metrics.
 
 ## Quality gates
 

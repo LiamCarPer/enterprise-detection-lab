@@ -1,0 +1,43 @@
+id: DET-IDN-001
+title: Successful Risky Sign-In With Single-Factor Authentication
+version: 1.0.0
+status: tested
+domain: identity
+severity: high
+hypothesis: A successful interactive sign-in with elevated risk and single-factor authentication can indicate credential compromise or a conditional-access gap.
+description: Detects a successful Entra ID sign-in where risk is medium or high, the session used single-factor authentication, and the sign-in was interactive.
+owner: detection-engineering
+created: "2026-11-23"
+updated: "2026-11-23"
+attack:
+  - T1078
+tags:
+  - identity
+  - entra-id
+  - risky-sign-in
+telemetry:
+  - source: entra-signin
+    event_class: sign_in
+    required_fields:
+      - id
+      - createdDateTime
+      - userPrincipalName
+      - appDisplayName
+      - ipAddress
+      - status
+      - authenticationRequirement
+      - isInteractive
+      - riskLevelDuringSignIn
+queries:
+  opensearch: queries/opensearch.json
+tests:
+  positive: 5
+  negative: 5
+  benign: 5
+false_positives:
+  - Legitimate travel or a new device where Entra risk was elevated but the user completed MFA.
+  - Risk detections caused by stale or incomplete identity data.
+  - Break-glass or service-account activity that is intentionally exempt from MFA.
+runbook: runbook.md
+metrics: metrics.json
+notes: notes.md

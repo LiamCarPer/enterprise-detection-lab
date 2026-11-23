@@ -1,0 +1,92 @@
+[
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001201",
+      "createdDateTime": "2026-11-04T08:10:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.42",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "high",
+      "deviceDetail": {"operatingSystem": "Windows 11", "browser": "Edge"}
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "note": "High risk but MFA was satisfied"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001202",
+      "createdDateTime": "2026-11-04T08:20:00Z",
+      "userPrincipalName": "finance@example.test",
+      "appDisplayName": "Azure Portal",
+      "ipAddress": "198.51.100.78",
+      "status": "failure",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium",
+      "deviceDetail": {"operatingSystem": "Linux", "browser": "Firefox"}
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "note": "Risky single-factor attempt failed"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001203",
+      "createdDateTime": "2026-11-04T08:30:00Z",
+      "userPrincipalName": "admin@example.test",
+      "appDisplayName": "Exchange Online",
+      "ipAddress": "192.0.2.56",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": false,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium",
+      "deviceDetail": {"operatingSystem": "Windows Server", "browser": "None"}
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "note": "Non-interactive background authentication"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001204",
+      "createdDateTime": "2026-11-04T08:40:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Microsoft Teams",
+      "ipAddress": "203.0.113.43",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "low",
+      "deviceDetail": {"operatingSystem": "Windows 11", "browser": "Edge"}
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "note": "Low risk single-factor sign-in"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001205",
+      "createdDateTime": "2026-11-04T08:50:00Z",
+      "userPrincipalName": "contractor@example.test",
+      "appDisplayName": "SharePoint Online",
+      "ipAddress": "198.51.100.100",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "none",
+      "deviceDetail": {"operatingSystem": "Windows 11", "browser": "Chrome"}
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "note": "No risk detected at sign-in"
+  }
+]

@@ -1,0 +1,92 @@
+[
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001101",
+      "createdDateTime": "2026-11-03T08:10:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.41",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium",
+      "deviceDetail": {"operatingSystem": "Windows 11", "browser": "Edge"}
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "note": "Medium risk, single factor, successful interactive sign-in"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001102",
+      "createdDateTime": "2026-11-03T08:25:00Z",
+      "userPrincipalName": "finance@example.test",
+      "appDisplayName": "Azure Portal",
+      "ipAddress": "198.51.100.77",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "high",
+      "deviceDetail": {"operatingSystem": "Linux", "browser": "Firefox"}
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "note": "High risk, single factor, successful interactive sign-in"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001103",
+      "createdDateTime": "2026-11-03T09:00:00Z",
+      "userPrincipalName": "admin@example.test",
+      "appDisplayName": "Exchange Online",
+      "ipAddress": "192.0.2.55",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium",
+      "deviceDetail": {"operatingSystem": "macOS", "browser": "Safari"}
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "note": "Medium risk administrative sign-in without MFA"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001104",
+      "createdDateTime": "2026-11-03T09:15:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Microsoft Teams",
+      "ipAddress": "203.0.113.88",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "high",
+      "deviceDetail": {"operatingSystem": "Android", "browser": "Chrome"}
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "note": "High risk sign-in from a new mobile device"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001105",
+      "createdDateTime": "2026-11-03T09:30:00Z",
+      "userPrincipalName": "contractor@example.test",
+      "appDisplayName": "SharePoint Online",
+      "ipAddress": "198.51.100.99",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium",
+      "deviceDetail": {"operatingSystem": "Windows 11", "browser": "Chrome"}
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "note": "Medium risk contractor sign-in without MFA"
+  }
+]

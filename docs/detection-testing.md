@@ -89,6 +89,7 @@ The Sigma rule remains the vendor-neutral representation of the detection. The c
 
 ```bash
 edl detection test --id DET-END-000
+edl detection test --id DET-IDN-001
 ```
 
-It is a working test, not a production detection.
+The template is a contract reference. `DET-IDN-001` is the first real detection with a 15-event corpus, runbook, and committed metrics.
