@@ -26,14 +26,14 @@ sensitive_fields:
   - actor
   - actor_ip
   - repo
-expected_volume: Organization-dependent; sample data is not committed in Phase 1.
+expected_volume: Organization-dependent; sample data is not committed yet.
 expected_latency: Seconds to minutes from the audit-log API or streaming export.
 retention: GitHub plan-dependent; the lab retains normalized events until reset.
 cost: Audit log access is plan-dependent; API rate limits apply.
 late_arrival: Expected; use event time and synthetic ingest time.
 duplicates: Possible during API pagination or retries; deduplicate by id.
 known_gaps:
-  - No GitHub sample data in Phase 1; synthetic events arrive with the SaaS commit.
+  - No GitHub sample data yet; synthetic events arrive with the SaaS detection work.
   - Audit-log schema varies by GitHub product and event type.
   - API pagination and rate limiting are not replicated.
-notes: Phase 1 contract; sample data arrives with SaaS detections.
+notes: SaaS contract; sample data arrives with SaaS detections.

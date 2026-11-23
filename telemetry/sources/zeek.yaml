@@ -36,7 +36,7 @@ cost: Open source; storage and packet capture are the main cost.
 late_arrival: Expected; use event time and synthetic ingest time.
 duplicates: Possible across log rotation or retries; deduplicate by uid.
 known_gaps:
-  - No Zeek sample data in Phase 1; PCAP/flow samples arrive with the network commit.
+  - No Zeek sample data yet; PCAP/flow samples arrive with the network detection work.
   - Encrypted traffic limits payload-level visibility.
   - Sensor placement and packet loss affect coverage.
-notes: Phase 1 contract; sample data arrives with network detections.
+notes: Network contract; sample data arrives with network detections.

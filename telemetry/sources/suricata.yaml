@@ -36,7 +36,7 @@ cost: Open source; storage and packet capture are the main cost.
 late_arrival: Expected under load; preserve event time.
 duplicates: Possible; deduplicate by flow_id and event_type.
 known_gaps:
-  - No Suricata sample data in Phase 1; PCAP/flow samples arrive with the network commit.
+  - No Suricata sample data yet; PCAP/flow samples arrive with the network detection work.
   - Rule quality and sensor placement dominate detection quality.
   - Encrypted traffic limits payload-level visibility.
-notes: Phase 1 contract; sample data arrives with network detections.
+notes: Network contract; sample data arrives with network detections.

@@ -42,4 +42,4 @@ sample_data:
   license: synthetic
   provenance: Generated for this repository. No real accounts, principals, or keys.
   sha256: 5208849dd52ae458ce91fb00d8755ba39af1a761964dc64f52f1c8feb90fa065
-notes: Phase 1 cloud source.
+notes: CloudTrail source contract.

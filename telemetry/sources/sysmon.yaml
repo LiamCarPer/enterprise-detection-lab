@@ -41,7 +41,7 @@ cost: Open source; Windows licensing and storage are the main cost.
 late_arrival: Expected; UTC evtvmtime and collector ingest time differ.
 duplicates: Possible; deduplicate by EventRecordID, Computer, and Channel.
 known_gaps:
-  - No live Windows VM in Phase 1; synthetic events only.
+  - No live Windows VM yet; synthetic events only.
   - Sysmon configuration determines field coverage.
   - Image-load and process-access events are high volume and not fully sampled.
 sample_data:
@@ -50,4 +50,4 @@ sample_data:
   license: synthetic
   provenance: Generated for this repository. No real hosts or users.
   sha256: aa1da4571b0c806e9adbadaffa5872deed7abe1d8202b00ad320ee7c22ac9e3d
-notes: Phase 1 endpoint source.
+notes: Endpoint source contract.

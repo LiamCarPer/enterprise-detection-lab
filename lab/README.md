@@ -87,7 +87,7 @@ uv run edl lab logs opensearch
 - OpenSearch security is disabled **only** for this local lab.
 - The Kusto emulator has **no authentication**. It must never be exposed beyond localhost.
 - All ports bind to `127.0.0.1`.
-- Do not put real employer data, customer data, PII, credentials, or malware in the lab.
+- Do not put production data, customer data, PII, credentials, or malware in the lab.
 - Use synthetic or public, license-compatible data only.
 
 ## Pinned versions

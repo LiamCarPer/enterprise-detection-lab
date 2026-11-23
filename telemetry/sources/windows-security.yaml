@@ -38,7 +38,7 @@ cost: Included with Windows licensing; storage is the main lab cost.
 late_arrival: Expected; preserve TimeCreated and synthetic ingest time.
 duplicates: Possible; deduplicate by EventRecordID, Computer, and Channel.
 known_gaps:
-  - No live Windows VM in Phase 1; synthetic events only.
+  - No live Windows VM yet; synthetic events only.
   - Advanced audit policy changes which events exist.
   - Domain-controller replication and log forwarding are not replicated.
 sample_data:
@@ -47,4 +47,4 @@ sample_data:
   license: synthetic
   provenance: Generated for this repository. No real hosts or users.
   sha256: 51a4963cb0454b88d13f1cdbf6ce43d54281cac176800f1244c02d1e5d12af1c
-notes: Phase 1 endpoint source.
+notes: Endpoint source contract.

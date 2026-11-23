@@ -13,11 +13,11 @@ It is a directional engineering synthesis, not a formal standard or compliance c
 | **Detection-as-code** | Rules are versioned, reviewed, tested, converted, deployed, and retired like software | `detections/`, `docs/artifact-model.md`, `.github/workflows/` | Package contract, schema, fixtures, reference template; CI planned | In progress |
 | **Detection validation and regression** | Replay, attack simulation, negative tests, regression tests, and backend query checks | `src/edl/validation.py`, `src/edl/detection.py`, `detections/*/tests/`, `conformance/` | Six detections pass OpenSearch fixture replay; investigation queries and linked detections pass; CI replay planned | In progress |
 | **Benign baseline and false-positive control** | Measures noise against realistic benign activity, not an idle lab | `lab/`, `detections/*/fixtures/benign.json`, reports | Fixture contract and reference benign fixture; workload generator planned | Planned |
-| **Detection quality metrics** | Precision, recall, false-positive rate, latency, sample size, method, and limitations | `schemas/metrics.schema.json`, `detections/*/metrics.json` | Metrics schema and reference metrics file; real measurements planned | Planned |
+| **Detection quality metrics** | Precision, recall, false-positive rate, latency, sample size, method, and limitations | `schemas/metrics.schema.json`, `detections/*/metrics.json`, `reports/` | Per-detection fixture metrics generated for six detections; aggregate report and production measurements planned | In progress |
 | **Enterprise telemetry breadth** | Identity, endpoint, cloud, SaaS, network, and Kubernetes sources | `telemetry/sources/`, `docs/telemetry-matrix.md`, `lab/` | 11 contracts across six domains; 5 ingested, 6 documented | In progress |
-| **Cloud and identity depth** | Entra/AD/Okta, AWS/Azure/GCP audit, IAM, token and session abuse | `detections/identity/`, `detections/cloud/`, `investigations/` | Identity, endpoint, and cloud ingestion complete; detection content next | In progress |
+| **Cloud and identity depth** | Entra/AD/Okta, AWS/Azure/GCP audit, IAM, token and session abuse | `detections/identity/`, `detections/cloud/`, `investigations/` | Identity, endpoint, and cloud ingestion complete; six detections and two investigations tested; broader coverage planned | In progress |
 | **Threat modeling and ATT&CK mapping** | Attacker TTPs, attack paths, evasion, and telemetry implications | `docs/threat-model.md`, detection metadata, `investigations/` | ATT&CK field in detection schema; threat model planned | Planned |
-| **Incident investigation** | Timeline, evidence, scope, containment, recovery, and lessons learned | `investigations/`, runbooks | Investigation schema, reference package, evidence rules | In progress |
+| **Incident investigation** | Timeline, evidence, scope, containment, recovery, and lessons learned | `investigations/`, runbooks | Two tested investigations with hashed evidence, timelines, response, and linked detection checks | Complete |
 | **Automation and response safety** | Enrichment, triage, evidence capture, containment proposals, approval gates, and effect verification | `automation/` | Not implemented | Planned |
 | **Software engineering quality** | Typed Python, focused modules, error handling, tests, deterministic outputs, coverage gate | `src/edl/`, `tests/`, `Makefile`, `pyproject.toml` | Typed package, unit/integration/lab tests, 90% coverage gate | Complete |
 | **Backend portability** | Sigma plus native queries, backend-specific translation, and query validation | `detections/*/queries/`, `schemas/detection.schema.json` | OpenSearch query contract; Sigma rule present in template; KQL/Spl planned | In progress |
@@ -47,8 +47,6 @@ The mapping is complete. The implementation is not. Identity, endpoint, and clou
 4. Treat **Planned** as not implemented, regardless of how the capability is described elsewhere.
 5. Update the row when the evidence changes.
 
-## What this document is not
+## Scope and maintenance
 
-- It is not a compliance certification.
-- It is not a substitute for organization-specific requirements or threat models.
-- It is not static. It is updated as artifacts are implemented, tested, and reviewed.
+This document is a directional engineering index, not a compliance certification. It does not replace organization-specific requirements or threat models. It is updated as artifacts are implemented, tested, and reviewed.

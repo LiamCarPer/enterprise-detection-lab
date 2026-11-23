@@ -39,4 +39,4 @@ The observed events are synthetic lab records. The endpoint-to-cloud link is an 
 
 ## Evidence handling
 
-Each event is stored as a small synthetic snapshot in `evidence/`. The SHA-256 hashes are recorded in `meta.yaml`. No production, customer, or employer data is present.
+Each event is stored as a small synthetic snapshot in `evidence/`. The SHA-256 hashes are recorded in `meta.yaml`. No production or customer data is present.

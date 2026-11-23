@@ -82,7 +82,7 @@ edl telemetry matrix --check
 
 ## Data rules
 
-- No PII, secrets, real employer data, or malware.
+- No PII, secrets, production data, or malware.
 - Public datasets must include a license and provenance note.
 - Large datasets are downloaded by script and never committed.
 - Do not edit `docs/telemetry-matrix.md` by hand.

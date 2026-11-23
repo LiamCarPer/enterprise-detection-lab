@@ -39,4 +39,4 @@ sample_data:
   license: synthetic
   provenance: Generated for this repository. No real users, tenants, or IPs.
   sha256: 8d8fd62e2fa9c45f1834e58cf23ce05315bb2a0dc0b1eb995236e66fd1d3268a
-notes: Phase 1 identity source.
+notes: Entra identity source contract.

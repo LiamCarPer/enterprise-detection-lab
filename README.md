@@ -2,7 +2,7 @@
 
 A reproducible local lab for developing and testing enterprise detection content across identity, endpoint, cloud, SaaS, network, and Kubernetes telemetry.
 
-**Status:** Alpha. Identity, endpoint, and cloud telemetry ingestion, six Gate 1 detections, and two investigations are complete. CI and aggregated metrics are in progress.
+**Status:** Alpha. Identity, endpoint, and cloud telemetry ingestion, six core detections, and two investigations are complete. CI and aggregated metrics are in progress.
 
 [Quick start](#quick-start) · [Architecture](#architecture) · [Project status](#project-status) · [Documentation](#documentation)
 
@@ -192,7 +192,7 @@ Investigations are **Tested** when the timeline, evidence, queries, response, an
 | Cloud ingestion | Complete | AWS CloudTrail, normalized and replay-safe |
 | Detection packages | In progress | Six tested detections; production validation pending |
 | Detection testing | Complete | Normalized fixture replay, temporary-index isolation, pass/fail gate, and metrics generation |
-| Tested detections | 6 of 6 | All Gate 1 detections pass fixture replay |
+| Tested detections | 6 of 6 | All core detections pass fixture replay |
 | Investigations | Complete | Two tested investigation packages with hashed evidence |
 | Tested investigations | 2 of 2 | `INV-001` and `INV-002` pass evidence and detection-link checks |
 | CI and metrics reporting | Planned | GitHub Actions, aggregated quality report |
@@ -221,7 +221,7 @@ Current milestone: CI and aggregated detection metrics.
 5. **Measure quality.** Precision, recall, false positives, latency, and limitations are first-class outputs.
 6. **Idempotent operations.** Replaying a dataset overwrites deterministic document IDs rather than creating duplicates.
 7. **Document judgment.** Trade-offs, non-goals, and limitations are part of the artifact.
-8. **Synthetic or public data only.** No production, customer, or employer data in the repository.
+8. **Synthetic or public data only.** No production or customer data in the repository.
 
 ## Scope
 

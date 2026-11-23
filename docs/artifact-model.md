@@ -132,7 +132,7 @@ Example: `INV-001`.
 ### Evidence rules
 
 - Use synthetic or public data only.
-- No PII, secrets, real employer data, or customer data.
+- No PII, secrets, production, or customer data.
 - Every evidence item has provenance: source, query, timestamp, and a hash where practical.
 - Raw evidence is stored as a small, redacted fixture; large datasets are downloaded by script and never committed.
 - The investigation must distinguish observed evidence from inference.
@@ -146,7 +146,7 @@ An investigation is done when:
 - Every detection used in the investigation is linked by ID.
 - Detection gaps and telemetry gaps are documented.
 - An executive summary is present and free of jargon where possible.
-- No PII or real employer data is present.
+- No PII or production data is present.
 - README/status tables are updated.
 - CI is green.
 
@@ -165,7 +165,7 @@ An investigation is done when:
 
 ## Data and safety rules
 
-- No secrets, credentials, tokens, PII, or real employer/customer data.
+- No secrets, credentials, tokens, PII, or production/customer data.
 - No malware or destructive payloads.
 - Public datasets must include a license and provenance note.
 - Large datasets are downloaded by script; never commit raw datasets.
@@ -182,6 +182,6 @@ An investigation is done when:
 - [ ] False positives and limitations are documented.
 - [ ] Runbook or investigation response is actionable.
 - [ ] Metrics are recorded and reproducible.
-- [ ] No secrets, PII, or real employer data.
+- [ ] No secrets, PII, or production data.
 - [ ] README/status tables are updated.
 - [ ] Commit is atomic and push-worthy.

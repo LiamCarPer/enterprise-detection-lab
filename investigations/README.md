@@ -36,7 +36,7 @@ The working reference artifact is `investigations/_template`. Use `edl new inves
 ## Evidence rules
 
 - Synthetic or public data only.
-- No PII, secrets, real employer data, or customer data.
+- No PII, secrets, production, or customer data.
 - Every evidence item has provenance: source, query, timestamp, and a hash where practical.
 - Separate observed evidence from inference.
 - Large datasets are downloaded by script; never committed.
@@ -48,5 +48,5 @@ The working reference artifact is `investigations/_template`. Use `edl new inves
 - Detections are linked by ID.
 - Detection and telemetry gaps are documented.
 - Executive summary is present.
-- No PII or real employer data.
+- No PII or production data.
 - CI is green.

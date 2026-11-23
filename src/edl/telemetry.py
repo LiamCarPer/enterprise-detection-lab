@@ -89,7 +89,7 @@ def render_matrix(sources: list[TelemetrySource]) -> str:
             "## Data rules",
             "",
             "- Synthetic or public, license-compatible data only.",
-            "- No PII, secrets, real employer data, or malware.",
+            "- No PII, secrets, production data, or malware.",
             "- Large datasets are downloaded by script and never committed.",
             "",
         ]

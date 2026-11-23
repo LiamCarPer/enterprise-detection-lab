@@ -28,7 +28,7 @@ cost: Open source; telemetry volume and storage are the main cost.
 late_arrival: Expected under load; preserve event time.
 duplicates: Possible during retries; deduplicate by uuid.
 known_gaps:
-  - No Falco sample data in Phase 1; synthetic events arrive with the Kubernetes commit.
+  - No Falco sample data yet; synthetic events arrive with the Kubernetes detection work.
   - eBPF and kernel-version behavior vary by host.
   - Container isolation and host PID namespaces can hide context.
-notes: Phase 1 contract; sample data arrives with Kubernetes/Falco detections.
+notes: Falco contract; sample data arrives with Kubernetes/Falco detections.

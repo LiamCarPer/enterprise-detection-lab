@@ -49,6 +49,6 @@ The working reference artifact is `detections/endpoint/_template`. Use `edl new 
 - Runbook covers triage, evidence, escalation, and containment.
 - Metrics are generated from fixture replay and include limitations.
 - CI is green.
-- No secrets, PII, or real employer data.
+- No secrets, PII, or production data.
 
 A detection is not done because it compiles. It is done when it has evidence.
