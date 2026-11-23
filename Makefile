@@ -34,7 +34,8 @@ test-opensearch:
 		tests/lab/test_ingest_integration.py \
 		tests/lab/test_detection_runner.py \
 		tests/lab/test_investigations.py \
-		tests/lab/test_benign_baseline.py
+		tests/lab/test_benign_baseline.py \
+		tests/lab/test_benign_baselines.py
 
 coverage: test
 

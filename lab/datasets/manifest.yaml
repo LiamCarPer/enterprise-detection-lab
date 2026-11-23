@@ -42,3 +42,24 @@ datasets:
     license: synthetic
     provenance: Generated for this repository. No real hosts or users.
     sha256: 2eec6f0f3bf08df00a2b05596f1af86eac584c31d38cfc4c234b3379e8915c87
+  - id: synthetic-identity-signin-benign-baseline
+    source: entra-signin
+    path: lab/datasets/synthetic/benign-baseline/identity-signin.json
+    synthetic: true
+    license: synthetic
+    provenance: Generated for this repository. No real users, tenants, or IPs.
+    sha256: 943ca7d72b86723c859ef7de5fa48bfcc8d6814b13c27c723684616b13e1793d
+  - id: synthetic-identity-audit-benign-baseline
+    source: entra-audit
+    path: lab/datasets/synthetic/benign-baseline/identity-audit.json
+    synthetic: true
+    license: synthetic
+    provenance: Generated for this repository. No real users, tenants, or IPs.
+    sha256: 698132ea1ff4e8253bab641223fb1f86089d409382720bbe6fb59a0eb66ccf16
+  - id: synthetic-cloudtrail-benign-baseline
+    source: aws-cloudtrail
+    path: lab/datasets/synthetic/benign-baseline/cloudtrail.json
+    synthetic: true
+    license: synthetic
+    provenance: Generated for this repository. No real accounts, principals, or keys.
+    sha256: 9460e1443eea48595adfcb3037e61f418c9df1653e64a25dafb1e2c3b1f587f4

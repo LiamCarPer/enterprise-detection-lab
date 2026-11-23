@@ -1,0 +1,442 @@
+[
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000007001",
+      "activityDateTime": "2026-11-22T08:00:00Z",
+      "operationName": "Add service principal",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Approved App 0",
+          "type": "ServicePrincipal"
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "note": "Routine application registration"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000007002",
+      "activityDateTime": "2026-11-22T08:01:00Z",
+      "operationName": "Add service principal",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Approved App 1",
+          "type": "ServicePrincipal"
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "note": "Routine application registration"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000007003",
+      "activityDateTime": "2026-11-22T08:02:00Z",
+      "operationName": "Add service principal",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Approved App 2",
+          "type": "ServicePrincipal"
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "note": "Routine application registration"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000007004",
+      "activityDateTime": "2026-11-22T08:03:00Z",
+      "operationName": "Add service principal",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Approved App 3",
+          "type": "ServicePrincipal"
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "note": "Routine application registration"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000007005",
+      "activityDateTime": "2026-11-22T08:04:00Z",
+      "operationName": "Add service principal",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Approved App 4",
+          "type": "ServicePrincipal"
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "note": "Routine application registration"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000007006",
+      "activityDateTime": "2026-11-22T09:00:00Z",
+      "operationName": "Update service principal",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Approved App 0",
+          "type": "ServicePrincipal"
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "note": "Routine application update"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000007007",
+      "activityDateTime": "2026-11-22T09:01:00Z",
+      "operationName": "Update service principal",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Approved App 1",
+          "type": "ServicePrincipal"
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "note": "Routine application update"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000007008",
+      "activityDateTime": "2026-11-22T09:02:00Z",
+      "operationName": "Update service principal",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Approved App 2",
+          "type": "ServicePrincipal"
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "note": "Routine application update"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000007009",
+      "activityDateTime": "2026-11-22T09:03:00Z",
+      "operationName": "Update service principal",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Approved App 3",
+          "type": "ServicePrincipal"
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "note": "Routine application update"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000007010",
+      "activityDateTime": "2026-11-22T09:04:00Z",
+      "operationName": "Update service principal",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Approved App 4",
+          "type": "ServicePrincipal"
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "note": "Routine application update"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000007011",
+      "activityDateTime": "2026-11-22T10:00:00Z",
+      "operationName": "Remove owner from service principal",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Retired App 0",
+          "type": "ServicePrincipal"
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "note": "Routine owner cleanup"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000007012",
+      "activityDateTime": "2026-11-22T10:01:00Z",
+      "operationName": "Remove owner from service principal",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Retired App 1",
+          "type": "ServicePrincipal"
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "note": "Routine owner cleanup"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000007013",
+      "activityDateTime": "2026-11-22T10:02:00Z",
+      "operationName": "Remove owner from service principal",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Retired App 2",
+          "type": "ServicePrincipal"
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "note": "Routine owner cleanup"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000007014",
+      "activityDateTime": "2026-11-22T10:03:00Z",
+      "operationName": "Remove owner from service principal",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Retired App 3",
+          "type": "ServicePrincipal"
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "note": "Routine owner cleanup"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000007015",
+      "activityDateTime": "2026-11-22T10:04:00Z",
+      "operationName": "Remove owner from service principal",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Retired App 4",
+          "type": "ServicePrincipal"
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "note": "Routine owner cleanup"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000007016",
+      "activityDateTime": "2026-11-22T11:00:00Z",
+      "operationName": "Add member to group",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Group 0",
+          "type": "Group"
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "note": "Routine group membership change"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000007017",
+      "activityDateTime": "2026-11-22T11:01:00Z",
+      "operationName": "Add member to group",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Group 1",
+          "type": "Group"
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "note": "Routine group membership change"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000007018",
+      "activityDateTime": "2026-11-22T11:02:00Z",
+      "operationName": "Add member to group",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Group 2",
+          "type": "Group"
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "note": "Routine group membership change"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000007019",
+      "activityDateTime": "2026-11-22T11:03:00Z",
+      "operationName": "Add member to group",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Group 3",
+          "type": "Group"
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "note": "Routine group membership change"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000007020",
+      "activityDateTime": "2026-11-22T11:04:00Z",
+      "operationName": "Add member to group",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Group 4",
+          "type": "Group"
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "note": "Routine group membership change"
+  }
+]

@@ -45,7 +45,7 @@ This matrix tracks the engineering capabilities implemented in the lab and the a
 | `tests/` + `Makefile` | Complete | Unit, integration, and lab tests; 90% statement-coverage gate |
 | `.github/workflows/ci.yml` | Complete | Quality job plus OpenSearch-backed ingestion, detection, and investigation tests |
 | `reports/detection-metrics.md` | Complete | Aggregated fixture metrics for seven detections with explicit limitations |
-| `lab/datasets/synthetic/benign-baseline/endpoint.json` + `reports/false-positive-tuning.md` | Complete | 20-event benign baseline and a measured 8/20 to 0/20 tuning result |
+| `lab/datasets/synthetic/benign-baseline/` + `reports/` | Complete | Four 20-event benign corpora and an 8/20 to 0/20 endpoint tuning result |
 | `docs/capability-matrix.md` + `docs/requirements-traceability.md` | Complete | Capability and engineering-requirement traceability |
 
 ## Next evidence

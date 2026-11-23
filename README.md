@@ -4,7 +4,7 @@
 
 A reproducible local lab for developing and testing enterprise detection content across identity, endpoint, cloud, SaaS, network, and Kubernetes telemetry.
 
-**Status:** Alpha. Identity, endpoint, and cloud telemetry ingestion, seven core detections, two investigations, CI, and aggregated fixture metrics are complete. The next focus is broader benign activity coverage.
+**Status:** Alpha. Identity, endpoint, and cloud telemetry ingestion, seven core detections, two investigations, CI, and aggregated fixture metrics are complete. The next focus is approved-exception handling and scenario-level baseline coverage.
 
 [Quick start](#quick-start) · [Architecture](#architecture) · [Project status](#project-status) · [Documentation](#documentation)
 
@@ -210,12 +210,12 @@ Investigations are **Tested** when the timeline, evidence, queries, response, an
 | Tested investigations | 2 of 2 | `INV-001` and `INV-002` pass evidence and detection-link checks |
 | CI | Complete | GitHub Actions quality and OpenSearch-backed test jobs |
 | Metrics reporting | Complete | Aggregated fixture metrics in `reports/detection-metrics.md` |
-| Benign baseline | Complete | 20-event endpoint baseline and before/after tuning report |
+| Benign baseline | Complete | Four 20-event corpora across identity, endpoint, and cloud, plus an endpoint tuning study |
 | Correlation detection | Complete | `DET-IDN-003` evaluates ordered identity steps with a 30-minute window |
 | SaaS, network, Kubernetes | Planned | Contracts and samples before detections |
 | Automation | Planned | Enrichment, triage, evidence, and approval-gated response |
 
-Current focus: broader benign activity coverage across identity and cloud detections.
+Current focus: approved-exception handling and a scenario-level baseline for the correlation detection.
 
 ## Quality gates
 
@@ -268,6 +268,7 @@ Out of scope for this repository:
 | [`docs/detection-testing.md`](docs/detection-testing.md) | Fixture replay, pass criteria, and metric definitions |
 | [`reports/detection-metrics.md`](reports/detection-metrics.md) | Generated aggregate detection metrics and limitations |
 | [`reports/false-positive-tuning.md`](reports/false-positive-tuning.md) | Baseline measurement and before/after tuning analysis |
+| [`reports/benign-baseline-results.md`](reports/benign-baseline-results.md) | Identity, endpoint, and cloud baseline results |
 | [`docs/cli.md`](docs/cli.md) | CLI commands, options, and exit codes |
 | [`docs/telemetry-matrix.md`](docs/telemetry-matrix.md) | Generated source contract matrix |
 | [`docs/capability-matrix.md`](docs/capability-matrix.md) | Implemented capabilities and evidence |

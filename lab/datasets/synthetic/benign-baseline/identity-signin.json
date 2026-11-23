@@ -1,0 +1,422 @@
+[
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000006001",
+      "createdDateTime": "2026-11-22T08:00:00Z",
+      "userPrincipalName": "traveller@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.50",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "note": "Elevated risk satisfied by MFA"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000006002",
+      "createdDateTime": "2026-11-22T08:01:00Z",
+      "userPrincipalName": "traveller@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.50",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "note": "Elevated risk satisfied by MFA"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000006003",
+      "createdDateTime": "2026-11-22T08:02:00Z",
+      "userPrincipalName": "traveller@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.50",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "note": "Elevated risk satisfied by MFA"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000006004",
+      "createdDateTime": "2026-11-22T08:03:00Z",
+      "userPrincipalName": "traveller@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.50",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "note": "Elevated risk satisfied by MFA"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000006005",
+      "createdDateTime": "2026-11-22T08:04:00Z",
+      "userPrincipalName": "traveller@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.50",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "note": "Elevated risk satisfied by MFA"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000006006",
+      "createdDateTime": "2026-11-22T09:00:00Z",
+      "userPrincipalName": "sync@example.test",
+      "appDisplayName": "Exchange Online",
+      "ipAddress": "192.0.2.60",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": false,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "note": "Non-interactive background authentication"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000006007",
+      "createdDateTime": "2026-11-22T09:01:00Z",
+      "userPrincipalName": "sync@example.test",
+      "appDisplayName": "Exchange Online",
+      "ipAddress": "192.0.2.60",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": false,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "note": "Non-interactive background authentication"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000006008",
+      "createdDateTime": "2026-11-22T09:02:00Z",
+      "userPrincipalName": "sync@example.test",
+      "appDisplayName": "Exchange Online",
+      "ipAddress": "192.0.2.60",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": false,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "note": "Non-interactive background authentication"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000006009",
+      "createdDateTime": "2026-11-22T09:03:00Z",
+      "userPrincipalName": "sync@example.test",
+      "appDisplayName": "Exchange Online",
+      "ipAddress": "192.0.2.60",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": false,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "note": "Non-interactive background authentication"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000006010",
+      "createdDateTime": "2026-11-22T09:04:00Z",
+      "userPrincipalName": "sync@example.test",
+      "appDisplayName": "Exchange Online",
+      "ipAddress": "192.0.2.60",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": false,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "note": "Non-interactive background authentication"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000006011",
+      "createdDateTime": "2026-11-22T10:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.10",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "low",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "note": "Low-risk interactive sign-in"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000006012",
+      "createdDateTime": "2026-11-22T10:01:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.10",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "low",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "note": "Low-risk interactive sign-in"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000006013",
+      "createdDateTime": "2026-11-22T10:02:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.10",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "low",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "note": "Low-risk interactive sign-in"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000006014",
+      "createdDateTime": "2026-11-22T10:03:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.10",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "low",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "note": "Low-risk interactive sign-in"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000006015",
+      "createdDateTime": "2026-11-22T10:04:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.10",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "low",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "note": "Low-risk interactive sign-in"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000006016",
+      "createdDateTime": "2026-11-22T11:00:00Z",
+      "userPrincipalName": "contractor@example.test",
+      "appDisplayName": "SharePoint Online",
+      "ipAddress": "198.51.100.99",
+      "status": "failure",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "note": "Failed sign-in attempt"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000006017",
+      "createdDateTime": "2026-11-22T11:01:00Z",
+      "userPrincipalName": "contractor@example.test",
+      "appDisplayName": "SharePoint Online",
+      "ipAddress": "198.51.100.99",
+      "status": "failure",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "note": "Failed sign-in attempt"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000006018",
+      "createdDateTime": "2026-11-22T11:02:00Z",
+      "userPrincipalName": "contractor@example.test",
+      "appDisplayName": "SharePoint Online",
+      "ipAddress": "198.51.100.99",
+      "status": "failure",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "note": "Failed sign-in attempt"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000006019",
+      "createdDateTime": "2026-11-22T11:03:00Z",
+      "userPrincipalName": "contractor@example.test",
+      "appDisplayName": "SharePoint Online",
+      "ipAddress": "198.51.100.99",
+      "status": "failure",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "note": "Failed sign-in attempt"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000006020",
+      "createdDateTime": "2026-11-22T11:04:00Z",
+      "userPrincipalName": "contractor@example.test",
+      "appDisplayName": "SharePoint Online",
+      "ipAddress": "198.51.100.99",
+      "status": "failure",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "note": "Failed sign-in attempt"
+  }
+]
