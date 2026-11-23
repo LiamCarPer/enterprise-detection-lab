@@ -569,3 +569,35 @@ def test_detection_test_forwards_write_metrics(monkeypatch: pytest.MonkeyPatch) 
     assert captured["write_metrics"] is True
     assert captured["latency_runs"] == 2
     assert captured["include_templates"] is True
+
+
+def test_detection_report_write_and_check(tmp_path: Path) -> None:
+    output = tmp_path / "detection-metrics.md"
+    write_result = runner.invoke(app, ["detection", "report", "--output", str(output)])
+    assert write_result.exit_code == 0
+    assert output.exists()
+    assert "Detection Metrics" in output.read_text()
+
+    check_result = runner.invoke(
+        app,
+        ["detection", "report", "--check", "--output", str(output)],
+    )
+    assert check_result.exit_code == 0
+
+    output.write_text("stale", encoding="utf-8")
+    stale_result = runner.invoke(
+        app,
+        ["detection", "report", "--check", "--output", str(output)],
+    )
+    assert stale_result.exit_code == 1
+    assert "stale" in stale_result.stdout
+
+
+def test_detection_report_handles_load_error(monkeypatch: pytest.MonkeyPatch) -> None:
+    def fail(_root: Path) -> None:
+        raise DetectionError("metrics unavailable")
+
+    monkeypatch.setattr("edl.cli.load_detection_metrics", fail)
+    result = runner.invoke(app, ["detection", "report"])
+    assert result.exit_code == 2
+    assert "metrics unavailable" in result.stdout

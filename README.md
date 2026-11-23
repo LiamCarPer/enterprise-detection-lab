@@ -114,6 +114,15 @@ The runner normalizes fixtures, writes them to a temporary OpenSearch index, exe
 
 See [`docs/detection-testing.md`](docs/detection-testing.md) for the execution flow and metric definitions.
 
+### Detection metrics report
+
+```bash
+uv run edl detection report
+uv run edl detection report --check
+```
+
+The generated report is [`reports/detection-metrics.md`](reports/detection-metrics.md). It aggregates committed fixture metrics and states the synthetic-data limitations explicitly.
+
 ### Scaffold artifacts
 
 ```bash
@@ -250,6 +259,7 @@ Out of scope for this repository:
 | [`docs/ingestion.md`](docs/ingestion.md) | Canonical events, classification, deduplication, and ingest behavior |
 | [`docs/artifact-model.md`](docs/artifact-model.md) | Detection and investigation package contracts |
 | [`docs/detection-testing.md`](docs/detection-testing.md) | Fixture replay, pass criteria, and metric definitions |
+| [`reports/detection-metrics.md`](reports/detection-metrics.md) | Generated aggregate detection metrics and limitations |
 | [`docs/cli.md`](docs/cli.md) | CLI commands, options, and exit codes |
 | [`docs/telemetry-matrix.md`](docs/telemetry-matrix.md) | Generated source contract matrix |
 | [`docs/capability-matrix.md`](docs/capability-matrix.md) | Implemented capabilities and evidence |

@@ -100,6 +100,17 @@ The runner normalizes each fixture, writes it to a temporary OpenSearch index,
 executes the committed query, and checks the positive, negative, and benign
 expectations. See [`detection-testing.md`](detection-testing.md).
 
+## Detection metrics report
+
+```bash
+edl detection report
+edl detection report --check
+edl detection report --output reports/detection-metrics.md
+```
+
+`--check` fails when the committed report is stale relative to the detection
+`metrics.json` files.
+
 ## Lab
 
 ```bash

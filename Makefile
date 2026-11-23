@@ -1,4 +1,4 @@
-.PHONY: install lint validate telemetry-check test test-lab test-detections coverage check lab-up lab-down lab-status lab-wait lab-bootstrap ingest-identity ingest-endpoint ingest-cloud lab-reset lab-logs
+.PHONY: install lint validate telemetry-check metrics-report metrics-check test test-lab test-detections coverage check lab-up lab-down lab-status lab-wait lab-bootstrap ingest-identity ingest-endpoint ingest-cloud lab-reset lab-logs
 
 install:
 	uv sync --all-extras
@@ -14,6 +14,12 @@ validate:
 telemetry-check:
 	PYTHONPATH= uv run edl telemetry matrix --check
 
+metrics-report:
+	PYTHONPATH= uv run edl detection report
+
+metrics-check:
+	PYTHONPATH= uv run edl detection report --check
+
 test:
 	PYTHONPATH= uv run pytest -m "not lab" --cov=edl --cov-report=term-missing --cov-fail-under=90
 
@@ -25,7 +31,7 @@ test-detections:
 
 coverage: test
 
-check: lint validate telemetry-check test
+check: lint validate telemetry-check metrics-check test
 
 lab-up:
 	uv run edl lab up

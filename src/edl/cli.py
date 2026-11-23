@@ -16,6 +16,11 @@ from .errors import EDLError, ValidationError
 from .ingest import IngestResult
 from .ingest import ingest_domain as run_ingest_domain
 from .lab import ServiceStatus
+from .metrics import (
+    load_detection_metrics,
+    metrics_report_is_current,
+    write_metrics_report,
+)
 from .report import render_json, render_markdown, render_table
 from .telemetry import load_sources, matrix_is_current, write_matrix
 from .template import new_detection as create_detection
@@ -417,6 +422,39 @@ def render_detection_table(results: list[DetectionResult]) -> Table:
             status,
         )
     return table
+
+
+@detection_app.command("report")
+def detection_report(
+    output: Path = typer.Option(
+        config.ROOT / "reports" / "detection-metrics.md",
+        "--output",
+        help="Metrics report output path.",
+    ),
+    check: bool = typer.Option(
+        False,
+        "--check",
+        help="Fail if the committed metrics report is stale.",
+    ),
+) -> None:
+    """Generate or verify the aggregated detection metrics report."""
+    try:
+        metrics = load_detection_metrics(config.ROOT)
+    except EDLError as exc:
+        console.print(f"[red]Could not load detection metrics:[/red] {exc}")
+        raise typer.Exit(2) from exc
+
+    target = output if output.is_absolute() else config.ROOT / output
+    if check:
+        if not metrics_report_is_current(target, metrics):
+            console.print(f"[red]Detection metrics report is stale:[/red] {target}")
+            console.print("Run `edl detection report` to regenerate it.")
+            raise typer.Exit(1)
+        console.print(f"[green]Detection metrics report is current:[/green] {target}")
+        return
+
+    write_metrics_report(target, metrics)
+    console.print(f"[green]Wrote detection metrics report:[/green] {target}")
 
 
 @lab_app.command("up")

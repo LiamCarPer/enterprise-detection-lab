@@ -64,6 +64,15 @@ A detection with a missed positive or any unexpected hit fails the command.
 
 These are **synthetic fixture measurements**, not production detection quality. The committed metrics include that limitation explicitly.
 
+Generate the aggregate report with:
+
+```bash
+edl detection report
+edl detection report --check
+```
+
+The output is [`reports/detection-metrics.md`](../reports/detection-metrics.md).
+
 ## Fixture sources
 
 Fixtures use the repository envelope:
