@@ -45,14 +45,15 @@ This matrix tracks the engineering capabilities implemented in the lab and the a
 | `tests/` + `Makefile` | Complete | Unit, integration, and lab tests; 90% statement-coverage gate |
 | `.github/workflows/ci.yml` | Complete | Quality job plus OpenSearch-backed ingestion, detection, and investigation tests |
 | `reports/detection-metrics.md` | Complete | Aggregated fixture metrics for six detections with explicit limitations |
+| `lab/datasets/synthetic/benign-baseline/endpoint.json` + `reports/false-positive-tuning.md` | Complete | 20-event benign baseline and a measured 8/20 to 0/20 tuning result |
 | `docs/capability-matrix.md` + `docs/requirements-traceability.md` | Complete | Capability and engineering-requirement traceability |
 
 ## Next evidence
 
 The next work is detection depth:
 
-- A benign activity baseline and a documented false-positive tuning case study.
-- Additional detections with near-miss fixtures and correlation logic.
+- Correlation detections using the existing identity, endpoint, and cloud telemetry.
+- Broader benign activity coverage across the other detection packages.
 - SaaS, network, and Kubernetes telemetry, followed by automation.
 
 ## Evidence standards

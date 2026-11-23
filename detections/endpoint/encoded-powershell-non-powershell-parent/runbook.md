@@ -41,10 +41,13 @@ Escalate when:
 
 ## False positives
 
+- The approved CorMgmt endpoint management agent, excluded in v1.1.0 by parent name.
 - Approved administrative scripts launched from a management shell.
 - Software deployment tools that use encoded PowerShell.
 - Security testing and detection validation.
 - Vendor installers that wrap PowerShell commands.
+
+Parent-name exclusions are narrow but spoofable. Monitor the management agent's signature and integrity, and replace the exclusion with a hash or signed-binary check when that telemetry is available.
 
 ## Closure
 

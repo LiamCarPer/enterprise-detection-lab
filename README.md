@@ -4,7 +4,7 @@
 
 A reproducible local lab for developing and testing enterprise detection content across identity, endpoint, cloud, SaaS, network, and Kubernetes telemetry.
 
-**Status:** Alpha. Identity, endpoint, and cloud telemetry ingestion, six core detections, two investigations, CI, and aggregated fixture metrics are complete. The next focus is benign baseline coverage and detection tuning.
+**Status:** Alpha. Identity, endpoint, and cloud telemetry ingestion, six core detections, two investigations, CI, and aggregated fixture metrics are complete. The next focus is correlation detections and broader benign coverage.
 
 [Quick start](#quick-start) · [Architecture](#architecture) · [Project status](#project-status) · [Documentation](#documentation)
 
@@ -210,10 +210,11 @@ Investigations are **Tested** when the timeline, evidence, queries, response, an
 | Tested investigations | 2 of 2 | `INV-001` and `INV-002` pass evidence and detection-link checks |
 | CI | Complete | GitHub Actions quality and OpenSearch-backed test jobs |
 | Metrics reporting | Complete | Aggregated fixture metrics in `reports/detection-metrics.md` |
+| Benign baseline | Complete | 20-event endpoint baseline and before/after tuning report |
 | SaaS, network, Kubernetes | Planned | Contracts and samples before detections |
 | Automation | Planned | Enrichment, triage, evidence, and approval-gated response |
 
-Current focus: benign baseline coverage and a documented false-positive tuning case study.
+Current focus: correlation detections and broader benign activity coverage.
 
 ## Quality gates
 
@@ -265,6 +266,7 @@ Out of scope for this repository:
 | [`docs/artifact-model.md`](docs/artifact-model.md) | Detection and investigation package contracts |
 | [`docs/detection-testing.md`](docs/detection-testing.md) | Fixture replay, pass criteria, and metric definitions |
 | [`reports/detection-metrics.md`](reports/detection-metrics.md) | Generated aggregate detection metrics and limitations |
+| [`reports/false-positive-tuning.md`](reports/false-positive-tuning.md) | Baseline measurement and before/after tuning analysis |
 | [`docs/cli.md`](docs/cli.md) | CLI commands, options, and exit codes |
 | [`docs/telemetry-matrix.md`](docs/telemetry-matrix.md) | Generated source contract matrix |
 | [`docs/capability-matrix.md`](docs/capability-matrix.md) | Implemented capabilities and evidence |

@@ -35,3 +35,10 @@ datasets:
     license: synthetic
     provenance: Generated for this repository. No real accounts, principals, or keys.
     sha256: 5208849dd52ae458ce91fb00d8755ba39af1a761964dc64f52f1c8feb90fa065
+  - id: synthetic-endpoint-benign-baseline
+    source: sysmon
+    path: lab/datasets/synthetic/benign-baseline/endpoint.json
+    synthetic: true
+    license: synthetic
+    provenance: Generated for this repository. No real hosts or users.
+    sha256: 2eec6f0f3bf08df00a2b05596f1af86eac584c31d38cfc4c234b3379e8915c87

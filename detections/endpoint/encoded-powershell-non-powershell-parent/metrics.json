@@ -1,12 +1,12 @@
 {
   "detection_id": "DET-END-001",
-  "measured_at": "2026-11-23T05:52:34.550197Z",
+  "measured_at": "2026-11-23T20:18:24.983165Z",
   "sample_size": 15,
   "precision": 1.0,
   "recall": 1.0,
   "false_positive_rate": 0.0,
-  "latency_ms_p50": 12.982,
-  "latency_ms_p95": 17.458,
+  "latency_ms_p50": 6.842,
+  "latency_ms_p95": 9.186,
   "method": "Synthetic fixture replay against OpenSearch; native query only.",
   "limitations": [
     "Curated synthetic fixtures; sample size 15.",

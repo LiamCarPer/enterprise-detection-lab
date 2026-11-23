@@ -1,0 +1,382 @@
+[
+  {
+    "event": {
+      "UtcTime": "2026-11-21T09:00:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-01",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 5001,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000007001}",
+      "ProcessId": 12001,
+      "Image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "CommandLine": "powershell.exe -NoProfile -EncodedCommand AENvcnBNZ210AEludmVudG9yeQ0",
+      "ParentImage": "C:\\Program Files\\CorpMgmt\\corpmgmt.exe",
+      "ParentCommandLine": "C:\\Program Files\\CorpMgmt\\corpmgmt.exe /run inventory",
+      "User": "NT AUTHORITY\\SYSTEM"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Approved management inventory task"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-21T09:01:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-02",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 5002,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000007002}",
+      "ProcessId": 12002,
+      "Image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "CommandLine": "powershell.exe -NoProfile -EncodedCommand AENvcnBNZ210AEludmVudG9yeQ1",
+      "ParentImage": "C:\\Program Files\\CorpMgmt\\corpmgmt.exe",
+      "ParentCommandLine": "C:\\Program Files\\CorpMgmt\\corpmgmt.exe /run inventory",
+      "User": "NT AUTHORITY\\SYSTEM"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Approved management inventory task"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-21T09:02:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-03",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 5003,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000007003}",
+      "ProcessId": 12003,
+      "Image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "CommandLine": "powershell.exe -NoProfile -EncodedCommand AENvcnBNZ210AEludmVudG9yeQ2",
+      "ParentImage": "C:\\Program Files\\CorpMgmt\\corpmgmt.exe",
+      "ParentCommandLine": "C:\\Program Files\\CorpMgmt\\corpmgmt.exe /run inventory",
+      "User": "NT AUTHORITY\\SYSTEM"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Approved management inventory task"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-21T09:03:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-04",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 5004,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000007004}",
+      "ProcessId": 12004,
+      "Image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "CommandLine": "powershell.exe -NoProfile -EncodedCommand AENvcnBNZ210AEludmVudG9yeQ3",
+      "ParentImage": "C:\\Program Files\\CorpMgmt\\corpmgmt.exe",
+      "ParentCommandLine": "C:\\Program Files\\CorpMgmt\\corpmgmt.exe /run inventory",
+      "User": "NT AUTHORITY\\SYSTEM"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Approved management inventory task"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-21T09:04:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-05",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 5005,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000007005}",
+      "ProcessId": 12005,
+      "Image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "CommandLine": "powershell.exe -NoProfile -EncodedCommand AENvcnBNZ210AEludmVudG9yeQ4",
+      "ParentImage": "C:\\Program Files\\CorpMgmt\\corpmgmt.exe",
+      "ParentCommandLine": "C:\\Program Files\\CorpMgmt\\corpmgmt.exe /run inventory",
+      "User": "NT AUTHORITY\\SYSTEM"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Approved management inventory task"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-21T09:05:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-06",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 5006,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000007006}",
+      "ProcessId": 12006,
+      "Image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "CommandLine": "powershell.exe -NoProfile -EncodedCommand AENvcnBNZ210AEludmVudG9yeQ5",
+      "ParentImage": "C:\\Program Files\\CorpMgmt\\corpmgmt.exe",
+      "ParentCommandLine": "C:\\Program Files\\CorpMgmt\\corpmgmt.exe /run inventory",
+      "User": "NT AUTHORITY\\SYSTEM"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Approved management inventory task"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-21T09:06:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-07",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 5007,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000007007}",
+      "ProcessId": 12007,
+      "Image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "CommandLine": "powershell.exe -NoProfile -EncodedCommand AENvcnBNZ210AEludmVudG9yeQ6",
+      "ParentImage": "C:\\Program Files\\CorpMgmt\\corpmgmt.exe",
+      "ParentCommandLine": "C:\\Program Files\\CorpMgmt\\corpmgmt.exe /run inventory",
+      "User": "NT AUTHORITY\\SYSTEM"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Approved management inventory task"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-21T09:07:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-08",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 5008,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000007008}",
+      "ProcessId": 12008,
+      "Image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "CommandLine": "powershell.exe -NoProfile -EncodedCommand AENvcnBNZ210AEludmVudG9yeQ7",
+      "ParentImage": "C:\\Program Files\\CorpMgmt\\corpmgmt.exe",
+      "ParentCommandLine": "C:\\Program Files\\CorpMgmt\\corpmgmt.exe /run inventory",
+      "User": "NT AUTHORITY\\SYSTEM"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Approved management inventory task"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-21T09:10:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-10",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 5009,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000007009}",
+      "ProcessId": 12009,
+      "Image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "CommandLine": "powershell.exe -NoProfile -Command Get-ChildItem C:\\Users\\user0",
+      "ParentImage": "C:\\Windows\\explorer.exe",
+      "ParentCommandLine": "explorer.exe",
+      "User": "LAB\\analyst"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Normal PowerShell file listing"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-21T09:11:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-11",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 5010,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000007010}",
+      "ProcessId": 12010,
+      "Image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "CommandLine": "powershell.exe -NoProfile -Command Get-ChildItem C:\\Users\\user1",
+      "ParentImage": "C:\\Windows\\System32\\cmd.exe",
+      "ParentCommandLine": "cmd.exe",
+      "User": "LAB\\analyst"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Normal PowerShell file listing"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-21T09:12:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-12",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 5011,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000007011}",
+      "ProcessId": 12011,
+      "Image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "CommandLine": "powershell.exe -NoProfile -Command Get-ChildItem C:\\Users\\user2",
+      "ParentImage": "C:\\Windows\\explorer.exe",
+      "ParentCommandLine": "explorer.exe",
+      "User": "LAB\\analyst"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Normal PowerShell file listing"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-21T09:13:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-13",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 5012,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000007012}",
+      "ProcessId": 12012,
+      "Image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "CommandLine": "powershell.exe -NoProfile -Command Get-ChildItem C:\\Users\\user3",
+      "ParentImage": "C:\\Windows\\System32\\cmd.exe",
+      "ParentCommandLine": "cmd.exe",
+      "User": "LAB\\analyst"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Normal PowerShell file listing"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-21T09:14:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-14",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 5013,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000007013}",
+      "ProcessId": 12013,
+      "Image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "CommandLine": "powershell.exe -NoProfile -Command Get-ChildItem C:\\Users\\user4",
+      "ParentImage": "C:\\Windows\\explorer.exe",
+      "ParentCommandLine": "explorer.exe",
+      "User": "LAB\\analyst"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Normal PowerShell file listing"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-21T09:20:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-20",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 5014,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000007014}",
+      "ProcessId": 12014,
+      "Image": "C:\\Windows\\System32\\notepad.exe",
+      "CommandLine": "notepad.exe",
+      "ParentImage": "C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE",
+      "ParentCommandLine": "WINWORD.EXE notes.docx",
+      "User": "LAB\\finance"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Word opened a text editor"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-21T09:21:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-21",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 5015,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000007015}",
+      "ProcessId": 12015,
+      "Image": "C:\\Windows\\System32\\splwow64.exe",
+      "CommandLine": "splwow64.exe 1234",
+      "ParentImage": "C:\\Program Files\\Microsoft Office\\root\\Office16\\EXCEL.EXE",
+      "ParentCommandLine": "EXCEL.EXE budget.xlsx",
+      "User": "LAB\\finance"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Excel print subsystem"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-21T09:22:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-22",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 5016,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000007016}",
+      "ProcessId": 12016,
+      "Image": "C:\\Program Files\\Microsoft Office\\root\\Office16\\OUTLOOK.EXE",
+      "CommandLine": "OUTLOOK.EXE",
+      "ParentImage": "C:\\Program Files\\Microsoft Office\\root\\Office16\\OUTLOOK.EXE",
+      "ParentCommandLine": "OUTLOOK.EXE",
+      "User": "LAB\\analyst"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Outlook helper process"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-21T09:23:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-23",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 5017,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000007017}",
+      "ProcessId": 12017,
+      "Image": "C:\\Windows\\System32\\whoami.exe",
+      "CommandLine": "whoami /all",
+      "ParentImage": "C:\\Windows\\System32\\cmd.exe",
+      "ParentCommandLine": "cmd.exe",
+      "User": "LAB\\analyst"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Administrative discovery"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-21T09:24:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-24",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 5018,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000007018}",
+      "ProcessId": 12018,
+      "Image": "C:\\Windows\\System32\\whoami.exe",
+      "CommandLine": "whoami /groups",
+      "ParentImage": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "ParentCommandLine": "powershell.exe",
+      "User": "LAB\\analyst"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Administrative discovery"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-21T09:25:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-25",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 5019,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000007019}",
+      "ProcessId": 12019,
+      "Image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "CommandLine": "powershell.exe -EncodedCommand ZwBlAHQALQBwAHIAbwBjAGUAcwBzAA==",
+      "ParentImage": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "ParentCommandLine": "powershell.exe",
+      "User": "LAB\\analyst"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Nested interactive PowerShell"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-21T09:26:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-26",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 5020,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000007020}",
+      "ProcessId": 12020,
+      "Image": "C:\\Windows\\System32\\powershell.exe",
+      "CommandLine": "powershell.exe -EncodedCommand ZwBlAHQALQBwAHIAbwBjAGUAcwBzAA==",
+      "ParentImage": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+      "ParentCommandLine": "pwsh.exe",
+      "User": "LAB\\analyst"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Nested PowerShell execution"
+  }
+]

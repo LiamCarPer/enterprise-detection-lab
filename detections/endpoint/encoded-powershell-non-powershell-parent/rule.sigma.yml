@@ -17,6 +17,7 @@ detection:
     ParentImage|endswith:
       - '\\powershell.exe'
       - '\\pwsh.exe'
+      - '\\corpmgmt.exe'
   condition: selection and not filter
 falsepositives:
   - Approved administrative or deployment scripts

@@ -73,6 +73,24 @@ edl detection report --check
 
 The output is [`reports/detection-metrics.md`](../reports/detection-metrics.md).
 
+## Baseline evaluation
+
+Use `edl detection baseline` to measure a detection query against a benign
+activity corpus:
+
+```bash
+edl detection baseline \
+  --id DET-END-001 \
+  --dataset lab/datasets/synthetic/benign-baseline/endpoint.json
+```
+
+The result reports the number of baseline events, matched events, and the
+false-positive rate. `--query` accepts an alternative query path relative to
+the detection package, which makes before/after tuning reproducible.
+
+The endpoint tuning result is documented in
+[`reports/false-positive-tuning.md`](../reports/false-positive-tuning.md).
+
 ## Fixture sources
 
 Fixtures use the repository envelope:

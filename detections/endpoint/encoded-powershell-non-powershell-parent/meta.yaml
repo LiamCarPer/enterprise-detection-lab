@@ -1,6 +1,6 @@
 id: DET-END-001
 title: Encoded PowerShell From Non-PowerShell Parent
-version: 1.0.0
+version: 1.1.0
 status: tested
 domain: endpoint
 severity: high
@@ -36,6 +36,7 @@ tests:
   negative: 5
   benign: 5
 false_positives:
+  - The approved CorMgmt endpoint management agent, excluded in v1.1.0 after baseline tuning.
   - Approved administrative scripts launched from a management shell.
   - Software deployment or endpoint management tooling that uses encoded commands.
   - Security testing and detection validation activity.

@@ -12,6 +12,8 @@ The lab uses synthetic or public, license-compatible data only. Raw datasets are
 - Windows Security
 - AWS CloudTrail
 
+The endpoint baseline under `lab/datasets/synthetic/benign-baseline/endpoint.json` is a separate benign corpus used for false-positive tuning. It is listed in the manifest for hash verification but is not a telemetry source sample loaded by `edl ingest`.
+
 These events are generated for this repository. They use reserved documentation ranges, `example.test`, and fake identifiers. They contain no real users, hosts, accounts, keys, or production data.
 
 ## Manifest
