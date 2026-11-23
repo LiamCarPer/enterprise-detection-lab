@@ -21,6 +21,7 @@ class DetectionMetrics:
     title: str
     domain: str
     status: str
+    evaluation_unit: str
     sample_size: int
     precision: float
     recall: float
@@ -65,6 +66,9 @@ def _load_one(path: Path, root: Path) -> DetectionMetrics:
     sample_size = payload.get("sample_size")
     if not isinstance(sample_size, int) or isinstance(sample_size, bool):
         raise DetectionError(f"{path}: metrics.sample_size must be an integer")
+    evaluation_unit = payload.get("evaluation_unit", "event")
+    if evaluation_unit not in {"event", "scenario"}:
+        raise DetectionError(f"{path}: metrics.evaluation_unit must be event or scenario")
     measured_at = payload.get("measured_at")
     method = payload.get("method")
     limitations = payload.get("limitations")
@@ -80,6 +84,7 @@ def _load_one(path: Path, root: Path) -> DetectionMetrics:
         title=title,
         domain=domain,
         status=status,
+        evaluation_unit=evaluation_unit,
         sample_size=sample_size,
         precision=_number(payload, "precision", path),
         recall=_number(payload, "recall", path),
@@ -107,7 +112,8 @@ def load_detection_metrics(root: Path = config.ROOT) -> list[DetectionMetrics]:
 
 def render_metrics_report(metrics: Sequence[DetectionMetrics]) -> str:
     """Render a deterministic Markdown report from committed metrics."""
-    total_fixtures = sum(item.sample_size for item in metrics)
+    event_cases = sum(item.sample_size for item in metrics if item.evaluation_unit == "event")
+    scenario_cases = sum(item.sample_size for item in metrics if item.evaluation_unit == "scenario")
     lines = [
         "# Detection Metrics",
         "",
@@ -117,18 +123,19 @@ def render_metrics_report(metrics: Sequence[DetectionMetrics]) -> str:
         "production measurements.",
         "",
         f"- Detections: {len(metrics)}",
-        f"- Fixture events: {total_fixtures}",
+        f"- Event-level cases: {event_cases}",
+        f"- Scenario-level cases: {scenario_cases}",
         "",
-        "| Detection | Domain | Title | Status | Fixtures | Precision | "
+        "| Detection | Domain | Title | Status | Unit | Cases | Precision | "
         "Recall | FPR | p50 ms | p95 ms | Measured |",
-        "|---|---|---|---|---:|---:|---:|---:|---:|---:|---|",
+        "|---|---|---|---|---|---:|---:|---:|---:|---:|---:|---|",
     ]
     for item in metrics:
         lines.append(
             f"| `{item.detection_id}` | {item.domain} | {item.title} | {item.status} | "
-            f"{item.sample_size} | {item.precision:.2f} | {item.recall:.2f} | "
-            f"{item.false_positive_rate:.2f} | {item.latency_ms_p50:.1f} | "
-            f"{item.latency_ms_p95:.1f} | {item.measured_at} |"
+            f"{item.evaluation_unit} | {item.sample_size} | {item.precision:.2f} | "
+            f"{item.recall:.2f} | {item.false_positive_rate:.2f} | "
+            f"{item.latency_ms_p50:.1f} | {item.latency_ms_p95:.1f} | {item.measured_at} |"
         )
 
     lines.extend(
@@ -139,7 +146,8 @@ def render_metrics_report(metrics: Sequence[DetectionMetrics]) -> str:
             "Each metric is produced by `edl detection test --write-metrics`. The runner",
             "normalizes fixtures, writes them to a temporary OpenSearch index, executes the",
             "committed native query, and compares returned documents with expected positive,",
-            "negative, and benign classifications.",
+            "negative, and benign classifications. Correlation detections are evaluated at",
+            "scenario level with ordered steps, grouping, and a time window.",
             "",
             "## Detection details",
             "",
@@ -151,7 +159,8 @@ def render_metrics_report(metrics: Sequence[DetectionMetrics]) -> str:
                 f"### {item.detection_id} — {item.title}",
                 "",
                 f"- Method: {item.method}",
-                f"- Fixtures: {item.sample_size}",
+                f"- Unit: {item.evaluation_unit}",
+                f"- Cases: {item.sample_size}",
                 "- Limitations:",
             ]
         )

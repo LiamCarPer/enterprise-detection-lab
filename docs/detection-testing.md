@@ -73,6 +73,30 @@ edl detection report --check
 
 The output is [`reports/detection-metrics.md`](../reports/detection-metrics.md).
 
+## Correlation detections
+
+A detection may declare an ordered sequence in `meta.yaml`:
+
+```yaml
+correlation:
+  window_seconds: 1800
+  group_by:
+    - user
+  steps:
+    - source: entra-signin
+      event_class: sign_in
+    - source: entra-audit
+      event_class: audit
+```
+
+The runner executes the native query, then evaluates the returned events as
+ordered scenarios. Fixtures can use a `scenario` field to group events into one
+case. Correlation metrics are **scenario-level**: each scenario contributes one
+TP/FN/FP/TN result, not one result per event. The metrics `evaluation_unit`
+field and report column make that distinction explicit.
+
+`DET-IDN-003` is the reference correlation detection.
+
 ## Baseline evaluation
 
 Use `edl detection baseline` to measure a detection query against a benign

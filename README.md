@@ -4,7 +4,7 @@
 
 A reproducible local lab for developing and testing enterprise detection content across identity, endpoint, cloud, SaaS, network, and Kubernetes telemetry.
 
-**Status:** Alpha. Identity, endpoint, and cloud telemetry ingestion, six core detections, two investigations, CI, and aggregated fixture metrics are complete. The next focus is correlation detections and broader benign coverage.
+**Status:** Alpha. Identity, endpoint, and cloud telemetry ingestion, seven core detections, two investigations, CI, and aggregated fixture metrics are complete. The next focus is broader benign activity coverage.
 
 [Quick start](#quick-start) · [Architecture](#architecture) · [Project status](#project-status) · [Documentation](#documentation)
 
@@ -203,18 +203,19 @@ Investigations are **Tested** when the timeline, evidence, queries, response, an
 | Identity ingestion | Complete | Entra sign-in and audit, normalized and replay-safe |
 | Endpoint ingestion | Complete | Sysmon and Windows Security, per-event classification |
 | Cloud ingestion | Complete | AWS CloudTrail, normalized and replay-safe |
-| Detection packages | In progress | Six tested detections; production validation pending |
+| Detection packages | In progress | Seven tested detections; production validation pending |
 | Detection testing | Complete | Normalized fixture replay, temporary-index isolation, pass/fail gate, and metrics generation |
-| Tested detections | 6 of 6 | All core detections pass fixture replay |
+| Tested detections | 7 of 7 | All core detections pass fixture replay |
 | Investigations | Complete | Two tested investigation packages with hashed evidence |
 | Tested investigations | 2 of 2 | `INV-001` and `INV-002` pass evidence and detection-link checks |
 | CI | Complete | GitHub Actions quality and OpenSearch-backed test jobs |
 | Metrics reporting | Complete | Aggregated fixture metrics in `reports/detection-metrics.md` |
 | Benign baseline | Complete | 20-event endpoint baseline and before/after tuning report |
+| Correlation detection | Complete | `DET-IDN-003` evaluates ordered identity steps with a 30-minute window |
 | SaaS, network, Kubernetes | Planned | Contracts and samples before detections |
 | Automation | Planned | Enrichment, triage, evidence, and approval-gated response |
 
-Current focus: correlation detections and broader benign activity coverage.
+Current focus: broader benign activity coverage across identity and cloud detections.
 
 ## Quality gates
 

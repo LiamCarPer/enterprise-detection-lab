@@ -64,6 +64,13 @@
         "type": "string",
         "minLength": 5
       }
+    },
+    "evaluation_unit": {
+      "type": "string",
+      "enum": [
+        "event",
+        "scenario"
+      ]
     }
   }
 }

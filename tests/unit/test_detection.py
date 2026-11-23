@@ -476,9 +476,165 @@ def test_run_detections_includes_templates_when_requested() -> None:
         "DET-END-000",
         "DET-IDN-001",
         "DET-IDN-002",
+        "DET-IDN-003",
         "DET-END-001",
         "DET-END-002",
         "DET-CLD-001",
         "DET-CLD-002",
     }
     assert all(result.passed for result in results)
+
+
+CORRELATION = config.ROOT / "detections" / "identity" / "risky-signin-then-service-principal-owner"
+
+
+def _copy_correlation(tmp_path: Path) -> Path:
+    target = tmp_path / "correlation"
+    shutil.copytree(CORRELATION, target)
+    return target
+
+
+def _replace_correlation(path: Path, replacement: str) -> None:
+    meta = path / "meta.yaml"
+    text = meta.read_text()
+    start = text.index("correlation:")
+    end = text.index("tests:")
+    meta.write_text(text[:start] + replacement + text[end:], encoding="utf-8")
+
+
+def test_correlation_detection_evaluates_scenarios() -> None:
+    client = FakeDetectionClient(matched_kinds=("positive", "negative", "benign"))
+    result = run_detection(
+        CORRELATION,
+        sources=_sources(),  # type: ignore[arg-type]
+        client=client,  # type: ignore[arg-type]
+        latency_runs=2,
+    )
+    assert result.evaluation_unit == "scenario"
+    assert result.sample_size == 6
+    assert result.positive_count == 2
+    assert result.negative_count == 2
+    assert result.benign_count == 2
+    assert result.true_positives == 2
+    assert result.false_negatives == 0
+    assert result.false_positives == 0
+    assert result.true_negatives == 4
+    assert result.matched_ids == ("pos-1", "pos-2")
+
+
+def test_correlation_detection_missing_group_field_fails(tmp_path: Path) -> None:
+    path = _copy_correlation(tmp_path)
+    _replace_correlation(
+        path,
+        "correlation:\n"
+        "  window_seconds: 1800\n"
+        "  group_by:\n"
+        "    - missing_field\n"
+        "  steps:\n"
+        "    - source: entra-signin\n"
+        "      event_class: sign_in\n"
+        "    - source: entra-audit\n"
+        "      event_class: audit\n",
+    )
+    client = FakeDetectionClient(matched_kinds=("positive", "negative", "benign"))
+    result = run_detection(
+        path,
+        sources=_sources(),  # type: ignore[arg-type]
+        client=client,  # type: ignore[arg-type]
+        latency_runs=2,
+    )
+    assert not result.passed
+    assert result.true_positives == 0
+    assert result.false_negatives == 2
+
+
+def test_correlation_metrics_use_scenario_unit(tmp_path: Path) -> None:
+    path = _copy_correlation(tmp_path)
+    (path / "metrics.json").unlink()
+    client = FakeDetectionClient(matched_kinds=("positive", "negative", "benign"))
+    result = run_detection(
+        path,
+        sources=_sources(),  # type: ignore[arg-type]
+        client=client,  # type: ignore[arg-type]
+        latency_runs=2,
+        write_metrics=True,
+    )
+    assert result.passed
+    metrics = json.loads((path / "metrics.json").read_text())
+    assert metrics["evaluation_unit"] == "scenario"
+    assert metrics["sample_size"] == 6
+
+
+@pytest.mark.parametrize(
+    ("replacement", "message"),
+    [
+        ("correlation: []\n", "meta.correlation"),
+        (
+            "correlation:\n"
+            "  window_seconds: 0\n"
+            "  group_by:\n"
+            "    - user\n"
+            "  steps:\n"
+            "    - source: entra-signin\n"
+            "      event_class: sign_in\n"
+            "    - source: entra-audit\n"
+            "      event_class: audit\n",
+            "window_seconds",
+        ),
+        (
+            "correlation:\n"
+            "  window_seconds: 1800\n"
+            "  group_by: []\n"
+            "  steps:\n"
+            "    - source: entra-signin\n"
+            "      event_class: sign_in\n"
+            "    - source: entra-audit\n"
+            "      event_class: audit\n",
+            "group_by",
+        ),
+        (
+            "correlation:\n  window_seconds: 1800\n  group_by:\n    - user\n  steps: []\n",
+            "at least two steps",
+        ),
+        (
+            "correlation:\n"
+            "  window_seconds: 1800\n"
+            "  group_by:\n"
+            "    - user\n"
+            "  steps:\n"
+            "    - bad\n"
+            "    - source: entra-audit\n"
+            "      event_class: audit\n",
+            "step 1 must be an object",
+        ),
+        (
+            "correlation:\n"
+            "  window_seconds: 1800\n"
+            "  group_by:\n"
+            "    - user\n"
+            "  steps:\n"
+            "    - source: missing-source\n"
+            "      event_class: sign_in\n"
+            "    - source: entra-audit\n"
+            "      event_class: audit\n",
+            "not declared",
+        ),
+        (
+            "correlation:\n"
+            "  window_seconds: 1800\n"
+            "  group_by:\n"
+            "    - user\n"
+            "  steps:\n"
+            "    - source: entra-signin\n"
+            "      event_class: ''\n"
+            "    - source: entra-audit\n"
+            "      event_class: audit\n",
+            "event_class",
+        ),
+    ],
+)
+def test_correlation_spec_validation(tmp_path: Path, replacement: str, message: str) -> None:
+    path = _copy_correlation(tmp_path)
+    _replace_correlation(path, replacement)
+    with pytest.raises(DetectionError, match=message):
+        load_detection_package(path, _sources())  # type: ignore[arg-type]

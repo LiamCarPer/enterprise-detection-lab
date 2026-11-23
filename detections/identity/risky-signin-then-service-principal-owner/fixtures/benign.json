@@ -1,0 +1,66 @@
+[
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000008301",
+      "createdDateTime": "2026-11-03T09:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.10",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "none"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "benign-1",
+    "note": "Normal sign-in without elevated risk"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000008302",
+      "createdDateTime": "2026-11-03T09:05:00Z",
+      "userPrincipalName": "finance@example.test",
+      "appDisplayName": "Azure Portal",
+      "ipAddress": "198.51.100.23",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "low"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "benign-1",
+    "note": "Normal sign-in without elevated risk"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000008303",
+      "activityDateTime": "2026-11-03T10:00:00Z",
+      "operationName": "Add service principal",
+      "initiatedBy": {"user": {"userPrincipalName": "appowner@example.test"}},
+      "targetResources": [{"displayName": "Approved App", "type": "ServicePrincipal"}],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "benign-2",
+    "note": "Routine application registration"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000008304",
+      "activityDateTime": "2026-11-03T10:05:00Z",
+      "operationName": "Update service principal",
+      "initiatedBy": {"user": {"userPrincipalName": "appowner@example.test"}},
+      "targetResources": [{"displayName": "Approved App", "type": "ServicePrincipal"}],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "benign-2",
+    "note": "Routine application update"
+  }
+]

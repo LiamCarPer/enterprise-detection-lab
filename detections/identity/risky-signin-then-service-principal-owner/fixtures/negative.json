@@ -1,0 +1,66 @@
+[
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000008201",
+      "createdDateTime": "2026-11-02T09:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.11",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "neg-1",
+    "note": "Risky sign-in step"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000008202",
+      "activityDateTime": "2026-11-02T10:00:00Z",
+      "operationName": "Add owner to service principal",
+      "initiatedBy": {"user": {"userPrincipalName": "analyst@example.test"}},
+      "targetResources": [{"displayName": "Lab Reporting App", "type": "ServicePrincipal"}],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "neg-1",
+    "note": "Owner change is outside the 30-minute window"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000008203",
+      "createdDateTime": "2026-11-02T11:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Azure Portal",
+      "ipAddress": "198.51.100.77",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "high"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "neg-2",
+    "note": "Risky sign-in step"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000008204",
+      "activityDateTime": "2026-11-02T11:10:00Z",
+      "operationName": "Add owner to service principal",
+      "initiatedBy": {"user": {"userPrincipalName": "admin@example.test"}},
+      "targetResources": [{"displayName": "Finance Sync", "type": "ServicePrincipal"}],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "neg-2",
+    "note": "Owner change is by a different user"
+  }
+]

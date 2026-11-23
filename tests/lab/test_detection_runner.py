@@ -49,7 +49,7 @@ def test_risky_signin_detection_executes() -> None:
         client.close()
 
 
-def test_all_gate1_detections_execute() -> None:
+def test_all_detections_execute() -> None:
     client = OpenSearchClient()
     try:
         results = run_detections(
@@ -62,6 +62,7 @@ def test_all_gate1_detections_execute() -> None:
             "DET-END-000",
             "DET-IDN-001",
             "DET-IDN-002",
+            "DET-IDN-003",
             "DET-END-001",
             "DET-END-002",
             "DET-CLD-001",

@@ -8,7 +8,11 @@
   "items": {
     "type": "object",
     "additionalProperties": false,
-    "required": ["event", "source", "synthetic"],
+    "required": [
+      "event",
+      "source",
+      "synthetic"
+    ],
     "properties": {
       "event": {
         "type": "object"
@@ -26,6 +30,10 @@
       },
       "note": {
         "type": "string"
+      },
+      "scenario": {
+        "type": "string",
+        "minLength": 1
       }
     }
   }

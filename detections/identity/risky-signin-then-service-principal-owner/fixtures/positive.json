@@ -1,0 +1,66 @@
+[
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000008101",
+      "createdDateTime": "2026-11-01T09:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.11",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "pos-1",
+    "note": "Risky sign-in step"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000008102",
+      "activityDateTime": "2026-11-01T09:10:00Z",
+      "operationName": "Add owner to service principal",
+      "initiatedBy": {"user": {"userPrincipalName": "analyst@example.test"}},
+      "targetResources": [{"displayName": "Lab Reporting App", "type": "ServicePrincipal"}],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "pos-1",
+    "note": "Ownership persistence step"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000008103",
+      "createdDateTime": "2026-11-01T10:00:00Z",
+      "userPrincipalName": "finance@example.test",
+      "appDisplayName": "Azure Portal",
+      "ipAddress": "198.51.100.77",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "high"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "pos-2",
+    "note": "Risky sign-in step"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000008104",
+      "activityDateTime": "2026-11-01T10:05:00Z",
+      "operationName": "Add owner to service principal",
+      "initiatedBy": {"user": {"userPrincipalName": "finance@example.test"}},
+      "targetResources": [{"displayName": "Finance Sync", "type": "ServicePrincipal"}],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "pos-2",
+    "note": "Ownership persistence step"
+  }
+]

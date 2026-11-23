@@ -1,0 +1,30 @@
+{
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "bool": {
+            "filter": [
+              { "term": { "source": "entra-signin" } },
+              { "term": { "result": "success" } },
+              { "terms": { "risk_level": ["medium", "high"] } },
+              { "term": { "auth_requirement": "singleFactorAuthentication" } },
+              { "term": { "is_interactive": true } }
+            ]
+          }
+        },
+        {
+          "bool": {
+            "filter": [
+              { "term": { "source": "entra-audit" } },
+              { "term": { "action": "Add owner to service principal" } },
+              { "term": { "result": "success" } },
+              { "term": { "resource.type": "ServicePrincipal" } }
+            ]
+          }
+        }
+      ],
+      "minimum_should_match": 1
+    }
+  }
+}

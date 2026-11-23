@@ -6,7 +6,7 @@ import json
 import time
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any, Literal
 from uuid import uuid4
@@ -30,6 +30,20 @@ class DetectionCase:
     kind: FixtureKind
     source: str
     event: CanonicalEvent
+    scenario: str
+
+
+@dataclass(frozen=True)
+class CorrelationStep:
+    source: str
+    event_class: str
+
+
+@dataclass(frozen=True)
+class CorrelationSpec:
+    window_seconds: int
+    group_by: tuple[str, ...]
+    steps: tuple[CorrelationStep, ...]
 
 
 @dataclass(frozen=True)
@@ -41,6 +55,7 @@ class DetectionPackage:
     path: Path
     query: dict[str, Any]
     cases: tuple[DetectionCase, ...]
+    correlation: CorrelationSpec | None
 
 
 @dataclass(frozen=True)
@@ -66,6 +81,7 @@ class DetectionResult:
     matched_ids: tuple[str, ...]
     missed_ids: tuple[str, ...]
     false_positive_ids: tuple[str, ...]
+    evaluation_unit: str = "event"
 
     @property
     def passed(self) -> bool:
@@ -76,6 +92,7 @@ class DetectionResult:
             "detection_id": self.detection_id,
             "title": self.title,
             "path": str(self.path),
+            "evaluation_unit": self.evaluation_unit,
             "sample_size": self.sample_size,
             "fixtures": {
                 "positive": self.positive_count,
@@ -206,16 +223,68 @@ def _load_cases(
                 normalized = normalize_event(source, raw_event, ingest_time=ingest_time)
             except IngestError as exc:
                 raise DetectionError(f"{fixture_path}: fixture {position}: {exc}") from exc
+            scenario = fixture.get("scenario")
+            if not isinstance(scenario, str) or not scenario:
+                scenario = f"{kind}-{position:03d}"
             cases.append(
                 DetectionCase(
                     case_id=f"{kind}-{position:03d}",
                     kind=kind,
                     source=source_id,
                     event=normalized,
+                    scenario=scenario,
                 )
             )
 
     return tuple(cases)
+
+
+def _load_correlation(
+    path: Path,
+    meta: Mapping[str, Any],
+    allowed_sources: set[str],
+) -> CorrelationSpec | None:
+    raw = meta.get("correlation")
+    if raw is None:
+        return None
+    if not isinstance(raw, Mapping):
+        raise DetectionError(f"{path}: meta.correlation must be an object")
+
+    window = raw.get("window_seconds")
+    if not isinstance(window, int) or isinstance(window, bool) or window < 1:
+        raise DetectionError(f"{path}: correlation.window_seconds must be a positive integer")
+
+    group_by = raw.get("group_by")
+    if (
+        not isinstance(group_by, list)
+        or not group_by
+        or not all(isinstance(item, str) and item for item in group_by)
+    ):
+        raise DetectionError(f"{path}: correlation.group_by must be a string array")
+
+    raw_steps = raw.get("steps")
+    if not isinstance(raw_steps, list) or len(raw_steps) < 2:
+        raise DetectionError(f"{path}: correlation.steps must contain at least two steps")
+    steps: list[CorrelationStep] = []
+    for position, item in enumerate(raw_steps, start=1):
+        if not isinstance(item, Mapping):
+            raise DetectionError(f"{path}: correlation step {position} must be an object")
+        source = item.get("source")
+        event_class = item.get("event_class")
+        if not isinstance(source, str) or source not in allowed_sources:
+            raise DetectionError(
+                f"{path}: correlation step {position} source {source!r} "
+                "is not declared in meta.telemetry"
+            )
+        if not isinstance(event_class, str) or not event_class:
+            raise DetectionError(f"{path}: correlation step {position} event_class is missing")
+        steps.append(CorrelationStep(source=source, event_class=event_class))
+
+    return CorrelationSpec(
+        window_seconds=window,
+        group_by=tuple(group_by),
+        steps=tuple(steps),
+    )
 
 
 def _load_baseline_cases(
@@ -268,6 +337,7 @@ def _load_baseline_cases(
                 kind="benign",
                 source=source_id,
                 event=normalized,
+                scenario=f"baseline-{position:03d}",
             )
         )
     return tuple(cases)
@@ -293,6 +363,8 @@ def load_detection_package(
         raise DetectionError(f"{path}: meta.title is missing")
 
     query = _load_query(path, meta)
+    allowed_sources = _allowed_sources(path, meta)
+    correlation = _load_correlation(path, meta, allowed_sources)
     cases = _load_cases(
         path,
         meta,
@@ -305,6 +377,7 @@ def load_detection_package(
         path=path,
         query=query,
         cases=cases,
+        correlation=correlation,
     )
 
 
@@ -342,6 +415,128 @@ def _percentile(values: Sequence[float], fraction: float) -> float:
     ordered = sorted(values)
     position = round((len(ordered) - 1) * fraction)
     return ordered[max(0, min(position, len(ordered) - 1))]
+
+
+def _lookup_document(document: Mapping[str, Any], field: str) -> Any:
+    current: Any = document
+    for part in field.split("."):
+        if not isinstance(current, Mapping) or part not in current:
+            return None
+        current = current[part]
+    return current
+
+
+def _correlation_hit(cases: Sequence[DetectionCase], spec: CorrelationSpec) -> bool:
+    grouped: dict[tuple[Any, ...], list[list[DetectionCase]]] = {}
+    for step_index, step in enumerate(spec.steps):
+        for case in cases:
+            if case.source != step.source or case.event.event_class != step.event_class:
+                continue
+            key = tuple(_lookup_document(case.event.document, field) for field in spec.group_by)
+            if any(value is None or value == "" for value in key):
+                continue
+            groups = grouped.setdefault(key, [[] for _ in spec.steps])
+            groups[step_index].append(case)
+
+    for groups in grouped.values():
+        for first in groups[0]:
+            current = first.event.event_time
+            deadline = current + timedelta(seconds=spec.window_seconds)
+            found = True
+            for step_index in range(1, len(spec.steps)):
+                candidates = sorted(
+                    (
+                        event
+                        for event in groups[step_index]
+                        if current <= event.event.event_time <= deadline
+                    ),
+                    key=lambda event: event.event.event_time,
+                )
+                if not candidates:
+                    found = False
+                    break
+                current = candidates[0].event.event_time
+            if found:
+                return True
+    return False
+
+
+def _score_correlation(
+    package: DetectionPackage,
+    matched: set[str],
+    latencies: Sequence[float],
+) -> DetectionResult:
+    spec = package.correlation
+    assert spec is not None
+
+    scenarios: dict[tuple[str, str], list[DetectionCase]] = {}
+    for case in package.cases:
+        scenarios.setdefault((case.kind, case.scenario), []).append(case)
+
+    true_positive_ids: list[str] = []
+    false_negative_ids: list[str] = []
+    false_positive_ids: list[str] = []
+    true_negative_ids: list[str] = []
+    positive_scenarios = 0
+    negative_scenarios = 0
+    benign_scenarios = 0
+
+    for (kind, scenario), cases in scenarios.items():
+        if kind == "positive":
+            positive_scenarios += 1
+        elif kind == "negative":
+            negative_scenarios += 1
+        else:
+            benign_scenarios += 1
+        matched_cases = [case for case in cases if case.case_id in matched]
+        matched_sequence = _correlation_hit(matched_cases, spec)
+        if kind == "positive":
+            (true_positive_ids if matched_sequence else false_negative_ids).append(scenario)
+        else:
+            (false_positive_ids if matched_sequence else true_negative_ids).append(scenario)
+
+    true_positives = len(true_positive_ids)
+    false_negatives = len(false_negative_ids)
+    false_positives = len(false_positive_ids)
+    true_negatives = len(true_negative_ids)
+    precision = (
+        true_positives / (true_positives + false_positives)
+        if true_positives + false_positives
+        else 0.0
+    )
+    recall = (
+        true_positives / (true_positives + false_negatives)
+        if true_positives + false_negatives
+        else 0.0
+    )
+    false_positive_rate = (
+        false_positives / (false_positives + true_negatives)
+        if false_positives + true_negatives
+        else 0.0
+    )
+
+    return DetectionResult(
+        detection_id=package.detection_id,
+        title=package.title,
+        path=package.path,
+        sample_size=len(scenarios),
+        positive_count=positive_scenarios,
+        negative_count=negative_scenarios,
+        benign_count=benign_scenarios,
+        true_positives=true_positives,
+        false_negatives=false_negatives,
+        false_positives=false_positives,
+        true_negatives=true_negatives,
+        precision=precision,
+        recall=recall,
+        false_positive_rate=false_positive_rate,
+        latency_ms_p50=_percentile(latencies, 0.50),
+        latency_ms_p95=_percentile(latencies, 0.95),
+        matched_ids=tuple(sorted(true_positive_ids + false_positive_ids)),
+        missed_ids=tuple(sorted(false_negative_ids)),
+        false_positive_ids=tuple(sorted(false_positive_ids)),
+        evaluation_unit="scenario",
+    )
 
 
 def _score(
@@ -402,21 +597,38 @@ def _score(
 
 def write_detection_metrics(package: DetectionPackage, result: DetectionResult) -> Path:
     """Write schema-compatible metrics for a passing detection."""
+    if result.evaluation_unit == "scenario":
+        method = (
+            "Synthetic sequence replay against OpenSearch; native query plus "
+            "correlation evaluation."
+        )
+        limitations = [
+            f"Curated synthetic scenarios; sample size {result.sample_size}.",
+            "Correlation metrics are scenario-level; each fixture scenario is one evaluation case.",
+            "Window and grouping are evaluated by the runner; production scheduling is out of "
+            "scope.",
+            "Sigma rule is not executed; the native OpenSearch query is the tested path.",
+        ]
+    else:
+        method = "Synthetic fixture replay against OpenSearch; native query only."
+        limitations = [
+            f"Curated synthetic fixtures; sample size {result.sample_size}.",
+            "Local OpenSearch latency; not representative of production.",
+            "Sigma rule is not executed; the native OpenSearch query is the tested path.",
+        ]
+
     metrics = {
         "detection_id": result.detection_id,
         "measured_at": format_timestamp(datetime.now(UTC)),
         "sample_size": result.sample_size,
+        "evaluation_unit": result.evaluation_unit,
         "precision": round(result.precision, 6),
         "recall": round(result.recall, 6),
         "false_positive_rate": round(result.false_positive_rate, 6),
         "latency_ms_p50": round(result.latency_ms_p50, 3),
         "latency_ms_p95": round(result.latency_ms_p95, 3),
-        "method": "Synthetic fixture replay against OpenSearch; native query only.",
-        "limitations": [
-            f"Curated synthetic fixtures; sample size {result.sample_size}.",
-            "Local OpenSearch latency; not representative of production.",
-            "Sigma rule is not executed; the native OpenSearch query is the tested path.",
-        ],
+        "method": method,
+        "limitations": limitations,
     }
     path = package.path / "metrics.json"
     path.write_text(json.dumps(metrics, indent=2) + "\n", encoding="utf-8")
@@ -461,7 +673,11 @@ def run_detection(
             latencies.append((time.perf_counter() - started) * 1000.0)
 
         matched = extract_hit_ids(response)
-        result = _score(package, matched, latencies)
+        result = (
+            _score_correlation(package, matched, latencies)
+            if package.correlation is not None
+            else _score(package, matched, latencies)
+        )
         if write_metrics and result.passed:
             write_detection_metrics(package, result)
         return result

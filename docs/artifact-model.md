@@ -48,6 +48,7 @@ Validated by [`schemas/detection.schema.json`](../schemas/detection.schema.json)
 - ATT&CK mapping
 - telemetry contract
 - query references
+- optional sequence correlation specification
 - test counts
 - false positives
 - runbook path
@@ -158,6 +159,7 @@ An investigation is done when:
 - Detection versions: semver (`1.0.0`).
 - Investigation versions: semver (`1.0.0`).
 - Query filenames: `opensearch.json`, `sentinel.kql`, `splunk.spl`, `sigma.yml`.
+- Correlated detections declare `correlation.window_seconds`, `group_by`, and ordered `steps` in `meta.yaml`. Fixture envelopes may use `scenario` to group events into one evaluation case.
 - Fixture names: `positive.json`, `negative.json`, `benign.json`.
 - Do not rename an artifact ID after publication; create a new version or a retired note instead.
 

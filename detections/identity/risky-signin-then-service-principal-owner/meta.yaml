@@ -1,0 +1,60 @@
+id: DET-IDN-003
+title: Risky Sign-In Followed by Service Principal Ownership Change
+version: 1.0.0
+status: tested
+domain: identity
+severity: high
+hypothesis: A risky single-factor sign-in followed by a service principal ownership change within 30 minutes can indicate account compromise and application persistence.
+description: Correlates an elevated-risk single-factor sign-in with a successful service principal owner addition for the same user within 30 minutes.
+owner: detection-engineering
+created: "2026-11-23"
+updated: "2026-11-23"
+attack:
+  - T1078
+  - T1098.002
+tags:
+  - identity
+  - entra-id
+  - correlation
+telemetry:
+  - source: entra-signin
+    event_class: sign_in
+    required_fields:
+      - id
+      - createdDateTime
+      - userPrincipalName
+      - status
+      - authenticationRequirement
+      - isInteractive
+      - riskLevelDuringSignIn
+  - source: entra-audit
+    event_class: audit
+    required_fields:
+      - id
+      - activityDateTime
+      - operationName
+      - initiatedBy
+      - targetResources
+      - result
+queries:
+  opensearch: queries/opensearch.json
+correlation:
+  window_seconds: 1800
+  group_by:
+    - user
+  steps:
+    - source: entra-signin
+      event_class: sign_in
+    - source: entra-audit
+      event_class: audit
+tests:
+  positive: 4
+  negative: 4
+  benign: 4
+false_positives:
+  - Approved application ownership changes following legitimate travel or a new device.
+  - Risk false positives followed by approved administrative work.
+  - Break-glass or emergency identity administration.
+runbook: runbook.md
+metrics: metrics.json
+notes: notes.md

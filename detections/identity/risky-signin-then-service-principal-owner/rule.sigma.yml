@@ -1,0 +1,25 @@
+title: Risky Sign-In Component for Service Principal Ownership Correlation
+id: 00000000-0000-4000-8000-000000000103
+status: test
+description: Component rule for the risky sign-in step; the 30-minute ownership correlation is defined in detection metadata and the native query.
+author: detection-engineering
+date: 2026/11/23
+logsource:
+  product: azure
+  service: signinlogs
+detection:
+  selection:
+    status: success
+    riskLevelDuringSignIn:
+      - medium
+      - high
+    authenticationRequirement: singleFactorAuthentication
+    isInteractive: true
+  condition: selection
+falsepositives:
+  - Legitimate travel with elevated risk
+  - Risk false positives
+level: high
+tags:
+  - attack.t1078
+  - attack.t1098.002

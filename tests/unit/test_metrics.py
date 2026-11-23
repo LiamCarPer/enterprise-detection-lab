@@ -20,6 +20,7 @@ DETECTIONS = {
     "DET-END-002",
     "DET-IDN-001",
     "DET-IDN-002",
+    "DET-IDN-003",
 }
 
 
@@ -58,7 +59,8 @@ def _package(tmp_path: Path, **overrides: object) -> Path:
 def test_load_detection_metrics_from_repository() -> None:
     metrics = load_detection_metrics()
     assert {item.detection_id for item in metrics} == DETECTIONS
-    assert all(item.sample_size == 15 for item in metrics)
+    assert {item.detection_id: item.sample_size for item in metrics}["DET-IDN-003"] == 6
+    assert all(item.sample_size == 15 for item in metrics if item.detection_id != "DET-IDN-003")
     assert [item.detection_id for item in metrics] == sorted(DETECTIONS)
     assert all(item.path.is_relative_to("detections") for item in metrics)
 
@@ -66,7 +68,8 @@ def test_load_detection_metrics_from_repository() -> None:
 def test_render_and_check_metrics_report(tmp_path: Path) -> None:
     metrics = load_detection_metrics()
     report = render_metrics_report(metrics)
-    assert "Fixture events: 90" in report
+    assert "Event-level cases: 90" in report
+    assert "Scenario-level cases: 6" in report
     assert "DET-IDN-001" in report
     assert "Synthetic fixture replay" in report
     assert "not production measurements" in report
@@ -102,6 +105,7 @@ def test_load_detection_metrics_requires_metrics(tmp_path: Path) -> None:
         ({"method": ""}, "method"),
         ({"limitations": "bad"}, "limitations"),
         ({"precision": "1.0"}, "precision"),
+        ({"evaluation_unit": "invalid"}, "evaluation_unit"),
     ],
 )
 def test_load_detection_metrics_rejects_invalid_package(

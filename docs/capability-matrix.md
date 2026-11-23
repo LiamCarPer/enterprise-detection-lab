@@ -39,12 +39,12 @@ This matrix tracks the engineering capabilities implemented in the lab and the a
 | `telemetry/sources/` + `docs/telemetry-matrix.md` | Complete | 11 contracts (5 ingested, 6 documented) with generated matrix and freshness check |
 | `src/edl/ingest.py` + `docs/ingestion.md` | Complete | Identity, endpoint, and cloud normalization, classification, deduplication, and idempotent bulk ingest |
 | `detections/endpoint/_template` + `investigations/_template` | Complete | Working reference packages and `edl new` scaffolding |
-| `detections/identity`, `detections/endpoint`, `detections/cloud` | Tested | Six core detections, each with a 15-event corpus, runbook, and committed metrics |
+| `detections/identity`, `detections/endpoint`, `detections/cloud` | Tested | Seven core detections, including one sequence correlation, with runbooks and committed metrics |
 | `investigations/01-identity-to-cloud` + `investigations/02-endpoint-to-cloud` | Tested | Evidence hashes, timelines, queries, response, lessons, and linked detection checks |
 | `src/edl/detection.py` + `docs/detection-testing.md` | Complete | Fixture normalization, temporary-index replay, pass/fail scoring, and metrics generation |
 | `tests/` + `Makefile` | Complete | Unit, integration, and lab tests; 90% statement-coverage gate |
 | `.github/workflows/ci.yml` | Complete | Quality job plus OpenSearch-backed ingestion, detection, and investigation tests |
-| `reports/detection-metrics.md` | Complete | Aggregated fixture metrics for six detections with explicit limitations |
+| `reports/detection-metrics.md` | Complete | Aggregated fixture metrics for seven detections with explicit limitations |
 | `lab/datasets/synthetic/benign-baseline/endpoint.json` + `reports/false-positive-tuning.md` | Complete | 20-event benign baseline and a measured 8/20 to 0/20 tuning result |
 | `docs/capability-matrix.md` + `docs/requirements-traceability.md` | Complete | Capability and engineering-requirement traceability |
 
