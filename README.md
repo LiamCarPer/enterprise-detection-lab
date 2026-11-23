@@ -2,7 +2,7 @@
 
 A reproducible local lab for developing and testing enterprise detection content across identity, endpoint, cloud, SaaS, network, and Kubernetes telemetry.
 
-**Status:** Alpha. Identity, endpoint, and cloud telemetry ingestion and six Gate 1 detections are complete. Investigations, CI, and aggregated metrics are in progress.
+**Status:** Alpha. Identity, endpoint, and cloud telemetry ingestion, six Gate 1 detections, and two investigations are complete. CI and aggregated metrics are in progress.
 
 [Quick start](#quick-start) · [Architecture](#architecture) · [Project status](#project-status) · [Documentation](#documentation)
 
@@ -159,6 +159,15 @@ Each contract records event time and ingest time fields, deduplication keys, req
 
 A detection is **Tested** when its positive, negative, and benign fixtures pass the OpenSearch replay runner. Production status additionally requires CI and measured operating data.
 
+## Investigation coverage
+
+| ID | Domains | Investigation | Status |
+|---|---|---|---|
+| [`INV-001`](investigations/01-identity-to-cloud/) | Identity, cloud | Identity persistence to cloud credential access | Tested |
+| [`INV-002`](investigations/02-endpoint-to-cloud/) | Endpoint, cloud | Endpoint execution to cloud persistence | Tested |
+
+Investigations are **Tested** when the timeline, evidence, queries, response, and linked detections are complete and the lab query returns the observed evidence.
+
 ## Repository layout
 
 ```text
@@ -184,12 +193,13 @@ A detection is **Tested** when its positive, negative, and benign fixtures pass 
 | Detection packages | In progress | Six tested detections; production validation pending |
 | Detection testing | Complete | Normalized fixture replay, temporary-index isolation, pass/fail gate, and metrics generation |
 | Tested detections | 6 of 6 | All Gate 1 detections pass fixture replay |
-| Investigations | In progress | Package contract and reference template exist |
+| Investigations | Complete | Two tested investigation packages with hashed evidence |
+| Tested investigations | 2 of 2 | `INV-001` and `INV-002` pass evidence and detection-link checks |
 | CI and metrics reporting | Planned | GitHub Actions, aggregated quality report |
 | SaaS, network, Kubernetes | Planned | Contracts and samples before detections |
 | Automation | Planned | Enrichment, triage, evidence, and approval-gated response |
 
-Current milestone: two investigations, CI, and aggregated detection metrics.
+Current milestone: CI and aggregated detection metrics.
 
 ## Quality gates
 
@@ -199,6 +209,7 @@ Current milestone: two investigations, CI, and aggregated detection metrics.
 - A detection must include a Sigma rule, a native query, false-positive analysis, a runbook, and metrics.
 - A production detection must include measured precision, recall, false-positive rate, latency, and limitations.
 - An investigation must distinguish observed evidence from inference and include a timeline, queries, evidence, response, and lessons.
+- An investigation query must return its observed evidence and every linked detection must pass.
 - Telemetry changes must update the contract, sample hash, manifest, and generated matrix together.
 
 ## Design principles
@@ -225,8 +236,8 @@ Out of scope for this repository:
 
 ## Limitations
 
-- The repository is in alpha. Detections, investigations, CI, and metrics are not complete.
-- Samples contain two events per source. They demonstrate contract and pipeline behavior, not production volume.
+- The repository is in alpha. CI and aggregated metrics are not complete, and the detection and investigation corpus is still small.
+- Samples contain a handful of events per source. They demonstrate contract and pipeline behavior, not production volume.
 - The lab does not model production scale, backpressure, retries, dead-letter queues, or multi-tenant isolation.
 - Measurements are small and will be reported with confidence intervals and explicit limitations.
 - No commercial EDR or SIEM licenses are used. The lab relies on open-source tooling and a local Kusto emulator.

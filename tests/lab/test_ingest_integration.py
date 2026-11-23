@@ -39,13 +39,14 @@ def test_identity_ingest_is_idempotent_and_queryable() -> None:
             index_prefix=TEST_PREFIX,
         )
         assert [result.source for result in first] == ["entra-signin", "entra-audit"]
-        assert all(result.read == 2 for result in first)
-        assert all(result.unique == 2 for result in first)
-        assert all(result.written == 2 for result in first)
-        assert all(result.counts == {result.indices[0]: 2} for result in first)
+        expected = {"entra-signin": 3, "entra-audit": 2}
+        assert {result.source: result.read for result in first} == expected
+        assert {result.source: result.unique for result in first} == expected
+        assert {result.source: result.written for result in first} == expected
+        assert {result.source: result.counts[result.indices[0]] for result in first} == expected
 
         hits_before = _search("entra-signin")
-        assert len(hits_before) == 2
+        assert len(hits_before) == 3
         ids_before = sorted(str(hit["_id"]) for hit in hits_before)
 
         sources = [hit["_source"] for hit in hits_before]
@@ -53,6 +54,8 @@ def test_identity_ingest_is_idempotent_and_queryable() -> None:
         assert sources[0]["app"] == "Office 365"
         assert sources[0]["dedup_origin"] == "declared"
         assert sources[0]["event_class"] == "sign_in"
+        assert sources[0]["risk_level"] == "medium"
+        assert sources[0]["result"] == "success"
         assert sources[0]["ingest_time"] == "2026-11-22T12:00:00Z"
 
         second = ingest_identity(
@@ -61,11 +64,11 @@ def test_identity_ingest_is_idempotent_and_queryable() -> None:
             ingest_time=datetime(2026, 11, 23, 12, 0, tzinfo=UTC),
             index_prefix=TEST_PREFIX,
         )
-        assert all(result.counts == {result.indices[0]: 2} for result in second)
+        assert {result.source: result.counts[result.indices[0]] for result in second} == expected
 
         hits_after = _search("entra-signin")
         assert sorted(str(hit["_id"]) for hit in hits_after) == ids_before
-        assert len(hits_after) == 2
+        assert len(hits_after) == 3
 
         audit_hits = _search("entra-audit")
         assert len(audit_hits) == 2

@@ -1,0 +1,92 @@
+id: INV-001
+title: Identity Persistence to Cloud Credential Access
+version: 1.0.0
+status: tested
+domains:
+  - identity
+  - cloud
+scenario: A medium-risk single-factor sign-in is followed by service principal creation, owner assignment, IAM access key creation, and CloudTrail logging shutdown.
+hypothesis: An identity compromise may have been used to establish application persistence and then create durable cloud credentials while reducing audit visibility.
+detections:
+  - DET-IDN-001
+  - DET-IDN-002
+  - DET-CLD-001
+  - DET-CLD-002
+owner: detection-engineering
+created: "2026-11-23"
+updated: "2026-11-23"
+evidence:
+  - id: e1
+    type: event
+    source: entra-signin
+    path: evidence/e1.json
+    provenance: Synthetic event from lab/datasets/synthetic/entra-signin/reference.json
+    description: Medium-risk single-factor sign-in at 08:55 UTC.
+    sha256: b1a907dbae59aed4536cb73b6689ffc8dca53984fe932917699943328b5c9120
+  - id: e2
+    type: event
+    source: entra-audit
+    path: evidence/e2.json
+    provenance: Synthetic event from lab/datasets/synthetic/entra-audit/reference.json
+    description: Service principal created at 09:10 UTC.
+    sha256: 18f3e0d09feafedb43ed32970c3ce733c3faa9cca850ffb50af711f0590bfb22
+  - id: e3
+    type: event
+    source: entra-audit
+    path: evidence/e3.json
+    provenance: Synthetic event from lab/datasets/synthetic/entra-audit/reference.json
+    description: Owner added to the service principal at 09:12 UTC.
+    sha256: 30907fa1e607fa9a87ec055bf850f1fe279fb7562a249e89dffeaaee0ddaad09
+  - id: e4
+    type: event
+    source: aws-cloudtrail
+    path: evidence/e4.json
+    provenance: Synthetic event from lab/datasets/synthetic/aws-cloudtrail/reference.json
+    description: IAM access key created at 09:25 UTC.
+    sha256: bea0ed6251e990710f803b19ff7b5c2babe66f118969b5b5bd2464ab2363c0e4
+  - id: e5
+    type: event
+    source: aws-cloudtrail
+    path: evidence/e5.json
+    provenance: Synthetic event from lab/datasets/synthetic/aws-cloudtrail/reference.json
+    description: CloudTrail logging stopped at 09:30 UTC.
+    sha256: 15bae13671f5a1f2ac45465f4acfe670d9ff1d3882566572950aecb6faae4274
+timeline:
+  - timestamp: "2026-11-01T08:55:00Z"
+    event: Medium-risk single-factor sign-in for analyst@example.test
+    source: entra-signin
+    evidence_id: e1
+  - timestamp: "2026-11-01T09:10:00Z"
+    event: Service principal Lab Reporting App created
+    source: entra-audit
+    evidence_id: e2
+  - timestamp: "2026-11-01T09:12:00Z"
+    event: Owner added to the new service principal
+    source: entra-audit
+    evidence_id: e3
+  - timestamp: "2026-11-01T09:25:00Z"
+    event: IAM access key created for analyst
+    source: aws-cloudtrail
+    evidence_id: e4
+  - timestamp: "2026-11-01T09:30:00Z"
+    event: CloudTrail logging stopped on lab-trail
+    source: aws-cloudtrail
+    evidence_id: e5
+lessons:
+  - The identity-to-cloud link is an inference based on the analyst identity, source IP, and timing; no AssumeRole event was observed.
+  - Service principal ownership changes are broad and require an approval and owner check.
+  - Access key creation and logging shutdown are high-signal cloud actions that should trigger immediate review.
+  - The lab lacks email and endpoint context for the initial sign-in, limiting initial-access attribution.
+  - The investigation query is evidence retrieval, not proof of a single actor.
+response:
+  - Revoke the analyst sessions and require credential reset.
+  - Remove the unauthorized service principal owner and review application credentials and permissions.
+  - Deactivate the new IAM access key and rotate the analyst credentials.
+  - Re-enable CloudTrail logging and validate organization-trail coverage.
+  - Review IAM policy and role changes for the same identity and source IP.
+references:
+  - https://attack.mitre.org/techniques/T1098/002/
+  - https://attack.mitre.org/techniques/T1098/001/
+  - https://attack.mitre.org/techniques/T1562/008/
+executive_summary: A synthetic identity chain shows a risky sign-in, application ownership persistence, IAM access key creation, and CloudTrail logging shutdown. The observed events are linked by identity, IP, and timing; the actor attribution remains an inference.
+notes: Synthetic investigation built from the local lab datasets. No production or customer data.

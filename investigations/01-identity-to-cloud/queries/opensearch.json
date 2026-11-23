@@ -1,0 +1,25 @@
+{
+  "size": 50,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "range": {
+            "event_time": {
+              "gte": "2026-11-01T08:45:00Z",
+              "lte": "2026-11-01T09:45:00Z"
+            }
+          }
+        }
+      ],
+      "should": [
+        { "term": { "user": "analyst@example.test" } },
+        { "term": { "user": "admin@example.test" } },
+        { "term": { "identity_arn": "arn:aws:iam::123456789012:user/analyst" } },
+        { "term": { "src_ip": "203.0.113.11" } },
+        { "term": { "src_ip": "203.0.113.10" } }
+      ],
+      "minimum_should_match": 1
+    }
+  }
+}

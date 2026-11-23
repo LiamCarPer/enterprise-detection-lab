@@ -1,0 +1,80 @@
+id: INV-002
+title: Endpoint Execution to Cloud Persistence
+version: 1.0.0
+status: tested
+domains:
+  - endpoint
+  - cloud
+scenario: Encoded PowerShell on LAB-EP-01 is followed by a failed network logon, IAM access key creation, and CloudTrail logging shutdown.
+hypothesis: An endpoint compromise may have provided the credentials or tooling used to establish cloud persistence and reduce audit visibility.
+detections:
+  - DET-END-001
+  - DET-CLD-001
+  - DET-CLD-002
+owner: detection-engineering
+created: "2026-11-23"
+updated: "2026-11-23"
+evidence:
+  - id: e1
+    type: event
+    source: sysmon
+    path: evidence/e1.json
+    provenance: Synthetic event from lab/datasets/synthetic/sysmon/reference.json
+    description: Encoded PowerShell execution on LAB-EP-01 at 09:18 UTC.
+    sha256: 0d4e6c46b2ecb040128e9e65f5ac5562764c8539047f3fe03b83c4f93eb41d5a
+  - id: e2
+    type: event
+    source: windows-security
+    path: evidence/e2.json
+    provenance: Synthetic event from lab/datasets/synthetic/windows-security/reference.json
+    description: Failed network logon on LAB-EP-01 at 09:22 UTC.
+    sha256: d51680484606d1e490dc5b04ae89f26ea788943c3b5eeec296ecc37f8c3c7938
+  - id: e3
+    type: event
+    source: aws-cloudtrail
+    path: evidence/e3.json
+    provenance: Synthetic event from lab/datasets/synthetic/aws-cloudtrail/reference.json
+    description: IAM access key created at 09:25 UTC.
+    sha256: 6d9ed5654b80ccd1706229cdf4f3cf66aa4ddfc7b5e3c10dd94d5d3ad74d276e
+  - id: e4
+    type: event
+    source: aws-cloudtrail
+    path: evidence/e4.json
+    provenance: Synthetic event from lab/datasets/synthetic/aws-cloudtrail/reference.json
+    description: CloudTrail logging stopped at 09:30 UTC.
+    sha256: e944fae70f83fdaea06c310a0387994c8af2688f97a6cc2dec5dc52f767c1f5c
+timeline:
+  - timestamp: "2026-11-01T09:18:00Z"
+    event: Encoded PowerShell executed on LAB-EP-01
+    source: sysmon
+    evidence_id: e1
+  - timestamp: "2026-11-01T09:22:00Z"
+    event: Failed network logon from 198.51.100.23
+    source: windows-security
+    evidence_id: e2
+  - timestamp: "2026-11-01T09:25:00Z"
+    event: IAM access key created for analyst
+    source: aws-cloudtrail
+    evidence_id: e3
+  - timestamp: "2026-11-01T09:30:00Z"
+    event: CloudTrail logging stopped on lab-trail
+    source: aws-cloudtrail
+    evidence_id: e4
+lessons:
+  - The endpoint-to-cloud link is an inference based on host, user, source IP, and timing; no shared process or token identifier was observed.
+  - The encoded PowerShell command should be decoded and reviewed before confirming its role in the chain.
+  - Failed logons after execution may indicate credential use or lateral movement and should be correlated with account activity.
+  - Cloud key creation and logging shutdown are high-signal actions that warrant immediate containment.
+  - The lab lacks EDR process ancestry and cloud identity-provider logs that would strengthen attribution.
+response:
+  - Isolate LAB-EP-01 after evidence capture.
+  - Decode and preserve the PowerShell command and related process tree.
+  - Deactivate the new IAM access key and rotate the analyst credentials.
+  - Re-enable CloudTrail logging and verify organization-trail coverage.
+  - Review Windows logon and cloud API activity from the same host, user, and source IP.
+references:
+  - https://attack.mitre.org/techniques/T1059/001/
+  - https://attack.mitre.org/techniques/T1098/001/
+  - https://attack.mitre.org/techniques/T1562/008/
+executive_summary: A synthetic endpoint chain shows encoded PowerShell, a failed network logon, IAM access key creation, and CloudTrail logging shutdown. The evidence is linked by host, user, IP, and timing; the endpoint-to-cloud identity link remains an inference.
+notes: Synthetic investigation built from the local lab datasets. No production or customer data.

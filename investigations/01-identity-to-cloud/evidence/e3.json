@@ -1,0 +1,25 @@
+{
+  "id": "e3",
+  "synthetic": true,
+  "source": "entra-audit",
+  "observed_at": "2026-11-01T09:12:00Z",
+  "query": "queries/opensearch.json",
+  "event": {
+    "id": "00000000-0000-4000-8000-000000000102",
+    "activityDateTime": "2026-11-01T09:12:00Z",
+    "operationName": "Add owner to service principal",
+    "initiatedBy": {
+      "user": {
+        "userPrincipalName": "admin@example.test"
+      }
+    },
+    "targetResources": [
+      {
+        "displayName": "Lab Reporting App",
+        "type": "ServicePrincipal"
+      }
+    ],
+    "result": "success"
+  },
+  "note": "Observed owner addition to the new service principal."
+}

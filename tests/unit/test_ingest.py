@@ -578,8 +578,14 @@ def test_load_identity_sources_rejects_non_identity() -> None:
 def test_ingest_identity_dry_run_uses_repository_samples() -> None:
     results = ingest_identity(dry_run=True)
     assert [result.source for result in results] == ["entra-signin", "entra-audit"]
-    assert all(result.read == 2 for result in results)
-    assert all(result.unique == 2 for result in results)
+    assert {result.source: result.read for result in results} == {
+        "entra-signin": 3,
+        "entra-audit": 2,
+    }
+    assert {result.source: result.unique for result in results} == {
+        "entra-signin": 3,
+        "entra-audit": 2,
+    }
     assert all(result.written == 0 for result in results)
 
 

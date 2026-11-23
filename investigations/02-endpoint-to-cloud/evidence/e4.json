@@ -1,0 +1,30 @@
+{
+  "id": "e4",
+  "synthetic": true,
+  "source": "aws-cloudtrail",
+  "observed_at": "2026-11-01T09:30:00Z",
+  "query": "queries/opensearch.json",
+  "event": {
+    "eventTime": "2026-11-01T09:30:00Z",
+    "eventVersion": "1.11",
+    "eventSource": "cloudtrail.amazonaws.com",
+    "eventName": "StopLogging",
+    "awsRegion": "eu-west-1",
+    "sourceIPAddress": "198.51.100.23",
+    "userAgent": "aws-cli/2.0",
+    "userIdentity": {
+      "type": "IAMUser",
+      "arn": "arn:aws:iam::123456789012:user/analyst"
+    },
+    "requestParameters": {
+      "name": "arn:aws:cloudtrail:eu-west-1:123456789012:trail/lab-trail"
+    },
+    "responseElements": null,
+    "errorCode": "",
+    "errorMessage": "",
+    "eventID": "00000000-0000-4000-8000-000000000303",
+    "recipientAccountId": "123456789012",
+    "sharedEventID": "00000000-0000-4000-8000-000000000304"
+  },
+  "note": "Observed CloudTrail logging stopped in the local lab."
+}

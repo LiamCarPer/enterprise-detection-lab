@@ -1,0 +1,24 @@
+{
+  "id": "e1",
+  "synthetic": true,
+  "source": "entra-signin",
+  "observed_at": "2026-11-01T08:55:00Z",
+  "query": "queries/opensearch.json",
+  "event": {
+    "id": "00000000-0000-4000-8000-000000000003",
+    "createdDateTime": "2026-11-01T08:55:00Z",
+    "userPrincipalName": "analyst@example.test",
+    "appDisplayName": "Office 365",
+    "ipAddress": "203.0.113.11",
+    "status": "success",
+    "authenticationRequirement": "singleFactorAuthentication",
+    "isInteractive": true,
+    "conditionalAccessStatus": "success",
+    "riskLevelDuringSignIn": "medium",
+    "deviceDetail": {
+      "operatingSystem": "Windows 11",
+      "browser": "Chrome"
+    }
+  },
+  "note": "Observed medium-risk single-factor sign-in in the local lab."
+}

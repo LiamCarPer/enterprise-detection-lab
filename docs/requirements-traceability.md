@@ -11,7 +11,7 @@ It is a directional engineering synthesis, not a formal standard or compliance c
 | **Telemetry contracts** | Source fields, event time, ingest time, deduplication, required fields, latency, retention, cost, and known gaps | `telemetry/sources/`, `docs/telemetry-matrix.md` | 11 source contracts, generated matrix, hash checks | Complete |
 | **Normalization and schema drift** | Canonical event shape, UTC enforcement, versioned mappings, tests for source variation | `src/edl/ingest.py`, `lab/bootstrap/opensearch/events-template.json`, tests | Identity and endpoint normalizers, per-event classification, index mappings | In progress |
 | **Detection-as-code** | Rules are versioned, reviewed, tested, converted, deployed, and retired like software | `detections/`, `docs/artifact-model.md`, `.github/workflows/` | Package contract, schema, fixtures, reference template; CI planned | In progress |
-| **Detection validation and regression** | Replay, attack simulation, negative tests, regression tests, and backend query checks | `src/edl/validation.py`, `src/edl/detection.py`, `detections/*/tests/`, `conformance/` | Artifact validation, OpenSearch fixture replay, and lab tests; CI replay planned | In progress |
+| **Detection validation and regression** | Replay, attack simulation, negative tests, regression tests, and backend query checks | `src/edl/validation.py`, `src/edl/detection.py`, `detections/*/tests/`, `conformance/` | Six detections pass OpenSearch fixture replay; investigation queries and linked detections pass; CI replay planned | In progress |
 | **Benign baseline and false-positive control** | Measures noise against realistic benign activity, not an idle lab | `lab/`, `detections/*/fixtures/benign.json`, reports | Fixture contract and reference benign fixture; workload generator planned | Planned |
 | **Detection quality metrics** | Precision, recall, false-positive rate, latency, sample size, method, and limitations | `schemas/metrics.schema.json`, `detections/*/metrics.json` | Metrics schema and reference metrics file; real measurements planned | Planned |
 | **Enterprise telemetry breadth** | Identity, endpoint, cloud, SaaS, network, and Kubernetes sources | `telemetry/sources/`, `docs/telemetry-matrix.md`, `lab/` | 11 contracts across six domains; 5 ingested, 6 documented | In progress |
@@ -33,11 +33,11 @@ It is a directional engineering synthesis, not a formal standard or compliance c
 | Identity, endpoint, and cloud ingestion | Complete |
 | Detection packages implemented | 6 tested detections; 0 production detections |
 | Detection testing | Fixture replay, pass/fail evaluation, and metrics generation complete |
-| Investigations implemented | 0 production investigations; contract and template complete |
-| CI and detection metrics | Planned |
+| Investigations implemented | 2 tested investigations; 0 published |
+| CI and aggregate reporting | Planned |
 | Automation | Planned |
 
-The mapping is complete. The implementation is not. Identity, endpoint, and cloud telemetry are ingested; six detections pass fixture replay. Two investigations, CI, and aggregated metrics are next.
+The mapping is complete. The implementation is not. Identity, endpoint, and cloud telemetry are ingested; six detections and two investigations pass. CI and aggregated metrics are next.
 
 ## How to use this document
 

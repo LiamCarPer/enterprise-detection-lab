@@ -1,0 +1,35 @@
+{
+  "id": "e3",
+  "synthetic": true,
+  "source": "aws-cloudtrail",
+  "observed_at": "2026-11-01T09:25:00Z",
+  "query": "queries/opensearch.json",
+  "event": {
+    "eventTime": "2026-11-01T09:25:00Z",
+    "eventVersion": "1.11",
+    "eventSource": "iam.amazonaws.com",
+    "eventName": "CreateAccessKey",
+    "awsRegion": "eu-west-1",
+    "sourceIPAddress": "203.0.113.10",
+    "userAgent": "aws-cli/2.0",
+    "userIdentity": {
+      "type": "IAMUser",
+      "arn": "arn:aws:iam::123456789012:user/analyst"
+    },
+    "requestParameters": {
+      "userName": "analyst"
+    },
+    "responseElements": {
+      "accessKey": {
+        "accessKeyId": "EXAMPLE",
+        "status": "Active"
+      }
+    },
+    "errorCode": "",
+    "errorMessage": "",
+    "eventID": "00000000-0000-4000-8000-000000000301",
+    "recipientAccountId": "123456789012",
+    "sharedEventID": "00000000-0000-4000-8000-000000000302"
+  },
+  "note": "Observed IAM access key creation in the local lab."
+}

@@ -1,0 +1,22 @@
+{
+  "id": "e2",
+  "synthetic": true,
+  "source": "windows-security",
+  "observed_at": "2026-11-01T09:22:00Z",
+  "query": "queries/opensearch.json",
+  "event": {
+    "TimeCreated": "2026-11-01T09:22:00Z",
+    "EventID": 4625,
+    "Computer": "LAB-EP-01",
+    "EventRecordID": 2002,
+    "TargetUserName": "analyst",
+    "IpAddress": "198.51.100.23",
+    "LogonType": 3,
+    "Status": "0xC000006D",
+    "SubjectUserName": "-",
+    "ServiceName": "-",
+    "TaskName": "-",
+    "Channel": "Security"
+  },
+  "note": "Observed failed network logon on LAB-EP-01."
+}
