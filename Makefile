@@ -1,4 +1,4 @@
-.PHONY: install lint validate telemetry-check metrics-report metrics-check test test-lab test-detections coverage check lab-up lab-down lab-status lab-wait lab-bootstrap ingest-identity ingest-endpoint ingest-cloud lab-reset lab-logs
+.PHONY: install lint validate telemetry-check metrics-report metrics-check test test-lab test-detections test-opensearch coverage check lab-up lab-down lab-status lab-wait lab-bootstrap ingest-identity ingest-endpoint ingest-cloud lab-reset lab-logs
 
 install:
 	uv sync --all-extras
@@ -28,6 +28,12 @@ test-lab:
 
 test-detections:
 	PYTHONPATH= uv run edl detection test --include-templates
+
+test-opensearch:
+	PYTHONPATH= uv run pytest -m lab \
+		tests/lab/test_ingest_integration.py \
+		tests/lab/test_detection_runner.py \
+		tests/lab/test_investigations.py
 
 coverage: test
 

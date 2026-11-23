@@ -1,0 +1,87 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Lint, validation, and tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d # v10.4.0
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+
+      - name: Install dependencies
+        run: make install
+
+      - name: Run quality checks
+        run: make check
+
+  opensearch:
+    name: OpenSearch-backed tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      opensearch:
+        image: opensearchproject/opensearch@sha256:ffa260e43be96b49144fb7ececbb135c3fd7081567adc781c49ec9232ce1e47f
+        env:
+          discovery.type: single-node
+          DISABLE_SECURITY_PLUGIN: "true"
+          OPENSEARCH_JAVA_OPTS: "-Xms1g -Xmx1g"
+        ports:
+          - 9200:9200
+        options: >-
+          --health-cmd "curl -fsS http://localhost:9200/_cluster/health || exit 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 30
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d # v10.4.0
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+
+      - name: Install dependencies
+        run: make install
+
+      - name: Apply OpenSearch index templates
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --request PUT \
+            --header 'Content-Type: application/json' \
+            --data-binary @lab/bootstrap/opensearch/events-template.json \
+            http://127.0.0.1:9200/_index_template/edl-events-v1
+          curl --fail --silent --show-error --request PUT \
+            --header 'Content-Type: application/json' \
+            --data-binary @lab/bootstrap/opensearch/findings-template.json \
+            http://127.0.0.1:9200/_index_template/edl-findings-v1
+
+      - name: Ingest telemetry
+        run: |
+          set -euo pipefail
+          make ingest-identity
+          make ingest-endpoint
+          make ingest-cloud
+
+      - name: Run OpenSearch-backed tests
+        run: make test-opensearch

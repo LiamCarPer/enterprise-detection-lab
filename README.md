@@ -1,5 +1,7 @@
 # Enterprise Detection Engineering Lab
 
+[![CI](https://github.com/LiamCarPer/enterprise-detection-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/LiamCarPer/enterprise-detection-lab/actions/workflows/ci.yml)
+
 A reproducible local lab for developing and testing enterprise detection content across identity, endpoint, cloud, SaaS, network, and Kubernetes telemetry.
 
 **Status:** Alpha. Identity, endpoint, and cloud telemetry ingestion, six core detections, and two investigations are complete. CI and aggregated metrics are in progress.
