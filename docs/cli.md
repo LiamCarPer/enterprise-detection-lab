@@ -111,6 +111,23 @@ edl detection report --output reports/detection-metrics.md
 `--check` fails when the committed report is stale relative to the detection
 `metrics.json` files.
 
+## Baseline evaluation
+
+```bash
+edl detection baseline \
+  --id DET-END-001 \
+  --dataset lab/datasets/synthetic/benign-baseline/endpoint.json
+
+edl detection baseline \
+  --id DET-END-001 \
+  --dataset lab/datasets/synthetic/benign-baseline/endpoint.json \
+  --query queries/opensearch-before.json
+```
+
+The command executes the detection query against a benign baseline and reports
+the match count and false-positive rate. The optional `--query` path is resolved
+relative to the detection package.
+
 ## Lab
 
 ```bash

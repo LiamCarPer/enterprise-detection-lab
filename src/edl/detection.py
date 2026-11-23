@@ -98,15 +98,48 @@ class DetectionResult:
         }
 
 
-def _load_query(path: Path, meta: Mapping[str, Any]) -> dict[str, Any]:
-    queries = meta.get("queries")
-    if not isinstance(queries, Mapping):
-        raise DetectionError(f"{path}: meta.queries must be an object")
-    reference = queries.get("opensearch")
-    if not isinstance(reference, str) or not reference:
-        raise DetectionError(f"{path}: meta.queries.opensearch is missing")
+@dataclass(frozen=True)
+class BaselineResult:
+    """Outcome of executing one detection query against a benign baseline."""
 
-    query_path = path / reference
+    detection_id: str
+    dataset: Path
+    sample_size: int
+    matched_count: int
+    false_positive_rate: float
+    latency_ms_p50: float
+    latency_ms_p95: float
+    matched_ids: tuple[str, ...]
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "detection_id": self.detection_id,
+            "dataset": str(self.dataset),
+            "sample_size": self.sample_size,
+            "matched_count": self.matched_count,
+            "false_positive_rate": self.false_positive_rate,
+            "latency_ms_p50": self.latency_ms_p50,
+            "latency_ms_p95": self.latency_ms_p95,
+            "matched_ids": list(self.matched_ids),
+        }
+
+
+def _load_query(
+    path: Path,
+    meta: Mapping[str, Any],
+    override: Path | None = None,
+) -> dict[str, Any]:
+    if override is None:
+        queries = meta.get("queries")
+        if not isinstance(queries, Mapping):
+            raise DetectionError(f"{path}: meta.queries must be an object")
+        reference = queries.get("opensearch")
+        if not isinstance(reference, str) or not reference:
+            raise DetectionError(f"{path}: meta.queries.opensearch is missing")
+        query_path = path / reference
+    else:
+        query_path = override if override.is_absolute() else path / override
+
     if not query_path.is_file():
         raise DetectionError(f"{path}: OpenSearch query not found: {query_path}")
     try:
@@ -118,6 +151,19 @@ def _load_query(path: Path, meta: Mapping[str, Any]) -> dict[str, Any]:
     return dict(query)
 
 
+def _allowed_sources(path: Path, meta: Mapping[str, Any]) -> set[str]:
+    telemetry = meta.get("telemetry")
+    if not isinstance(telemetry, list) or not telemetry:
+        raise DetectionError(f"{path}: meta.telemetry must be a non-empty list")
+    allowed: set[str] = set()
+    for item in telemetry:
+        if isinstance(item, Mapping) and isinstance(item.get("source"), str):
+            allowed.add(str(item["source"]))
+    if not allowed:
+        raise DetectionError(f"{path}: meta.telemetry has no source")
+    return allowed
+
+
 def _load_cases(
     path: Path,
     meta: Mapping[str, Any],
@@ -125,15 +171,7 @@ def _load_cases(
     *,
     ingest_time: datetime,
 ) -> tuple[DetectionCase, ...]:
-    telemetry = meta.get("telemetry")
-    if not isinstance(telemetry, list) or not telemetry:
-        raise DetectionError(f"{path}: meta.telemetry must be a non-empty list")
-    allowed_sources: set[str] = set()
-    for item in telemetry:
-        if isinstance(item, Mapping) and isinstance(item.get("source"), str):
-            allowed_sources.add(str(item["source"]))
-    if not allowed_sources:
-        raise DetectionError(f"{path}: meta.telemetry has no source")
+    allowed_sources = _allowed_sources(path, meta)
 
     cases: list[DetectionCase] = []
     for kind in FIXTURE_KINDS:
@@ -177,6 +215,61 @@ def _load_cases(
                 )
             )
 
+    return tuple(cases)
+
+
+def _load_baseline_cases(
+    package_path: Path,
+    dataset_path: Path,
+    meta: Mapping[str, Any],
+    sources: Mapping[str, TelemetrySource],
+    *,
+    ingest_time: datetime,
+) -> tuple[DetectionCase, ...]:
+    allowed_sources = _allowed_sources(package_path, meta)
+    if not dataset_path.is_file():
+        raise DetectionError(f"Baseline dataset not found: {dataset_path}")
+    try:
+        fixtures = load_json(dataset_path)
+    except ValidationError as exc:
+        raise DetectionError(str(exc)) from exc
+    if not isinstance(fixtures, list) or not fixtures:
+        raise DetectionError(f"{dataset_path}: baseline must be a non-empty array")
+
+    cases: list[DetectionCase] = []
+    for position, fixture in enumerate(fixtures, start=1):
+        if not isinstance(fixture, Mapping):
+            raise DetectionError(f"{dataset_path}: baseline event {position} must be an object")
+        if fixture.get("synthetic") is not True:
+            raise DetectionError(
+                f"{dataset_path}: baseline event {position} must be marked synthetic"
+            )
+        source_id = fixture.get("source")
+        if not isinstance(source_id, str) or source_id not in allowed_sources:
+            raise DetectionError(
+                f"{dataset_path}: baseline event {position} source {source_id!r} "
+                "is not declared in meta.telemetry"
+            )
+        source = sources.get(source_id)
+        if source is None:
+            raise DetectionError(f"{dataset_path}: unknown telemetry source {source_id!r}")
+        raw_event = fixture.get("event")
+        if not isinstance(raw_event, Mapping):
+            raise DetectionError(
+                f"{dataset_path}: baseline event {position} event must be an object"
+            )
+        try:
+            normalized = normalize_event(source, raw_event, ingest_time=ingest_time)
+        except IngestError as exc:
+            raise DetectionError(f"{dataset_path}: baseline event {position}: {exc}") from exc
+        cases.append(
+            DetectionCase(
+                case_id=f"baseline-{position:03d}",
+                kind="benign",
+                source=source_id,
+                event=normalized,
+            )
+        )
     return tuple(cases)
 
 
@@ -372,6 +465,79 @@ def run_detection(
         if write_metrics and result.passed:
             write_detection_metrics(package, result)
         return result
+    finally:
+        active.delete_matching(index)
+        if client is None:
+            active.close()
+
+
+def run_baseline(
+    detection_id: str,
+    dataset: Path,
+    *,
+    root: Path = config.ROOT,
+    sources: Mapping[str, TelemetrySource] | None = None,
+    client: OpenSearchClient | None = None,
+    query_path: Path | None = None,
+    ingest_time: datetime | None = None,
+    index_prefix: str = "edl-events-baseline",
+    latency_runs: int = 3,
+) -> BaselineResult:
+    """Execute one detection query against a benign baseline dataset."""
+    if latency_runs < 1:
+        raise DetectionError("latency_runs must be at least 1")
+    if sources is None:
+        try:
+            sources = {source.id: source for source in load_sources(root)}
+        except ValidationError as exc:
+            raise DetectionError(str(exc)) from exc
+
+    selected = _select_detections(root, detection_id, include_templates=True)
+    if not selected:
+        raise DetectionError(f"Detection not found: {detection_id}")
+    if len(selected) > 1:
+        raise DetectionError(f"Multiple detections found for ID: {detection_id}")
+    package_path = selected[0].path
+    meta = load_mapping(package_path / "meta.yaml")
+
+    query = _load_query(package_path, meta, query_path)
+    dataset_path = dataset if dataset.is_absolute() else root / dataset
+    cases = _load_baseline_cases(
+        package_path,
+        dataset_path,
+        meta,
+        sources,
+        ingest_time=ingest_time or datetime.now(UTC),
+    )
+    case_ids = {case.case_id for case in cases}
+
+    active = client or OpenSearchClient()
+    index = f"{index_prefix}-{detection_id.lower()}-{uuid4().hex[:8]}"
+    try:
+        active.bulk(
+            index,
+            [(case.case_id, case.event.document) for case in cases],
+            refresh=True,
+        )
+        body = build_search_body(query, len(cases))
+        latencies: list[float] = []
+        response: dict[str, Any] = {}
+        for _ in range(latency_runs):
+            started = time.perf_counter()
+            response = active.search(index, body)
+            latencies.append((time.perf_counter() - started) * 1000.0)
+
+        matched = extract_hit_ids(response) & case_ids
+        return BaselineResult(
+            detection_id=detection_id,
+            dataset=dataset_path,
+            sample_size=len(cases),
+            matched_count=len(matched),
+            false_positive_rate=len(matched) / len(cases),
+            latency_ms_p50=_percentile(latencies, 0.50),
+            latency_ms_p95=_percentile(latencies, 0.95),
+            matched_ids=tuple(sorted(matched)),
+        )
     finally:
         active.delete_matching(index)
         if client is None:

@@ -7,7 +7,7 @@ import pytest
 from typer.testing import CliRunner
 
 from edl.cli import app
-from edl.detection import DetectionResult
+from edl.detection import BaselineResult, DetectionResult
 from edl.errors import DetectionError, IngestError, LabError, ValidationError
 from edl.lab import ServiceStatus
 from edl.models import ArtifactResult, Issue, ValidationReport
@@ -601,3 +601,102 @@ def test_detection_report_handles_load_error(monkeypatch: pytest.MonkeyPatch) ->
     result = runner.invoke(app, ["detection", "report"])
     assert result.exit_code == 2
     assert "metrics unavailable" in result.stdout
+
+
+def _baseline_result() -> BaselineResult:
+    return BaselineResult(
+        detection_id="DET-END-001",
+        dataset=Path("lab/datasets/synthetic/benign-baseline/endpoint.json"),
+        sample_size=20,
+        matched_count=8,
+        false_positive_rate=0.4,
+        latency_ms_p50=1.0,
+        latency_ms_p95=2.0,
+        matched_ids=tuple(f"baseline-{index:03d}" for index in range(1, 9)),
+    )
+
+
+def test_detection_baseline_table(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("edl.cli.run_baseline", lambda *a, **k: _baseline_result())
+    result = runner.invoke(
+        app,
+        [
+            "detection",
+            "baseline",
+            "--id",
+            "DET-END-001",
+            "--dataset",
+            "lab/datasets/synthetic/benign-baseline/endpoint.json",
+        ],
+    )
+    assert result.exit_code == 0
+    assert "Benign Baseline Evaluation" in result.stdout
+    assert "0.40" in result.stdout
+
+
+def test_detection_baseline_json(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("edl.cli.run_baseline", lambda *a, **k: _baseline_result())
+    result = runner.invoke(
+        app,
+        [
+            "detection",
+            "baseline",
+            "--id",
+            "DET-END-001",
+            "--dataset",
+            "lab/datasets/synthetic/benign-baseline/endpoint.json",
+            "--json",
+        ],
+    )
+    assert result.exit_code == 0
+    payload = json.loads(result.stdout)
+    assert payload["matched_count"] == 8
+    assert payload["false_positive_rate"] == 0.4
+
+
+def test_detection_baseline_handles_error(monkeypatch: pytest.MonkeyPatch) -> None:
+    def fail(*_args: object, **_kwargs: object) -> None:
+        raise DetectionError("baseline unavailable")
+
+    monkeypatch.setattr("edl.cli.run_baseline", fail)
+    result = runner.invoke(
+        app,
+        [
+            "detection",
+            "baseline",
+            "--id",
+            "DET-END-001",
+            "--dataset",
+            "baseline.json",
+        ],
+    )
+    assert result.exit_code == 2
+    assert "baseline unavailable" in result.stdout
+
+
+def test_detection_baseline_forwards_options(monkeypatch: pytest.MonkeyPatch) -> None:
+    captured: dict[str, object] = {}
+
+    def fake(*_args: object, **kwargs: object) -> BaselineResult:
+        captured.update(kwargs)
+        return _baseline_result()
+
+    monkeypatch.setattr("edl.cli.run_baseline", fake)
+    result = runner.invoke(
+        app,
+        [
+            "detection",
+            "baseline",
+            "--id",
+            "DET-END-001",
+            "--dataset",
+            "baseline.json",
+            "--query",
+            "queries/opensearch-before.json",
+            "--latency-runs",
+            "2",
+        ],
+    )
+    assert result.exit_code == 0
+    assert captured["query_path"] == Path("queries/opensearch-before.json")
+    assert captured["latency_runs"] == 2

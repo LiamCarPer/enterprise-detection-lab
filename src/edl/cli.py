@@ -11,7 +11,7 @@ from rich.table import Table
 
 from . import __version__, config
 from . import lab as lab_controller
-from .detection import DetectionResult, run_detections
+from .detection import BaselineResult, DetectionResult, run_baseline, run_detections
 from .errors import EDLError, ValidationError
 from .ingest import IngestResult
 from .ingest import ingest_domain as run_ingest_domain
@@ -394,6 +394,61 @@ def detection_test(
 
     if not all(result.passed for result in results):
         raise typer.Exit(1)
+
+
+@detection_app.command("baseline")
+def detection_baseline(
+    detection_id: str = typer.Option(..., "--id", help="Detection ID to evaluate."),
+    dataset: Path = typer.Option(..., "--dataset", help="Benign baseline JSON dataset."),
+    query: Path | None = typer.Option(
+        None,
+        "--query",
+        help="Alternative query path relative to the detection package.",
+    ),
+    json_output: bool = typer.Option(False, "--json", help="Emit machine-readable JSON."),
+    latency_runs: int = typer.Option(
+        3,
+        "--latency-runs",
+        min=1,
+        help="Query repetitions used for latency percentiles.",
+    ),
+) -> None:
+    """Evaluate a detection query against a benign baseline dataset."""
+    try:
+        result = run_baseline(
+            detection_id,
+            dataset,
+            query_path=query,
+            latency_runs=latency_runs,
+        )
+    except EDLError as exc:
+        console.print(f"[red]Baseline evaluation failed:[/red] {exc}")
+        raise typer.Exit(2) from exc
+
+    if json_output:
+        typer.echo(json.dumps(result.to_dict(), indent=2, sort_keys=True))
+    else:
+        console.print(render_baseline_table(result))
+
+
+def render_baseline_table(result: BaselineResult) -> Table:
+    """Render a baseline evaluation result."""
+    table = Table(title="Benign Baseline Evaluation")
+    table.add_column("Detection", no_wrap=True)
+    table.add_column("Dataset", no_wrap=True)
+    table.add_column("Events", justify="right")
+    table.add_column("Matched", justify="right")
+    table.add_column("FPR", justify="right")
+    table.add_column("p95ms", justify="right")
+    table.add_row(
+        result.detection_id,
+        result.dataset.name,
+        str(result.sample_size),
+        str(result.matched_count),
+        f"{result.false_positive_rate:.2f}",
+        f"{result.latency_ms_p95:.1f}",
+    )
+    return table
 
 
 def render_detection_table(results: list[DetectionResult]) -> Table:
