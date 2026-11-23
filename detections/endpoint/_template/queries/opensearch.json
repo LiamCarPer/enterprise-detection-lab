@@ -2,8 +2,8 @@
   "query": {
     "bool": {
       "filter": [
-        { "term": { "EventID": 1 } },
-        { "wildcard": { "Image": "*\\\\whoami.exe" } }
+        { "term": { "event_code": 1 } },
+        { "term": { "process.image": "C:\\Windows\\System32\\whoami.exe" } }
       ]
     }
   }

@@ -24,7 +24,7 @@ detections/<domain>/<slug>/
 └── notes.md
 ```
 
-The working reference artifact is `detections/endpoint/_template`. Use `edl new detection` to copy it.
+The working reference artifact is `detections/endpoint/_template`. Use `edl new detection` to copy it. Run `edl detection test --id DET-END-000` to execute the reference query against its normalized fixtures.
 
 ## Add a detection
 
@@ -34,9 +34,9 @@ The working reference artifact is `detections/endpoint/_template`. Use `edl new 
 4. Fill `meta.yaml` and validate it against the schema.
 5. Add the Sigma rule and at least one native query.
 6. Add positive, negative, and benign fixtures.
-7. Add tests and make them pass.
+7. Add tests and run `edl detection test --id <DETECTION_ID>`.
 8. Write the runbook and tuning notes.
-9. Record metrics and limitations.
+9. Generate metrics with `edl detection test --id <DETECTION_ID> --write-metrics`.
 10. Update the README/status tables.
 11. Open a PR; CI must be green.
 
@@ -44,10 +44,10 @@ The working reference artifact is `detections/endpoint/_template`. Use `edl new 
 
 - Schema validation passes.
 - Sigma and native query exist.
-- Positive, negative, and benign fixtures pass.
+- Positive, negative, and benign fixtures pass in `edl detection test`.
 - False positives and tuning notes are documented.
 - Runbook covers triage, evidence, escalation, and containment.
-- Metrics are recorded.
+- Metrics are generated from fixture replay and include limitations.
 - CI is green.
 - No secrets, PII, or real employer data.
 

@@ -69,6 +69,7 @@ make lab-bootstrap
 make ingest-identity
 make ingest-endpoint
 make ingest-cloud
+make test-detections
 make test-lab
 ```
 
@@ -100,6 +101,18 @@ uv run edl ingest endpoint --source sysmon --dry-run
 ```
 
 See [`docs/ingestion.md`](docs/ingestion.md) for the canonical event model, time semantics, deduplication, and failure behavior.
+
+### Test detections
+
+```bash
+uv run edl detection test
+uv run edl detection test --id DET-END-000
+uv run edl detection test --write-metrics
+```
+
+The runner normalizes fixtures, writes them to a temporary OpenSearch index, executes the committed query, and checks positive, negative, and benign expectations.
+
+See [`docs/detection-testing.md`](docs/detection-testing.md) for the execution flow and metric definitions.
 
 ### Scaffold artifacts
 
@@ -160,9 +173,10 @@ Each contract records event time and ingest time fields, deduplication keys, req
 | Identity ingestion | Complete | Entra sign-in and audit, normalized and replay-safe |
 | Endpoint ingestion | Complete | Sysmon and Windows Security, per-event classification |
 | Cloud ingestion | Complete | AWS CloudTrail, normalized and replay-safe |
-| Detection packages | In progress | Contract, fixtures, tests, metrics, and reference template exist |
+| Detection packages | In progress | Executable fixture runner and reference package exist |
+| Detection testing | Complete | Normalized fixture replay, temporary-index isolation, pass/fail gate, and metrics generation |
 | Investigations | In progress | Package contract and reference template exist |
-| CI and detection metrics | Planned | Lint, validation, replay, and quality reporting |
+| CI and metrics reporting | Planned | GitHub Actions, aggregated quality report |
 | SaaS, network, Kubernetes | Planned | Contracts and samples before detections |
 | Automation | Planned | Enrichment, triage, evidence, and approval-gated response |
 
@@ -172,6 +186,7 @@ Current milestone: six deep detections across identity, endpoint, and cloud, fol
 
 - `make check` must pass.
 - A detection is not complete until positive, negative, and benign fixtures pass.
+- Native OpenSearch queries must pass `edl detection test` against those fixtures.
 - A detection must include a Sigma rule, a native query, false-positive analysis, a runbook, and metrics.
 - A production detection must include measured precision, recall, false-positive rate, latency, and limitations.
 - An investigation must distinguish observed evidence from inference and include a timeline, queries, evidence, response, and lessons.
@@ -214,6 +229,7 @@ Out of scope for this repository:
 |---|---|
 | [`docs/ingestion.md`](docs/ingestion.md) | Canonical events, classification, deduplication, and ingest behavior |
 | [`docs/artifact-model.md`](docs/artifact-model.md) | Detection and investigation package contracts |
+| [`docs/detection-testing.md`](docs/detection-testing.md) | Fixture replay, pass criteria, and metric definitions |
 | [`docs/cli.md`](docs/cli.md) | CLI commands, options, and exit codes |
 | [`docs/telemetry-matrix.md`](docs/telemetry-matrix.md) | Generated source contract matrix |
 | [`docs/capability-matrix.md`](docs/capability-matrix.md) | Implemented capabilities and evidence |

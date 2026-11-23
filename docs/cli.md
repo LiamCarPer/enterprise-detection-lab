@@ -86,6 +86,20 @@ IDs instead of creating duplicates.
 [`ingestion.md`](ingestion.md) for the canonical fields, time semantics, and
 failure behavior.
 
+## Detection tests
+
+```bash
+edl detection test
+edl detection test --id DET-END-000
+edl detection test --include-templates
+edl detection test --json
+edl detection test --write-metrics
+```
+
+The runner normalizes each fixture, writes it to a temporary OpenSearch index,
+executes the committed query, and checks the positive, negative, and benign
+expectations. See [`detection-testing.md`](detection-testing.md).
+
 ## Lab
 
 ```bash

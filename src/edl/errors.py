@@ -17,3 +17,7 @@ class ValidationError(EDLError):
 
 class IngestError(EDLError):
     """Raised when telemetry cannot be normalized or ingested."""
+
+
+class DetectionError(EDLError):
+    """Raised when a detection cannot be loaded, executed, or measured."""

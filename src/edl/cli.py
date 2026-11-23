@@ -11,6 +11,7 @@ from rich.table import Table
 
 from . import __version__, config
 from . import lab as lab_controller
+from .detection import DetectionResult, run_detections
 from .errors import EDLError, ValidationError
 from .ingest import IngestResult
 from .ingest import ingest_domain as run_ingest_domain
@@ -27,10 +28,12 @@ lab_app = typer.Typer(no_args_is_help=True, help="Local lab lifecycle.")
 telemetry_app = typer.Typer(no_args_is_help=True, help="Telemetry source contracts.")
 new_app = typer.Typer(no_args_is_help=True, help="Scaffold reference artifacts.")
 ingest_app = typer.Typer(no_args_is_help=True, help="Ingest telemetry into the local lab.")
+detection_app = typer.Typer(no_args_is_help=True, help="Execute detection packages.")
 app.add_typer(lab_app, name="lab")
 app.add_typer(telemetry_app, name="telemetry")
 app.add_typer(new_app, name="new")
 app.add_typer(ingest_app, name="ingest")
+app.add_typer(detection_app, name="detection")
 
 
 @app.command()
@@ -331,6 +334,87 @@ def render_ingest_table(results: list[IngestResult], *, title: str) -> Table:
             str(result.written),
             ", ".join(result.indices),
             result.mode,
+        )
+    return table
+
+
+@detection_app.command("test")
+def detection_test(
+    detection_id: str | None = typer.Option(
+        None,
+        "--id",
+        help="Detection ID to run; defaults to all non-template detections.",
+    ),
+    json_output: bool = typer.Option(False, "--json", help="Emit machine-readable JSON."),
+    include_templates: bool = typer.Option(
+        False,
+        "--include-templates",
+        help="Include reference templates when running all detections.",
+    ),
+    write_metrics: bool = typer.Option(
+        False,
+        "--write-metrics",
+        help="Write metrics.json for passing detections.",
+    ),
+    latency_runs: int = typer.Option(
+        5,
+        "--latency-runs",
+        min=1,
+        help="Query repetitions used for latency percentiles.",
+    ),
+) -> None:
+    """Run detection queries against their fixtures in OpenSearch."""
+    try:
+        results = run_detections(
+            config.ROOT,
+            detection_id=detection_id,
+            include_templates=include_templates,
+            write_metrics=write_metrics,
+            latency_runs=latency_runs,
+        )
+    except EDLError as exc:
+        console.print(f"[red]Detection test failed:[/red] {exc}")
+        raise typer.Exit(2) from exc
+
+    if json_output:
+        typer.echo(
+            json.dumps(
+                [result.to_dict() for result in results],
+                indent=2,
+                sort_keys=True,
+            )
+        )
+    else:
+        console.print(render_detection_table(results))
+
+    if not all(result.passed for result in results):
+        raise typer.Exit(1)
+
+
+def render_detection_table(results: list[DetectionResult]) -> Table:
+    """Render detection fixture results."""
+    table = Table(title="Detection Fixture Replay")
+    table.add_column("Detection", no_wrap=True)
+    table.add_column("Cases", justify="right")
+    table.add_column("TP/FN/FP/TN", justify="right", no_wrap=True)
+    table.add_column("Prec", justify="right")
+    table.add_column("Rec", justify="right")
+    table.add_column("FPR", justify="right")
+    table.add_column("p95ms", justify="right", no_wrap=True)
+    table.add_column("Status", no_wrap=True)
+
+    for result in results:
+        status = "[green]passed[/green]" if result.passed else "[red]failed[/red]"
+        table.add_row(
+            result.detection_id,
+            str(result.sample_size),
+            f"{result.true_positives}/{result.false_negatives}/"
+            f"{result.false_positives}/{result.true_negatives}",
+            f"{result.precision:.2f}",
+            f"{result.recall:.2f}",
+            f"{result.false_positive_rate:.2f}",
+            f"{result.latency_ms_p95:.1f}",
+            status,
         )
     return table
 

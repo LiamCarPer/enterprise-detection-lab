@@ -4,7 +4,9 @@
       "UtcTime": "2026-11-01T09:15:00Z",
       "EventID": 1,
       "Computer": "LAB-EP-01",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
       "EventRecordID": 1001,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000000201}",
       "Image": "C:\\Windows\\System32\\whoami.exe",
       "CommandLine": "whoami /all"
     },

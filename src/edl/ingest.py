@@ -654,6 +654,24 @@ class OpenSearchClient:
         detail = json.dumps(failures[0], sort_keys=True)[:500] if failures else "unknown bulk error"
         raise IngestError(f"OpenSearch rejected documents: {detail}")
 
+    def search(self, index: str, body: Mapping[str, Any]) -> dict[str, Any]:
+        try:
+            response = self._client.post(f"/{index}/_search", json=dict(body))
+        except httpx.HTTPError as exc:
+            raise IngestError(f"Could not reach OpenSearch: {exc}") from exc
+
+        if response.status_code >= 300:
+            raise IngestError(
+                f"OpenSearch search failed with HTTP {response.status_code}: {response.text[:300]}"
+            )
+        try:
+            payload = response.json()
+        except ValueError as exc:
+            raise IngestError("OpenSearch search returned a non-JSON response") from exc
+        if not isinstance(payload, Mapping):
+            raise IngestError("OpenSearch search returned a non-object response")
+        return dict(payload)
+
     def count(self, index: str) -> int:
         try:
             response = self._client.get(f"/{index}/_count")

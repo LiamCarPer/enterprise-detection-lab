@@ -4,7 +4,9 @@
       "UtcTime": "2026-11-01T09:17:00Z",
       "EventID": 1,
       "Computer": "LAB-EP-01",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
       "EventRecordID": 1003,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000000203}",
       "Image": "C:\\Windows\\explorer.exe",
       "CommandLine": "explorer.exe"
     },

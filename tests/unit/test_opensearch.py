@@ -184,3 +184,48 @@ def test_context_manager_closes_client() -> None:
     with client as active:
         assert active is client
     assert client._client.is_closed
+
+
+def test_search_posts_body_and_returns_payload() -> None:
+    requests: list[httpx.Request] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        requests.append(request)
+        return httpx.Response(200, json={"hits": {"hits": [{"_id": "positive-001"}]}})
+
+    client = _client(handler)
+    payload = client.search(
+        "edl-events-detect-test",
+        {"query": {"match_all": {}}, "size": 3},
+    )
+    assert payload["hits"]["hits"][0]["_id"] == "positive-001"
+    assert requests[0].method == "POST"
+    assert requests[0].url.path == "/edl-events-detect-test/_search"
+    assert json.loads(requests[0].content)["size"] == 3
+
+
+def test_search_reports_http_error() -> None:
+    client = _client(lambda _request: httpx.Response(500, text="broken"))
+    with pytest.raises(IngestError, match="HTTP 500"):
+        client.search("edl-events-test", {"query": {"match_all": {}}})
+
+
+def test_search_reports_connection_error() -> None:
+    def handler(_request: httpx.Request) -> httpx.Response:
+        raise httpx.ConnectError("refused")
+
+    client = _client(handler)
+    with pytest.raises(IngestError, match="Could not reach OpenSearch"):
+        client.search("edl-events-test", {"query": {"match_all": {}}})
+
+
+def test_search_reports_non_json() -> None:
+    client = _client(lambda _request: httpx.Response(200, text="not-json"))
+    with pytest.raises(IngestError, match="non-JSON"):
+        client.search("edl-events-test", {"query": {"match_all": {}}})
+
+
+def test_search_reports_non_object() -> None:
+    client = _client(lambda _request: httpx.Response(200, json=[1, 2]))
+    with pytest.raises(IngestError, match="non-object"):
+        client.search("edl-events-test", {"query": {"match_all": {}}})

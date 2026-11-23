@@ -33,7 +33,7 @@ detections/<domain>/<slug>/
 └── notes.md             # tuning history, known gaps, references
 ```
 
-The working reference artifact is [`detections/endpoint/_template`](../detections/endpoint/_template). Use `edl new detection` to copy it.
+The working reference artifact is [`detections/endpoint/_template`](../detections/endpoint/_template). Use `edl new detection` to copy it. Run `edl detection test --id DET-END-000` to execute the reference query against its fixtures; see [`detection-testing.md`](detection-testing.md).
 
 Fixtures are validated by [`schemas/fixture.schema.json`](../schemas/fixture.schema.json). Metrics are validated by [`schemas/metrics.schema.json`](../schemas/metrics.schema.json).
 

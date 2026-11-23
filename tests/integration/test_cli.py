@@ -7,7 +7,8 @@ import pytest
 from typer.testing import CliRunner
 
 from edl.cli import app
-from edl.errors import IngestError, LabError, ValidationError
+from edl.detection import DetectionResult
+from edl.errors import DetectionError, IngestError, LabError, ValidationError
 from edl.lab import ServiceStatus
 from edl.models import ArtifactResult, Issue, ValidationReport
 
@@ -480,3 +481,91 @@ def test_ingest_cloud_json() -> None:
     payload = json.loads(result.stdout)
     assert [item["source"] for item in payload] == ["aws-cloudtrail"]
     assert payload[0]["indices"] == ["edl-events-aws-cloudtrail-2026.11.01"]
+
+
+def _detection_result(passed: bool = True) -> DetectionResult:
+    false_positives = 0 if passed else 1
+    return DetectionResult(
+        detection_id="DET-END-000",
+        title="Reference Detection",
+        path=Path("detections/endpoint/_template"),
+        sample_size=3,
+        positive_count=1,
+        negative_count=1,
+        benign_count=1,
+        true_positives=1,
+        false_negatives=0,
+        false_positives=false_positives,
+        true_negatives=2 - false_positives,
+        precision=1.0 if passed else 0.5,
+        recall=1.0,
+        false_positive_rate=0.0 if passed else 0.5,
+        latency_ms_p50=1.0,
+        latency_ms_p95=2.0,
+        matched_ids=("positive-001",),
+        missed_ids=(),
+        false_positive_ids=() if passed else ("benign-001",),
+    )
+
+
+def test_detection_test_table(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("edl.cli.run_detections", lambda *a, **k: [_detection_result()])
+    result = runner.invoke(app, ["detection", "test", "--id", "DET-END-000"])
+    assert result.exit_code == 0
+    assert "Detection Fixture Replay" in result.stdout
+    assert "DET-END-000" in result.stdout
+    assert "passed" in result.stdout
+
+
+def test_detection_test_json(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("edl.cli.run_detections", lambda *a, **k: [_detection_result()])
+    result = runner.invoke(app, ["detection", "test", "--json"])
+    assert result.exit_code == 0
+    payload = json.loads(result.stdout)
+    assert payload[0]["detection_id"] == "DET-END-000"
+    assert payload[0]["passed"] is True
+
+
+def test_detection_test_failure(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        "edl.cli.run_detections",
+        lambda *a, **k: [_detection_result(passed=False)],
+    )
+    result = runner.invoke(app, ["detection", "test"])
+    assert result.exit_code == 1
+    assert "failed" in result.stdout
+
+
+def test_detection_test_error(monkeypatch: pytest.MonkeyPatch) -> None:
+    def fail(*_args: object, **_kwargs: object) -> None:
+        raise DetectionError("OpenSearch unavailable")
+
+    monkeypatch.setattr("edl.cli.run_detections", fail)
+    result = runner.invoke(app, ["detection", "test"])
+    assert result.exit_code == 2
+    assert "OpenSearch unavailable" in result.stdout
+
+
+def test_detection_test_forwards_write_metrics(monkeypatch: pytest.MonkeyPatch) -> None:
+    captured: dict[str, object] = {}
+
+    def fake(*_args: object, **kwargs: object) -> list[DetectionResult]:
+        captured.update(kwargs)
+        return [_detection_result()]
+
+    monkeypatch.setattr("edl.cli.run_detections", fake)
+    result = runner.invoke(
+        app,
+        [
+            "detection",
+            "test",
+            "--write-metrics",
+            "--latency-runs",
+            "2",
+            "--include-templates",
+        ],
+    )
+    assert result.exit_code == 0
+    assert captured["write_metrics"] is True
+    assert captured["latency_runs"] == 2
+    assert captured["include_templates"] is True
