@@ -464,3 +464,19 @@ def test_ingest_endpoint_source_filter() -> None:
     assert result.exit_code == 0
     payload = json.loads(result.stdout)
     assert [item["source"] for item in payload] == ["windows-security"]
+
+
+def test_ingest_cloud_dry_run() -> None:
+    result = runner.invoke(app, ["ingest", "cloud", "--dry-run"])
+    assert result.exit_code == 0
+    assert "Cloud Telemetry Ingest" in result.stdout
+    assert "aws-cloudtrail" in result.stdout
+    assert "dry-run" in result.stdout
+
+
+def test_ingest_cloud_json() -> None:
+    result = runner.invoke(app, ["ingest", "cloud", "--dry-run", "--json"])
+    assert result.exit_code == 0
+    payload = json.loads(result.stdout)
+    assert [item["source"] for item in payload] == ["aws-cloudtrail"]
+    assert payload[0]["indices"] == ["edl-events-aws-cloudtrail-2026.11.01"]

@@ -6,7 +6,7 @@ event_classes:
   - management_event
   - api_activity
 schema_version: "1.0"
-status: sampled
+status: ingested
 owner: detection-engineering
 event_time_field: eventTime
 ingest_time_field: ingest_time

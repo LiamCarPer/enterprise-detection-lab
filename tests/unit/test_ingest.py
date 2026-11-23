@@ -16,14 +16,17 @@ from edl.ingest import (
     deduplicate_events,
     format_timestamp,
     index_name,
+    ingest_cloud,
     ingest_domain,
     ingest_endpoint,
     ingest_identity,
     ingest_source,
+    load_cloud_sources,
     load_dataset,
     load_domain_sources,
     load_endpoint_sources,
     load_identity_sources,
+    normalize_aws_cloudtrail,
     normalize_dataset,
     normalize_entra_audit,
     normalize_entra_signin,
@@ -714,7 +717,7 @@ def test_normalize_sysmon_process_event() -> None:
     document = normalize_sysmon(SYSMON_RAW)
     assert document["host"] == "LAB-EP-01"
     assert document["user"] == "LAB\\analyst"
-    assert document["event_id"] == 1
+    assert document["event_code"] == 1
     assert document["process"] == {
         "image": "C:\\Windows\\System32\\whoami.exe",
         "command_line": "whoami /all",
@@ -764,7 +767,7 @@ def test_normalize_windows_security_successful_logon() -> None:
     document = normalize_windows_security(SECURITY_RAW)
     assert document["host"] == "LAB-EP-01"
     assert document["user"] == "analyst"
-    assert document["event_id"] == 4624
+    assert document["event_code"] == 4624
     assert document["action"] == "logon"
     assert document["result"] == "success"
     assert document["src_ip"] == "203.0.113.10"
@@ -879,3 +882,136 @@ def test_ingest_endpoint_opens_client_when_missing(
     assert len(results) == 2
     assert all(result.mode == "ingested" for result in results)
     assert all(result.counts for result in results)
+
+
+CLOUDTRAIL_RAW = {
+    "eventTime": "2026-11-01T09:25:00Z",
+    "eventVersion": "1.11",
+    "eventSource": "iam.amazonaws.com",
+    "eventName": "CreateAccessKey",
+    "awsRegion": "eu-west-1",
+    "sourceIPAddress": "203.0.113.10",
+    "userAgent": "aws-cli/2.0",
+    "userIdentity": {
+        "type": "IAMUser",
+        "arn": "arn:aws:iam::123456789012:user/analyst",
+    },
+    "requestParameters": {"userName": "analyst"},
+    "responseElements": {"accessKey": {"accessKeyId": "EXAMPLE", "status": "Active"}},
+    "errorCode": "",
+    "errorMessage": "",
+    "eventID": "00000000-0000-4000-8000-000000000301",
+    "recipientAccountId": "123456789012",
+}
+
+
+def _cloud_source(**overrides: object) -> TelemetrySource:
+    data: dict[str, object] = {
+        "id": "aws-cloudtrail",
+        "name": "AWS CloudTrail management events",
+        "provider": "Amazon Web Services",
+        "product": "CloudTrail",
+        "event_classes": ["management_event", "api_activity"],
+        "schema_version": "1.0",
+        "status": "sampled",
+        "owner": "detection-engineering",
+        "event_time_field": "eventTime",
+        "ingest_time_field": "ingest_time",
+        "timezone": "UTC",
+        "ordering": "unordered",
+        "dedup_key": ["eventID"],
+        "required_fields": [
+            "eventTime",
+            "eventSource",
+            "eventName",
+            "userIdentity",
+            "sourceIPAddress",
+            "recipientAccountId",
+            "eventID",
+        ],
+        "known_gaps": [],
+    }
+    data.update(overrides)
+    return TelemetrySource(Path("aws-cloudtrail.yaml"), data)
+
+
+def test_normalize_aws_cloudtrail_maps_identity_and_request_context() -> None:
+    document = normalize_aws_cloudtrail(CLOUDTRAIL_RAW)
+    assert document["user"] == "arn:aws:iam::123456789012:user/analyst"
+    assert document["identity_type"] == "IAMUser"
+    assert document["identity_arn"] == "arn:aws:iam::123456789012:user/analyst"
+    assert document["action"] == "CreateAccessKey"
+    assert document["service"] == "iam.amazonaws.com"
+    assert document["account"] == "123456789012"
+    assert document["region"] == "eu-west-1"
+    assert document["src_ip"] == "203.0.113.10"
+    assert document["event_id"] == "00000000-0000-4000-8000-000000000301"
+    assert document["result"] == "success"
+    assert "error_code" not in document
+
+
+def test_normalize_aws_cloudtrail_marks_error_as_failure() -> None:
+    document = normalize_aws_cloudtrail({**CLOUDTRAIL_RAW, "errorCode": "AccessDenied"})
+    assert document["result"] == "failure"
+    assert document["error_code"] == "AccessDenied"
+
+
+def test_normalize_aws_cloudtrail_handles_missing_identity() -> None:
+    document = normalize_aws_cloudtrail({**CLOUDTRAIL_RAW, "userIdentity": "not-a-mapping"})
+    assert "user" not in document
+    assert "identity_type" not in document
+    assert "identity_arn" not in document
+
+
+def test_normalize_event_cloudtrail_uses_declared_key_and_event_class() -> None:
+    event = normalize_event(
+        _cloud_source(),
+        CLOUDTRAIL_RAW,
+        ingest_time=datetime(2026, 11, 22, tzinfo=UTC),
+    )
+    assert event.event_class == "management_event"
+    assert event.document["event_class"] == "management_event"
+    assert event.document["dedup_origin"] == "declared"
+    assert event.document["dedup_key"] == {"eventID": "00000000-0000-4000-8000-000000000301"}
+
+
+def test_load_cloud_sources_defaults_and_filters() -> None:
+    assert [source.id for source in load_cloud_sources()] == ["aws-cloudtrail"]
+    assert [source.id for source in load_cloud_sources(requested=("aws-cloudtrail",))] == [
+        "aws-cloudtrail"
+    ]
+
+
+def test_load_cloud_sources_rejects_non_cloud() -> None:
+    with pytest.raises(IngestError, match="Not cloud source"):
+        load_cloud_sources(requested=("entra-signin",))
+
+
+def test_ingest_cloud_dry_run_uses_repository_sample() -> None:
+    results = ingest_cloud(dry_run=True)
+    assert [result.source for result in results] == ["aws-cloudtrail"]
+    assert results[0].read == 2
+    assert results[0].unique == 2
+    assert results[0].indices == ("edl-events-aws-cloudtrail-2026.11.01",)
+
+
+def test_ingest_cloud_opens_client_when_missing(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    client = FakeClient()
+
+    class FakeContext:
+        def __enter__(self) -> FakeClient:
+            return client
+
+        def __exit__(self, *_: object) -> None:
+            return None
+
+    monkeypatch.setattr("edl.ingest.OpenSearchClient", lambda: FakeContext())
+    results = ingest_cloud(
+        ingest_time=datetime(2026, 11, 22, tzinfo=UTC),
+        index_prefix="edl-events-test",
+    )
+    assert len(results) == 1
+    assert results[0].mode == "ingested"
+    assert results[0].counts

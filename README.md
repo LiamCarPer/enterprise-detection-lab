@@ -2,7 +2,7 @@
 
 A reproducible local lab for developing and testing enterprise detection content across identity, endpoint, cloud, SaaS, network, and Kubernetes telemetry.
 
-**Status:** Alpha. Identity and endpoint telemetry ingestion is complete. Cloud ingestion, detection content, investigations, CI, and detection metrics are in progress.
+**Status:** Alpha. Identity, endpoint, and cloud telemetry ingestion is complete. Detection content, investigations, CI, and detection metrics are in progress.
 
 [Quick start](#quick-start) · [Architecture](#architecture) · [Project status](#project-status) · [Documentation](#documentation)
 
@@ -68,6 +68,7 @@ make lab-up
 make lab-bootstrap
 make ingest-identity
 make ingest-endpoint
+make ingest-cloud
 make test-lab
 ```
 
@@ -130,7 +131,7 @@ uv run edl lab reset --yes   # deletes lab volumes
 |---|---|---|
 | Identity | Entra ID sign-in, Entra ID audit | Ingested |
 | Endpoint | Sysmon, Windows Security | Ingested |
-| Cloud | AWS CloudTrail | Sampled |
+| Cloud | AWS CloudTrail | Ingested |
 | SaaS | Microsoft 365 audit, GitHub audit | Documented |
 | Network | Zeek, Suricata | Documented |
 | Kubernetes | Kubernetes audit, Falco | Documented |
@@ -155,17 +156,17 @@ Each contract records event time and ingest time fields, deduplication keys, req
 
 | Component | Status | Notes |
 |---|---|---|
-| Telemetry contracts | Complete | 11 sources across six domains; 4 ingested, 1 sampled, 6 documented |
+| Telemetry contracts | Complete | 11 sources across six domains; 5 ingested, 6 documented |
 | Identity ingestion | Complete | Entra sign-in and audit, normalized and replay-safe |
 | Endpoint ingestion | Complete | Sysmon and Windows Security, per-event classification |
-| Cloud ingestion | Next | AWS CloudTrail sample is ready |
+| Cloud ingestion | Complete | AWS CloudTrail, normalized and replay-safe |
 | Detection packages | In progress | Contract, fixtures, tests, metrics, and reference template exist |
 | Investigations | In progress | Package contract and reference template exist |
 | CI and detection metrics | Planned | Lint, validation, replay, and quality reporting |
 | SaaS, network, Kubernetes | Planned | Contracts and samples before detections |
 | Automation | Planned | Enrichment, triage, evidence, and approval-gated response |
 
-Current milestone: complete the three-domain core with identity, endpoint, and cloud ingestion, followed by six deep detections, two investigations, CI, and metrics.
+Current milestone: six deep detections across identity, endpoint, and cloud, followed by two investigations, CI, and detection metrics.
 
 ## Quality gates
 
@@ -200,7 +201,7 @@ Out of scope for this repository:
 
 ## Limitations
 
-- The repository is in alpha. Cloud ingestion, detections, investigations, CI, and metrics are not complete.
+- The repository is in alpha. Detections, investigations, CI, and metrics are not complete.
 - Samples contain two events per source. They demonstrate contract and pipeline behavior, not production volume.
 - The lab does not model production scale, backpressure, retries, dead-letter queues, or multi-tenant isolation.
 - Measurements are small and will be reported with confidence intervals and explicit limitations.

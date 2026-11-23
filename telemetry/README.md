@@ -40,7 +40,8 @@ Identity and endpoint sources are loaded with:
 ```bash
 edl ingest identity
 edl ingest endpoint
-edl ingest endpoint --source sysmon --dry-run
+edl ingest cloud
+edl ingest cloud --dry-run
 ```
 
 Ingestion checks the sample hash and required fields, rejects naive timestamps,

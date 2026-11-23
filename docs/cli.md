@@ -67,15 +67,17 @@ the reference behavior before changing status from `draft` to `tested`.
 ```bash
 edl ingest identity
 edl ingest endpoint
+edl ingest cloud
 edl ingest endpoint --source sysmon
+edl ingest cloud --dry-run
 edl ingest identity --source entra-signin
 edl ingest identity --dry-run
 edl ingest identity --json
 ```
 
 The commands validate the sample contract, normalize events to the canonical
-identity or endpoint shape, classify per-event where the source requires it,
-use deterministic document IDs, and bulk-index into daily
+identity, endpoint, or cloud shape, classify per-event where the source requires
+it, use deterministic document IDs, and bulk-index into daily
 `edl-events-<source>-YYYY.MM.DD` indices. Replays overwrite the same document
 IDs instead of creating duplicates.
 

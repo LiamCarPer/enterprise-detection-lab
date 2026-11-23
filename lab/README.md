@@ -20,6 +20,7 @@ make lab-status
 make lab-bootstrap
 make ingest-identity
 make ingest-endpoint
+make ingest-cloud
 ```
 
 `make lab-up` starts:
@@ -37,20 +38,23 @@ make ingest-endpoint
 ```bash
 make ingest-identity
 make ingest-endpoint
+make ingest-cloud
 ```
 
 Identity ingestion normalizes the Entra sign-in and audit samples. Endpoint
 ingestion normalizes Sysmon and Windows Security, classifies each event from its
-`EventID`, and validates the declared `Channel` dedup key. Both paths validate
-required fields and UTC timestamps and bulk-index into daily
-`edl-events-<source>-*` indices. Writes use deterministic document IDs, so
-replaying the same dataset is idempotent.
+`EventID`, and validates the declared `Channel` dedup key. Cloud ingestion
+normalizes the AWS CloudTrail sample, including account, region, identity, and
+API context. All paths validate required fields and UTC timestamps and
+bulk-index into daily `edl-events-<source>-*` indices. Writes use deterministic
+document IDs, so replaying the same dataset is idempotent.
 
 Useful variants:
 
 ```bash
 uv run edl ingest identity --dry-run
 uv run edl ingest endpoint --source sysmon --json
+uv run edl ingest cloud --dry-run
 uv run edl ingest endpoint --no-refresh
 ```
 

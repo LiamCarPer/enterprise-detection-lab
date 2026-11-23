@@ -22,9 +22,11 @@ Classifier = Callable[[Mapping[str, Any]], str]
 
 IDENTITY_SOURCES: tuple[str, ...] = ("entra-signin", "entra-audit")
 ENDPOINT_SOURCES: tuple[str, ...] = ("sysmon", "windows-security")
+CLOUD_SOURCES: tuple[str, ...] = ("aws-cloudtrail",)
 DOMAIN_SOURCES: dict[str, tuple[str, ...]] = {
     "identity": IDENTITY_SOURCES,
     "endpoint": ENDPOINT_SOURCES,
+    "cloud": CLOUD_SOURCES,
 }
 
 
@@ -207,6 +209,7 @@ def normalize_entra_signin(raw: Mapping[str, Any]) -> dict[str, Any]:
     """Map Entra sign-in fields to the canonical identity shape."""
     document: dict[str, Any] = {
         "action": "sign_in",
+        "event_id": raw.get("id"),
         "user": raw.get("userPrincipalName"),
         "src_ip": raw.get("ipAddress"),
         "app": raw.get("appDisplayName"),
@@ -250,6 +253,7 @@ def normalize_entra_audit(raw: Mapping[str, Any]) -> dict[str, Any]:
 
     document: dict[str, Any] = {
         "action": raw.get("operationName"),
+        "event_id": raw.get("id"),
         "user": user,
         "app": app,
         "src_ip": src_ip,
@@ -282,7 +286,7 @@ def normalize_sysmon(raw: Mapping[str, Any]) -> dict[str, Any]:
     document: dict[str, Any] = {
         "host": raw.get("Computer"),
         "user": raw.get("User"),
-        "event_id": _event_id(raw),
+        "event_code": _event_id(raw),
     }
 
     process = _compact(
@@ -348,7 +352,7 @@ def normalize_windows_security(raw: Mapping[str, Any]) -> dict[str, Any]:
     document: dict[str, Any] = {
         "host": raw.get("Computer"),
         "user": _meaningful(raw.get("TargetUserName")),
-        "event_id": event_id,
+        "event_code": event_id,
         "action": WINDOWS_ACTIONS.get(event_id) if event_id is not None else None,
         "result": result,
         "src_ip": _meaningful(raw.get("IpAddress")),
@@ -361,10 +365,38 @@ def normalize_windows_security(raw: Mapping[str, Any]) -> dict[str, Any]:
     return _compact(document)
 
 
+def normalize_aws_cloudtrail(raw: Mapping[str, Any]) -> dict[str, Any]:
+    """Map AWS CloudTrail fields to the canonical cloud shape."""
+    identity = raw.get("userIdentity")
+    identity_type: Any = None
+    identity_arn: Any = None
+    if isinstance(identity, Mapping):
+        identity_type = identity.get("type")
+        identity_arn = identity.get("arn") or identity.get("principalId")
+
+    error_code = _meaningful(raw.get("errorCode"))
+    document: dict[str, Any] = {
+        "user": identity_arn,
+        "src_ip": _meaningful(raw.get("sourceIPAddress")),
+        "action": raw.get("eventName"),
+        "result": "failure" if error_code else "success",
+        "service": raw.get("eventSource"),
+        "account": raw.get("recipientAccountId"),
+        "region": raw.get("awsRegion"),
+        "event_id": raw.get("eventID"),
+        "identity_type": identity_type,
+        "identity_arn": identity_arn,
+        "error_code": error_code,
+        "user_agent": _meaningful(raw.get("userAgent")),
+    }
+    return _compact(document)
+
+
 NORMALIZERS.update(
     {
         "sysmon": normalize_sysmon,
         "windows-security": normalize_windows_security,
+        "aws-cloudtrail": normalize_aws_cloudtrail,
     }
 )
 
@@ -793,6 +825,14 @@ def load_endpoint_sources(
     return load_domain_sources("endpoint", root, requested)
 
 
+def load_cloud_sources(
+    root: Path = config.ROOT,
+    requested: Sequence[str] = (),
+) -> list[TelemetrySource]:
+    """Load and validate the selected cloud source contracts."""
+    return load_domain_sources("cloud", root, requested)
+
+
 def ingest_domain(
     domain: str,
     root: Path = config.ROOT,
@@ -868,6 +908,31 @@ def ingest_endpoint(
     """Ingest all selected endpoint sources into OpenSearch."""
     return ingest_domain(
         "endpoint",
+        root,
+        sources=sources,
+        client=client,
+        ingest_time=ingest_time,
+        index_prefix=index_prefix,
+        refresh=refresh,
+        batch_size=batch_size,
+        dry_run=dry_run,
+    )
+
+
+def ingest_cloud(
+    root: Path = config.ROOT,
+    *,
+    sources: Sequence[str] = (),
+    client: OpenSearchClient | None = None,
+    ingest_time: datetime | None = None,
+    index_prefix: str = config.EVENTS_INDEX_PREFIX,
+    refresh: bool = True,
+    batch_size: int = 500,
+    dry_run: bool = False,
+) -> list[IngestResult]:
+    """Ingest all selected cloud sources into OpenSearch."""
+    return ingest_domain(
+        "cloud",
         root,
         sources=sources,
         client=client,

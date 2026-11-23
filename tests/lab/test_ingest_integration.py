@@ -6,7 +6,7 @@ import httpx
 import pytest
 
 from edl import config
-from edl.ingest import OpenSearchClient, ingest_endpoint, ingest_identity
+from edl.ingest import OpenSearchClient, ingest_cloud, ingest_endpoint, ingest_identity
 
 pytestmark = pytest.mark.lab
 
@@ -96,6 +96,7 @@ def test_endpoint_ingest_is_idempotent_and_queryable() -> None:
         sysmon_ids = sorted(str(hit["_id"]) for hit in sysmon_hits)
         sysmon_event = sysmon_hits[0]["_source"]
         assert sysmon_event["event_class"] == "process_creation"
+        assert sysmon_event["event_code"] == 1
         assert sysmon_event["host"] == "LAB-EP-01"
         assert sysmon_event["user"] == "LAB\\analyst"
         assert sysmon_event["process"]["image"].endswith("whoami.exe")
@@ -107,6 +108,7 @@ def test_endpoint_ingest_is_idempotent_and_queryable() -> None:
         security_ids = sorted(str(hit["_id"]) for hit in security_hits)
         security_event = security_hits[0]["_source"]
         assert security_event["event_class"] == "authentication"
+        assert security_event["event_code"] == 4624
         assert security_event["action"] == "logon"
         assert security_event["result"] == "success"
         assert security_event["logon_type"] == 3
@@ -121,6 +123,55 @@ def test_endpoint_ingest_is_idempotent_and_queryable() -> None:
         assert all(result.counts == {result.indices[0]: 2} for result in second)
         assert sorted(str(hit["_id"]) for hit in _search("sysmon")) == sysmon_ids
         assert sorted(str(hit["_id"]) for hit in _search("windows-security")) == security_ids
+    finally:
+        client.delete_matching(f"{TEST_PREFIX}-*")
+        client.close()
+
+
+def test_cloud_ingest_is_idempotent_and_queryable() -> None:
+    client = OpenSearchClient()
+    try:
+        first = ingest_cloud(
+            config.ROOT,
+            client=client,
+            ingest_time=datetime(2026, 11, 22, 12, 0, tzinfo=UTC),
+            index_prefix=TEST_PREFIX,
+        )
+        assert [result.source for result in first] == ["aws-cloudtrail"]
+        assert first[0].read == 2
+        assert first[0].unique == 2
+        assert first[0].written == 2
+        assert first[0].counts == {first[0].indices[0]: 2}
+
+        hits = _search("aws-cloudtrail")
+        assert len(hits) == 2
+        cloud_ids = sorted(str(hit["_id"]) for hit in hits)
+        events = [hit["_source"] for hit in hits]
+
+        create_key = events[0]
+        assert create_key["event_class"] == "management_event"
+        assert create_key["action"] == "CreateAccessKey"
+        assert create_key["service"] == "iam.amazonaws.com"
+        assert create_key["account"] == "123456789012"
+        assert create_key["region"] == "eu-west-1"
+        assert create_key["identity_type"] == "IAMUser"
+        assert create_key["user"] == "arn:aws:iam::123456789012:user/analyst"
+        assert create_key["result"] == "success"
+        assert len(create_key["event_id"]) == 36
+        assert create_key["dedup_origin"] == "declared"
+
+        stop_logging = events[1]
+        assert stop_logging["action"] == "StopLogging"
+        assert stop_logging["service"] == "cloudtrail.amazonaws.com"
+
+        second = ingest_cloud(
+            config.ROOT,
+            client=client,
+            ingest_time=datetime(2026, 11, 23, 12, 0, tzinfo=UTC),
+            index_prefix=TEST_PREFIX,
+        )
+        assert second[0].counts == {second[0].indices[0]: 2}
+        assert sorted(str(hit["_id"]) for hit in _search("aws-cloudtrail")) == cloud_ids
     finally:
         client.delete_matching(f"{TEST_PREFIX}-*")
         client.close()

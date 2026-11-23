@@ -14,8 +14,8 @@ It is a directional engineering synthesis, not a formal standard or compliance c
 | **Detection validation and regression** | Replay, attack simulation, negative tests, regression tests, and backend query checks | `src/edl/validation.py`, `detections/*/tests/`, `conformance/` | Artifact and fixture validation, lab ingest tests; detection replay planned | In progress |
 | **Benign baseline and false-positive control** | Measures noise against realistic benign activity, not an idle lab | `lab/`, `detections/*/fixtures/benign.json`, reports | Fixture contract and reference benign fixture; workload generator planned | Planned |
 | **Detection quality metrics** | Precision, recall, false-positive rate, latency, sample size, method, and limitations | `schemas/metrics.schema.json`, `detections/*/metrics.json` | Metrics schema and reference metrics file; real measurements planned | Planned |
-| **Enterprise telemetry breadth** | Identity, endpoint, cloud, SaaS, network, and Kubernetes sources | `telemetry/sources/`, `docs/telemetry-matrix.md`, `lab/` | 11 contracts across six domains; 4 ingested, 1 sampled, 6 documented | In progress |
-| **Cloud and identity depth** | Entra/AD/Okta, AWS/Azure/GCP audit, IAM, token and session abuse | `detections/identity/`, `detections/cloud/`, `investigations/` | Identity and endpoint ingestion complete; cloud ingestion next | In progress |
+| **Enterprise telemetry breadth** | Identity, endpoint, cloud, SaaS, network, and Kubernetes sources | `telemetry/sources/`, `docs/telemetry-matrix.md`, `lab/` | 11 contracts across six domains; 5 ingested, 6 documented | In progress |
+| **Cloud and identity depth** | Entra/AD/Okta, AWS/Azure/GCP audit, IAM, token and session abuse | `detections/identity/`, `detections/cloud/`, `investigations/` | Identity, endpoint, and cloud ingestion complete; detection content next | In progress |
 | **Threat modeling and ATT&CK mapping** | Attacker TTPs, attack paths, evasion, and telemetry implications | `docs/threat-model.md`, detection metadata, `investigations/` | ATT&CK field in detection schema; threat model planned | Planned |
 | **Incident investigation** | Timeline, evidence, scope, containment, recovery, and lessons learned | `investigations/`, runbooks | Investigation schema, reference package, evidence rules | In progress |
 | **Automation and response safety** | Enrichment, triage, evidence capture, containment proposals, approval gates, and effect verification | `automation/` | Not implemented | Planned |
@@ -29,15 +29,14 @@ It is a directional engineering synthesis, not a formal standard or compliance c
 | Metric | Current |
 |---|---|
 | Requirements mapped | 15 / 15 |
-| Telemetry source contracts | 11 (4 ingested, 1 sampled, 6 documented) |
-| Identity and endpoint ingestion | Complete |
-| Cloud ingestion | Next |
+| Telemetry source contracts | 11 (5 ingested, 6 documented) |
+| Identity, endpoint, and cloud ingestion | Complete |
 | Detection packages implemented | 0 production detections; contract and template complete |
 | Investigations implemented | 0 production investigations; contract and template complete |
 | CI and detection metrics | Planned |
 | Automation | Planned |
 
-The mapping is complete. The implementation is not. Identity and endpoint telemetry are ingested; cloud ingestion is next, followed by six deep detections, two investigations, CI, and metrics.
+The mapping is complete. The implementation is not. Identity, endpoint, and cloud telemetry are ingested; six deep detections, two investigations, CI, and metrics are next.
 
 ## How to use this document
 

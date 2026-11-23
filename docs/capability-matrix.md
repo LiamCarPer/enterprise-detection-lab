@@ -17,7 +17,7 @@ This matrix tracks the engineering capabilities implemented in the lab and the a
 | **Telemetry contracts** | Source fields, event time, ingest time, deduplication, required fields, latency, retention, cost, and known gaps | `telemetry/sources/`, `docs/telemetry-matrix.md` | Complete |
 | **Identity telemetry** | Normalized Entra sign-in and audit events, UTC enforcement, deterministic IDs, idempotent replay | `src/edl/ingest.py`, `lab/datasets/synthetic/entra-*`, `docs/ingestion.md` | Complete |
 | **Endpoint telemetry** | Normalized Sysmon and Windows Security events, per-event classification, declared dedup keys | `src/edl/ingest.py`, `lab/datasets/synthetic/sysmon`, `lab/datasets/synthetic/windows-security` | Complete |
-| **Cloud telemetry** | AWS CloudTrail normalization, identity and request context, replay verification | `telemetry/sources/aws-cloudtrail.yaml`, `src/edl/ingest.py` | In progress |
+| **Cloud telemetry** | AWS CloudTrail normalization, identity and request context, replay verification | `telemetry/sources/aws-cloudtrail.yaml`, `src/edl/ingest.py` | Complete |
 | **Detection engineering** | Versioned packages with hypothesis, telemetry contract, Sigma rule, native query, fixtures, runbook, and metrics | `detections/`, `schemas/detection.schema.json` | In progress |
 | **Detection validation** | Positive, negative, and benign fixtures; schema checks; backend query checks; regression tests | `src/edl/validation.py`, `detections/*/tests/`, `tests/` | In progress |
 | **Investigation** | Timeline, queries, evidence, response, lessons, and an executive summary for a complete attack chain | `investigations/`, `schemas/investigation.schema.json` | In progress |
@@ -35,7 +35,7 @@ This matrix tracks the engineering capabilities implemented in the lab and the a
 | `docs/artifact-model.md` | Complete | Detection and investigation package contracts |
 | `compose.yaml` + `lab/` | Complete | Local OpenSearch, Dashboards, Kusto, and DuckDB stack with pinned images and bootstrap |
 | `src/edl/` | Complete | Validation, reporting, ingestion, scaffolding, and lab lifecycle |
-| `telemetry/sources/` + `docs/telemetry-matrix.md` | Complete | 11 contracts (4 ingested, 1 sampled, 6 documented) with generated matrix and freshness check |
+| `telemetry/sources/` + `docs/telemetry-matrix.md` | Complete | 11 contracts (5 ingested, 6 documented) with generated matrix and freshness check |
 | `src/edl/ingest.py` + `docs/ingestion.md` | Complete | Identity and endpoint normalization, classification, deduplication, and idempotent bulk ingest |
 | `detections/endpoint/_template` + `investigations/_template` | Complete | Working reference packages and `edl new` scaffolding |
 | `tests/` + `Makefile` | Complete | Unit, integration, and lab tests; 90% statement-coverage gate |
@@ -43,9 +43,8 @@ This matrix tracks the engineering capabilities implemented in the lab and the a
 
 ## Next evidence
 
-The next milestone is the three-domain core:
+The next milestone is detection content:
 
-- AWS CloudTrail ingestion.
 - Six deep detections across identity, endpoint, and cloud.
 - Two end-to-end investigations.
 - CI, replay, benign baseline, and detection metrics.

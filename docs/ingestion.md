@@ -1,6 +1,6 @@
 # Telemetry Ingestion
 
-`edl ingest` loads the sampled Entra ID and Windows endpoint contracts into OpenSearch. The pipeline is deliberately small, but it treats ingestion as production software: validate first, normalize to a stable shape, classify each event, deduplicate deterministically, and make replay idempotent.
+`edl ingest` loads the sampled Entra ID, Windows endpoint, and AWS CloudTrail contracts into OpenSearch. The pipeline is deliberately small, but it treats ingestion as production software: validate first, normalize to a stable shape, classify each event, deduplicate deterministically, and make replay idempotent.
 
 ```text
 telemetry/sources/*.yaml
@@ -25,6 +25,7 @@ make lab-up
 make lab-bootstrap
 make ingest-identity
 make ingest-endpoint
+make ingest-cloud
 ```
 
 Or directly:
@@ -37,6 +38,8 @@ edl ingest identity --json
 edl ingest endpoint
 edl ingest endpoint --source sysmon
 edl ingest endpoint --dry-run
+edl ingest cloud
+edl ingest cloud --dry-run
 ```
 
 `--dry-run` performs the full preflight and prints the target indices without contacting OpenSearch. `--source` accepts one source or a comma-separated list. `--no-refresh` skips the post-ingest count because OpenSearch cannot report an accurate count before the next refresh.
@@ -66,11 +69,13 @@ Common fields:
 | `event_time` | Normalized event time. Separate from ingest time. |
 | `ingest_time` | When the lab ingested the event. |
 | `source` | Source contract ID, for example `entra-signin`. |
-| `event_class` | Event class. Sources with one class use the declared class; Sysmon and Windows Security classify per event. |
+| `event_class` | Event class. Sources without a classifier use the first declared class; Sysmon and Windows Security classify per event. |
+| `event_id` | Native event identifier when the source provides one. |
+| `event_code` | Numeric provider event code for Windows and Sysmon. |
 | `schema_version` | Source contract schema version. |
 | `user` | User principal, initiating identity, or target account. |
 | `src_ip` | Source IP when the source provides one. |
-| `action` | Sign-in action, directory operation, or Windows event action. |
+| `action` | Sign-in action, directory operation, cloud API name, or Windows event action. |
 | `result` | Success or failure, using the source's vocabulary. |
 | `dedup_key` | Declared key values used for the deterministic ID. |
 | `dedup_origin` | `declared` when the contract key was complete; `hash` for the fallback. |
@@ -82,7 +87,7 @@ Entra audit additions: `app` and `resource.name` / `resource.type` / `resource.c
 
 Sysmon additions:
 
-- `host`, `user`, and `event_id`
+- `host`, `user`, and `event_code`
 - `process.image`, `process.command_line`, `process.guid`, `process.id`, `process.parent_image`, `process.parent_command_line`
 - `network.source_ip`, `network.source_port`, `network.destination_ip`, `network.destination_port`, `network.protocol`
 - `file.target_filename`
@@ -91,10 +96,18 @@ Sysmon additions:
 
 Windows Security additions:
 
-- `host`, `user`, `event_id`, `action`, `result`, `src_ip`
+- `host`, `user`, `event_code`, `action`, `result`, `src_ip`
 - `logon_type`, `status`, `subject_user`, `service_name`, `task_name`
 
 Sysmon `EventID` maps to `process_creation` (1), `network_connection` (3), `process_access` (10), `file_create` (11), `registry_set` (12–14), `dns_query` (22), or `other`. Windows Security maps authentication and account-management event IDs, with `other` for unsampled events. The classification is part of the canonical event and is filterable in OpenSearch.
+
+AWS CloudTrail additions:
+
+- `user`, `identity_type`, `identity_arn`, `src_ip`, `user_agent`
+- `action` (the API name), `service` (the event source), `account`, `region`
+- `event_id` (the CloudTrail UUID), `result`, and `error_code`
+
+CloudTrail management events use the declared `management_event` class. The raw request and response bodies remain available in `raw` but are not indexed.
 
 The canonical fields are mapped in [`lab/bootstrap/opensearch/events-template.json`](../lab/bootstrap/opensearch/events-template.json). Unknown fields remain dynamically mapped; update the template when a field becomes part of the query contract.
 
@@ -128,9 +141,10 @@ edl-events-entra-signin-2026.11.01
 edl-events-entra-audit-2026.11.01
 edl-events-sysmon-2026.11.01
 edl-events-windows-security-2026.11.01
+edl-events-aws-cloudtrail-2026.11.01
 ```
 
-The `edl-events-*` index template applies one shard, zero replicas, UTC date fields, keyword fields for identity and endpoint pivots, and disabled indexing for `raw`.
+The `edl-events-*` index template applies one shard, zero replicas, UTC date fields, keyword fields for identity, endpoint, and cloud pivots, and disabled indexing for `raw`.
 
 ## Result fields
 
@@ -153,14 +167,15 @@ The `edl-events-*` index template applies one shard, zero replicas, UTC date fie
 
 ## Status
 
-The two identity sources and two endpoint sources move from `sampled` to `ingested` after a successful lab run. They move to `validated` only after detection replay and regression tests pass. The generated [telemetry matrix](telemetry-matrix.md) records the current status.
+The five sampled sources move from `sampled` to `ingested` after a successful lab run. They move to `validated` only after detection replay and regression tests pass. The generated [telemetry matrix](telemetry-matrix.md) records the current status.
 
 ## Known gaps
 
-- Only Entra identity and Windows endpoint sources are normalized currently; AWS CloudTrail is next.
+- Entra identity, Windows endpoint, and AWS CloudTrail sources are normalized currently; SaaS, network, and Kubernetes are next.
 - The sample has two events per source; it demonstrates semantics, not volume.
 - Sysmon field coverage depends on the Sysmon configuration; the sample covers process creation only.
 - Windows Security advanced audit policy determines which events exist; the sample covers logon success and failure.
+- CloudTrail data events, organization trails, and cross-account delivery are not sampled.
 - There is no backpressure, retry queue, dead-letter store, or checkpointing.
 - The bulk client retries nothing; a failed command is safe to rerun because writes are idempotent.
 - `raw` is retained for triage. A production pipeline would apply redaction before storage.
