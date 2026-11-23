@@ -43,16 +43,17 @@ This matrix tracks the engineering capabilities implemented in the lab and the a
 | `investigations/01-identity-to-cloud` + `investigations/02-endpoint-to-cloud` | Tested | Evidence hashes, timelines, queries, response, lessons, and linked detection checks |
 | `src/edl/detection.py` + `docs/detection-testing.md` | Complete | Fixture normalization, temporary-index replay, pass/fail scoring, and metrics generation |
 | `tests/` + `Makefile` | Complete | Unit, integration, and lab tests; 90% statement-coverage gate |
+| `.github/workflows/ci.yml` | Complete | Quality job plus OpenSearch-backed ingestion, detection, and investigation tests |
+| `reports/detection-metrics.md` | Complete | Aggregated fixture metrics for six detections with explicit limitations |
 | `docs/capability-matrix.md` + `docs/requirements-traceability.md` | Complete | Capability and engineering-requirement traceability |
 
 ## Next evidence
 
-The next milestone is operations:
+The next work is detection depth:
 
-- CI, replay, benign baseline, and detection metrics.
-- A first results report with limitations.
-
-After that, the lab expands to SaaS, network, and Kubernetes telemetry, followed by automation.
+- A benign activity baseline and a documented false-positive tuning case study.
+- Additional detections with near-miss fixtures and correlation logic.
+- SaaS, network, and Kubernetes telemetry, followed by automation.
 
 ## Evidence standards
 

@@ -4,7 +4,7 @@
 
 A reproducible local lab for developing and testing enterprise detection content across identity, endpoint, cloud, SaaS, network, and Kubernetes telemetry.
 
-**Status:** Alpha. Identity, endpoint, and cloud telemetry ingestion, six core detections, and two investigations are complete. CI and aggregated metrics are in progress.
+**Status:** Alpha. Identity, endpoint, and cloud telemetry ingestion, six core detections, two investigations, CI, and aggregated fixture metrics are complete. The next focus is benign baseline coverage and detection tuning.
 
 [Quick start](#quick-start) · [Architecture](#architecture) · [Project status](#project-status) · [Documentation](#documentation)
 
@@ -190,7 +190,9 @@ Investigations are **Tested** when the timeline, evidence, queries, response, an
 ├── investigations/          # Investigation packages and the reference template
 ├── lab/                     # Compose bootstrap, synthetic datasets, and lab docs
 ├── docs/                    # Architecture, ingestion, CLI, and status docs
-└── tests/                   # Unit, integration, and lab tests
+├── reports/                 # Generated detection metrics report
+├── tests/                   # Unit, integration, and lab tests
+└── .github/workflows/       # CI quality and OpenSearch jobs
 ```
 
 ## Project status
@@ -206,15 +208,16 @@ Investigations are **Tested** when the timeline, evidence, queries, response, an
 | Tested detections | 6 of 6 | All core detections pass fixture replay |
 | Investigations | Complete | Two tested investigation packages with hashed evidence |
 | Tested investigations | 2 of 2 | `INV-001` and `INV-002` pass evidence and detection-link checks |
-| CI and metrics reporting | Planned | GitHub Actions, aggregated quality report |
+| CI | Complete | GitHub Actions quality and OpenSearch-backed test jobs |
+| Metrics reporting | Complete | Aggregated fixture metrics in `reports/detection-metrics.md` |
 | SaaS, network, Kubernetes | Planned | Contracts and samples before detections |
 | Automation | Planned | Enrichment, triage, evidence, and approval-gated response |
 
-Current milestone: CI and aggregated detection metrics.
+Current focus: benign baseline coverage and a documented false-positive tuning case study.
 
 ## Quality gates
 
-- `make check` must pass.
+- `make check` and CI must pass.
 - A detection is not complete until positive, negative, and benign fixtures pass.
 - Native OpenSearch queries must pass `edl detection test` against those fixtures.
 - A detection must include a Sigma rule, a native query, false-positive analysis, a runbook, and metrics.
@@ -247,7 +250,7 @@ Out of scope for this repository:
 
 ## Limitations
 
-- The repository is in alpha. CI and aggregated metrics are not complete, and the detection and investigation corpus is still small.
+- The repository is in alpha. The detection and investigation corpus is still small, and production measurements are not included.
 - Samples contain a handful of events per source. They demonstrate contract and pipeline behavior, not production volume.
 - The lab does not model production scale, backpressure, retries, dead-letter queues, or multi-tenant isolation.
 - Measurements are small and will be reported with confidence intervals and explicit limitations.
