@@ -32,7 +32,7 @@ def test_validate_json() -> None:
     assert result.exit_code == 0
     payload = json.loads(result.stdout)
     assert payload["ok"] is True
-    assert payload["summary"]["detections"] == 1
+    assert payload["summary"]["detections"] >= 1
 
 
 def test_report_json() -> None:

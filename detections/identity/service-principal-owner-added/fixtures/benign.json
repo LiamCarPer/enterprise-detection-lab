@@ -1,0 +1,67 @@
+[
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002301",
+      "activityDateTime": "2026-11-08T09:00:00Z",
+      "operationName": "Add service principal",
+      "initiatedBy": {"user": {"userPrincipalName": "appowner@example.test"}},
+      "targetResources": [{"displayName": "Approved App", "type": "ServicePrincipal"}],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "note": "Routine application registration"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002302",
+      "activityDateTime": "2026-11-08T09:15:00Z",
+      "operationName": "Consent to application",
+      "initiatedBy": {"user": {"userPrincipalName": "analyst@example.test"}},
+      "targetResources": [{"displayName": "Office 365", "type": "ServicePrincipal"}],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "note": "User consent to a sanctioned application"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002303",
+      "activityDateTime": "2026-11-08T09:30:00Z",
+      "operationName": "Update user",
+      "initiatedBy": {"user": {"userPrincipalName": "admin@example.test"}},
+      "targetResources": [{"displayName": "analyst@example.test", "type": "User"}],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "note": "Routine user attribute update"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002304",
+      "activityDateTime": "2026-11-08T09:45:00Z",
+      "operationName": "Add member to group",
+      "initiatedBy": {"user": {"userPrincipalName": "admin@example.test"}},
+      "targetResources": [{"displayName": "Finance Users", "type": "Group"}],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "note": "Group membership change"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002305",
+      "activityDateTime": "2026-11-08T10:00:00Z",
+      "operationName": "Remove owner from service principal",
+      "initiatedBy": {"user": {"userPrincipalName": "appowner@example.test"}},
+      "targetResources": [{"displayName": "Retired App", "type": "ServicePrincipal"}],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "note": "Routine owner cleanup"
+  }
+]

@@ -1,6 +1,10 @@
-def test_reference_artifact_has_fixtures() -> None:
-    from pathlib import Path
+from __future__ import annotations
 
-    assert Path("fixtures/positive.json").exists()
-    assert Path("fixtures/negative.json").exists()
-    assert Path("fixtures/benign.json").exists()
+from pathlib import Path
+
+PACKAGE = Path(__file__).resolve().parents[1]
+
+
+def test_reference_artifact_has_fixtures() -> None:
+    for kind in ("positive", "negative", "benign"):
+        assert (PACKAGE / "fixtures" / f"{kind}.json").exists()

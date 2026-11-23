@@ -1,0 +1,42 @@
+id: DET-CLD-002
+title: CloudTrail Logging Stopped
+version: 1.0.0
+status: tested
+domain: cloud
+severity: critical
+hypothesis: Stopping CloudTrail logging can blind monitoring and evidence collection before or during an intrusion.
+description: Detects a successful StopLogging operation against an AWS CloudTrail trail.
+owner: detection-engineering
+created: "2026-11-23"
+updated: "2026-11-23"
+attack:
+  - T1562.008
+tags:
+  - cloud
+  - aws
+  - cloudtrail
+  - defense-evasion
+telemetry:
+  - source: aws-cloudtrail
+    event_class: management_event
+    required_fields:
+      - eventTime
+      - eventSource
+      - eventName
+      - userIdentity
+      - sourceIPAddress
+      - recipientAccountId
+      - eventID
+queries:
+  opensearch: queries/opensearch.json
+tests:
+  positive: 5
+  negative: 5
+  benign: 5
+false_positives:
+  - Approved trail maintenance or migration with a change record.
+  - Temporary test-trail changes in a non-production account.
+  - Break-glass recovery that required stopping a broken trail.
+runbook: runbook.md
+metrics: metrics.json
+notes: notes.md

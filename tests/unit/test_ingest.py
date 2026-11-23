@@ -719,10 +719,12 @@ def test_normalize_sysmon_process_event() -> None:
     assert document["user"] == "LAB\\analyst"
     assert document["event_code"] == 1
     assert document["process"] == {
+        "name": "whoami.exe",
         "image": "C:\\Windows\\System32\\whoami.exe",
         "command_line": "whoami /all",
         "guid": "{00000000-0000-4000-8000-000000000201}",
         "id": 4242,
+        "parent_name": "cmd.exe",
         "parent_image": "C:\\Windows\\System32\\cmd.exe",
         "parent_command_line": "cmd.exe /c whoami /all",
     }
@@ -1015,3 +1017,12 @@ def test_ingest_cloud_opens_client_when_missing(
     assert len(results) == 1
     assert results[0].mode == "ingested"
     assert results[0].counts
+
+
+def test_basename_handles_windows_and_posix_paths() -> None:
+    from edl.ingest import _basename
+
+    assert _basename("C:\\Windows\\System32\\PowerShell.EXE") == "powershell.exe"
+    assert _basename("/usr/bin/bash") == "bash"
+    assert _basename(None) is None
+    assert _basename("") is None

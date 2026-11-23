@@ -1,0 +1,118 @@
+[
+  {
+    "event": {
+      "eventTime": "2026-11-20T09:00:00Z",
+      "eventSource": "cloudtrail.amazonaws.com",
+      "eventName": "DescribeTrails",
+      "awsRegion": "eu-west-1",
+      "sourceIPAddress": "203.0.113.10",
+      "userIdentity": {
+        "type": "IAMUser",
+        "arn": "arn:aws:iam::123456789012:user/analyst"
+      },
+      "requestParameters": {},
+      "responseElements": null,
+      "errorCode": "",
+      "errorMessage": "",
+      "eventID": "00000000-0000-4000-8000-000000006301",
+      "recipientAccountId": "123456789012"
+    },
+    "source": "aws-cloudtrail",
+    "synthetic": true,
+    "note": "Routine trail inventory"
+  },
+  {
+    "event": {
+      "eventTime": "2026-11-20T09:10:00Z",
+      "eventSource": "cloudtrail.amazonaws.com",
+      "eventName": "GetTrailStatus",
+      "awsRegion": "eu-west-1",
+      "sourceIPAddress": "198.51.100.20",
+      "userIdentity": {
+        "type": "IAMUser",
+        "arn": "arn:aws:iam::123456789012:user/analyst"
+      },
+      "requestParameters": {
+        "name": "arn:aws:cloudtrail:eu-west-1:123456789012:trail/lab-trail"
+      },
+      "responseElements": null,
+      "errorCode": "",
+      "errorMessage": "",
+      "eventID": "00000000-0000-4000-8000-000000006302",
+      "recipientAccountId": "123456789012"
+    },
+    "source": "aws-cloudtrail",
+    "synthetic": true,
+    "note": "Trail health check"
+  },
+  {
+    "event": {
+      "eventTime": "2026-11-20T09:20:00Z",
+      "eventSource": "cloudtrail.amazonaws.com",
+      "eventName": "ListTrails",
+      "awsRegion": "us-east-1",
+      "sourceIPAddress": "192.0.2.30",
+      "userIdentity": {
+        "type": "IAMUser",
+        "arn": "arn:aws:iam::123456789012:user/auditor"
+      },
+      "requestParameters": {},
+      "responseElements": null,
+      "errorCode": "",
+      "errorMessage": "",
+      "eventID": "00000000-0000-4000-8000-000000006303",
+      "recipientAccountId": "123456789012"
+    },
+    "source": "aws-cloudtrail",
+    "synthetic": true,
+    "note": "Trail listing"
+  },
+  {
+    "event": {
+      "eventTime": "2026-11-20T09:30:00Z",
+      "eventSource": "cloudtrail.amazonaws.com",
+      "eventName": "StartLogging",
+      "awsRegion": "eu-west-1",
+      "sourceIPAddress": "203.0.113.40",
+      "userIdentity": {
+        "type": "IAMUser",
+        "arn": "arn:aws:iam::123456789012:user/admin"
+      },
+      "requestParameters": {
+        "name": "arn:aws:cloudtrail:eu-west-1:123456789012:trail/lab-trail"
+      },
+      "responseElements": null,
+      "errorCode": "",
+      "errorMessage": "",
+      "eventID": "00000000-0000-4000-8000-000000006304",
+      "recipientAccountId": "123456789012"
+    },
+    "source": "aws-cloudtrail",
+    "synthetic": true,
+    "note": "Logging started after maintenance"
+  },
+  {
+    "event": {
+      "eventTime": "2026-11-20T09:40:00Z",
+      "eventSource": "cloudtrail.amazonaws.com",
+      "eventName": "PutEventSelectors",
+      "awsRegion": "us-east-1",
+      "sourceIPAddress": "198.51.100.50",
+      "userIdentity": {
+        "type": "IAMUser",
+        "arn": "arn:aws:iam::123456789012:user/admin"
+      },
+      "requestParameters": {
+        "trailName": "org-trail"
+      },
+      "responseElements": null,
+      "errorCode": "",
+      "errorMessage": "",
+      "eventID": "00000000-0000-4000-8000-000000006305",
+      "recipientAccountId": "123456789012"
+    },
+    "source": "aws-cloudtrail",
+    "synthetic": true,
+    "note": "Approved selector update"
+  }
+]

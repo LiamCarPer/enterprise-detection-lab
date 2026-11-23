@@ -1,0 +1,97 @@
+[
+  {
+    "event": {
+      "UtcTime": "2026-11-11T09:00:00Z",
+      "EventID": 1,
+      "Computer": "LAB-EP-01",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 3301,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000003301}",
+      "ProcessId": 5301,
+      "Image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "CommandLine": "powershell.exe -NoProfile -Command Get-ChildItem C:\\Users",
+      "ParentImage": "C:\\Windows\\explorer.exe",
+      "ParentCommandLine": "explorer.exe",
+      "User": "LAB\\analyst"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Interactive PowerShell without encoded command"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-11T09:10:00Z",
+      "EventID": 1,
+      "Computer": "LAB-EP-02",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 3302,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000003302}",
+      "ProcessId": 5302,
+      "Image": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+      "CommandLine": "pwsh.exe -NoProfile -File C:\\Scripts\\health.ps1",
+      "ParentImage": "C:\\Windows\\System32\\cmd.exe",
+      "ParentCommandLine": "cmd.exe /c pwsh.exe -File C:\\Scripts\\health.ps1",
+      "User": "LAB\\analyst"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Scheduled health check script"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-11T09:20:00Z",
+      "EventID": 1,
+      "Computer": "LAB-EP-03",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 3303,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000003303}",
+      "ProcessId": 5303,
+      "Image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "CommandLine": "powershell.exe -NoLogo",
+      "ParentImage": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "ParentCommandLine": "powershell.exe",
+      "User": "LAB\\analyst"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Nested interactive PowerShell"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-11T09:30:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-04",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 3304,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000003304}",
+      "ProcessId": 5304,
+      "Image": "C:\\Windows\\System32\\notepad.exe",
+      "CommandLine": "notepad.exe C:\\Users\\Public\\notes.txt",
+      "ParentImage": "C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE",
+      "ParentCommandLine": "\"C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE\" /n notes.docx",
+      "User": "LAB\\finance"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Office opened a normal text editor"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-11T09:40:00Z",
+      "EventID": 1,
+      "Computer": "LAB-SRV-01",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 3305,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000003305}",
+      "ProcessId": 5305,
+      "Image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "CommandLine": "powershell.exe -NoProfile -Command Get-Service",
+      "ParentImage": "C:\\Windows\\System32\\services.exe",
+      "ParentCommandLine": "C:\\Windows\\system32\\services.exe",
+      "User": "NT AUTHORITY\\SYSTEM"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Service maintenance command without encoding"
+  }
+]

@@ -1,0 +1,97 @@
+[
+  {
+    "event": {
+      "UtcTime": "2026-11-14T09:00:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-01",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 4301,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000004301}",
+      "ProcessId": 6301,
+      "Image": "C:\\Windows\\System32\\notepad.exe",
+      "CommandLine": "notepad.exe",
+      "ParentImage": "C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE",
+      "ParentCommandLine": "\"C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE\"",
+      "User": "LAB\\finance"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Office opened a text editor"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-14T09:10:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-02",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 4302,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000004302}",
+      "ProcessId": 6302,
+      "Image": "C:\\Windows\\System32\\splwow64.exe",
+      "CommandLine": "splwow64.exe 1234",
+      "ParentImage": "C:\\Program Files\\Microsoft Office\\root\\Office16\\EXCEL.EXE",
+      "ParentCommandLine": "\"C:\\Program Files\\Microsoft Office\\root\\Office16\\EXCEL.EXE\"",
+      "User": "LAB\\finance"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Excel print subsystem"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-14T09:20:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-03",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 4303,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000004303}",
+      "ProcessId": 6303,
+      "Image": "C:\\Program Files\\Microsoft Office\\root\\Office16\\OUTLOOK.EXE",
+      "CommandLine": "\"C:\\Program Files\\Microsoft Office\\root\\Office16\\OUTLOOK.EXE\"",
+      "ParentImage": "C:\\Program Files\\Microsoft Office\\root\\Office16\\OUTLOOK.EXE",
+      "ParentCommandLine": "\"C:\\Program Files\\Microsoft Office\\root\\Office16\\OUTLOOK.EXE\"",
+      "User": "LAB\\analyst"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Outlook helper process"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-14T09:30:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-04",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 4304,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000004304}",
+      "ProcessId": 6304,
+      "Image": "C:\\Windows\\System32\\rundll32.exe",
+      "CommandLine": "rundll32.exe shell32.dll,Control_RunDLL",
+      "ParentImage": "C:\\Program Files\\Microsoft Office\\root\\Office16\\POWERPNT.EXE",
+      "ParentCommandLine": "\"C:\\Program Files\\Microsoft Office\\root\\Office16\\POWERPNT.EXE\"",
+      "User": "LAB\\analyst"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "PowerPoint opened a Windows control panel helper"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-14T09:40:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-05",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 4305,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000004305}",
+      "ProcessId": 6305,
+      "Image": "C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE",
+      "CommandLine": "\"C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE\" /n template.docx",
+      "ParentImage": "C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE",
+      "ParentCommandLine": "\"C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE\"",
+      "User": "LAB\\analyst"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Word helper process"
+  }
+]

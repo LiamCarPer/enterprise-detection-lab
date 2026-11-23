@@ -1,0 +1,12 @@
+{
+  "query": {
+    "bool": {
+      "filter": [
+        { "term": { "source": "aws-cloudtrail" } },
+        { "term": { "service": "iam.amazonaws.com" } },
+        { "term": { "action": "CreateAccessKey" } },
+        { "term": { "result": "success" } }
+      ]
+    }
+  }
+}

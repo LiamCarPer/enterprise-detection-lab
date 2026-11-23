@@ -31,13 +31,13 @@ It is a directional engineering synthesis, not a formal standard or compliance c
 | Requirements mapped | 15 / 15 |
 | Telemetry source contracts | 11 (5 ingested, 6 documented) |
 | Identity, endpoint, and cloud ingestion | Complete |
-| Detection packages implemented | 1 tested detection (`DET-IDN-001`); 5 planned |
+| Detection packages implemented | 6 tested detections; 0 production detections |
 | Detection testing | Fixture replay, pass/fail evaluation, and metrics generation complete |
 | Investigations implemented | 0 production investigations; contract and template complete |
 | CI and detection metrics | Planned |
 | Automation | Planned |
 
-The mapping is complete. The implementation is not. Identity, endpoint, and cloud telemetry are ingested; five remaining detections, two investigations, CI, and aggregated metrics are next.
+The mapping is complete. The implementation is not. Identity, endpoint, and cloud telemetry are ingested; six detections pass fixture replay. Two investigations, CI, and aggregated metrics are next.
 
 ## How to use this document
 

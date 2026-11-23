@@ -1,0 +1,40 @@
+id: DET-IDN-002
+title: Owner Added to Service Principal
+version: 1.0.0
+status: tested
+domain: identity
+severity: medium
+hypothesis: Adding an owner to a service principal can grant persistence or privilege over an application without changing its credentials.
+description: Detects a successful addition of an owner to an Entra ID service principal.
+owner: detection-engineering
+created: "2026-11-23"
+updated: "2026-11-23"
+attack:
+  - T1098.002
+tags:
+  - identity
+  - entra-id
+  - persistence
+telemetry:
+  - source: entra-audit
+    event_class: audit
+    required_fields:
+      - id
+      - activityDateTime
+      - operationName
+      - initiatedBy
+      - targetResources
+      - result
+queries:
+  opensearch: queries/opensearch.json
+tests:
+  positive: 5
+  negative: 5
+  benign: 5
+false_positives:
+  - Approved application onboarding by an identity administrator.
+  - Administrative automation that assigns application owners from a managed workflow.
+  - Break-glass or emergency access changes that were not yet recorded in the change system.
+runbook: runbook.md
+metrics: metrics.json
+notes: notes.md

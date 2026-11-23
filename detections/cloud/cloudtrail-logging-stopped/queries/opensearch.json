@@ -1,0 +1,12 @@
+{
+  "query": {
+    "bool": {
+      "filter": [
+        { "term": { "source": "aws-cloudtrail" } },
+        { "term": { "service": "cloudtrail.amazonaws.com" } },
+        { "term": { "action": "StopLogging" } },
+        { "term": { "result": "success" } }
+      ]
+    }
+  }
+}

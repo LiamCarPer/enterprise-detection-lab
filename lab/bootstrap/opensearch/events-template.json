@@ -44,6 +44,7 @@
         "process": {
           "type": "object",
           "properties": {
+            "name": { "type": "keyword" },
             "image": { "type": "keyword" },
             "command_line": {
               "type": "text",
@@ -53,6 +54,7 @@
             },
             "guid": { "type": "keyword" },
             "id": { "type": "integer" },
+            "parent_name": { "type": "keyword" },
             "parent_image": { "type": "keyword" },
             "parent_command_line": {
               "type": "text",

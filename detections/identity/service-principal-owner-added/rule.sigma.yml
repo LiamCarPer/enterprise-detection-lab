@@ -1,0 +1,20 @@
+title: Owner Added to Service Principal
+id: 00000000-0000-4000-8000-000000000102
+status: test
+description: Detects a successful addition of an owner to an Entra ID service principal.
+author: detection-engineering
+date: 2026/11/23
+logsource:
+  product: azure
+  service: auditlogs
+detection:
+  selection:
+    operationName: Add owner to service principal
+    result: success
+  condition: selection
+falsepositives:
+  - Approved application onboarding
+  - Administrative automation
+level: medium
+tags:
+  - attack.t1098.002

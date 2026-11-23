@@ -1,0 +1,44 @@
+id: DET-END-001
+title: Encoded PowerShell From Non-PowerShell Parent
+version: 1.0.0
+status: tested
+domain: endpoint
+severity: high
+hypothesis: Encoded PowerShell launched by a non-PowerShell parent can indicate script-based execution, phishing, or defense evasion.
+description: Detects PowerShell or pwsh execution with an encoded command where the parent process is not another PowerShell host.
+owner: detection-engineering
+created: "2026-11-23"
+updated: "2026-11-23"
+attack:
+  - T1059.001
+  - T1027
+tags:
+  - endpoint
+  - sysmon
+  - powershell
+telemetry:
+  - source: sysmon
+    event_class: process_creation
+    required_fields:
+      - UtcTime
+      - EventID
+      - Computer
+      - EventRecordID
+      - ProcessGuid
+      - Image
+      - CommandLine
+      - ParentImage
+      - Channel
+queries:
+  opensearch: queries/opensearch.json
+tests:
+  positive: 5
+  negative: 5
+  benign: 5
+false_positives:
+  - Approved administrative scripts launched from a management shell.
+  - Software deployment or endpoint management tooling that uses encoded commands.
+  - Security testing and detection validation activity.
+runbook: runbook.md
+metrics: metrics.json
+notes: notes.md

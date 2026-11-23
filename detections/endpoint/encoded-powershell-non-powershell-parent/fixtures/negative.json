@@ -1,0 +1,97 @@
+[
+  {
+    "event": {
+      "UtcTime": "2026-11-10T09:00:00Z",
+      "EventID": 1,
+      "Computer": "LAB-EP-01",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 3201,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000003201}",
+      "ProcessId": 5201,
+      "Image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "CommandLine": "powershell.exe -EncodedCommand ZwBlAHQALQBwAHIAbwBjAGUAcwBzAA==",
+      "ParentImage": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "ParentCommandLine": "powershell.exe",
+      "User": "LAB\\analyst"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "PowerShell parent already has script control"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-10T09:10:00Z",
+      "EventID": 1,
+      "Computer": "LAB-EP-02",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 3202,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000003202}",
+      "ProcessId": 5202,
+      "Image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "CommandLine": "powershell.exe -NoProfile -File C:\\Scripts\\inventory.ps1",
+      "ParentImage": "C:\\Windows\\System32\\cmd.exe",
+      "ParentCommandLine": "cmd.exe /c powershell.exe -File C:\\Scripts\\inventory.ps1",
+      "User": "LAB\\analyst"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Normal PowerShell script file"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-10T09:20:00Z",
+      "EventID": 1,
+      "Computer": "LAB-EP-03",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 3203,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000003203}",
+      "ProcessId": 5203,
+      "Image": "C:\\Windows\\System32\\cmd.exe",
+      "CommandLine": "cmd.exe /c echo EncodedCommand",
+      "ParentImage": "C:\\Windows\\System32\\cmd.exe",
+      "ParentCommandLine": "cmd.exe",
+      "User": "LAB\\analyst"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "EncodedCommand text is not PowerShell execution"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-10T09:30:00Z",
+      "EventID": 1,
+      "Computer": "LAB-EP-04",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 3204,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000003204}",
+      "ProcessId": 5204,
+      "Image": "C:\\Windows\\System32\\notepad.exe",
+      "CommandLine": "notepad.exe EncodedCommand.txt",
+      "ParentImage": "C:\\Windows\\explorer.exe",
+      "ParentCommandLine": "explorer.exe",
+      "User": "LAB\\analyst"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Text editor opened a file with an encoded-command name"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-10T09:40:00Z",
+      "EventID": 1,
+      "Computer": "LAB-SRV-01",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 3205,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000003205}",
+      "ProcessId": 5205,
+      "Image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "CommandLine": "powershell.exe -EncodedCommand ZwBlAHQALQBwAHIAbwBjAGUAcwBzAA==",
+      "ParentImage": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+      "ParentCommandLine": "pwsh.exe",
+      "User": "NT AUTHORITY\\SYSTEM"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "pwsh parent already controls the execution chain"
+  }
+]

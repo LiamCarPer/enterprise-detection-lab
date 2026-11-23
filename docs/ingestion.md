@@ -88,7 +88,7 @@ Entra audit additions: `app` and `resource.name` / `resource.type` / `resource.c
 Sysmon additions:
 
 - `host`, `user`, and `event_code`
-- `process.image`, `process.command_line`, `process.guid`, `process.id`, `process.parent_image`, `process.parent_command_line`
+- `process.name`, `process.image`, `process.command_line`, `process.guid`, `process.id`, `process.parent_name`, `process.parent_image`, `process.parent_command_line`
 - `network.source_ip`, `network.source_port`, `network.destination_ip`, `network.destination_port`, `network.protocol`
 - `file.target_filename`
 - `registry.target_object`, `registry.details`

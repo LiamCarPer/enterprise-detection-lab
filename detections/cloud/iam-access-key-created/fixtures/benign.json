@@ -1,0 +1,112 @@
+[
+  {
+    "event": {
+      "eventTime": "2026-11-17T09:00:00Z",
+      "eventSource": "iam.amazonaws.com",
+      "eventName": "ListUsers",
+      "awsRegion": "eu-west-1",
+      "sourceIPAddress": "203.0.113.10",
+      "userIdentity": {
+        "type": "IAMUser",
+        "arn": "arn:aws:iam::123456789012:user/analyst"
+      },
+      "requestParameters": {},
+      "responseElements": null,
+      "errorCode": "",
+      "errorMessage": "",
+      "eventID": "00000000-0000-4000-8000-000000005301",
+      "recipientAccountId": "123456789012"
+    },
+    "source": "aws-cloudtrail",
+    "synthetic": true,
+    "note": "Routine user listing"
+  },
+  {
+    "event": {
+      "eventTime": "2026-11-17T09:10:00Z",
+      "eventSource": "iam.amazonaws.com",
+      "eventName": "GetUser",
+      "awsRegion": "eu-west-1",
+      "sourceIPAddress": "198.51.100.20",
+      "userIdentity": {
+        "type": "IAMUser",
+        "arn": "arn:aws:iam::123456789012:user/analyst"
+      },
+      "requestParameters": {},
+      "responseElements": null,
+      "errorCode": "",
+      "errorMessage": "",
+      "eventID": "00000000-0000-4000-8000-000000005302",
+      "recipientAccountId": "123456789012"
+    },
+    "source": "aws-cloudtrail",
+    "synthetic": true,
+    "note": "Routine identity inspection"
+  },
+  {
+    "event": {
+      "eventTime": "2026-11-17T09:20:00Z",
+      "eventSource": "iam.amazonaws.com",
+      "eventName": "ListAccessKeys",
+      "awsRegion": "us-east-1",
+      "sourceIPAddress": "192.0.2.30",
+      "userIdentity": {
+        "type": "IAMUser",
+        "arn": "arn:aws:iam::123456789012:user/ci-automation"
+      },
+      "requestParameters": {"userName": "ci-automation"},
+      "responseElements": null,
+      "errorCode": "",
+      "errorMessage": "",
+      "eventID": "00000000-0000-4000-8000-000000005303",
+      "recipientAccountId": "123456789012"
+    },
+    "source": "aws-cloudtrail",
+    "synthetic": true,
+    "note": "Credential inventory"
+  },
+  {
+    "event": {
+      "eventTime": "2026-11-17T09:30:00Z",
+      "eventSource": "signin.amazonaws.com",
+      "eventName": "ConsoleLogin",
+      "awsRegion": "us-east-1",
+      "sourceIPAddress": "203.0.113.50",
+      "userIdentity": {
+        "type": "IAMUser",
+        "arn": "arn:aws:iam::123456789012:user/analyst"
+      },
+      "requestParameters": null,
+      "responseElements": {"ConsoleLogin": "Success"},
+      "errorCode": "",
+      "errorMessage": "",
+      "eventID": "00000000-0000-4000-8000-000000005304",
+      "recipientAccountId": "123456789012"
+    },
+    "source": "aws-cloudtrail",
+    "synthetic": true,
+    "note": "Console authentication"
+  },
+  {
+    "event": {
+      "eventTime": "2026-11-17T09:40:00Z",
+      "eventSource": "sts.amazonaws.com",
+      "eventName": "AssumeRole",
+      "awsRegion": "us-east-1",
+      "sourceIPAddress": "198.51.100.60",
+      "userIdentity": {
+        "type": "IAMUser",
+        "arn": "arn:aws:iam::123456789012:user/ci-automation"
+      },
+      "requestParameters": {"roleArn": "arn:aws:iam::123456789012:role/deploy"},
+      "responseElements": null,
+      "errorCode": "",
+      "errorMessage": "",
+      "eventID": "00000000-0000-4000-8000-000000005305",
+      "recipientAccountId": "123456789012"
+    },
+    "source": "aws-cloudtrail",
+    "synthetic": true,
+    "note": "Normal role assumption"
+  }
+]

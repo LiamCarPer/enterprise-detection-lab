@@ -1,0 +1,12 @@
+{
+  "query": {
+    "bool": {
+      "filter": [
+        { "term": { "source": "entra-audit" } },
+        { "term": { "action": "Add owner to service principal" } },
+        { "term": { "result": "success" } },
+        { "term": { "resource.type": "ServicePrincipal" } }
+      ]
+    }
+  }
+}

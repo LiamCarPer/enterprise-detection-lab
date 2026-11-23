@@ -1,0 +1,42 @@
+id: DET-CLD-001
+title: IAM Access Key Created
+version: 1.0.0
+status: tested
+domain: cloud
+severity: high
+hypothesis: Creating an IAM access key can establish durable programmatic access for persistence or data access.
+description: Detects a successful IAM CreateAccessKey operation in AWS CloudTrail.
+owner: detection-engineering
+created: "2026-11-23"
+updated: "2026-11-23"
+attack:
+  - T1098.001
+  - T1136.003
+tags:
+  - cloud
+  - aws
+  - iam
+telemetry:
+  - source: aws-cloudtrail
+    event_class: management_event
+    required_fields:
+      - eventTime
+      - eventSource
+      - eventName
+      - userIdentity
+      - sourceIPAddress
+      - recipientAccountId
+      - eventID
+queries:
+  opensearch: queries/opensearch.json
+tests:
+  positive: 5
+  negative: 5
+  benign: 5
+false_positives:
+  - Approved onboarding automation that creates keys for a documented service account.
+  - Break-glass or recovery activity with an approved change record.
+  - Migration tooling rotating programmatic credentials.
+runbook: runbook.md
+metrics: metrics.json
+notes: notes.md

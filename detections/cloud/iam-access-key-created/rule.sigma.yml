@@ -1,0 +1,22 @@
+title: IAM Access Key Created
+id: 00000000-0000-4000-8000-000000000301
+status: test
+description: Detects a successful AWS IAM CreateAccessKey operation.
+author: detection-engineering
+date: 2026/11/23
+logsource:
+  product: aws
+  service: cloudtrail
+detection:
+  selection:
+    eventSource: iam.amazonaws.com
+    eventName: CreateAccessKey
+    errorCode: ''
+  condition: selection
+falsepositives:
+  - Approved onboarding automation
+  - Break-glass recovery
+level: high
+tags:
+  - attack.t1098.001
+  - attack.t1136.003

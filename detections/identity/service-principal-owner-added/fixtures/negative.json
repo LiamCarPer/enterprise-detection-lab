@@ -1,0 +1,67 @@
+[
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002201",
+      "activityDateTime": "2026-11-07T09:00:00Z",
+      "operationName": "Add service principal",
+      "initiatedBy": {"user": {"userPrincipalName": "admin@example.test"}},
+      "targetResources": [{"displayName": "New App", "type": "ServicePrincipal"}],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "note": "Application registration is a different operation"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002202",
+      "activityDateTime": "2026-11-07T09:15:00Z",
+      "operationName": "Add owner to service principal",
+      "initiatedBy": {"user": {"userPrincipalName": "admin@example.test"}},
+      "targetResources": [{"displayName": "Unstable App", "type": "ServicePrincipal"}],
+      "result": "failure"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "note": "Failed owner assignment"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002203",
+      "activityDateTime": "2026-11-07T09:30:00Z",
+      "operationName": "Add owner to service principal",
+      "initiatedBy": {"user": {"userPrincipalName": "admin@example.test"}},
+      "targetResources": [{"displayName": "Legacy Application", "type": "Application"}],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "note": "Target is an application, not a service principal"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002204",
+      "activityDateTime": "2026-11-07T09:45:00Z",
+      "operationName": "Remove owner from service principal",
+      "initiatedBy": {"user": {"userPrincipalName": "admin@example.test"}},
+      "targetResources": [{"displayName": "Lab Reporting App", "type": "ServicePrincipal"}],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "note": "Owner removal is not owner addition"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002205",
+      "activityDateTime": "2026-11-07T10:00:00Z",
+      "operationName": "Update service principal",
+      "initiatedBy": {"user": {"userPrincipalName": "appowner@example.test"}},
+      "targetResources": [{"displayName": "Finance Sync", "type": "ServicePrincipal"}],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "note": "General service principal update"
+  }
+]

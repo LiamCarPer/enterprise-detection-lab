@@ -1,0 +1,67 @@
+[
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002101",
+      "activityDateTime": "2026-11-06T09:00:00Z",
+      "operationName": "Add owner to service principal",
+      "initiatedBy": {"user": {"userPrincipalName": "admin@example.test"}},
+      "targetResources": [{"displayName": "Lab Reporting App", "type": "ServicePrincipal"}],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "note": "Owner added to reporting application"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002102",
+      "activityDateTime": "2026-11-06T09:15:00Z",
+      "operationName": "Add owner to service principal",
+      "initiatedBy": {"user": {"userPrincipalName": "appowner@example.test"}},
+      "targetResources": [{"displayName": "Finance Sync", "type": "ServicePrincipal"}],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "note": "Owner added to finance synchronization application"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002103",
+      "activityDateTime": "2026-11-06T09:30:00Z",
+      "operationName": "Add owner to service principal",
+      "initiatedBy": {"user": {"userPrincipalName": "devops@example.test"}},
+      "targetResources": [{"displayName": "HR Portal", "type": "ServicePrincipal"}],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "note": "Owner added to HR application"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002104",
+      "activityDateTime": "2026-11-06T09:45:00Z",
+      "operationName": "Add owner to service principal",
+      "initiatedBy": {"user": {"userPrincipalName": "identity-admin@example.test"}},
+      "targetResources": [{"displayName": "Procurement", "type": "ServicePrincipal"}],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "note": "Owner added to procurement application"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002105",
+      "activityDateTime": "2026-11-06T10:00:00Z",
+      "operationName": "Add owner to service principal",
+      "initiatedBy": {"user": {"userPrincipalName": "admin@example.test"}},
+      "targetResources": [{"displayName": "Analytics", "type": "ServicePrincipal"}],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "note": "Owner added to analytics application"
+  }
+]

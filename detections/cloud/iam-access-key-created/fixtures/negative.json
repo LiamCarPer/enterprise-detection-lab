@@ -1,0 +1,112 @@
+[
+  {
+    "event": {
+      "eventTime": "2026-11-16T09:00:00Z",
+      "eventSource": "iam.amazonaws.com",
+      "eventName": "CreateAccessKey",
+      "awsRegion": "eu-west-1",
+      "sourceIPAddress": "203.0.113.10",
+      "userIdentity": {
+        "type": "IAMUser",
+        "arn": "arn:aws:iam::123456789012:user/analyst"
+      },
+      "requestParameters": {"userName": "analyst"},
+      "responseElements": null,
+      "errorCode": "AccessDenied",
+      "errorMessage": "Not authorized",
+      "eventID": "00000000-0000-4000-8000-000000005201",
+      "recipientAccountId": "123456789012"
+    },
+    "source": "aws-cloudtrail",
+    "synthetic": true,
+    "note": "Access key creation failed"
+  },
+  {
+    "event": {
+      "eventTime": "2026-11-16T09:10:00Z",
+      "eventSource": "iam.amazonaws.com",
+      "eventName": "ListAccessKeys",
+      "awsRegion": "eu-west-1",
+      "sourceIPAddress": "203.0.113.10",
+      "userIdentity": {
+        "type": "IAMUser",
+        "arn": "arn:aws:iam::123456789012:user/analyst"
+      },
+      "requestParameters": {"userName": "analyst"},
+      "responseElements": null,
+      "errorCode": "",
+      "errorMessage": "",
+      "eventID": "00000000-0000-4000-8000-000000005202",
+      "recipientAccountId": "123456789012"
+    },
+    "source": "aws-cloudtrail",
+    "synthetic": true,
+    "note": "Listing access keys is not creation"
+  },
+  {
+    "event": {
+      "eventTime": "2026-11-16T09:20:00Z",
+      "eventSource": "iam.amazonaws.com",
+      "eventName": "CreateUser",
+      "awsRegion": "eu-west-1",
+      "sourceIPAddress": "198.51.100.20",
+      "userIdentity": {
+        "type": "IAMUser",
+        "arn": "arn:aws:iam::123456789012:user/admin"
+      },
+      "requestParameters": {"userName": "new-user"},
+      "responseElements": {"user": {"userName": "new-user"}},
+      "errorCode": "",
+      "errorMessage": "",
+      "eventID": "00000000-0000-4000-8000-000000005203",
+      "recipientAccountId": "123456789012"
+    },
+    "source": "aws-cloudtrail",
+    "synthetic": true,
+    "note": "User creation without key creation"
+  },
+  {
+    "event": {
+      "eventTime": "2026-11-16T09:30:00Z",
+      "eventSource": "iam.amazonaws.com",
+      "eventName": "DeleteAccessKey",
+      "awsRegion": "eu-west-1",
+      "sourceIPAddress": "198.51.100.20",
+      "userIdentity": {
+        "type": "IAMUser",
+        "arn": "arn:aws:iam::123456789012:user/admin"
+      },
+      "requestParameters": {"userName": "analyst", "accessKeyId": "EXAMPLE1"},
+      "responseElements": null,
+      "errorCode": "",
+      "errorMessage": "",
+      "eventID": "00000000-0000-4000-8000-000000005204",
+      "recipientAccountId": "123456789012"
+    },
+    "source": "aws-cloudtrail",
+    "synthetic": true,
+    "note": "Key deletion is not creation"
+  },
+  {
+    "event": {
+      "eventTime": "2026-11-16T09:40:00Z",
+      "eventSource": "iam.amazonaws.com",
+      "eventName": "UpdateAccessKey",
+      "awsRegion": "eu-west-1",
+      "sourceIPAddress": "203.0.113.40",
+      "userIdentity": {
+        "type": "IAMUser",
+        "arn": "arn:aws:iam::123456789012:user/analyst"
+      },
+      "requestParameters": {"userName": "analyst", "status": "Inactive"},
+      "responseElements": null,
+      "errorCode": "",
+      "errorMessage": "",
+      "eventID": "00000000-0000-4000-8000-000000005205",
+      "recipientAccountId": "123456789012"
+    },
+    "source": "aws-cloudtrail",
+    "synthetic": true,
+    "note": "Key status update"
+  }
+]

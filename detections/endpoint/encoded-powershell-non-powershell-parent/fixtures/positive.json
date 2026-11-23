@@ -1,0 +1,97 @@
+[
+  {
+    "event": {
+      "UtcTime": "2026-11-09T09:00:00Z",
+      "EventID": 1,
+      "Computer": "LAB-EP-01",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 3101,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000003101}",
+      "ProcessId": 5101,
+      "Image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "CommandLine": "powershell.exe -NoProfile -EncodedCommand ZQBjAGgAbwAgACIAbABhAGIAIgA=",
+      "ParentImage": "C:\\Windows\\System32\\cmd.exe",
+      "ParentCommandLine": "cmd.exe /c powershell.exe -NoProfile -EncodedCommand ZQBjAGgAbwAgACIAbABhAGIAIgA=",
+      "User": "LAB\\analyst"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Encoded PowerShell launched from cmd.exe"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-09T09:10:00Z",
+      "EventID": 1,
+      "Computer": "LAB-EP-02",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 3102,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000003102}",
+      "ProcessId": 5102,
+      "Image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "CommandLine": "powershell -encodedcommand SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQA...",
+      "ParentImage": "C:\\Windows\\explorer.exe",
+      "ParentCommandLine": "explorer.exe",
+      "User": "LAB\\analyst"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Lowercase encoded command from Explorer"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-09T09:20:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-03",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 3103,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000003103}",
+      "ProcessId": 5103,
+      "Image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "CommandLine": "powershell.exe -EncodedCommand SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkA",
+      "ParentImage": "C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE",
+      "ParentCommandLine": "\"C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE\" /n document.docx",
+      "User": "LAB\\finance"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Office document spawned encoded PowerShell"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-09T09:30:00Z",
+      "EventID": 1,
+      "Computer": "LAB-SRV-01",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 3104,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000003104}",
+      "ProcessId": 5104,
+      "Image": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+      "CommandLine": "pwsh.exe -NoLogo -EncodedCommand ZwBlAHQALQBwAHIAbwBjAGUAcwBzAA==",
+      "ParentImage": "C:\\Windows\\System32\\services.exe",
+      "ParentCommandLine": "C:\\Windows\\system32\\services.exe",
+      "User": "NT AUTHORITY\\SYSTEM"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "PowerShell 7 encoded command from a service"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-09T09:40:00Z",
+      "EventID": 1,
+      "Computer": "LAB-EP-04",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 3105,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000003105}",
+      "ProcessId": 5105,
+      "Image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "CommandLine": "powershell.exe -EncodedCommand VwByAGkAdABlAC0ASABvAHMAdAAgACIAbABhAGIAIgA=",
+      "ParentImage": "C:\\Windows\\System32\\wscript.exe",
+      "ParentCommandLine": "wscript.exe C:\\Users\\Public\\update.js",
+      "User": "LAB\\analyst"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Script host spawned encoded PowerShell"
+  }
+]

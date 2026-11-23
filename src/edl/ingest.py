@@ -117,6 +117,13 @@ def _meaningful(value: Any) -> Any:
     return value
 
 
+def _basename(value: Any) -> str | None:
+    """Return a lowercase executable basename for either path separator."""
+    if not isinstance(value, str) or not value:
+        return None
+    return value.replace("\\", "/").rsplit("/", 1)[-1].lower()
+
+
 def _event_id(raw: Mapping[str, Any]) -> int | None:
     value = raw.get("EventID")
     if value is None or isinstance(value, bool):
@@ -291,10 +298,12 @@ def normalize_sysmon(raw: Mapping[str, Any]) -> dict[str, Any]:
 
     process = _compact(
         {
+            "name": _basename(raw.get("Image")),
             "image": raw.get("Image"),
             "command_line": raw.get("CommandLine"),
             "guid": raw.get("ProcessGuid"),
             "id": raw.get("ProcessId"),
+            "parent_name": _basename(raw.get("ParentImage")),
             "parent_image": raw.get("ParentImage"),
             "parent_command_line": raw.get("ParentCommandLine"),
         }

@@ -37,7 +37,7 @@ build-backend = "hatchling.build"
 packages = ["src/edl"]
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["tests", "detections"]
 markers = ["lab: requires the local lab to be running"]
 
 [tool.ruff]

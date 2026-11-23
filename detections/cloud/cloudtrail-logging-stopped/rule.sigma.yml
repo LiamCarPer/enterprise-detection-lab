@@ -1,0 +1,21 @@
+title: CloudTrail Logging Stopped
+id: 00000000-0000-4000-8000-000000000302
+status: test
+description: Detects a successful AWS CloudTrail StopLogging operation.
+author: detection-engineering
+date: 2026/11/23
+logsource:
+  product: aws
+  service: cloudtrail
+detection:
+  selection:
+    eventSource: cloudtrail.amazonaws.com
+    eventName: StopLogging
+    errorCode: ''
+  condition: selection
+falsepositives:
+  - Approved trail maintenance
+  - Non-production test changes
+level: critical
+tags:
+  - attack.t1562.008

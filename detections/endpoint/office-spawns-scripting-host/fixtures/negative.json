@@ -1,0 +1,97 @@
+[
+  {
+    "event": {
+      "UtcTime": "2026-11-13T09:00:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-01",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 4201,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000004201}",
+      "ProcessId": 6201,
+      "Image": "C:\\Windows\\System32\\notepad.exe",
+      "CommandLine": "notepad.exe C:\\Users\\finance\\notes.txt",
+      "ParentImage": "C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE",
+      "ParentCommandLine": "\"C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE\" notes.docx",
+      "User": "LAB\\finance"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Office opened a normal text editor"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-13T09:10:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-02",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 4202,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000004202}",
+      "ProcessId": 6202,
+      "Image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "CommandLine": "powershell.exe -NoProfile -Command Get-Date",
+      "ParentImage": "C:\\Windows\\explorer.exe",
+      "ParentCommandLine": "explorer.exe",
+      "User": "LAB\\analyst"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "PowerShell parent is Explorer, not Office"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-13T09:20:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-03",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 4203,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000004203}",
+      "ProcessId": 6203,
+      "Image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "CommandLine": "powershell.exe -NoProfile -File C:\\Scripts\\health.ps1",
+      "ParentImage": "C:\\Windows\\System32\\cmd.exe",
+      "ParentCommandLine": "cmd.exe /c powershell.exe -File C:\\Scripts\\health.ps1",
+      "User": "LAB\\analyst"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "PowerShell parent is cmd, not Office"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-13T09:30:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-04",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 4204,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000004204}",
+      "ProcessId": 6204,
+      "Image": "C:\\Program Files\\Microsoft Office\\root\\Office16\\EXCEL.EXE",
+      "CommandLine": "\"C:\\Program Files\\Microsoft Office\\root\\Office16\\EXCEL.EXE\" budget.xlsx",
+      "ParentImage": "C:\\Windows\\explorer.exe",
+      "ParentCommandLine": "explorer.exe",
+      "User": "LAB\\finance"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Office process launched by Explorer"
+  },
+  {
+    "event": {
+      "UtcTime": "2026-11-13T09:40:00Z",
+      "EventID": 1,
+      "Computer": "LAB-WS-05",
+      "Channel": "Microsoft-Windows-Sysmon/Operational",
+      "EventRecordID": 4205,
+      "ProcessGuid": "{00000000-0000-4000-8000-000000004205}",
+      "ProcessId": 6205,
+      "Image": "C:\\Windows\\System32\\cmd.exe",
+      "CommandLine": "cmd.exe /c ipconfig",
+      "ParentImage": "C:\\Program Files\\Microsoft Teams\\current\\Teams.exe",
+      "ParentCommandLine": "\"C:\\Program Files\\Microsoft Teams\\current\\Teams.exe\"",
+      "User": "LAB\\analyst"
+    },
+    "source": "sysmon",
+    "synthetic": true,
+    "note": "Teams parent is not an Office application"
+  }
+]

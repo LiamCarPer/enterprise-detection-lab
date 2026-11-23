@@ -472,5 +472,13 @@ def test_run_detections_includes_templates_when_requested() -> None:
         client=client,  # type: ignore[arg-type]
         latency_runs=2,
     )
-    assert {result.detection_id for result in results} == {"DET-END-000", "DET-IDN-001"}
+    assert {result.detection_id for result in results} == {
+        "DET-END-000",
+        "DET-IDN-001",
+        "DET-IDN-002",
+        "DET-END-001",
+        "DET-END-002",
+        "DET-CLD-001",
+        "DET-CLD-002",
+    }
     assert all(result.passed for result in results)

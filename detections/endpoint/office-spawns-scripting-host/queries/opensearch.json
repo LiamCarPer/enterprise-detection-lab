@@ -1,0 +1,35 @@
+{
+  "query": {
+    "bool": {
+      "filter": [
+        { "term": { "source": "sysmon" } },
+        { "term": { "event_code": 1 } },
+        {
+          "terms": {
+            "process.parent_name": [
+              "winword.exe",
+              "excel.exe",
+              "outlook.exe",
+              "powerpnt.exe",
+              "msaccess.exe",
+              "onenote.exe",
+              "visio.exe"
+            ]
+          }
+        },
+        {
+          "terms": {
+            "process.name": [
+              "powershell.exe",
+              "pwsh.exe",
+              "cmd.exe",
+              "wscript.exe",
+              "cscript.exe",
+              "mshta.exe"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

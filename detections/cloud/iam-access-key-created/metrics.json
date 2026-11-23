@@ -1,0 +1,16 @@
+{
+  "detection_id": "DET-CLD-001",
+  "measured_at": "2026-11-23T05:54:24.764171Z",
+  "sample_size": 15,
+  "precision": 1.0,
+  "recall": 1.0,
+  "false_positive_rate": 0.0,
+  "latency_ms_p50": 6.827,
+  "latency_ms_p95": 9.942,
+  "method": "Synthetic fixture replay against OpenSearch; native query only.",
+  "limitations": [
+    "Curated synthetic fixtures; sample size 15.",
+    "Local OpenSearch latency; not representative of production.",
+    "Sigma rule is not executed; the native OpenSearch query is the tested path."
+  ]
+}

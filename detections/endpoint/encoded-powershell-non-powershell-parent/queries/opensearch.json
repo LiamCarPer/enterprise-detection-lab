@@ -1,0 +1,15 @@
+{
+  "query": {
+    "bool": {
+      "filter": [
+        { "term": { "source": "sysmon" } },
+        { "term": { "event_code": 1 } },
+        { "terms": { "process.name": ["powershell.exe", "pwsh.exe"] } },
+        { "match_phrase": { "process.command_line": "EncodedCommand" } }
+      ],
+      "must_not": [
+        { "terms": { "process.parent_name": ["powershell.exe", "pwsh.exe"] } }
+      ]
+    }
+  }
+}

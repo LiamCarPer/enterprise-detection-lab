@@ -1,0 +1,120 @@
+[
+  {
+    "event": {
+      "eventTime": "2026-11-19T09:00:00Z",
+      "eventSource": "cloudtrail.amazonaws.com",
+      "eventName": "StopLogging",
+      "awsRegion": "eu-west-1",
+      "sourceIPAddress": "203.0.113.10",
+      "userIdentity": {
+        "type": "IAMUser",
+        "arn": "arn:aws:iam::123456789012:user/analyst"
+      },
+      "requestParameters": {
+        "name": "arn:aws:cloudtrail:eu-west-1:123456789012:trail/lab-trail"
+      },
+      "responseElements": null,
+      "errorCode": "AccessDenied",
+      "errorMessage": "Not authorized",
+      "eventID": "00000000-0000-4000-8000-000000006201",
+      "recipientAccountId": "123456789012"
+    },
+    "source": "aws-cloudtrail",
+    "synthetic": true,
+    "note": "StopLogging failed"
+  },
+  {
+    "event": {
+      "eventTime": "2026-11-19T09:10:00Z",
+      "eventSource": "cloudtrail.amazonaws.com",
+      "eventName": "StartLogging",
+      "awsRegion": "eu-west-1",
+      "sourceIPAddress": "203.0.113.10",
+      "userIdentity": {
+        "type": "IAMUser",
+        "arn": "arn:aws:iam::123456789012:user/admin"
+      },
+      "requestParameters": {
+        "name": "arn:aws:cloudtrail:eu-west-1:123456789012:trail/lab-trail"
+      },
+      "responseElements": null,
+      "errorCode": "",
+      "errorMessage": "",
+      "eventID": "00000000-0000-4000-8000-000000006202",
+      "recipientAccountId": "123456789012"
+    },
+    "source": "aws-cloudtrail",
+    "synthetic": true,
+    "note": "Logging was started"
+  },
+  {
+    "event": {
+      "eventTime": "2026-11-19T09:20:00Z",
+      "eventSource": "cloudtrail.amazonaws.com",
+      "eventName": "DescribeTrails",
+      "awsRegion": "eu-west-1",
+      "sourceIPAddress": "198.51.100.20",
+      "userIdentity": {
+        "type": "IAMUser",
+        "arn": "arn:aws:iam::123456789012:user/analyst"
+      },
+      "requestParameters": {},
+      "responseElements": null,
+      "errorCode": "",
+      "errorMessage": "",
+      "eventID": "00000000-0000-4000-8000-000000006203",
+      "recipientAccountId": "123456789012"
+    },
+    "source": "aws-cloudtrail",
+    "synthetic": true,
+    "note": "Trail inventory"
+  },
+  {
+    "event": {
+      "eventTime": "2026-11-19T09:30:00Z",
+      "eventSource": "cloudtrail.amazonaws.com",
+      "eventName": "PutEventSelectors",
+      "awsRegion": "us-east-1",
+      "sourceIPAddress": "192.0.2.30",
+      "userIdentity": {
+        "type": "IAMUser",
+        "arn": "arn:aws:iam::123456789012:user/admin"
+      },
+      "requestParameters": {
+        "trailName": "org-trail"
+      },
+      "responseElements": null,
+      "errorCode": "",
+      "errorMessage": "",
+      "eventID": "00000000-0000-4000-8000-000000006204",
+      "recipientAccountId": "123456789012"
+    },
+    "source": "aws-cloudtrail",
+    "synthetic": true,
+    "note": "Trail selector update"
+  },
+  {
+    "event": {
+      "eventTime": "2026-11-19T09:40:00Z",
+      "eventSource": "cloudtrail.amazonaws.com",
+      "eventName": "DeleteTrail",
+      "awsRegion": "eu-west-1",
+      "sourceIPAddress": "203.0.113.40",
+      "userIdentity": {
+        "type": "IAMUser",
+        "arn": "arn:aws:iam::123456789012:user/admin"
+      },
+      "requestParameters": {
+        "name": "arn:aws:cloudtrail:eu-west-1:123456789012:trail/retired-trail"
+      },
+      "responseElements": null,
+      "errorCode": "",
+      "errorMessage": "",
+      "eventID": "00000000-0000-4000-8000-000000006205",
+      "recipientAccountId": "123456789012"
+    },
+    "source": "aws-cloudtrail",
+    "synthetic": true,
+    "note": "Trail deletion is a separate detection"
+  }
+]
