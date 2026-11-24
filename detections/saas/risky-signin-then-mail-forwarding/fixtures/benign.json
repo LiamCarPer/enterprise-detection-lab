@@ -1,0 +1,80 @@
+[
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000016301",
+      "createdDateTime": "2026-11-03T09:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.10",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "none"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "benign-1",
+    "note": "Normal sign-in without elevated risk"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-03T09:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000016302",
+      "Operation": "New-InboxRule",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.10",
+      "ObjectId": "analyst@example.test\\Inbox\\Forward invoices",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {"Name": "Name", "Value": "Forward invoices"},
+        {"Name": "ForwardTo", "Value": "external@example.net"}
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "benign-1",
+    "note": "Approved forwarding rule after a normal sign-in"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000016303",
+      "createdDateTime": "2026-11-03T10:00:00Z",
+      "userPrincipalName": "finance@example.test",
+      "appDisplayName": "Azure Portal",
+      "ipAddress": "198.51.100.77",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "benign-2",
+    "note": "Risky sign-in without a forwarding rule"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-03T10:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000016304",
+      "Operation": "New-InboxRule",
+      "UserId": "finance@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "198.51.100.77",
+      "ObjectId": "finance@example.test\\Inbox\\Move newsletters",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {"Name": "Name", "Value": "Move newsletters"},
+        {"Name": "MoveToFolder", "Value": "Newsletters"}
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "benign-2",
+    "note": "Mailbox organization rule without forwarding"
+  }
+]

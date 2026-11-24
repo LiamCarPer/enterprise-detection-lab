@@ -27,6 +27,7 @@ DETECTIONS = {
     "DET-NET-002",
     "DET-K8S-001",
     "DET-K8S-002",
+    "DET-SAA-003",
 }
 
 
@@ -66,7 +67,12 @@ def test_load_detection_metrics_from_repository() -> None:
     metrics = load_detection_metrics()
     assert {item.detection_id for item in metrics} == DETECTIONS
     assert {item.detection_id: item.sample_size for item in metrics}["DET-IDN-003"] == 6
-    assert all(item.sample_size == 15 for item in metrics if item.detection_id != "DET-IDN-003")
+    assert {item.detection_id: item.sample_size for item in metrics}["DET-SAA-003"] == 6
+    assert all(
+        item.sample_size == 15
+        for item in metrics
+        if item.detection_id not in {"DET-IDN-003", "DET-SAA-003"}
+    )
     assert [item.detection_id for item in metrics] == sorted(DETECTIONS)
     assert all(item.path.is_relative_to("detections") for item in metrics)
 
@@ -75,7 +81,7 @@ def test_render_and_check_metrics_report(tmp_path: Path) -> None:
     metrics = load_detection_metrics()
     report = render_metrics_report(metrics)
     assert "Event-level cases: 180" in report
-    assert "Scenario-level cases: 6" in report
+    assert "Scenario-level cases: 12" in report
     assert "DET-IDN-001" in report
     assert "Synthetic fixture replay" in report
     assert "not production measurements" in report

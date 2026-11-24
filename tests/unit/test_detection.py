@@ -487,6 +487,7 @@ def test_run_detections_includes_templates_when_requested() -> None:
         "DET-NET-002",
         "DET-K8S-001",
         "DET-K8S-002",
+        "DET-SAA-003",
     }
     assert all(result.passed for result in results)
 

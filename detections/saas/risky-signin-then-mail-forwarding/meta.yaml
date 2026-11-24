@@ -1,0 +1,63 @@
+id: DET-SAA-003
+title: Risky Sign-In Followed by Mail Forwarding Rule
+version: 1.0.0
+status: tested
+domain: saas
+severity: high
+hypothesis: A risky single-factor sign-in followed by a mailbox forwarding rule within an hour can indicate account compromise and email collection.
+description: Correlates an elevated-risk single-factor sign-in with a successful Microsoft 365 inbox forwarding rule for the same user within 60 minutes.
+owner: detection-engineering
+created: "2026-11-25"
+updated: "2026-11-25"
+attack:
+  - T1078
+  - T1114.003
+tags:
+  - saas
+  - microsoft-365
+  - identity
+  - correlation
+telemetry:
+  - source: entra-signin
+    event_class: sign_in
+    required_fields:
+      - id
+      - createdDateTime
+      - userPrincipalName
+      - status
+      - authenticationRequirement
+      - isInteractive
+      - riskLevelDuringSignIn
+  - source: m365-audit
+    event_class: mailbox
+    required_fields:
+      - CreationTime
+      - Id
+      - Operation
+      - UserId
+      - Workload
+      - RecordType
+      - ResultStatus
+      - Parameters
+queries:
+  opensearch: queries/opensearch.json
+correlation:
+  window_seconds: 3600
+  group_by:
+    - user
+  steps:
+    - source: entra-signin
+      event_class: sign_in
+    - source: m365-audit
+      event_class: mailbox
+tests:
+  positive: 4
+  negative: 4
+  benign: 4
+false_positives:
+  - A legitimate user creates a forwarding rule after traveling or using a new device.
+  - A risk false positive is followed by an approved mailbox workflow.
+  - A delegate creates a forwarding rule for a mailbox owner who recently signed in.
+runbook: runbook.md
+metrics: metrics.json
+notes: notes.md

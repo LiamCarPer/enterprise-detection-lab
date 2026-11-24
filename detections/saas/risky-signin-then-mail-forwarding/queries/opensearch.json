@@ -1,0 +1,30 @@
+{
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "bool": {
+            "filter": [
+              { "term": { "source": "entra-signin" } },
+              { "term": { "result": "success" } },
+              { "terms": { "risk_level": ["medium", "high"] } },
+              { "term": { "auth_requirement": "singleFactorAuthentication" } },
+              { "term": { "is_interactive": true } }
+            ]
+          }
+        },
+        {
+          "bool": {
+            "filter": [
+              { "term": { "source": "m365-audit" } },
+              { "terms": { "action": ["New-InboxRule", "Set-InboxRule"] } },
+              { "term": { "result": "success" } },
+              { "exists": { "field": "forward_to" } }
+            ]
+          }
+        }
+      ],
+      "minimum_should_match": 1
+    }
+  }
+}

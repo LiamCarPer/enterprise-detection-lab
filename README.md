@@ -4,7 +4,7 @@
 
 A reproducible local lab for developing and testing enterprise detection content across identity, endpoint, cloud, SaaS, network, and Kubernetes telemetry.
 
-**Status:** Alpha. Identity, endpoint, cloud, SaaS, network, and Kubernetes telemetry ingestion, thirteen core detections, two investigations, CI, and aggregated fixture metrics are complete. The next focus is broader detection coverage and automation.
+**Status:** Alpha. Identity, endpoint, cloud, SaaS, network, and Kubernetes telemetry ingestion, fourteen core detections, two investigations, CI, and aggregated fixture metrics are complete. The next focus is broader detection coverage and automation.
 
 [Quick start](#quick-start) · [Architecture](#architecture) · [Project status](#project-status) · [Documentation](#documentation)
 
@@ -178,6 +178,7 @@ Each contract records event time and ingest time fields, deduplication keys, req
 | [`DET-CLD-002`](detections/cloud/cloudtrail-logging-stopped/) | Cloud | CloudTrail logging stopped | Tested |
 | [`DET-SAA-001`](detections/saas/inbox-rule-mail-forwarding/) | SaaS | Inbox rule created with mail forwarding | Tested |
 | [`DET-SAA-002`](detections/saas/github-organization-owner-added/) | SaaS | GitHub organization owner added | Tested |
+| [`DET-SAA-003`](detections/saas/risky-signin-then-mail-forwarding/) | SaaS | Risky sign-in followed by mail forwarding rule | Tested |
 | [`DET-NET-001`](detections/network/long-txt-dns-query/) | Network | Long TXT DNS query | Tested |
 | [`DET-NET-002`](detections/network/high-severity-malware-alert/) | Network | High-severity malware or trojan alert | Tested |
 | [`DET-K8S-001`](detections/kubernetes/privileged-pod-created/) | Kubernetes | Privileged pod created | Tested |
@@ -221,16 +222,16 @@ Investigations are **Tested** when the timeline, evidence, queries, response, an
 | SaaS ingestion | Complete | Microsoft 365 and GitHub audit, normalized and replay-safe |
 | Network ingestion | Complete | Zeek and Suricata, normalized and replay-safe |
 | Kubernetes ingestion | Complete | Kubernetes audit and Falco, normalized and replay-safe |
-| Detection packages | In progress | Thirteen tested detections; production validation pending |
+| Detection packages | In progress | Fourteen tested detections; production validation pending |
 | Detection testing | Complete | Normalized fixture replay, temporary-index isolation, pass/fail gate, and metrics generation |
-| Tested detections | 13 of 13 | All core detections pass fixture replay |
+| Tested detections | 14 of 14 | All core detections pass fixture replay |
 | Investigations | Complete | Two tested investigation packages with hashed evidence |
 | Tested investigations | 2 of 2 | `INV-001` and `INV-002` pass evidence and detection-link checks |
 | CI | Complete | GitHub Actions quality and OpenSearch-backed test jobs |
-| Metrics reporting | Complete | Aggregated fixture metrics for thirteen detections in `reports/detection-metrics.md` |
-| Benign baseline | Complete | Eleven corpora, including a scenario-level correlation baseline |
+| Metrics reporting | Complete | Aggregated fixture metrics for fourteen detections in `reports/detection-metrics.md` |
+| Benign baseline | Complete | Twelve corpora, including two scenario-level correlation baselines |
 | Exception catalog | Complete | Reviewed exceptions with owner, scope, expiry, and compensating controls |
-| Correlation detection | Complete | `DET-IDN-003` evaluates ordered identity steps with a 30-minute window |
+| Correlation detections | Complete | `DET-IDN-003` and `DET-SAA-003` evaluate ordered identity and SaaS sequences |
 | Detection depth | In progress | Broader coverage, tuning, and automation across the ingested sources |
 | Automation | Planned | Enrichment, triage, evidence, and approval-gated response |
 

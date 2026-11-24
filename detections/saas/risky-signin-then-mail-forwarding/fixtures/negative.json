@@ -1,0 +1,80 @@
+[
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000016201",
+      "createdDateTime": "2026-11-02T09:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.11",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "neg-1",
+    "note": "Risky sign-in step"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-02T10:30:00Z",
+      "Id": "00000000-0000-4000-8000-000000016202",
+      "Operation": "New-InboxRule",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.11",
+      "ObjectId": "analyst@example.test\\Inbox\\Forward invoices",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {"Name": "Name", "Value": "Forward invoices"},
+        {"Name": "ForwardTo", "Value": "external@example.net"}
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "neg-1",
+    "note": "Rule is outside the 60-minute window"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000016203",
+      "createdDateTime": "2026-11-02T11:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Azure Portal",
+      "ipAddress": "198.51.100.77",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "high"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "neg-2",
+    "note": "Risky sign-in step"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-02T11:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000016204",
+      "Operation": "New-InboxRule",
+      "UserId": "admin@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "198.51.100.77",
+      "ObjectId": "admin@example.test\\Inbox\\Forward invoices",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {"Name": "Name", "Value": "Forward invoices"},
+        {"Name": "ForwardTo", "Value": "external@example.net"}
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "neg-2",
+    "note": "Rule is created by a different user"
+  }
+]

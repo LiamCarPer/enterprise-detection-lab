@@ -154,3 +154,10 @@ datasets:
     license: synthetic
     provenance: Generated for this repository. No real clusters, users, or workloads.
     sha256: 6bfad318aa2c3a21a943905493f06a760cb184be73e2f9eb3f16f2842ab301f5
+  - id: synthetic-identity-saas-correlation-benign-baseline
+    source: entra-signin+m365-audit
+    path: lab/datasets/synthetic/benign-baseline/identity-saas-correlation.json
+    synthetic: true
+    license: synthetic
+    provenance: Generated for this repository. No real users, tenants, or IPs.
+    sha256: 8d4ad2b1ec1b08883a2302068c34e8bdb52dbc3a12fdd9ca8e50fedb70c26d64

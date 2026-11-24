@@ -1,0 +1,187 @@
+[
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000017101",
+      "createdDateTime": "2026-11-18T09:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.11",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "sign-in-only"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T09:00:00Z",
+      "Id": "00000000-0000-4000-8000-000000017102",
+      "Operation": "New-InboxRule",
+      "UserId": "finance@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "198.51.100.23",
+      "ObjectId": "finance@example.test\\Inbox\\Forward invoices",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {"Name": "Name", "Value": "Forward invoices"},
+        {"Name": "ForwardTo", "Value": "external@example.net"}
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "rule-only"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000017103",
+      "createdDateTime": "2026-11-18T09:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.11",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "mismatched-user"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T09:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000017104",
+      "Operation": "New-InboxRule",
+      "UserId": "admin@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "198.51.100.24",
+      "ObjectId": "admin@example.test\\Inbox\\Forward invoices",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {"Name": "Name", "Value": "Forward invoices"},
+        {"Name": "ForwardTo", "Value": "external@example.net"}
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "mismatched-user"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000017105",
+      "createdDateTime": "2026-11-18T09:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.11",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "high"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "out-of-window"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T11:30:00Z",
+      "Id": "00000000-0000-4000-8000-000000017106",
+      "Operation": "New-InboxRule",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.11",
+      "ObjectId": "analyst@example.test\\Inbox\\Forward invoices",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {"Name": "Name", "Value": "Forward invoices"},
+        {"Name": "ForwardTo", "Value": "external@example.net"}
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "out-of-window"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000017107",
+      "createdDateTime": "2026-11-18T09:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.10",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "none"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "normal-sign-in"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T09:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000017108",
+      "Operation": "New-InboxRule",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.10",
+      "ObjectId": "analyst@example.test\\Inbox\\Forward invoices",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {"Name": "Name", "Value": "Forward invoices"},
+        {"Name": "ForwardTo", "Value": "external@example.net"}
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "normal-sign-in"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000017109",
+      "createdDateTime": "2026-11-18T09:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.11",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "non-forwarding-rule"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T09:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000017110",
+      "Operation": "New-InboxRule",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.11",
+      "ObjectId": "analyst@example.test\\Inbox\\Move newsletters",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {"Name": "Name", "Value": "Move newsletters"},
+        {"Name": "MoveToFolder", "Value": "Newsletters"}
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "non-forwarding-rule"
+  }
+]

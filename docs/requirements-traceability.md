@@ -11,11 +11,11 @@ It is a directional engineering synthesis, not a formal standard or compliance c
 | **Telemetry contracts** | Source fields, event time, ingest time, deduplication, required fields, latency, retention, cost, and known gaps | `telemetry/sources/`, `docs/telemetry-matrix.md` | 11 source contracts, generated matrix, hash checks | Complete |
 | **Normalization and schema drift** | Canonical event shape, UTC enforcement, versioned mappings, tests for source variation | `src/edl/ingest.py`, `lab/bootstrap/opensearch/events-template.json`, tests | Identity, endpoint, cloud, SaaS, network, and Kubernetes normalizers, per-event classification, index mappings | In progress |
 | **Detection-as-code** | Rules are versioned, reviewed, tested, converted, deployed, and retired like software | `detections/`, `docs/artifact-model.md`, `.github/workflows/` | Package contract, schema, fixtures, reference template, and CI quality/OpenSearch jobs | In progress |
-| **Detection validation and regression** | Replay, attack simulation, negative tests, regression tests, and backend query checks | `src/edl/validation.py`, `src/edl/detection.py`, `detections/*/tests/`, `conformance/` | Thirteen detections pass OpenSearch fixture replay; investigation queries and linked detections pass in CI | In progress |
-| **Benign baseline and false-positive control** | Measures noise against realistic benign activity, not an idle lab | `lab/datasets/synthetic/benign-baseline/`, `detections/*/fixtures/benign.json`, `reports/` | Eleven benign corpora including SaaS, network, Kubernetes, and a scenario baseline, endpoint tuning study, and documented approved exceptions; broader workloads planned | In progress |
-| **Detection quality metrics** | Precision, recall, false-positive rate, latency, sample size, method, and limitations | `schemas/metrics.schema.json`, `detections/*/metrics.json`, `reports/` | Per-detection fixture metrics and aggregate report for thirteen detections; production measurements planned | In progress |
+| **Detection validation and regression** | Replay, attack simulation, negative tests, regression tests, and backend query checks | `src/edl/validation.py`, `src/edl/detection.py`, `detections/*/tests/`, `conformance/` | Fourteen detections pass OpenSearch fixture replay; investigation queries and linked detections pass in CI | In progress |
+| **Benign baseline and false-positive control** | Measures noise against realistic benign activity, not an idle lab | `lab/datasets/synthetic/benign-baseline/`, `detections/*/fixtures/benign.json`, `reports/` | Twelve benign corpora including SaaS, network, Kubernetes, and two scenario baselines, endpoint tuning study, and documented approved exceptions; broader workloads planned | In progress |
+| **Detection quality metrics** | Precision, recall, false-positive rate, latency, sample size, method, and limitations | `schemas/metrics.schema.json`, `detections/*/metrics.json`, `reports/` | Per-detection fixture metrics and aggregate report for fourteen detections; production measurements planned | In progress |
 | **Enterprise telemetry breadth** | Identity, endpoint, cloud, SaaS, network, and Kubernetes sources | `telemetry/sources/`, `docs/telemetry-matrix.md`, `lab/` | 11 contracts across six domains; 11 ingested | In progress |
-| **Identity, cloud, SaaS, network, and Kubernetes depth** | Entra/AD/Okta, AWS/Azure/GCP audit, IAM, token and session abuse, SaaS audit, DNS and IDS alerts, Kubernetes audit and runtime alerts | `detections/identity/`, `detections/cloud/`, `detections/saas/`, `detections/network/`, `detections/kubernetes/`, `investigations/` | All telemetry domains ingested; thirteen detections and two investigations tested; broader coverage planned | In progress |
+| **Identity, cloud, SaaS, network, and Kubernetes depth** | Entra/AD/Okta, AWS/Azure/GCP audit, IAM, token and session abuse, SaaS audit, DNS and IDS alerts, Kubernetes audit and runtime alerts | `detections/identity/`, `detections/cloud/`, `detections/saas/`, `detections/network/`, `detections/kubernetes/`, `investigations/` | All telemetry domains ingested; fourteen detections and two investigations tested; broader coverage planned | In progress |
 | **Threat modeling and ATT&CK mapping** | Attacker TTPs, attack paths, evasion, and telemetry implications | `docs/threat-model.md`, detection metadata, `investigations/` | ATT&CK field in detection schema; threat model planned | Planned |
 | **Incident investigation** | Timeline, evidence, scope, containment, recovery, and lessons learned | `investigations/`, runbooks | Two tested investigations with hashed evidence, timelines, response, and linked detection checks | Complete |
 | **Automation and response safety** | Enrichment, triage, evidence capture, containment proposals, approval gates, and effect verification | `automation/` | Not implemented | Planned |
@@ -31,13 +31,13 @@ It is a directional engineering synthesis, not a formal standard or compliance c
 | Requirements mapped | 15 / 15 |
 | Telemetry source contracts | 11 (11 ingested) |
 | Identity, endpoint, cloud, SaaS, network, and Kubernetes ingestion | Complete |
-| Detection packages implemented | 13 tested detections; 0 production detections |
+| Detection packages implemented | 14 tested detections; 0 production detections |
 | Detection testing | Fixture replay, pass/fail evaluation, metrics generation, and baseline tuning complete |
 | Investigations implemented | 2 tested investigations; 0 published |
 | CI and aggregate reporting | Complete |
 | Automation | Planned |
 
-The mapping is complete. The implementation is not. All eleven contracted telemetry sources are ingested; thirteen detections and two investigations pass in CI, and aggregate fixture metrics are committed. Broader benign coverage is next.
+The mapping is complete. The implementation is not. All eleven contracted telemetry sources are ingested; fourteen detections and two investigations pass in CI, and aggregate fixture metrics are committed. Broader benign coverage is next.
 
 ## How to use this document
 
