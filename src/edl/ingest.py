@@ -24,11 +24,13 @@ IDENTITY_SOURCES: tuple[str, ...] = ("entra-signin", "entra-audit")
 ENDPOINT_SOURCES: tuple[str, ...] = ("sysmon", "windows-security")
 CLOUD_SOURCES: tuple[str, ...] = ("aws-cloudtrail",)
 SAAS_SOURCES: tuple[str, ...] = ("m365-audit", "github-audit")
+NETWORK_SOURCES: tuple[str, ...] = ("zeek", "suricata")
 DOMAIN_SOURCES: dict[str, tuple[str, ...]] = {
     "identity": IDENTITY_SOURCES,
     "endpoint": ENDPOINT_SOURCES,
     "cloud": CLOUD_SOURCES,
     "saas": SAAS_SOURCES,
+    "network": NETWORK_SOURCES,
 }
 
 
@@ -78,7 +80,12 @@ class IngestResult:
 
 
 def parse_timestamp(value: Any, *, source: str, field: str) -> datetime:
-    """Parse an ISO 8601 timestamp and normalize it to UTC."""
+    """Parse an ISO 8601 timestamp or epoch seconds and normalize it to UTC."""
+    if isinstance(value, (int, float)) and not isinstance(value, bool):
+        try:
+            return datetime.fromtimestamp(float(value), tz=UTC)
+        except (OverflowError, OSError, ValueError) as exc:
+            raise IngestError(f"{source}: invalid {field}: {value!r}") from exc
     if not isinstance(value, str) or not value:
         raise IngestError(f"{source}: {field} must be a non-empty ISO 8601 string")
     try:
@@ -96,6 +103,8 @@ def format_timestamp(value: datetime) -> str:
 
 
 def _lookup(data: Mapping[str, Any], dotted: str) -> Any:
+    if dotted in data:
+        return data[dotted]
     current: Any = data
     for part in dotted.split("."):
         if not isinstance(current, Mapping) or part not in current:
@@ -261,6 +270,22 @@ def classify_github_audit(raw: Mapping[str, Any]) -> str:
     if action in {"user.login", "user.failed_login"}:
         return "authentication"
     return "audit_log"
+
+
+def classify_zeek(raw: Mapping[str, Any]) -> str:
+    """Map a Zeek log path to the declared event class."""
+    path = str(raw.get("_path", "")).lower()
+    if path in {"conn", "dns", "http", "ssl", "files"}:
+        return path
+    return "other"
+
+
+def classify_suricata(raw: Mapping[str, Any]) -> str:
+    """Map a Suricata EVE event type to the declared event class."""
+    event_type = str(raw.get("event_type", "")).lower()
+    if event_type in {"alert", "flow", "dns", "http", "tls"}:
+        return event_type
+    return "other"
 
 
 def normalize_entra_signin(raw: Mapping[str, Any]) -> dict[str, Any]:
@@ -495,6 +520,141 @@ def normalize_github_audit(raw: Mapping[str, Any]) -> dict[str, Any]:
     return _compact(document)
 
 
+def normalize_zeek(raw: Mapping[str, Any]) -> dict[str, Any]:
+    """Map a Zeek log record to the canonical network shape."""
+    network = _compact(
+        {
+            "source_ip": _lookup(raw, "id.orig_h"),
+            "source_port": _lookup(raw, "id.orig_p"),
+            "destination_ip": _lookup(raw, "id.resp_h"),
+            "destination_port": _lookup(raw, "id.resp_p"),
+            "protocol": raw.get("proto"),
+            "app_protocol": raw.get("service"),
+        }
+    )
+    dns_name = _meaningful(raw.get("query"))
+    dns = _compact(
+        {
+            "query_name": dns_name,
+            "query_type": raw.get("qtype_name"),
+            "query_length": len(dns_name) if isinstance(dns_name, str) else None,
+        }
+    )
+    http = _compact(
+        {
+            "host": raw.get("host"),
+            "uri": raw.get("uri"),
+            "method": raw.get("method"),
+            "status": raw.get("status_code"),
+            "user_agent": _meaningful(raw.get("user_agent")),
+        }
+    )
+    tls = _compact(
+        {
+            "sni": raw.get("server_name"),
+            "version": raw.get("version"),
+            "cipher": raw.get("cipher"),
+        }
+    )
+    document: dict[str, Any] = {
+        "flow_id": raw.get("uid"),
+        "network_log": raw.get("_path"),
+        "bytes_sent": raw.get("orig_bytes"),
+        "bytes_received": raw.get("resp_bytes"),
+        "user_agent": _meaningful(raw.get("user_agent")),
+    }
+    if network:
+        document["network"] = network
+    if dns:
+        document["dns"] = dns
+    if http:
+        document["http"] = http
+    if tls:
+        document["tls"] = tls
+    return _compact(document)
+
+
+def normalize_suricata(raw: Mapping[str, Any]) -> dict[str, Any]:
+    """Map a Suricata EVE record to the canonical network shape."""
+    network = _compact(
+        {
+            "source_ip": raw.get("src_ip"),
+            "source_port": raw.get("src_port"),
+            "destination_ip": raw.get("dest_ip"),
+            "destination_port": raw.get("dest_port"),
+            "protocol": raw.get("proto"),
+            "app_protocol": raw.get("app_proto"),
+        }
+    )
+    alert_raw = raw.get("alert")
+    alert: dict[str, Any] = {}
+    if isinstance(alert_raw, Mapping):
+        alert = _compact(
+            {
+                "signature": alert_raw.get("signature"),
+                "category": alert_raw.get("category"),
+                "severity": alert_raw.get("severity"),
+            }
+        )
+    dns_raw = raw.get("dns")
+    dns: dict[str, Any] = {}
+    if isinstance(dns_raw, Mapping):
+        dns_name = _meaningful(dns_raw.get("rrname"))
+        dns = _compact(
+            {
+                "query_name": dns_name,
+                "query_type": dns_raw.get("rrtype"),
+                "query_length": len(dns_name) if isinstance(dns_name, str) else None,
+            }
+        )
+    http_raw = raw.get("http")
+    http: dict[str, Any] = {}
+    if isinstance(http_raw, Mapping):
+        http = _compact(
+            {
+                "host": http_raw.get("hostname"),
+                "uri": http_raw.get("url"),
+                "method": http_raw.get("http_method"),
+                "status": http_raw.get("status"),
+                "user_agent": _meaningful(http_raw.get("http_user_agent")),
+            }
+        )
+    tls_raw = raw.get("tls")
+    tls: dict[str, Any] = {}
+    if isinstance(tls_raw, Mapping):
+        tls = _compact(
+            {
+                "sni": tls_raw.get("sni"),
+                "version": tls_raw.get("version"),
+            }
+        )
+    flow_raw = raw.get("flow")
+    bytes_sent: Any = None
+    bytes_received: Any = None
+    if isinstance(flow_raw, Mapping):
+        bytes_sent = flow_raw.get("bytes_toserver")
+        bytes_received = flow_raw.get("bytes_toclient")
+
+    document: dict[str, Any] = {
+        "flow_id": raw.get("flow_id"),
+        "network_log": raw.get("event_type"),
+        "bytes_sent": bytes_sent,
+        "bytes_received": bytes_received,
+        "user_agent": http.get("user_agent"),
+    }
+    if network:
+        document["network"] = network
+    if alert:
+        document["alert"] = alert
+    if dns:
+        document["dns"] = dns
+    if http:
+        document["http"] = http
+    if tls:
+        document["tls"] = tls
+    return _compact(document)
+
+
 NORMALIZERS.update(
     {
         "sysmon": normalize_sysmon,
@@ -502,6 +662,8 @@ NORMALIZERS.update(
         "aws-cloudtrail": normalize_aws_cloudtrail,
         "m365-audit": normalize_m365_audit,
         "github-audit": normalize_github_audit,
+        "zeek": normalize_zeek,
+        "suricata": normalize_suricata,
     }
 )
 
@@ -510,6 +672,8 @@ CLASSIFIERS: dict[str, Classifier] = {
     "windows-security": classify_windows_security,
     "m365-audit": classify_m365_audit,
     "github-audit": classify_github_audit,
+    "zeek": classify_zeek,
+    "suricata": classify_suricata,
 }
 
 
@@ -966,6 +1130,14 @@ def load_saas_sources(
     return load_domain_sources("saas", root, requested)
 
 
+def load_network_sources(
+    root: Path = config.ROOT,
+    requested: Sequence[str] = (),
+) -> list[TelemetrySource]:
+    """Load and validate the selected network source contracts."""
+    return load_domain_sources("network", root, requested)
+
+
 def ingest_domain(
     domain: str,
     root: Path = config.ROOT,
@@ -1091,6 +1263,31 @@ def ingest_saas(
     """Ingest all selected SaaS sources into OpenSearch."""
     return ingest_domain(
         "saas",
+        root,
+        sources=sources,
+        client=client,
+        ingest_time=ingest_time,
+        index_prefix=index_prefix,
+        refresh=refresh,
+        batch_size=batch_size,
+        dry_run=dry_run,
+    )
+
+
+def ingest_network(
+    root: Path = config.ROOT,
+    *,
+    sources: Sequence[str] = (),
+    client: OpenSearchClient | None = None,
+    ingest_time: datetime | None = None,
+    index_prefix: str = config.EVENTS_INDEX_PREFIX,
+    refresh: bool = True,
+    batch_size: int = 500,
+    dry_run: bool = False,
+) -> list[IngestResult]:
+    """Ingest all selected network sources into OpenSearch."""
+    return ingest_domain(
+        "network",
         root,
         sources=sources,
         client=client,

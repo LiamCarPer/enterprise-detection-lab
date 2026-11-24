@@ -718,3 +718,21 @@ def test_ingest_saas_json() -> None:
     assert [item["source"] for item in payload] == ["m365-audit", "github-audit"]
     assert payload[0]["indices"] == ["edl-events-m365-audit-2026.11.25"]
     assert payload[1]["indices"] == ["edl-events-github-audit-2026.11.25"]
+
+
+def test_ingest_network_dry_run() -> None:
+    result = runner.invoke(app, ["ingest", "network", "--dry-run"])
+    assert result.exit_code == 0
+    assert "Network Telemetry Ingest" in result.stdout
+    assert "zeek" in result.stdout
+    assert "suricata" in result.stdout
+    assert "dry-run" in result.stdout
+
+
+def test_ingest_network_json() -> None:
+    result = runner.invoke(app, ["ingest", "network", "--dry-run", "--json"])
+    assert result.exit_code == 0
+    payload = json.loads(result.stdout)
+    assert [item["source"] for item in payload] == ["zeek", "suricata"]
+    assert payload[0]["indices"] == ["edl-events-zeek-2026.11.25"]
+    assert payload[1]["indices"] == ["edl-events-suricata-2026.11.25"]

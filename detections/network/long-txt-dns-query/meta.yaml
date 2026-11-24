@@ -1,0 +1,44 @@
+id: DET-NET-001
+title: Long TXT DNS Query
+version: 1.0.0
+status: tested
+domain: network
+severity: medium
+hypothesis: Long TXT queries can carry encoded data for DNS tunneling, command-and-control, or data exfiltration.
+description: Detects a DNS TXT query whose name is at least 40 characters.
+owner: detection-engineering
+created: "2026-11-25"
+updated: "2026-11-25"
+attack:
+  - T1071.004
+tags:
+  - network
+  - dns
+  - exfiltration
+telemetry:
+  - source: zeek
+    event_class: dns
+    required_fields:
+      - ts
+      - uid
+      - id.orig_h
+      - id.resp_h
+      - id.orig_p
+      - id.resp_p
+      - proto
+      - _path
+      - query
+      - qtype_name
+queries:
+  opensearch: queries/opensearch.json
+tests:
+  positive: 5
+  negative: 5
+  benign: 5
+false_positives:
+  - SPF, DKIM, or DMARC TXT lookups with long or deeply nested names.
+  - Security and reputation services that encode data in DNS labels.
+  - CDN or telemetry domains that use long hashed labels.
+runbook: runbook.md
+metrics: metrics.json
+notes: notes.md

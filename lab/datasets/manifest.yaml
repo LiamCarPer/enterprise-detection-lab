@@ -49,6 +49,20 @@ datasets:
     license: synthetic
     provenance: Generated for this repository. No real organizations, users, or IPs.
     sha256: f3a896e8b3cbef02d3dc5857d8106dd6e8174c21563992d39642d925e432b073
+  - id: synthetic-zeek-reference
+    source: zeek
+    path: lab/datasets/synthetic/zeek/reference.json
+    synthetic: true
+    license: synthetic
+    provenance: Generated for this repository. No real hosts, addresses, or traffic.
+    sha256: a2f7b007660928471b950f1de29c1f140d167a28229ea5f422ebaba1734e974b
+  - id: synthetic-suricata-reference
+    source: suricata
+    path: lab/datasets/synthetic/suricata/reference.json
+    synthetic: true
+    license: synthetic
+    provenance: Generated for this repository. No real hosts, addresses, or traffic.
+    sha256: e9ba1c2562c058cc6c7f61bdcc84dd1b9e19db08fca64e07aa05e6a681c49d2e
   - id: synthetic-endpoint-benign-baseline
     source: sysmon
     path: lab/datasets/synthetic/benign-baseline/endpoint.json
@@ -98,3 +112,17 @@ datasets:
     license: synthetic
     provenance: Generated for this repository. No real organizations, users, or IPs.
     sha256: 95f5178c6fc93fe1a92f8b484d72c0f22ec87cf57c69fe1ac136491aa6047558
+  - id: synthetic-zeek-dns-benign-baseline
+    source: zeek
+    path: lab/datasets/synthetic/benign-baseline/zeek-dns.json
+    synthetic: true
+    license: synthetic
+    provenance: Generated for this repository. No real hosts, addresses, or traffic.
+    sha256: 8da6a381c0995d8450f09e765ea627df1a27a039d3221fb70cf13a1c2693ef9b
+  - id: synthetic-suricata-alerts-benign-baseline
+    source: suricata
+    path: lab/datasets/synthetic/benign-baseline/suricata-alerts.json
+    synthetic: true
+    license: synthetic
+    provenance: Generated for this repository. No real hosts, addresses, or traffic.
+    sha256: ec8780d5c569adaf9f1b588c2011b0f0c0a84c2a181b52d10707a94df47bf40c

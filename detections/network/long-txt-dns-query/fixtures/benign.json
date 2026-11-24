@@ -1,0 +1,87 @@
+[
+  {
+    "event": {
+      "_path": "dns",
+      "ts": 1795608600.0,
+      "uid": "E1b2c3d4e5f6a7",
+      "id.orig_h": "10.0.0.5",
+      "id.orig_p": 53020,
+      "id.resp_h": "203.0.113.53",
+      "id.resp_p": 53,
+      "proto": "udp",
+      "query": "intranet.example.test",
+      "qtype_name": "A"
+    },
+    "source": "zeek",
+    "synthetic": true,
+    "note": "Internal host lookup"
+  },
+  {
+    "event": {
+      "_path": "dns",
+      "ts": 1795608660.0,
+      "uid": "E2c3d4e5f6a7b8",
+      "id.orig_h": "10.0.0.5",
+      "id.orig_p": 53021,
+      "id.resp_h": "203.0.113.53",
+      "id.resp_p": 53,
+      "proto": "udp",
+      "query": "example.test",
+      "qtype_name": "MX"
+    },
+    "source": "zeek",
+    "synthetic": true,
+    "note": "Mail exchanger lookup"
+  },
+  {
+    "event": {
+      "_path": "dns",
+      "ts": 1795608720.0,
+      "uid": "E3d4e5f6a7b8c9",
+      "id.orig_h": "10.0.0.5",
+      "id.orig_p": 53022,
+      "id.resp_h": "203.0.113.53",
+      "id.resp_p": 53,
+      "proto": "udp",
+      "query": "_dmarc.example.test",
+      "qtype_name": "TXT"
+    },
+    "source": "zeek",
+    "synthetic": true,
+    "note": "DMARC policy lookup"
+  },
+  {
+    "event": {
+      "_path": "dns",
+      "ts": 1795608780.0,
+      "uid": "E4e5f6a7b8c9d0",
+      "id.orig_h": "10.0.0.5",
+      "id.orig_p": 53023,
+      "id.resp_h": "203.0.113.53",
+      "id.resp_p": 53,
+      "proto": "udp",
+      "query": "example.test",
+      "qtype_name": "AAAA"
+    },
+    "source": "zeek",
+    "synthetic": true,
+    "note": "IPv6 address lookup"
+  },
+  {
+    "event": {
+      "_path": "dns",
+      "ts": 1795608840.0,
+      "uid": "E5f6a7b8c9d0e1",
+      "id.orig_h": "10.0.0.5",
+      "id.orig_p": 53024,
+      "id.resp_h": "203.0.113.53",
+      "id.resp_p": 53,
+      "proto": "udp",
+      "query": "cdn.example.test",
+      "qtype_name": "A"
+    },
+    "source": "zeek",
+    "synthetic": true,
+    "note": "Content delivery lookup"
+  }
+]

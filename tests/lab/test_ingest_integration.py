@@ -11,6 +11,7 @@ from edl.ingest import (
     ingest_cloud,
     ingest_endpoint,
     ingest_identity,
+    ingest_network,
     ingest_saas,
 )
 
@@ -232,6 +233,60 @@ def test_saas_ingest_is_idempotent_and_queryable() -> None:
         assert all(result.counts == {result.indices[0]: 2} for result in second)
         assert sorted(str(hit["_id"]) for hit in _search("m365-audit")) == m365_ids
         assert sorted(str(hit["_id"]) for hit in _search("github-audit")) == github_ids
+    finally:
+        client.delete_matching(f"{TEST_PREFIX}-*")
+        client.close()
+
+
+def test_network_ingest_is_idempotent_and_queryable() -> None:
+    client = OpenSearchClient()
+    try:
+        first = ingest_network(
+            config.ROOT,
+            client=client,
+            ingest_time=datetime(2026, 11, 25, 12, 0, tzinfo=UTC),
+            index_prefix=TEST_PREFIX,
+        )
+        assert [result.source for result in first] == ["zeek", "suricata"]
+        assert [result.read for result in first] == [4, 5]
+        assert all(result.unique == result.read for result in first)
+        assert all(result.written == result.read for result in first)
+
+        zeek_hits = _search("zeek")
+        assert len(zeek_hits) == 4
+        zeek_ids = sorted(str(hit["_id"]) for hit in zeek_hits)
+        connection = zeek_hits[0]["_source"]
+        assert connection["event_class"] == "conn"
+        assert connection["network_log"] == "conn"
+        assert connection["network"]["source_ip"] == "10.0.0.5"
+        assert connection["network"]["destination_port"] == 443
+        assert connection["bytes_sent"] == 812
+        assert connection["dedup_origin"] == "declared"
+
+        dns = zeek_hits[1]["_source"]
+        assert dns["event_class"] == "dns"
+        assert dns["dns"]["query_name"] == "example.test"
+        assert dns["dns"]["query_length"] == 12
+
+        suricata_hits = _search("suricata")
+        assert len(suricata_hits) == 5
+        suricata_ids = sorted(str(hit["_id"]) for hit in suricata_hits)
+        alert = suricata_hits[0]["_source"]
+        assert alert["event_class"] == "alert"
+        assert alert["alert"]["signature"] == "ET MALWARE Example C2 Checkin"
+        assert alert["alert"]["severity"] == 1
+        assert alert["bytes_received"] == 1840
+        assert alert["dedup_origin"] == "declared"
+
+        second = ingest_network(
+            config.ROOT,
+            client=client,
+            ingest_time=datetime(2026, 11, 26, 12, 0, tzinfo=UTC),
+            index_prefix=TEST_PREFIX,
+        )
+        assert [result.counts[result.indices[0]] for result in second] == [4, 5]
+        assert sorted(str(hit["_id"]) for hit in _search("zeek")) == zeek_ids
+        assert sorted(str(hit["_id"]) for hit in _search("suricata")) == suricata_ids
     finally:
         client.delete_matching(f"{TEST_PREFIX}-*")
         client.close()

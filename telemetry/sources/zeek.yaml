@@ -8,8 +8,9 @@ event_classes:
   - http
   - ssl
   - files
+  - other
 schema_version: "1.0"
-status: documented
+status: ingested
 owner: detection-engineering
 event_time_field: ts
 ingest_time_field: ingest_time
@@ -25,6 +26,7 @@ required_fields:
   - id.orig_p
   - id.resp_p
   - proto
+  - _path
 sensitive_fields:
   - id.orig_h
   - id.resp_h
@@ -36,7 +38,13 @@ cost: Open source; storage and packet capture are the main cost.
 late_arrival: Expected; use event time and synthetic ingest time.
 duplicates: Possible across log rotation or retries; deduplicate by uid.
 known_gaps:
-  - No Zeek sample data yet; PCAP/flow samples arrive with the network detection work.
+  - The committed sample is synthetic and minimal.
   - Encrypted traffic limits payload-level visibility.
   - Sensor placement and packet loss affect coverage.
-notes: Network contract; sample data arrives with network detections.
+notes: Network source contract.
+sample_data:
+  path: lab/datasets/synthetic/zeek/reference.json
+  synthetic: true
+  license: synthetic
+  provenance: Generated for this repository. No real hosts, addresses, or traffic.
+  sha256: a2f7b007660928471b950f1de29c1f140d167a28229ea5f422ebaba1734e974b

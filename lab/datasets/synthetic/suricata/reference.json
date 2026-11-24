@@ -1,0 +1,86 @@
+[
+  {
+    "timestamp": "2026-11-25T12:00:00Z",
+    "flow_id": 900000000000001,
+    "event_type": "alert",
+    "src_ip": "10.0.0.5",
+    "src_port": 49152,
+    "dest_ip": "198.51.100.66",
+    "dest_port": 443,
+    "proto": "TCP",
+    "app_proto": "http",
+    "alert": {
+      "signature": "ET MALWARE Example C2 Checkin",
+      "category": "A Network Trojan was detected",
+      "severity": 1
+    },
+    "flow": {
+      "bytes_toserver": 620,
+      "bytes_toclient": 1840
+    }
+  },
+  {
+    "timestamp": "2026-11-25T12:01:00Z",
+    "flow_id": 900000000000002,
+    "event_type": "flow",
+    "src_ip": "10.0.0.5",
+    "src_port": 49154,
+    "dest_ip": "198.51.100.25",
+    "dest_port": 443,
+    "proto": "TCP",
+    "app_proto": "tls",
+    "flow": {
+      "bytes_toserver": 812,
+      "bytes_toclient": 4021
+    }
+  },
+  {
+    "timestamp": "2026-11-25T12:02:00Z",
+    "flow_id": 900000000000003,
+    "event_type": "dns",
+    "src_ip": "10.0.0.5",
+    "src_port": 53000,
+    "dest_ip": "203.0.113.53",
+    "dest_port": 53,
+    "proto": "UDP",
+    "app_proto": "dns",
+    "dns": {
+      "rrname": "example.test",
+      "rrtype": "A",
+      "rcode": "NOERROR"
+    }
+  },
+  {
+    "timestamp": "2026-11-25T12:03:00Z",
+    "flow_id": 900000000000004,
+    "event_type": "http",
+    "src_ip": "10.0.0.5",
+    "src_port": 49156,
+    "dest_ip": "198.51.100.25",
+    "dest_port": 80,
+    "proto": "TCP",
+    "app_proto": "http",
+    "http": {
+      "hostname": "intranet.example.test",
+      "url": "/status",
+      "http_method": "GET",
+      "status": 200,
+      "http_user_agent": "Mozilla/5.0"
+    }
+  },
+  {
+    "timestamp": "2026-11-25T12:04:00Z",
+    "flow_id": 900000000000005,
+    "event_type": "tls",
+    "src_ip": "10.0.0.5",
+    "src_port": 49158,
+    "dest_ip": "198.51.100.25",
+    "dest_port": 443,
+    "proto": "TCP",
+    "app_proto": "tls",
+    "tls": {
+      "sni": "intranet.example.test",
+      "version": "TLS 1.2"
+    }
+  }
+]

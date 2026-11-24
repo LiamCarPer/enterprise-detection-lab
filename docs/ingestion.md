@@ -27,6 +27,7 @@ make ingest-identity
 make ingest-endpoint
 make ingest-cloud
 make ingest-saas
+make ingest-network
 ```
 
 Or directly:
@@ -43,6 +44,8 @@ edl ingest cloud
 edl ingest cloud --dry-run
 edl ingest saas
 edl ingest saas --dry-run
+edl ingest network
+edl ingest network --dry-run
 ```
 
 `--dry-run` performs the full preflight and prints the target indices without contacting OpenSearch. `--source` accepts one source or a comma-separated list. `--no-refresh` skips the post-ingest count because OpenSearch cannot report an accurate count before the next refresh.
@@ -119,6 +122,13 @@ SaaS additions:
 
 Microsoft 365 event classes follow the workload: Exchange maps to `mailbox`, SharePoint/OneDrive to `sharepoint`, Teams to `teams`, and other workloads to `audit`. GitHub maps `git.*` actions to `git`, login actions to `authentication`, and other audit actions to `audit_log`.
 
+Network additions:
+
+- Zeek: `network.*`, `dns.query_name`, `dns.query_type`, `dns.query_length`, `http.*`, `tls.*`, `flow_id`, `network_log`, `bytes_sent`, and `bytes_received`
+- Suricata: `network.*`, `alert.signature`, `alert.category`, `alert.severity`, `dns.*`, `http.*`, `tls.*`, `flow_id`, `network_log`, and byte counts
+
+Zeek uses `_path` for event classification, and Suricata uses `event_type`. Both sources accept ISO 8601 event times; Zeek also accepts epoch seconds.
+
 The canonical fields are mapped in [`lab/bootstrap/opensearch/events-template.json`](../lab/bootstrap/opensearch/events-template.json). Unknown fields remain dynamically mapped; update the template when a field becomes part of the query contract.
 
 ## Time semantics
@@ -179,11 +189,11 @@ The `edl-events-*` index template applies one shard, zero replicas, UTC date fie
 
 ## Status
 
-The seven sampled sources move from `sampled` to `ingested` after a successful lab run. They move to `validated` only after detection replay and regression tests pass. The generated [telemetry matrix](telemetry-matrix.md) records the current status.
+The nine sampled sources move from `sampled` to `ingested` after a successful lab run. They move to `validated` only after detection replay and regression tests pass. The generated [telemetry matrix](telemetry-matrix.md) records the current status.
 
 ## Known gaps
 
-- Entra identity, Windows endpoint, AWS CloudTrail, and SaaS sources are normalized currently; network and Kubernetes are next.
+- Entra identity, Windows endpoint, AWS CloudTrail, SaaS, and network sources are normalized currently; Kubernetes is next.
 - The samples are small; they demonstrate contract and pipeline behavior, not volume.
 - Sysmon field coverage depends on the Sysmon configuration; the sample covers process creation only.
 - Windows Security advanced audit policy determines which events exist; the sample covers logon success and failure.

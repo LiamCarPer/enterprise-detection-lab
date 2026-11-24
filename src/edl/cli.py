@@ -356,6 +356,35 @@ def ingest_saas(
     _run_ingest_command("saas", source, dry_run, json_output, refresh, batch_size)
 
 
+@ingest_app.command("network")
+def ingest_network(
+    source: str | None = typer.Option(
+        None,
+        "--source",
+        help="Comma-separated network source IDs; defaults to all.",
+    ),
+    dry_run: bool = typer.Option(
+        False,
+        "--dry-run",
+        help="Normalize and validate without writing to OpenSearch.",
+    ),
+    json_output: bool = typer.Option(False, "--json", help="Emit machine-readable JSON."),
+    refresh: bool = typer.Option(
+        True,
+        "--refresh/--no-refresh",
+        help="Refresh indices before counting documents.",
+    ),
+    batch_size: int = typer.Option(
+        500,
+        "--batch-size",
+        min=1,
+        help="Documents per bulk request.",
+    ),
+) -> None:
+    """Ingest Zeek and Suricata network telemetry into OpenSearch."""
+    _run_ingest_command("network", source, dry_run, json_output, refresh, batch_size)
+
+
 def render_ingest_table(results: list[IngestResult], *, title: str) -> Table:
     """Render ingest results as a compact table."""
     table = Table(title=title)

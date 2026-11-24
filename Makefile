@@ -1,4 +1,4 @@
-.PHONY: install lint validate telemetry-check metrics-report metrics-check test test-lab test-detections test-opensearch coverage check lab-up lab-down lab-status lab-wait lab-bootstrap ingest-identity ingest-endpoint ingest-cloud ingest-saas lab-reset lab-logs
+.PHONY: install lint validate telemetry-check metrics-report metrics-check test test-lab test-detections test-opensearch coverage check lab-up lab-down lab-status lab-wait lab-bootstrap ingest-identity ingest-endpoint ingest-cloud ingest-saas ingest-network lab-reset lab-logs
 
 install:
 	uv sync --all-extras
@@ -67,6 +67,9 @@ ingest-cloud:
 
 ingest-saas:
 	PYTHONPATH= uv run edl ingest saas
+
+ingest-network:
+	PYTHONPATH= uv run edl ingest network
 
 lab-reset:
 	uv run edl lab reset --yes

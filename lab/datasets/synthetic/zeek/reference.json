@@ -1,0 +1,59 @@
+[
+  {
+    "_path": "conn",
+    "ts": 1795608000.0,
+    "uid": "C1a2b3c4d5e6f7",
+    "id.orig_h": "10.0.0.5",
+    "id.orig_p": 49152,
+    "id.resp_h": "198.51.100.25",
+    "id.resp_p": 443,
+    "proto": "tcp",
+    "service": "ssl",
+    "duration": 0.42,
+    "orig_bytes": 812,
+    "resp_bytes": 4021
+  },
+  {
+    "_path": "dns",
+    "ts": 1795608060.0,
+    "uid": "C2b3c4d5e6f7a8",
+    "id.orig_h": "10.0.0.5",
+    "id.orig_p": 53000,
+    "id.resp_h": "203.0.113.53",
+    "id.resp_p": 53,
+    "proto": "udp",
+    "query": "example.test",
+    "qtype_name": "A",
+    "answers": ["203.0.113.10"]
+  },
+  {
+    "_path": "http",
+    "ts": 1795608120.0,
+    "uid": "C3c4d5e6f7a8b9",
+    "id.orig_h": "10.0.0.5",
+    "id.orig_p": 49154,
+    "id.resp_h": "198.51.100.25",
+    "id.resp_p": 80,
+    "proto": "tcp",
+    "service": "http",
+    "host": "intranet.example.test",
+    "uri": "/status",
+    "method": "GET",
+    "status_code": 200,
+    "user_agent": "Mozilla/5.0"
+  },
+  {
+    "_path": "ssl",
+    "ts": 1795608180.0,
+    "uid": "C4d5e6f7a8b9c0",
+    "id.orig_h": "10.0.0.5",
+    "id.orig_p": 49156,
+    "id.resp_h": "198.51.100.25",
+    "id.resp_p": 443,
+    "proto": "tcp",
+    "service": "ssl",
+    "server_name": "intranet.example.test",
+    "version": "TLSv12",
+    "cipher": "TLS_AES_256_GCM_SHA384"
+  }
+]

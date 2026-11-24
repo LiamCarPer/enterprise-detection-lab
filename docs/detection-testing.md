@@ -115,7 +115,7 @@ the detection package, which makes before/after tuning reproducible.
 
 The endpoint tuning result is documented in
 [`reports/false-positive-tuning.md`](../reports/false-positive-tuning.md). The
-identity, cloud, SaaS, and correlation results are summarized in
+identity, cloud, SaaS, network, and correlation results are summarized in
 [`reports/benign-baseline-results.md`](../reports/benign-baseline-results.md).
 
 ## Fixture sources

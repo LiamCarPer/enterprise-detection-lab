@@ -22,6 +22,7 @@ make ingest-identity
 make ingest-endpoint
 make ingest-cloud
 make ingest-saas
+make ingest-network
 ```
 
 `make lab-up` starts:
@@ -41,6 +42,7 @@ make ingest-identity
 make ingest-endpoint
 make ingest-cloud
 make ingest-saas
+make ingest-network
 ```
 
 Identity ingestion normalizes the Entra sign-in and audit samples. Endpoint
@@ -48,7 +50,9 @@ ingestion normalizes Sysmon and Windows Security, classifies each event from its
 `EventID`, and validates the declared `Channel` dedup key. Cloud ingestion
 normalizes the AWS CloudTrail sample, including account, region, identity, and
 API context. SaaS ingestion normalizes the Microsoft 365 and GitHub audit samples,
-including actor, workload, organization, repository, and forwarding context. All
+including actor, workload, organization, repository, and forwarding context.
+Network ingestion normalizes Zeek and Suricata samples, including addresses,
+ports, protocol, DNS, HTTP, TLS, alerts, and flow metadata. All
 paths validate required fields and UTC timestamps and bulk-index into daily
 `edl-events-<source>-*` indices. Writes use deterministic
 document IDs, so replaying the same dataset is idempotent.

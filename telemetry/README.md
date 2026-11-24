@@ -31,18 +31,19 @@ The machine-readable schema is [`schemas/telemetry-source.schema.json`](../schem
 | `ingested` | The sample has been loaded into the lab. |
 | `validated` | Replay and query tests pass. |
 
-The repository currently has seven sources with samples: Entra sign-in, Entra audit, Sysmon, Windows Security, AWS CloudTrail, Microsoft 365 audit, and GitHub audit. The remaining four are documented and receive samples with their detection commits.
+The repository currently has nine sources with samples: Entra sign-in, Entra audit, Sysmon, Windows Security, AWS CloudTrail, Microsoft 365 audit, GitHub audit, Zeek, and Suricata. The remaining two are documented and receive samples with their detection commits.
 
 ## Ingest
 
-Identity and endpoint sources are loaded with:
+Telemetry sources are loaded with:
 
 ```bash
 edl ingest identity
 edl ingest endpoint
 edl ingest cloud
 edl ingest saas
-edl ingest cloud --dry-run
+edl ingest network
+edl ingest network --dry-run
 ```
 
 Ingestion checks the sample hash and required fields, rejects naive timestamps,

@@ -1,0 +1,87 @@
+[
+  {
+    "event": {
+      "_path": "dns",
+      "ts": 1795608000.0,
+      "uid": "C5e6f7a8b9c0d1",
+      "id.orig_h": "10.0.0.5",
+      "id.orig_p": 53001,
+      "id.resp_h": "203.0.113.53",
+      "id.resp_p": 53,
+      "proto": "udp",
+      "query": "c2f4a1b9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9f8a7b6c5.example.net",
+      "qtype_name": "TXT"
+    },
+    "source": "zeek",
+    "synthetic": true,
+    "note": "Long encoded label in a TXT query"
+  },
+  {
+    "event": {
+      "_path": "dns",
+      "ts": 1795608060.0,
+      "uid": "C6f7a8b9c0d1e2",
+      "id.orig_h": "10.0.0.5",
+      "id.orig_p": 53002,
+      "id.resp_h": "203.0.113.53",
+      "id.resp_p": 53,
+      "proto": "udp",
+      "query": "mfrggzdfmztwq2lknnwg23tpob4xq3ltoruw4z3febqxizltmv2gqzlmnfxgk6td.example.org",
+      "qtype_name": "TXT"
+    },
+    "source": "zeek",
+    "synthetic": true,
+    "note": "Base32-style label in a TXT query"
+  },
+  {
+    "event": {
+      "_path": "dns",
+      "ts": 1795608120.0,
+      "uid": "C7a8b9c0d1e2f3",
+      "id.orig_h": "10.0.0.7",
+      "id.orig_p": 53003,
+      "id.resp_h": "203.0.113.54",
+      "id.resp_p": 53,
+      "proto": "udp",
+      "query": "0123456789abcdef0123456789abcdef01234567.chunk.example.com",
+      "qtype_name": "TXT"
+    },
+    "source": "zeek",
+    "synthetic": true,
+    "note": "Hex label in a chunked TXT query"
+  },
+  {
+    "event": {
+      "_path": "dns",
+      "ts": 1795608180.0,
+      "uid": "C8b9c0d1e2f3a4",
+      "id.orig_h": "10.0.0.7",
+      "id.orig_p": 53004,
+      "id.resp_h": "203.0.113.54",
+      "id.resp_p": 53,
+      "proto": "udp",
+      "query": "dGhpcy1pcy1hLXRlc3QtcGF5bG9hZC1mb3ItZG5zLXR1bm5lbGluZy5leGFtcGxl.example.net",
+      "qtype_name": "TXT"
+    },
+    "source": "zeek",
+    "synthetic": true,
+    "note": "Base64-style label in a TXT query"
+  },
+  {
+    "event": {
+      "_path": "dns",
+      "ts": 1795608240.0,
+      "uid": "C9c0d1e2f3a4b5",
+      "id.orig_h": "10.0.0.9",
+      "id.orig_p": 53005,
+      "id.resp_h": "203.0.113.55",
+      "id.resp_p": 53,
+      "proto": "udp",
+      "query": "session-0001.abcdefghijklmnopqrstuvwxyz0123456789.tunnel.example.org",
+      "qtype_name": "TXT"
+    },
+    "source": "zeek",
+    "synthetic": true,
+    "note": "Long session label in a TXT query"
+  }
+]

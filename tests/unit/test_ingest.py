@@ -12,8 +12,10 @@ from edl.ingest import (
     CanonicalEvent,
     classify_github_audit,
     classify_m365_audit,
+    classify_suricata,
     classify_sysmon,
     classify_windows_security,
+    classify_zeek,
     dedup_fingerprint,
     deduplicate_events,
     format_timestamp,
@@ -22,6 +24,7 @@ from edl.ingest import (
     ingest_domain,
     ingest_endpoint,
     ingest_identity,
+    ingest_network,
     ingest_saas,
     ingest_source,
     load_cloud_sources,
@@ -29,6 +32,7 @@ from edl.ingest import (
     load_domain_sources,
     load_endpoint_sources,
     load_identity_sources,
+    load_network_sources,
     load_saas_sources,
     normalize_aws_cloudtrail,
     normalize_dataset,
@@ -37,8 +41,10 @@ from edl.ingest import (
     normalize_event,
     normalize_github_audit,
     normalize_m365_audit,
+    normalize_suricata,
     normalize_sysmon,
     normalize_windows_security,
+    normalize_zeek,
     parse_timestamp,
     write_events,
 )
@@ -1246,3 +1252,289 @@ def test_normalize_github_audit_accepts_role_alias_and_lowercases() -> None:
 
     alias = normalize_github_audit({**GITHUB_RAW, "permission": None, "role": "Member"})
     assert alias["role"] == "member"
+
+
+ZEEK_CONN = {
+    "_path": "conn",
+    "ts": 1795608000.0,
+    "uid": "C1a2b3c4d5e6f7",
+    "id.orig_h": "10.0.0.5",
+    "id.orig_p": 49152,
+    "id.resp_h": "198.51.100.25",
+    "id.resp_p": 443,
+    "proto": "tcp",
+    "service": "ssl",
+    "orig_bytes": 812,
+    "resp_bytes": 4021,
+}
+
+ZEEK_DNS = {
+    **ZEEK_CONN,
+    "_path": "dns",
+    "uid": "C2b3c4d5e6f7a8",
+    "id.orig_p": 53000,
+    "id.resp_h": "203.0.113.53",
+    "id.resp_p": 53,
+    "proto": "udp",
+    "query": "example.test",
+    "qtype_name": "A",
+}
+
+ZEEK_HTTP = {
+    **ZEEK_CONN,
+    "_path": "http",
+    "uid": "C3c4d5e6f7a8b9",
+    "host": "intranet.example.test",
+    "uri": "/status",
+    "method": "GET",
+    "status_code": 200,
+    "user_agent": "Mozilla/5.0",
+}
+
+SURICATA_ALERT = {
+    "timestamp": "2026-11-25T12:00:00Z",
+    "flow_id": 900000000000001,
+    "event_type": "alert",
+    "src_ip": "10.0.0.5",
+    "src_port": 49152,
+    "dest_ip": "198.51.100.66",
+    "dest_port": 443,
+    "proto": "TCP",
+    "app_proto": "http",
+    "alert": {
+        "signature": "ET MALWARE Example C2 Checkin",
+        "category": "A Network Trojan was detected",
+        "severity": 1,
+    },
+    "flow": {"bytes_toserver": 620, "bytes_toclient": 1840},
+}
+
+
+def _network_source(source_id: str) -> TelemetrySource:
+    zeek = source_id == "zeek"
+    return _source(
+        source_id,
+        event_classes=(
+            ["conn", "dns", "http", "ssl", "files", "other"]
+            if zeek
+            else ["alert", "flow", "dns", "http", "tls", "other"]
+        ),
+        event_time_field="ts" if zeek else "timestamp",
+        dedup_key=["uid"] if zeek else ["flow_id", "event_type"],
+        required_fields=(
+            ["ts", "uid", "id.orig_h", "id.resp_h", "id.orig_p", "id.resp_p", "proto", "_path"]
+            if zeek
+            else ["timestamp", "flow_id", "event_type", "src_ip", "dest_ip", "proto"]
+        ),
+    )
+
+
+@pytest.mark.parametrize(
+    ("path", "expected"),
+    [
+        ("conn", "conn"),
+        ("dns", "dns"),
+        ("http", "http"),
+        ("ssl", "ssl"),
+        ("files", "files"),
+        ("weird", "other"),
+    ],
+)
+def test_classify_zeek_maps_log_paths(path: str, expected: str) -> None:
+    assert classify_zeek({"_path": path}) == expected
+
+
+@pytest.mark.parametrize(
+    ("event_type", "expected"),
+    [
+        ("alert", "alert"),
+        ("flow", "flow"),
+        ("dns", "dns"),
+        ("http", "http"),
+        ("tls", "tls"),
+        ("stats", "other"),
+    ],
+)
+def test_classify_suricata_maps_event_types(event_type: str, expected: str) -> None:
+    assert classify_suricata({"event_type": event_type}) == expected
+
+
+def test_normalize_zeek_connection_and_dns() -> None:
+    connection = normalize_zeek(ZEEK_CONN)
+    assert connection["flow_id"] == ZEEK_CONN["uid"]
+    assert connection["network_log"] == "conn"
+    assert connection["network"] == {
+        "source_ip": "10.0.0.5",
+        "source_port": 49152,
+        "destination_ip": "198.51.100.25",
+        "destination_port": 443,
+        "protocol": "tcp",
+        "app_protocol": "ssl",
+    }
+    assert connection["bytes_sent"] == 812
+    assert connection["bytes_received"] == 4021
+
+    dns = normalize_zeek(ZEEK_DNS)
+    assert dns["dns"] == {"query_name": "example.test", "query_type": "A", "query_length": 12}
+
+
+def test_normalize_zeek_http_and_ssl() -> None:
+    http = normalize_zeek(ZEEK_HTTP)
+    assert http["http"] == {
+        "host": "intranet.example.test",
+        "uri": "/status",
+        "method": "GET",
+        "status": 200,
+        "user_agent": "Mozilla/5.0",
+    }
+    assert http["user_agent"] == "Mozilla/5.0"
+
+    ssl = normalize_zeek(
+        {
+            **ZEEK_CONN,
+            "_path": "ssl",
+            "server_name": "intranet.example.test",
+            "version": "TLSv12",
+            "cipher": "TLS_AES_256_GCM_SHA384",
+        }
+    )
+    assert ssl["tls"] == {
+        "sni": "intranet.example.test",
+        "version": "TLSv12",
+        "cipher": "TLS_AES_256_GCM_SHA384",
+    }
+
+
+def test_normalize_suricata_alert_and_dns() -> None:
+    alert = normalize_suricata(SURICATA_ALERT)
+    assert alert["flow_id"] == SURICATA_ALERT["flow_id"]
+    assert alert["network_log"] == "alert"
+    assert alert["network"] == {
+        "source_ip": "10.0.0.5",
+        "source_port": 49152,
+        "destination_ip": "198.51.100.66",
+        "destination_port": 443,
+        "protocol": "TCP",
+        "app_protocol": "http",
+    }
+    assert alert["alert"] == {
+        "signature": "ET MALWARE Example C2 Checkin",
+        "category": "A Network Trojan was detected",
+        "severity": 1,
+    }
+    assert alert["bytes_sent"] == 620
+    assert alert["bytes_received"] == 1840
+
+    dns = normalize_suricata(
+        {
+            "timestamp": "2026-11-25T12:02:00Z",
+            "flow_id": 900000000000003,
+            "event_type": "dns",
+            "src_ip": "10.0.0.5",
+            "dest_ip": "203.0.113.53",
+            "proto": "UDP",
+            "dns": {"rrname": "example.test", "rrtype": "A"},
+        }
+    )
+    assert dns["dns"] == {"query_name": "example.test", "query_type": "A", "query_length": 12}
+
+
+def test_normalize_suricata_http_and_tls() -> None:
+    http = normalize_suricata(
+        {
+            "timestamp": "2026-11-25T12:03:00Z",
+            "flow_id": 900000000000004,
+            "event_type": "http",
+            "src_ip": "10.0.0.5",
+            "dest_ip": "198.51.100.25",
+            "proto": "TCP",
+            "http": {
+                "hostname": "intranet.example.test",
+                "url": "/status",
+                "http_method": "GET",
+                "status": 200,
+                "http_user_agent": "Mozilla/5.0",
+            },
+        }
+    )
+    assert http["http"] == {
+        "host": "intranet.example.test",
+        "uri": "/status",
+        "method": "GET",
+        "status": 200,
+        "user_agent": "Mozilla/5.0",
+    }
+    assert http["user_agent"] == "Mozilla/5.0"
+
+    tls = normalize_suricata(
+        {
+            "timestamp": "2026-11-25T12:04:00Z",
+            "flow_id": 900000000000005,
+            "event_type": "tls",
+            "src_ip": "10.0.0.5",
+            "dest_ip": "198.51.100.25",
+            "proto": "TCP",
+            "tls": {"sni": "intranet.example.test", "version": "TLS 1.2"},
+        }
+    )
+    assert tls["tls"] == {"sni": "intranet.example.test", "version": "TLS 1.2"}
+
+
+def test_normalize_event_accepts_epoch_seconds() -> None:
+    event = normalize_event(
+        _network_source("zeek"),
+        ZEEK_CONN,
+        ingest_time=datetime(2026, 11, 25, tzinfo=UTC),
+    )
+    assert event.event_class == "conn"
+    assert event.event_time == datetime(2026, 11, 25, 12, 0, tzinfo=UTC)
+
+
+def test_parse_timestamp_rejects_invalid_epoch_and_types() -> None:
+    assert parse_timestamp(0, source="zeek", field="ts") == datetime(1970, 1, 1, tzinfo=UTC)
+    with pytest.raises(IngestError):
+        parse_timestamp(True, source="zeek", field="ts")
+    with pytest.raises(IngestError):
+        parse_timestamp("2026-11-25T12:00:00", source="zeek", field="ts")
+    with pytest.raises(IngestError):
+        parse_timestamp(float("inf"), source="zeek", field="ts")
+
+
+def test_load_network_sources_defaults_and_filters() -> None:
+    assert [source.id for source in load_network_sources()] == ["zeek", "suricata"]
+    assert [source.id for source in load_network_sources(requested=("suricata",))] == ["suricata"]
+
+
+def test_load_network_sources_rejects_non_network() -> None:
+    with pytest.raises(IngestError, match="Not network source"):
+        load_network_sources(requested=("entra-signin",))
+
+
+def test_ingest_network_dry_run_uses_repository_samples() -> None:
+    results = ingest_network(dry_run=True)
+    assert [result.source for result in results] == ["zeek", "suricata"]
+    assert [result.read for result in results] == [4, 5]
+    assert results[0].indices == ("edl-events-zeek-2026.11.25",)
+    assert results[1].indices == ("edl-events-suricata-2026.11.25",)
+
+
+def test_ingest_network_opens_client_when_missing(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    client = FakeClient()
+
+    class FakeContext:
+        def __enter__(self) -> FakeClient:
+            return client
+
+        def __exit__(self, *_: object) -> None:
+            return None
+
+    monkeypatch.setattr("edl.ingest.OpenSearchClient", lambda: FakeContext())
+    results = ingest_network(
+        ingest_time=datetime(2026, 11, 25, tzinfo=UTC),
+        index_prefix="edl-events-test",
+    )
+    assert len(results) == 2
+    assert all(result.mode == "ingested" for result in results)
+    assert all(result.counts for result in results)

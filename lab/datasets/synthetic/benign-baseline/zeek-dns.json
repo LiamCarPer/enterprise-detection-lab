@@ -1,0 +1,322 @@
+[
+  {
+    "event": {
+      "_path": "dns",
+      "ts": 1795608060.0,
+      "uid": "F01a2b3c4d5e6f7",
+      "id.orig_h": "10.0.0.5",
+      "id.orig_p": 54001,
+      "id.resp_h": "203.0.113.53",
+      "id.resp_p": 53,
+      "proto": "udp",
+      "query": "intranet.example.test",
+      "qtype_name": "A"
+    },
+    "source": "zeek",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "_path": "dns",
+      "ts": 1795608120.0,
+      "uid": "F02a2b3c4d5e6f7",
+      "id.orig_h": "10.0.0.5",
+      "id.orig_p": 54002,
+      "id.resp_h": "203.0.113.53",
+      "id.resp_p": 53,
+      "proto": "udp",
+      "query": "www.example.test",
+      "qtype_name": "A"
+    },
+    "source": "zeek",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "_path": "dns",
+      "ts": 1795608180.0,
+      "uid": "F03a2b3c4d5e6f7",
+      "id.orig_h": "10.0.0.5",
+      "id.orig_p": 54003,
+      "id.resp_h": "203.0.113.53",
+      "id.resp_p": 53,
+      "proto": "udp",
+      "query": "example.test",
+      "qtype_name": "MX"
+    },
+    "source": "zeek",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "_path": "dns",
+      "ts": 1795608240.0,
+      "uid": "F04a2b3c4d5e6f7",
+      "id.orig_h": "10.0.0.5",
+      "id.orig_p": 54004,
+      "id.resp_h": "203.0.113.53",
+      "id.resp_p": 53,
+      "proto": "udp",
+      "query": "example.test",
+      "qtype_name": "AAAA"
+    },
+    "source": "zeek",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "_path": "dns",
+      "ts": 1795608300.0,
+      "uid": "F05a2b3c4d5e6f7",
+      "id.orig_h": "10.0.0.5",
+      "id.orig_p": 54005,
+      "id.resp_h": "203.0.113.53",
+      "id.resp_p": 53,
+      "proto": "udp",
+      "query": "cdn.example.test",
+      "qtype_name": "CNAME"
+    },
+    "source": "zeek",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "_path": "dns",
+      "ts": 1795608360.0,
+      "uid": "F06a2b3c4d5e6f7",
+      "id.orig_h": "10.0.0.5",
+      "id.orig_p": 54006,
+      "id.resp_h": "203.0.113.53",
+      "id.resp_p": 53,
+      "proto": "udp",
+      "query": "_sip._tcp.example.test",
+      "qtype_name": "SRV"
+    },
+    "source": "zeek",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "_path": "dns",
+      "ts": 1795608420.0,
+      "uid": "F07a2b3c4d5e6f7",
+      "id.orig_h": "10.0.0.5",
+      "id.orig_p": 54007,
+      "id.resp_h": "203.0.113.53",
+      "id.resp_p": 53,
+      "proto": "udp",
+      "query": "5.0.0.10.in-addr.arpa",
+      "qtype_name": "PTR"
+    },
+    "source": "zeek",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "_path": "dns",
+      "ts": 1795608480.0,
+      "uid": "F08a2b3c4d5e6f7",
+      "id.orig_h": "10.0.0.5",
+      "id.orig_p": 54008,
+      "id.resp_h": "203.0.113.53",
+      "id.resp_p": 53,
+      "proto": "udp",
+      "query": "example.test",
+      "qtype_name": "HTTPS"
+    },
+    "source": "zeek",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "_path": "dns",
+      "ts": 1795608540.0,
+      "uid": "F09a2b3c4d5e6f7",
+      "id.orig_h": "10.0.0.5",
+      "id.orig_p": 54009,
+      "id.resp_h": "203.0.113.53",
+      "id.resp_p": 53,
+      "proto": "udp",
+      "query": "_dmarc.example.test",
+      "qtype_name": "TXT"
+    },
+    "source": "zeek",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "_path": "dns",
+      "ts": 1795608600.0,
+      "uid": "F10a2b3c4d5e6f7",
+      "id.orig_h": "10.0.0.5",
+      "id.orig_p": 54010,
+      "id.resp_h": "203.0.113.53",
+      "id.resp_p": 53,
+      "proto": "udp",
+      "query": "selector1._domainkey.example.test",
+      "qtype_name": "TXT"
+    },
+    "source": "zeek",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "_path": "dns",
+      "ts": 1795608660.0,
+      "uid": "F11a2b3c4d5e6f7",
+      "id.orig_h": "10.0.0.5",
+      "id.orig_p": 54011,
+      "id.resp_h": "203.0.113.53",
+      "id.resp_p": 53,
+      "proto": "udp",
+      "query": "example.test",
+      "qtype_name": "SOA"
+    },
+    "source": "zeek",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "_path": "dns",
+      "ts": 1795608720.0,
+      "uid": "F12a2b3c4d5e6f7",
+      "id.orig_h": "10.0.0.5",
+      "id.orig_p": 54012,
+      "id.resp_h": "203.0.113.53",
+      "id.resp_p": 53,
+      "proto": "udp",
+      "query": "api.example.test",
+      "qtype_name": "A"
+    },
+    "source": "zeek",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "_path": "dns",
+      "ts": 1795608780.0,
+      "uid": "F13a2b3c4d5e6f7",
+      "id.orig_h": "10.0.0.5",
+      "id.orig_p": 54013,
+      "id.resp_h": "203.0.113.53",
+      "id.resp_p": 53,
+      "proto": "udp",
+      "query": "very-long-a-record-name-abcdefghijklmnopqrstuvwxyz0123456789.example.test",
+      "qtype_name": "A"
+    },
+    "source": "zeek",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "_path": "dns",
+      "ts": 1795608840.0,
+      "uid": "F14a2b3c4d5e6f7",
+      "id.orig_h": "10.0.0.5",
+      "id.orig_p": 54014,
+      "id.resp_h": "203.0.113.53",
+      "id.resp_p": 53,
+      "proto": "udp",
+      "query": "mail.example.test",
+      "qtype_name": "A"
+    },
+    "source": "zeek",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "_path": "dns",
+      "ts": 1795608900.0,
+      "uid": "F15a2b3c4d5e6f7",
+      "id.orig_h": "10.0.0.5",
+      "id.orig_p": 54015,
+      "id.resp_h": "203.0.113.53",
+      "id.resp_p": 53,
+      "proto": "udp",
+      "query": "vpn.example.test",
+      "qtype_name": "A"
+    },
+    "source": "zeek",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "_path": "dns",
+      "ts": 1795608960.0,
+      "uid": "F16a2b3c4d5e6f7",
+      "id.orig_h": "10.0.0.5",
+      "id.orig_p": 54016,
+      "id.resp_h": "203.0.113.53",
+      "id.resp_p": 53,
+      "proto": "udp",
+      "query": "status.example.test",
+      "qtype_name": "A"
+    },
+    "source": "zeek",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "_path": "dns",
+      "ts": 1795609020.0,
+      "uid": "F17a2b3c4d5e6f7",
+      "id.orig_h": "10.0.0.5",
+      "id.orig_p": 54017,
+      "id.resp_h": "203.0.113.53",
+      "id.resp_p": 53,
+      "proto": "udp",
+      "query": "example.test",
+      "qtype_name": "NS"
+    },
+    "source": "zeek",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "_path": "dns",
+      "ts": 1795609080.0,
+      "uid": "F18a2b3c4d5e6f7",
+      "id.orig_h": "10.0.0.5",
+      "id.orig_p": 54018,
+      "id.resp_h": "203.0.113.53",
+      "id.resp_p": 53,
+      "proto": "udp",
+      "query": "cdn.example.test",
+      "qtype_name": "AAAA"
+    },
+    "source": "zeek",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "_path": "dns",
+      "ts": 1795609140.0,
+      "uid": "F19a2b3c4d5e6f7",
+      "id.orig_h": "10.0.0.5",
+      "id.orig_p": 54019,
+      "id.resp_h": "203.0.113.53",
+      "id.resp_p": 53,
+      "proto": "udp",
+      "query": "very-long-cname-name-abcdefghijklmnopqrstuvwxyz0123456789.example.test",
+      "qtype_name": "CNAME"
+    },
+    "source": "zeek",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "_path": "dns",
+      "ts": 1795609200.0,
+      "uid": "F20a2b3c4d5e6f7",
+      "id.orig_h": "10.0.0.5",
+      "id.orig_p": 54020,
+      "id.resp_h": "203.0.113.53",
+      "id.resp_p": 53,
+      "proto": "udp",
+      "query": "telemetry.example.test",
+      "qtype_name": "A"
+    },
+    "source": "zeek",
+    "synthetic": true
+  }
+]

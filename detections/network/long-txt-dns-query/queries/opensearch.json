@@ -1,0 +1,12 @@
+{
+  "query": {
+    "bool": {
+      "filter": [
+        { "term": { "source": "zeek" } },
+        { "term": { "event_class": "dns" } },
+        { "term": { "dns.query_type": "TXT" } },
+        { "range": { "dns.query_length": { "gte": 40 } } }
+      ]
+    }
+  }
+}

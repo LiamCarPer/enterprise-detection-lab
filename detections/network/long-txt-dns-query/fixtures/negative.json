@@ -1,0 +1,87 @@
+[
+  {
+    "event": {
+      "_path": "dns",
+      "ts": 1795608300.0,
+      "uid": "D1a2b3c4d5e6f7",
+      "id.orig_h": "10.0.0.5",
+      "id.orig_p": 53010,
+      "id.resp_h": "203.0.113.53",
+      "id.resp_p": 53,
+      "proto": "udp",
+      "query": "c2f4a1b9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9f8a7b6c5.example.net",
+      "qtype_name": "A"
+    },
+    "source": "zeek",
+    "synthetic": true,
+    "note": "Long name with an A record query"
+  },
+  {
+    "event": {
+      "_path": "dns",
+      "ts": 1795608360.0,
+      "uid": "D2b3c4d5e6f7a8",
+      "id.orig_h": "10.0.0.5",
+      "id.orig_p": 53011,
+      "id.resp_h": "203.0.113.53",
+      "id.resp_p": 53,
+      "proto": "udp",
+      "query": "example.test",
+      "qtype_name": "TXT"
+    },
+    "source": "zeek",
+    "synthetic": true,
+    "note": "Short TXT query"
+  },
+  {
+    "event": {
+      "_path": "dns",
+      "ts": 1795608420.0,
+      "uid": "D3c4d5e6f7a8b9",
+      "id.orig_h": "10.0.0.5",
+      "id.orig_p": 53012,
+      "id.resp_h": "203.0.113.53",
+      "id.resp_p": 53,
+      "proto": "udp",
+      "query": "www.example.test",
+      "qtype_name": "A"
+    },
+    "source": "zeek",
+    "synthetic": true,
+    "note": "Normal A query"
+  },
+  {
+    "event": {
+      "_path": "dns",
+      "ts": 1795608480.0,
+      "uid": "D4d5e6f7a8b9c0",
+      "id.orig_h": "10.0.0.5",
+      "id.orig_p": 53013,
+      "id.resp_h": "203.0.113.53",
+      "id.resp_p": 53,
+      "proto": "udp",
+      "query": "0123456789abcdef0123456789abcdef01234567.example.com",
+      "qtype_name": "AAAA"
+    },
+    "source": "zeek",
+    "synthetic": true,
+    "note": "Long name with an AAAA query"
+  },
+  {
+    "event": {
+      "_path": "dns",
+      "ts": 1795608540.0,
+      "uid": "D5e6f7a8b9c0d1",
+      "id.orig_h": "10.0.0.5",
+      "id.orig_p": 53014,
+      "id.resp_h": "203.0.113.53",
+      "id.resp_p": 53,
+      "proto": "udp",
+      "query": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.test",
+      "qtype_name": "TXT"
+    },
+    "source": "zeek",
+    "synthetic": true,
+    "note": "TXT query just below the length threshold"
+  }
+]

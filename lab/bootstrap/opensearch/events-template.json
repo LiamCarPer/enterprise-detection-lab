@@ -32,6 +32,10 @@
         "service": { "type": "keyword" },
         "account": { "type": "keyword" },
         "region": { "type": "keyword" },
+        "flow_id": { "type": "keyword" },
+        "network_log": { "type": "keyword" },
+        "bytes_sent": { "type": "long" },
+        "bytes_received": { "type": "long" },
         "identity_type": { "type": "keyword" },
         "identity_arn": { "type": "keyword" },
         "error_code": { "type": "keyword" },
@@ -80,7 +84,8 @@
             "source_port": { "type": "integer" },
             "destination_ip": { "type": "keyword" },
             "destination_port": { "type": "integer" },
-            "protocol": { "type": "keyword" }
+            "protocol": { "type": "keyword" },
+            "app_protocol": { "type": "keyword" }
           }
         },
         "file": {
@@ -100,7 +105,40 @@
           "type": "object",
           "properties": {
             "query_name": { "type": "keyword" },
-            "query_results": { "type": "keyword" }
+            "query_results": { "type": "keyword" },
+            "query_type": { "type": "keyword" },
+            "query_length": { "type": "integer" }
+          }
+        },
+        "http": {
+          "type": "object",
+          "properties": {
+            "host": { "type": "keyword" },
+            "uri": { "type": "keyword" },
+            "method": { "type": "keyword" },
+            "status": { "type": "integer" },
+            "user_agent": { "type": "keyword" }
+          }
+        },
+        "tls": {
+          "type": "object",
+          "properties": {
+            "sni": { "type": "keyword" },
+            "version": { "type": "keyword" },
+            "cipher": { "type": "keyword" }
+          }
+        },
+        "alert": {
+          "type": "object",
+          "properties": {
+            "signature": {
+              "type": "text",
+              "fields": {
+                "keyword": { "type": "keyword", "ignore_above": 1024 }
+              }
+            },
+            "category": { "type": "keyword" },
+            "severity": { "type": "integer" }
           }
         },
         "dedup_origin": { "type": "keyword" },

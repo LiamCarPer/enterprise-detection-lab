@@ -8,8 +8,9 @@ event_classes:
   - dns
   - http
   - tls
+  - other
 schema_version: "1.0"
-status: documented
+status: ingested
 owner: detection-engineering
 event_time_field: timestamp
 ingest_time_field: ingest_time
@@ -36,7 +37,13 @@ cost: Open source; storage and packet capture are the main cost.
 late_arrival: Expected under load; preserve event time.
 duplicates: Possible; deduplicate by flow_id and event_type.
 known_gaps:
-  - No Suricata sample data yet; PCAP/flow samples arrive with the network detection work.
+  - The committed sample is synthetic and minimal.
   - Rule quality and sensor placement dominate detection quality.
   - Encrypted traffic limits payload-level visibility.
-notes: Network contract; sample data arrives with network detections.
+notes: Network source contract.
+sample_data:
+  path: lab/datasets/synthetic/suricata/reference.json
+  synthetic: true
+  license: synthetic
+  provenance: Generated for this repository. No real hosts, addresses, or traffic.
+  sha256: e9ba1c2562c058cc6c7f61bdcc84dd1b9e19db08fca64e07aa05e6a681c49d2e

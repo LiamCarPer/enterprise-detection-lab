@@ -1,0 +1,21 @@
+title: Long TXT DNS Query
+id: 00000000-0000-4000-8000-000000000501
+status: test
+description: Detects a DNS TXT query with a name of at least 40 characters.
+author: detection-engineering
+date: 2026/11/25
+logsource:
+  product: zeek
+  service: dns
+detection:
+  selection:
+    _path: dns
+    qtype_name: TXT
+    query|re: '^.{40,}$'
+  condition: selection
+falsepositives:
+  - SPF and DMARC lookups
+  - Reputation services
+level: medium
+tags:
+  - attack.t1071.004
