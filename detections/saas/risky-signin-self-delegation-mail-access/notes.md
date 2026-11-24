@@ -12,7 +12,7 @@ The native query returns candidates for three ordered steps:
 - successful mailbox or high-privilege folder permission grants where the delegate is the actor
 - successful `MailItemsAccessed` events
 
-`correlation.group_by: [user]` requires all steps to share the acting user. `window_seconds: 3600` gives each successive step up to 60 minutes.
+`correlation.group_by: [user]` requires all steps to share the acting user. The permission and access steps declare `match_fields: [mailbox]`, so the sequence must target the same mailbox. `window_seconds: 3600` gives each successive step up to 60 minutes.
 
 Microsoft 365 event classes distinguish the steps: permission grants use `mailbox_permission`, and mailbox reads use `mail_access`. The normalizer sets `self_delegation` by comparing the delegate with the actor and derives `mailbox` and `folder` from `MailItemsAccessed.ObjectId`.
 
@@ -26,18 +26,18 @@ The Sigma rule represents the sign-in component. The temporal correlation is def
 
 ## Test corpus
 
-The package contains 17 synthetic events across six scenarios:
+The package contains 20 synthetic events across seven scenarios:
 
 - 2 positive scenarios with all three steps in order and within the window.
-- 2 negative scenarios: mail access outside the window; delegation to a different user.
+- 3 negative scenarios: mail access outside the window; delegation to a different user; delegation and access to different mailboxes.
 - 2 benign scenarios: normal sign-in plus self-delegation plus access; risky sign-in plus self-delegation without access.
 
-Metrics are scenario-level: 2 positive scenarios, 2 negative scenarios, and 2 benign scenarios.
+Metrics are scenario-level: 2 positive scenarios, 3 negative scenarios, and 2 benign scenarios.
 
 ## Known gaps
 
 - Grouping by `user` assumes the actor is the same identity for all three steps.
-- The correlation does not require the delegated mailbox and the accessed mailbox to match.
+- The correlation matches the delegated and accessed mailbox, but does not verify folder-level equality.
 - A mailbox can be accessed for legitimate reasons immediately after an approved delegation.
 - The query uses `MailItemsAccessed`, which may be batched or delayed by the audit pipeline.
 - The Sigma representation covers only the sign-in component.

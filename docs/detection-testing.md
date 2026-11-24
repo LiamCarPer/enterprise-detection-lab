@@ -87,7 +87,13 @@ correlation:
       event_class: sign_in
     - source: entra-audit
       event_class: audit
+      match_fields:
+        - user
 ```
+
+Steps may declare `match_fields` to require the same field values across
+successive steps. In `DET-SAA-005`, the delegation and mail-access steps both
+declare `mailbox`, so the accessed mailbox must match the delegated mailbox.
 
 The runner executes the native query, then evaluates the returned events as
 ordered scenarios. Fixtures can use a `scenario` field to group events into one

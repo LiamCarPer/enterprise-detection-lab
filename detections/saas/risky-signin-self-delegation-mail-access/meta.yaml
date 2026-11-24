@@ -62,11 +62,15 @@ correlation:
       event_class: sign_in
     - source: m365-audit
       event_class: mailbox_permission
+      match_fields:
+        - mailbox
     - source: m365-audit
       event_class: mail_access
+      match_fields:
+        - mailbox
 tests:
   positive: 6
-  negative: 6
+  negative: 9
   benign: 5
 false_positives:
   - A legitimate user grants themselves access to a shared mailbox after traveling.

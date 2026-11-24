@@ -37,6 +37,7 @@ class DetectionCase:
 class CorrelationStep:
     source: str
     event_class: str
+    match_fields: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -280,7 +281,22 @@ def _load_correlation(
             )
         if not isinstance(event_class, str) or not event_class:
             raise DetectionError(f"{path}: correlation step {position} event_class is missing")
-        steps.append(CorrelationStep(source=source, event_class=event_class))
+        raw_match = item.get("match_fields", [])
+        if (
+            not isinstance(raw_match, list)
+            or not all(isinstance(field, str) and field for field in raw_match)
+            or len(set(raw_match)) != len(raw_match)
+        ):
+            raise DetectionError(
+                f"{path}: correlation step {position} match_fields must be a unique string array"
+            )
+        steps.append(
+            CorrelationStep(
+                source=source,
+                event_class=event_class,
+                match_fields=tuple(raw_match),
+            )
+        )
 
     return CorrelationSpec(
         window_seconds=window,
@@ -447,20 +463,33 @@ def _correlation_hit(cases: Sequence[DetectionCase], spec: CorrelationSpec) -> b
         for first in groups[0]:
             current = first.event.event_time
             deadline = current + timedelta(seconds=spec.window_seconds)
+            targets: dict[str, Any] = {}
             found = True
             for step_index in range(1, len(spec.steps)):
-                candidates = sorted(
-                    (
-                        event
-                        for event in groups[step_index]
-                        if current <= event.event.event_time <= deadline
-                    ),
-                    key=lambda event: event.event.event_time,
-                )
+                step = spec.steps[step_index]
+                candidates: list[tuple[DetectionCase, dict[str, Any]]] = []
+                for event in groups[step_index]:
+                    if not (current <= event.event.event_time <= deadline):
+                        continue
+                    values = {
+                        field: _lookup_document(event.event.document, field)
+                        for field in step.match_fields
+                    }
+                    if any(value is None or value == "" for value in values.values()):
+                        continue
+                    if any(
+                        field in targets and targets[field] != value
+                        for field, value in values.items()
+                    ):
+                        continue
+                    candidates.append((event, values))
+                candidates.sort(key=lambda item: item[0].event.event_time)
                 if not candidates:
                     found = False
                     break
-                current = candidates[0].event.event_time
+                chosen, values = candidates[0]
+                current = chosen.event.event_time
+                targets.update(values)
             if found:
                 return True
     return False

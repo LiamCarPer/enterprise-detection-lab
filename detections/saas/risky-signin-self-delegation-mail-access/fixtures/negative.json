@@ -29,9 +29,18 @@
       "ObjectId": "executive@example.test",
       "ResultStatus": "Success",
       "Parameters": [
-        {"Name": "Identity", "Value": "executive@example.test"},
-        {"Name": "User", "Value": "analyst@example.test"},
-        {"Name": "AccessRights", "Value": "FullAccess"}
+        {
+          "Name": "Identity",
+          "Value": "executive@example.test"
+        },
+        {
+          "Name": "User",
+          "Value": "analyst@example.test"
+        },
+        {
+          "Name": "AccessRights",
+          "Value": "FullAccess"
+        }
       ]
     },
     "source": "m365-audit",
@@ -50,7 +59,12 @@
       "ClientIP": "203.0.113.11",
       "ObjectId": "executive@example.test\\Inbox",
       "ResultStatus": "Success",
-      "Parameters": [{"Name": "MailAccessType", "Value": "Bind"}]
+      "Parameters": [
+        {
+          "Name": "MailAccessType",
+          "Value": "Bind"
+        }
+      ]
     },
     "source": "m365-audit",
     "synthetic": true,
@@ -87,9 +101,18 @@
       "ObjectId": "finance-archive@example.test",
       "ResultStatus": "Success",
       "Parameters": [
-        {"Name": "Identity", "Value": "finance-archive@example.test"},
-        {"Name": "User", "Value": "contractor@example.test"},
-        {"Name": "AccessRights", "Value": "FullAccess"}
+        {
+          "Name": "Identity",
+          "Value": "finance-archive@example.test"
+        },
+        {
+          "Name": "User",
+          "Value": "contractor@example.test"
+        },
+        {
+          "Name": "AccessRights",
+          "Value": "FullAccess"
+        }
       ]
     },
     "source": "m365-audit",
@@ -108,11 +131,88 @@
       "ClientIP": "198.51.100.77",
       "ObjectId": "finance-archive@example.test\\Inbox",
       "ResultStatus": "Success",
-      "Parameters": [{"Name": "MailAccessType", "Value": "Bind"}]
+      "Parameters": [
+        {
+          "Name": "MailAccessType",
+          "Value": "Bind"
+        }
+      ]
     },
     "source": "m365-audit",
     "synthetic": true,
     "scenario": "neg-2",
     "note": "Mail access without self-delegation"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000024201",
+      "createdDateTime": "2026-11-02T12:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "192.0.2.66",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "neg-3",
+    "note": "Risky sign-in step"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-02T12:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000024202",
+      "Operation": "Add-MailboxPermission",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "192.0.2.66",
+      "ObjectId": "executive@example.test",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "Identity",
+          "Value": "executive@example.test"
+        },
+        {
+          "Name": "User",
+          "Value": "analyst@example.test"
+        },
+        {
+          "Name": "AccessRights",
+          "Value": "FullAccess"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "neg-3",
+    "note": "Self-delegation to the executive mailbox"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-02T12:20:00Z",
+      "Id": "00000000-0000-4000-8000-000000024203",
+      "Operation": "MailItemsAccessed",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "192.0.2.66",
+      "ObjectId": "finance-archive@example.test\\Inbox",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "MailAccessType",
+          "Value": "Bind"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "neg-3",
+    "note": "Mail access targets a different mailbox"
   }
 ]

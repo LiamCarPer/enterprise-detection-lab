@@ -640,6 +640,19 @@ def test_correlation_metrics_use_scenario_unit(tmp_path: Path) -> None:
             "      event_class: audit\n",
             "event_class",
         ),
+        (
+            "correlation:\n"
+            "  window_seconds: 1800\n"
+            "  group_by:\n"
+            "    - user\n"
+            "  steps:\n"
+            "    - source: entra-signin\n"
+            "      event_class: sign_in\n"
+            "      match_fields: mailbox\n"
+            "    - source: entra-audit\n"
+            "      event_class: audit\n",
+            "match_fields",
+        ),
     ],
 )
 def test_correlation_spec_validation(tmp_path: Path, replacement: str, message: str) -> None:

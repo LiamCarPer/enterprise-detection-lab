@@ -71,7 +71,7 @@ def test_load_detection_metrics_from_repository() -> None:
     assert {item.detection_id: item.sample_size for item in metrics}["DET-IDN-003"] == 6
     assert {item.detection_id: item.sample_size for item in metrics}["DET-SAA-003"] == 6
     assert {item.detection_id: item.sample_size for item in metrics}["DET-SAA-004"] == 12
-    assert {item.detection_id: item.sample_size for item in metrics}["DET-SAA-005"] == 6
+    assert {item.detection_id: item.sample_size for item in metrics}["DET-SAA-005"] == 7
     assert all(
         item.sample_size == 15
         for item in metrics
@@ -85,7 +85,7 @@ def test_render_and_check_metrics_report(tmp_path: Path) -> None:
     metrics = load_detection_metrics()
     report = render_metrics_report(metrics)
     assert "Event-level cases: 180" in report
-    assert "Scenario-level cases: 30" in report
+    assert "Scenario-level cases: 31" in report
     assert "DET-IDN-001" in report
     assert "Synthetic fixture replay" in report
     assert "not production measurements" in report

@@ -255,6 +255,14 @@
               "event_class": {
                 "type": "string",
                 "minLength": 2
+              },
+              "match_fields": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
               }
             }
           }
