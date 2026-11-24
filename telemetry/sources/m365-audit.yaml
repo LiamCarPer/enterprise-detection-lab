@@ -27,7 +27,7 @@ sensitive_fields:
   - UserId
   - ClientIP
   - ObjectId
-expected_volume: Tenant-dependent; sample data is not committed yet.
+expected_volume: Tenant-dependent; the committed sample is synthetic and small.
 expected_latency: Minutes from the unified audit pipeline.
 retention: Plan-dependent; the lab retains normalized events until reset.
 cost: Licensing and retention tier affect availability; export can be slow.

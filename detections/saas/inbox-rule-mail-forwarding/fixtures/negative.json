@@ -1,0 +1,104 @@
+[
+  {
+    "event": {
+      "CreationTime": "2026-11-21T09:00:00Z",
+      "Id": "00000000-0000-4000-8000-000000008201",
+      "Operation": "New-InboxRule",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.10",
+      "ObjectId": "analyst@example.test\\Inbox\\Move newsletters",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {"Name": "Name", "Value": "Move newsletters"},
+        {"Name": "From", "Value": "news@example.net"},
+        {"Name": "MoveToFolder", "Value": "Newsletters"}
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "note": "Rule moves messages without forwarding"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-21T09:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000008202",
+      "Operation": "New-InboxRule",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.10",
+      "ObjectId": "analyst@example.test\\Inbox\\Mark notifications",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {"Name": "Name", "Value": "Mark notifications"},
+        {"Name": "From", "Value": "notifications@example.net"},
+        {"Name": "MarkAsRead", "Value": "True"}
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "note": "Rule marks messages as read"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-21T09:20:00Z",
+      "Id": "00000000-0000-4000-8000-000000008203",
+      "Operation": "New-InboxRule",
+      "UserId": "contractor@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "192.0.2.77",
+      "ObjectId": "contractor@example.test\\Inbox\\Forward denied",
+      "ResultStatus": "Failed",
+      "Parameters": [
+        {"Name": "Name", "Value": "Forward denied"},
+        {"Name": "ForwardTo", "Value": "external@example.net"}
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "note": "Forwarding rule creation failed"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-21T09:30:00Z",
+      "Id": "00000000-0000-4000-8000-000000008204",
+      "Operation": "Set-Mailbox",
+      "UserId": "admin@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "198.51.100.20",
+      "ObjectId": "analyst@example.test",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {"Name": "Identity", "Value": "analyst@example.test"},
+        {"Name": "ForwardingSmtpAddress", "Value": "smtp:external@example.net"}
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "note": "Mailbox-level forwarding is not an inbox rule"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-21T09:40:00Z",
+      "Id": "00000000-0000-4000-8000-000000008205",
+      "Operation": "Remove-InboxRule",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.10",
+      "ObjectId": "analyst@example.test\\Inbox\\Forward invoices",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {"Name": "Name", "Value": "Forward invoices"},
+        {"Name": "ForwardTo", "Value": "external@example.net"}
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "note": "Removing a rule is not creating or updating one"
+  }
+]

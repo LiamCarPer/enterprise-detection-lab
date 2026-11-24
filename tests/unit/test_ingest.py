@@ -1064,7 +1064,7 @@ GITHUB_RAW = {
     "id": "00000000-0000-4000-8000-000000020101",
     "org": "example-org",
     "repo": "example-org/lab",
-    "role": "admin",
+    "permission": "admin",
     "user": "new-owner",
     "user_agent": "GitHub CLI",
 }
@@ -1220,3 +1220,29 @@ def test_normalize_m365_audit_keeps_unknown_result_and_ignores_bad_parameters() 
     )
     assert document["result"] == "pending"
     assert document["rule_name"] == "Rule"
+
+
+def test_normalize_m365_audit_supports_attachment_forwarding() -> None:
+    document = normalize_m365_audit(
+        {
+            **M365_RAW,
+            "Parameters": [
+                {"Name": "Name", "Value": "Forward attachments"},
+                {"Name": "ForwardAsAttachmentTo", "Value": "archive@example.net"},
+            ],
+        }
+    )
+    assert document["forward_to"] == "archive@example.net"
+
+
+def test_normalize_github_audit_accepts_role_alias_and_lowercases() -> None:
+    document = normalize_github_audit(
+        {
+            **GITHUB_RAW,
+            "permission": "ADMIN",
+        }
+    )
+    assert document["role"] == "admin"
+
+    alias = normalize_github_audit({**GITHUB_RAW, "permission": None, "role": "Member"})
+    assert alias["role"] == "member"

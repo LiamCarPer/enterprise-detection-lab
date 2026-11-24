@@ -1,0 +1,328 @@
+[
+  {
+    "event": {
+      "CreationTime": "2026-11-18T08:00:00Z",
+      "Id": "00000000-0000-4000-8000-000000009101",
+      "Operation": "FileAccessed",
+      "UserId": "analyst@example.test",
+      "Workload": "SharePoint",
+      "RecordType": 6,
+      "ClientIP": "203.0.113.10",
+      "ObjectId": "https://example.sharepoint.com/sites/lab/Shared Documents/plan.docx",
+      "ResultStatus": "Success"
+    },
+    "source": "m365-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T08:05:00Z",
+      "Id": "00000000-0000-4000-8000-000000009102",
+      "Operation": "FileModified",
+      "UserId": "analyst@example.test",
+      "Workload": "SharePoint",
+      "RecordType": 6,
+      "ClientIP": "203.0.113.10",
+      "ObjectId": "https://example.sharepoint.com/sites/lab/Shared Documents/plan.docx",
+      "ResultStatus": "Success"
+    },
+    "source": "m365-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T08:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000009103",
+      "Operation": "FilePreviewed",
+      "UserId": "developer@example.test",
+      "Workload": "SharePoint",
+      "RecordType": 6,
+      "ClientIP": "198.51.100.23",
+      "ObjectId": "https://example.sharepoint.com/sites/lab/Shared Documents/design.pdf",
+      "ResultStatus": "Success"
+    },
+    "source": "m365-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T08:15:00Z",
+      "Id": "00000000-0000-4000-8000-000000009104",
+      "Operation": "MailItemsAccessed",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.10",
+      "ObjectId": "analyst@example.test\\Inbox",
+      "ResultStatus": "Success"
+    },
+    "source": "m365-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T08:20:00Z",
+      "Id": "00000000-0000-4000-8000-000000009105",
+      "Operation": "MailboxLogin",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.10",
+      "ObjectId": "analyst@example.test",
+      "ResultStatus": "Success"
+    },
+    "source": "m365-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T08:25:00Z",
+      "Id": "00000000-0000-4000-8000-000000009106",
+      "Operation": "Send",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.10",
+      "ObjectId": "analyst@example.test\\Sent Items",
+      "ResultStatus": "Success"
+    },
+    "source": "m365-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T08:30:00Z",
+      "Id": "00000000-0000-4000-8000-000000009107",
+      "Operation": "SoftDeleteMessage",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.10",
+      "ObjectId": "analyst@example.test\\Recoverable Items\\Deletions",
+      "ResultStatus": "Success"
+    },
+    "source": "m365-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T08:35:00Z",
+      "Id": "00000000-0000-4000-8000-000000009108",
+      "Operation": "New-InboxRule",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.10",
+      "ObjectId": "analyst@example.test\\Inbox\\Move project mail",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {"Name": "Name", "Value": "Move project mail"},
+        {"Name": "SubjectContainsWords", "Value": "project"},
+        {"Name": "MoveToFolder", "Value": "Projects"}
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T08:40:00Z",
+      "Id": "00000000-0000-4000-8000-000000009109",
+      "Operation": "Set-InboxRule",
+      "UserId": "finance@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "198.51.100.24",
+      "ObjectId": "finance@example.test\\Inbox\\Flag invoices",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {"Name": "Name", "Value": "Flag invoices"},
+        {"Name": "SubjectContainsWords", "Value": "invoice"},
+        {"Name": "Flag", "Value": "FollowUp"}
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T08:45:00Z",
+      "Id": "00000000-0000-4000-8000-000000009110",
+      "Operation": "New-InboxRule",
+      "UserId": "developer@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.44",
+      "ObjectId": "developer@example.test\\Inbox\\Mark build mail read",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {"Name": "Name", "Value": "Mark build mail read"},
+        {"Name": "From", "Value": "builds@example.test"},
+        {"Name": "MarkAsRead", "Value": "True"}
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T08:50:00Z",
+      "Id": "00000000-0000-4000-8000-000000009111",
+      "Operation": "UpdateInboxRules",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.10",
+      "ObjectId": "analyst@example.test\\Inbox",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {"Name": "Name", "Value": "Move vendor mail"},
+        {"Name": "MoveToFolder", "Value": "Vendors"}
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T08:55:00Z",
+      "Id": "00000000-0000-4000-8000-000000009112",
+      "Operation": "Add-MailboxPermission",
+      "UserId": "admin@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "198.51.100.20",
+      "ObjectId": "shared-mailbox@example.test",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {"Name": "Identity", "Value": "shared-mailbox@example.test"},
+        {"Name": "User", "Value": "analyst@example.test"},
+        {"Name": "AccessRights", "Value": "FullAccess"}
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T09:00:00Z",
+      "Id": "00000000-0000-4000-8000-000000009113",
+      "Operation": "Set-Mailbox",
+      "UserId": "admin@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "198.51.100.20",
+      "ObjectId": "shared-mailbox@example.test",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {"Name": "Identity", "Value": "shared-mailbox@example.test"},
+        {"Name": "HiddenFromAddressListsEnabled", "Value": "True"}
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T09:05:00Z",
+      "Id": "00000000-0000-4000-8000-000000009114",
+      "Operation": "UserLoggedIn",
+      "UserId": "analyst@example.test",
+      "Workload": "AzureActiveDirectory",
+      "RecordType": 15,
+      "ClientIP": "203.0.113.10",
+      "ResultStatus": "Success"
+    },
+    "source": "m365-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T09:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000009115",
+      "Operation": "UserLoggedOut",
+      "UserId": "developer@example.test",
+      "Workload": "AzureActiveDirectory",
+      "RecordType": 15,
+      "ClientIP": "198.51.100.23",
+      "ResultStatus": "Success"
+    },
+    "source": "m365-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T09:15:00Z",
+      "Id": "00000000-0000-4000-8000-000000009116",
+      "Operation": "MessageSent",
+      "UserId": "analyst@example.test",
+      "Workload": "MicrosoftTeams",
+      "RecordType": 25,
+      "ClientIP": "203.0.113.10",
+      "ObjectId": "19:meeting@thread.v2",
+      "ResultStatus": "Success"
+    },
+    "source": "m365-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T09:20:00Z",
+      "Id": "00000000-0000-4000-8000-000000009117",
+      "Operation": "MemberAdded",
+      "UserId": "owner@example.test",
+      "Workload": "MicrosoftTeams",
+      "RecordType": 25,
+      "ClientIP": "198.51.100.30",
+      "ObjectId": "19:team@thread.v2",
+      "ResultStatus": "Success"
+    },
+    "source": "m365-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T09:25:00Z",
+      "Id": "00000000-0000-4000-8000-000000009118",
+      "Operation": "FileAccessed",
+      "UserId": "developer@example.test",
+      "Workload": "OneDrive",
+      "RecordType": 6,
+      "ClientIP": "203.0.113.44",
+      "ObjectId": "https://example-my.sharepoint.com/personal/developer/Documents/notes.md",
+      "ResultStatus": "Success"
+    },
+    "source": "m365-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T09:30:00Z",
+      "Id": "00000000-0000-4000-8000-000000009119",
+      "Operation": "SharingSet",
+      "UserId": "analyst@example.test",
+      "Workload": "SharePoint",
+      "RecordType": 6,
+      "ClientIP": "203.0.113.10",
+      "ObjectId": "https://example.sharepoint.com/sites/lab/Shared Documents/plan.docx",
+      "ResultStatus": "Success"
+    },
+    "source": "m365-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T09:35:00Z",
+      "Id": "00000000-0000-4000-8000-000000009120",
+      "Operation": "AnonymousLinkCreated",
+      "UserId": "analyst@example.test",
+      "Workload": "SharePoint",
+      "RecordType": 6,
+      "ClientIP": "203.0.113.10",
+      "ObjectId": "https://example.sharepoint.com/sites/lab/Shared Documents/plan.docx",
+      "ResultStatus": "Success"
+    },
+    "source": "m365-audit",
+    "synthetic": true
+  }
+]

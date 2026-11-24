@@ -21,12 +21,11 @@ required_fields:
   - created_at
   - id
   - org
-  - repo
 sensitive_fields:
   - actor
   - actor_ip
   - repo
-expected_volume: Organization-dependent; sample data is not committed yet.
+expected_volume: Organization-dependent; the committed sample is synthetic and small.
 expected_latency: Seconds to minutes from the audit-log API or streaming export.
 retention: GitHub plan-dependent; the lab retains normalized events until reset.
 cost: Audit log access is plan-dependent; API rate limits apply.
@@ -42,4 +41,4 @@ sample_data:
   synthetic: true
   license: synthetic
   provenance: Generated for this repository. No real organizations, users, or IPs.
-  sha256: b00e6f69a9d1b274c8bc23562b46c5acf5063ae54ea3d83fca18b4b47915e92f
+  sha256: f3a896e8b3cbef02d3dc5857d8106dd6e8174c21563992d39642d925e432b073

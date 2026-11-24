@@ -1,0 +1,42 @@
+id: DET-SAA-002
+title: GitHub Organization Owner Added
+version: 1.0.0
+status: tested
+domain: saas
+severity: high
+hypothesis: Promoting an account to GitHub organization owner gives it control over repositories, secrets, membership, and audit settings, which supports persistence and privilege escalation.
+description: Detects a user joining a GitHub organization as an owner or being promoted to owner.
+owner: detection-engineering
+created: "2026-11-25"
+updated: "2026-11-25"
+attack:
+  - T1098
+tags:
+  - saas
+  - github
+  - persistence
+  - privilege-escalation
+telemetry:
+  - source: github-audit
+    event_class: audit_log
+    required_fields:
+      - action
+      - actor
+      - created_at
+      - id
+      - org
+      - user
+      - permission
+queries:
+  opensearch: queries/opensearch.json
+tests:
+  positive: 5
+  negative: 5
+  benign: 5
+false_positives:
+  - An approved appointment of a new organization owner.
+  - Break-glass or emergency owner access during an incident.
+  - Administrative automation that manages organization ownership with a documented token.
+runbook: runbook.md
+metrics: metrics.json
+notes: notes.md

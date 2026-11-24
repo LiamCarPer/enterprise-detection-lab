@@ -1,0 +1,80 @@
+[
+  {
+    "event": {
+      "action": "repo.push",
+      "actor": "developer",
+      "actor_ip": "203.0.113.10",
+      "created_at": "2026-11-22T10:00:00Z",
+      "id": "00000000-0000-4000-8000-000000006301",
+      "org": "example-org",
+      "repo": "example-org/lab",
+      "user": "developer",
+      "user_agent": "git/2.45"
+    },
+    "source": "github-audit",
+    "synthetic": true,
+    "note": "Normal repository push"
+  },
+  {
+    "event": {
+      "action": "pull_request.create",
+      "actor": "developer",
+      "actor_ip": "198.51.100.23",
+      "created_at": "2026-11-22T10:10:00Z",
+      "id": "00000000-0000-4000-8000-000000006302",
+      "org": "example-org",
+      "repo": "example-org/lab",
+      "user": "developer",
+      "user_agent": "Mozilla/5.0"
+    },
+    "source": "github-audit",
+    "synthetic": true,
+    "note": "Pull request opened"
+  },
+  {
+    "event": {
+      "action": "org.add_member",
+      "actor": "owner-admin",
+      "actor_ip": "203.0.113.10",
+      "created_at": "2026-11-22T10:20:00Z",
+      "id": "00000000-0000-4000-8000-000000006303",
+      "org": "example-org",
+      "user": "new-analyst",
+      "permission": "member",
+      "user_agent": "GitHub CLI"
+    },
+    "source": "github-audit",
+    "synthetic": true,
+    "note": "New member joined with the default role"
+  },
+  {
+    "event": {
+      "action": "team.add_member",
+      "actor": "team-maintainer",
+      "actor_ip": "198.51.100.24",
+      "created_at": "2026-11-22T10:30:00Z",
+      "id": "00000000-0000-4000-8000-000000006304",
+      "org": "example-org",
+      "user": "developer",
+      "user_agent": "Mozilla/5.0"
+    },
+    "source": "github-audit",
+    "synthetic": true,
+    "note": "Team membership change"
+  },
+  {
+    "event": {
+      "action": "user.login",
+      "actor": "developer",
+      "actor_ip": "203.0.113.44",
+      "created_at": "2026-11-22T10:40:00Z",
+      "id": "00000000-0000-4000-8000-000000006305",
+      "org": "example-org",
+      "user": "developer",
+      "user_agent": "Mozilla/5.0"
+    },
+    "source": "github-audit",
+    "synthetic": true,
+    "note": "Normal user login"
+  }
+]

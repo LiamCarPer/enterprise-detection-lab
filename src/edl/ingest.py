@@ -466,7 +466,11 @@ def normalize_m365_audit(raw: Mapping[str, Any]) -> dict[str, Any]:
         "record_type": str(record_type) if record_type is not None else None,
         "object_id": raw.get("ObjectId"),
         "rule_name": _meaningful(parameters.get("Name")),
-        "forward_to": _meaningful(parameters.get("ForwardTo") or parameters.get("RedirectTo")),
+        "forward_to": _meaningful(
+            parameters.get("ForwardTo")
+            or parameters.get("RedirectTo")
+            or parameters.get("ForwardAsAttachmentTo")
+        ),
     }
     return _compact(document)
 
@@ -474,6 +478,7 @@ def normalize_m365_audit(raw: Mapping[str, Any]) -> dict[str, Any]:
 def normalize_github_audit(raw: Mapping[str, Any]) -> dict[str, Any]:
     """Map GitHub organization audit fields to the canonical SaaS shape."""
     status = raw.get("status") or raw.get("result")
+    role = raw.get("permission") or raw.get("role")
     document: dict[str, Any] = {
         "event_id": raw.get("id"),
         "user": raw.get("actor"),
@@ -484,7 +489,7 @@ def normalize_github_audit(raw: Mapping[str, Any]) -> dict[str, Any]:
         "organization": raw.get("org"),
         "repository": raw.get("repo"),
         "target_user": raw.get("user"),
-        "role": raw.get("role"),
+        "role": str(role).lower() if role is not None else None,
         "user_agent": _meaningful(raw.get("user_agent")),
     }
     return _compact(document)

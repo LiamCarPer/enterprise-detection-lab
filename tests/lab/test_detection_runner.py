@@ -67,6 +67,8 @@ def test_all_detections_execute() -> None:
             "DET-END-002",
             "DET-CLD-001",
             "DET-CLD-002",
+            "DET-SAA-001",
+            "DET-SAA-002",
         }
         assert all(result.passed for result in results)
         assert client.count("edl-events-detect-*") == 0

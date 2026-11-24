@@ -115,7 +115,7 @@ CloudTrail management events use the declared `management_event` class. The raw 
 SaaS additions:
 
 - Microsoft 365: `workload`, `record_type`, `object_id`, `rule_name`, and `forward_to`
-- GitHub: `organization`, `repository`, `target_user`, `role`, `user_agent`, and `service=github`
+- GitHub: `organization`, `repository`, `target_user`, `role` (from `permission`), `user_agent`, and `service=github`
 
 Microsoft 365 event classes follow the workload: Exchange maps to `mailbox`, SharePoint/OneDrive to `sharepoint`, Teams to `teams`, and other workloads to `audit`. GitHub maps `git.*` actions to `git`, login actions to `authentication`, and other audit actions to `audit_log`.
 

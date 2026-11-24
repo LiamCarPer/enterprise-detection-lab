@@ -1,0 +1,106 @@
+[
+  {
+    "event": {
+      "CreationTime": "2026-11-20T09:00:00Z",
+      "Id": "00000000-0000-4000-8000-000000008101",
+      "Operation": "New-InboxRule",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.10",
+      "ObjectId": "analyst@example.test\\Inbox\\Forward invoices",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {"Name": "Name", "Value": "Forward invoices"},
+        {"Name": "SubjectContainsWords", "Value": "invoice"},
+        {"Name": "ForwardTo", "Value": "external@example.net"}
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "note": "New inbox rule forwards invoice messages to an external address"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-20T09:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000008102",
+      "Operation": "Set-InboxRule",
+      "UserId": "finance@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "198.51.100.21",
+      "ObjectId": "finance@example.test\\Inbox\\Redirect wire",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {"Name": "Name", "Value": "Redirect wire"},
+        {"Name": "BodyContainsWords", "Value": "wire"},
+        {"Name": "RedirectTo", "Value": "collector@example.org"}
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "note": "Existing inbox rule changed to redirect wire messages"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-20T09:20:00Z",
+      "Id": "00000000-0000-4000-8000-000000008103",
+      "Operation": "New-InboxRule",
+      "UserId": "executive@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "192.0.2.32",
+      "ObjectId": "executive@example.test\\Inbox\\Forward attachments",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {"Name": "Name", "Value": "Forward attachments"},
+        {"Name": "From", "Value": "board@example.test"},
+        {"Name": "ForwardAsAttachmentTo", "Value": "archive@example.net"}
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "note": "New inbox rule forwards board messages as attachments"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-20T09:30:00Z",
+      "Id": "00000000-0000-4000-8000-000000008104",
+      "Operation": "New-InboxRule",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.44",
+      "ObjectId": "analyst@example.test\\Inbox\\Forward all",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {"Name": "Name", "Value": "Forward all"},
+        {"Name": "ForwardTo", "Value": "backup@example.org"}
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "note": "Unconditional inbox rule forwards all mail"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-20T09:40:00Z",
+      "Id": "00000000-0000-4000-8000-000000008105",
+      "Operation": "Set-InboxRule",
+      "UserId": "shared-mailbox@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "198.51.100.55",
+      "ObjectId": "shared-mailbox@example.test\\Inbox\\Forward receipts",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {"Name": "Name", "Value": "Forward receipts"},
+        {"Name": "SubjectContainsWords", "Value": "receipt"},
+        {"Name": "RedirectTo", "Value": "receipts@example.net"}
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "note": "Shared mailbox rule redirects receipts to an external address"
+  }
+]

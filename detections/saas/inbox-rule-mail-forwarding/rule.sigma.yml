@@ -1,0 +1,28 @@
+title: Inbox Rule Created With Mail Forwarding
+id: 00000000-0000-4000-8000-000000000401
+status: test
+description: Detects a successful Microsoft 365 inbox rule that forwards or redirects mail.
+author: detection-engineering
+date: 2026/11/25
+logsource:
+  product: m365
+  service: audit
+detection:
+  selection:
+    Workload: Exchange
+    Operation:
+      - New-InboxRule
+      - Set-InboxRule
+    ResultStatus: Success
+  selection_forward:
+    Parameters|contains:
+      - ForwardTo
+      - RedirectTo
+      - ForwardAsAttachmentTo
+  condition: selection and selection_forward
+falsepositives:
+  - Legitimate user forwarding rules
+  - Approved mailbox workflows
+level: high
+tags:
+  - attack.t1114.003

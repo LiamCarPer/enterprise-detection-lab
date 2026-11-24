@@ -21,6 +21,8 @@ DETECTIONS = {
     "DET-IDN-001",
     "DET-IDN-002",
     "DET-IDN-003",
+    "DET-SAA-001",
+    "DET-SAA-002",
 }
 
 
@@ -68,7 +70,7 @@ def test_load_detection_metrics_from_repository() -> None:
 def test_render_and_check_metrics_report(tmp_path: Path) -> None:
     metrics = load_detection_metrics()
     report = render_metrics_report(metrics)
-    assert "Event-level cases: 90" in report
+    assert "Event-level cases: 120" in report
     assert "Scenario-level cases: 6" in report
     assert "DET-IDN-001" in report
     assert "Synthetic fixture replay" in report

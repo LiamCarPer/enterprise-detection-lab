@@ -1,0 +1,22 @@
+title: GitHub Organization Owner Added
+id: 00000000-0000-4000-8000-000000000402
+status: test
+description: Detects a GitHub organization member joining as an owner or being promoted to owner.
+author: detection-engineering
+date: 2026/11/25
+logsource:
+  product: github
+  service: audit
+detection:
+  selection:
+    action:
+      - org.add_member
+      - org.update_member
+    permission: admin
+  condition: selection
+falsepositives:
+  - Approved owner appointment
+  - Emergency owner access
+level: high
+tags:
+  - attack.t1098

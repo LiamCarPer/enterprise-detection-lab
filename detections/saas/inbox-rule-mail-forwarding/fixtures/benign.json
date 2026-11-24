@@ -1,0 +1,91 @@
+[
+  {
+    "event": {
+      "CreationTime": "2026-11-22T09:00:00Z",
+      "Id": "00000000-0000-4000-8000-000000008301",
+      "Operation": "FileAccessed",
+      "UserId": "analyst@example.test",
+      "Workload": "SharePoint",
+      "RecordType": 6,
+      "ClientIP": "203.0.113.10",
+      "ObjectId": "https://example.sharepoint.com/sites/lab/Shared Documents/report.xlsx",
+      "ResultStatus": "Success"
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "note": "Routine SharePoint file access"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-22T09:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000008302",
+      "Operation": "MailItemsAccessed",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "198.51.100.23",
+      "ObjectId": "analyst@example.test\\Inbox",
+      "ResultStatus": "Success"
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "note": "Mail client synchronization"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-22T09:20:00Z",
+      "Id": "00000000-0000-4000-8000-000000008303",
+      "Operation": "New-InboxRule",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.10",
+      "ObjectId": "analyst@example.test\\Inbox\\Project updates",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {"Name": "Name", "Value": "Project updates"},
+        {"Name": "SubjectContainsWords", "Value": "project"},
+        {"Name": "MoveToFolder", "Value": "Projects"}
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "note": "Legitimate mailbox organization rule"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-22T09:30:00Z",
+      "Id": "00000000-0000-4000-8000-000000008304",
+      "Operation": "Set-InboxRule",
+      "UserId": "finance@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "198.51.100.24",
+      "ObjectId": "finance@example.test\\Inbox\\Flag approvals",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {"Name": "Name", "Value": "Flag approvals"},
+        {"Name": "SubjectContainsWords", "Value": "approval"},
+        {"Name": "Flag", "Value": "FollowUp"}
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "note": "Legitimate rule flags approval messages"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-22T09:40:00Z",
+      "Id": "00000000-0000-4000-8000-000000008305",
+      "Operation": "UserLoggedIn",
+      "UserId": "analyst@example.test",
+      "Workload": "AzureActiveDirectory",
+      "RecordType": 15,
+      "ClientIP": "203.0.113.10",
+      "ResultStatus": "Success"
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "note": "Normal interactive sign-in"
+  }
+]

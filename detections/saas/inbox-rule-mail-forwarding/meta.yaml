@@ -1,0 +1,43 @@
+id: DET-SAA-001
+title: Inbox Rule Created With Mail Forwarding
+version: 1.0.0
+status: tested
+domain: saas
+severity: high
+hypothesis: An inbox rule that forwards or redirects mail can give an attacker durable access to email without signing in to the mailbox.
+description: Detects a successful Microsoft 365 inbox rule creation or update that includes a forwarding or redirect action.
+owner: detection-engineering
+created: "2026-11-25"
+updated: "2026-11-25"
+attack:
+  - T1114.003
+tags:
+  - saas
+  - microsoft-365
+  - email
+  - collection
+telemetry:
+  - source: m365-audit
+    event_class: mailbox
+    required_fields:
+      - CreationTime
+      - Id
+      - Operation
+      - UserId
+      - Workload
+      - RecordType
+      - ResultStatus
+      - Parameters
+queries:
+  opensearch: queries/opensearch.json
+tests:
+  positive: 5
+  negative: 5
+  benign: 5
+false_positives:
+  - A user or delegate creating a legitimate forwarding rule for their own mailbox.
+  - An approved mailbox workflow that forwards mail to an internal shared mailbox.
+  - A migration or journaling process that creates forwarding rules.
+runbook: runbook.md
+metrics: metrics.json
+notes: notes.md

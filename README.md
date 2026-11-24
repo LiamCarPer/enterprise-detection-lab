@@ -4,7 +4,7 @@
 
 A reproducible local lab for developing and testing enterprise detection content across identity, endpoint, cloud, SaaS, network, and Kubernetes telemetry.
 
-**Status:** Alpha. Identity, endpoint, cloud, and SaaS telemetry ingestion, seven core detections, two investigations, CI, and aggregated fixture metrics are complete. The next focus is network and Kubernetes telemetry expansion.
+**Status:** Alpha. Identity, endpoint, cloud, and SaaS telemetry ingestion, nine core detections, two investigations, CI, and aggregated fixture metrics are complete. The next focus is network and Kubernetes telemetry expansion.
 
 [Quick start](#quick-start) · [Architecture](#architecture) · [Project status](#project-status) · [Documentation](#documentation)
 
@@ -167,7 +167,15 @@ Each contract records event time and ingest time fields, deduplication keys, req
 
 | ID | Domain | Detection | Status |
 |---|---|---|---|
+| [`DET-END-001`](detections/endpoint/encoded-powershell-non-powershell-parent/) | Endpoint | Encoded PowerShell from a non-PowerShell parent | Tested |
+| [`DET-END-002`](detections/endpoint/office-spawns-scripting-host/) | Endpoint | Office application spawns a scripting host | Tested |
 | [`DET-IDN-001`](detections/identity/risky-signin-single-factor/) | Identity | Successful risky sign-in with single-factor authentication | Tested |
+| [`DET-IDN-002`](detections/identity/service-principal-owner-added/) | Identity | Owner added to a service principal | Tested |
+| [`DET-IDN-003`](detections/identity/risky-signin-then-service-principal-owner/) | Identity | Risky sign-in followed by service principal ownership change | Tested |
+| [`DET-CLD-001`](detections/cloud/iam-access-key-created/) | Cloud | IAM access key created | Tested |
+| [`DET-CLD-002`](detections/cloud/cloudtrail-logging-stopped/) | Cloud | CloudTrail logging stopped | Tested |
+| [`DET-SAA-001`](detections/saas/inbox-rule-mail-forwarding/) | SaaS | Inbox rule created with mail forwarding | Tested |
+| [`DET-SAA-002`](detections/saas/github-organization-owner-added/) | SaaS | GitHub organization owner added | Tested |
 
 A detection is **Tested** when its positive, negative, and benign fixtures pass the OpenSearch replay runner. Production status additionally requires CI and measured operating data.
 
@@ -205,14 +213,14 @@ Investigations are **Tested** when the timeline, evidence, queries, response, an
 | Endpoint ingestion | Complete | Sysmon and Windows Security, per-event classification |
 | Cloud ingestion | Complete | AWS CloudTrail, normalized and replay-safe |
 | SaaS ingestion | Complete | Microsoft 365 and GitHub audit, normalized and replay-safe |
-| Detection packages | In progress | Seven tested detections; production validation pending |
+| Detection packages | In progress | Nine tested detections; production validation pending |
 | Detection testing | Complete | Normalized fixture replay, temporary-index isolation, pass/fail gate, and metrics generation |
-| Tested detections | 7 of 7 | All core detections pass fixture replay |
+| Tested detections | 9 of 9 | All core detections pass fixture replay |
 | Investigations | Complete | Two tested investigation packages with hashed evidence |
 | Tested investigations | 2 of 2 | `INV-001` and `INV-002` pass evidence and detection-link checks |
 | CI | Complete | GitHub Actions quality and OpenSearch-backed test jobs |
-| Metrics reporting | Complete | Aggregated fixture metrics in `reports/detection-metrics.md` |
-| Benign baseline | Complete | Five corpora, including a scenario-level correlation baseline |
+| Metrics reporting | Complete | Aggregated fixture metrics for nine detections in `reports/detection-metrics.md` |
+| Benign baseline | Complete | Seven corpora, including a scenario-level correlation baseline |
 | Exception catalog | Complete | Reviewed exceptions with owner, scope, expiry, and compensating controls |
 | Correlation detection | Complete | `DET-IDN-003` evaluates ordered identity steps with a 30-minute window |
 | Network and Kubernetes | Planned | Contracts and samples before detections |

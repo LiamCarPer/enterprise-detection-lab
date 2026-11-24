@@ -1,0 +1,82 @@
+[
+  {
+    "event": {
+      "action": "org.add_member",
+      "actor": "owner-admin",
+      "actor_ip": "203.0.113.10",
+      "created_at": "2026-11-21T10:00:00Z",
+      "id": "00000000-0000-4000-8000-000000006201",
+      "org": "example-org",
+      "user": "analyst",
+      "permission": "member",
+      "user_agent": "GitHub CLI"
+    },
+    "source": "github-audit",
+    "synthetic": true,
+    "note": "A new user joined as a regular member"
+  },
+  {
+    "event": {
+      "action": "org.update_member",
+      "actor": "owner-admin",
+      "actor_ip": "198.51.100.21",
+      "created_at": "2026-11-21T10:10:00Z",
+      "id": "00000000-0000-4000-8000-000000006202",
+      "org": "example-org",
+      "user": "former-owner",
+      "old_permission": "admin",
+      "permission": "member",
+      "user_agent": "GitHub CLI"
+    },
+    "source": "github-audit",
+    "synthetic": true,
+    "note": "An owner was demoted to member"
+  },
+  {
+    "event": {
+      "action": "org.remove_member",
+      "actor": "owner-admin",
+      "actor_ip": "203.0.113.10",
+      "created_at": "2026-11-21T10:20:00Z",
+      "id": "00000000-0000-4000-8000-000000006203",
+      "org": "example-org",
+      "user": "contractor",
+      "user_agent": "GitHub CLI"
+    },
+    "source": "github-audit",
+    "synthetic": true,
+    "note": "A member was removed"
+  },
+  {
+    "event": {
+      "action": "org.invite_member",
+      "actor": "owner-admin",
+      "actor_ip": "198.51.100.21",
+      "created_at": "2026-11-21T10:30:00Z",
+      "id": "00000000-0000-4000-8000-000000006204",
+      "org": "example-org",
+      "user": "invited-user",
+      "permission": "admin",
+      "user_agent": "GitHub CLI"
+    },
+    "source": "github-audit",
+    "synthetic": true,
+    "note": "An invitation does not grant ownership until it is accepted"
+  },
+  {
+    "event": {
+      "action": "repo.push",
+      "actor": "developer",
+      "actor_ip": "203.0.113.44",
+      "created_at": "2026-11-21T10:40:00Z",
+      "id": "00000000-0000-4000-8000-000000006205",
+      "org": "example-org",
+      "repo": "example-org/lab",
+      "user": "developer",
+      "user_agent": "git/2.45"
+    },
+    "source": "github-audit",
+    "synthetic": true,
+    "note": "Repository push"
+  }
+]

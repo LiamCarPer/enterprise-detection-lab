@@ -1,0 +1,12 @@
+{
+  "query": {
+    "bool": {
+      "filter": [
+        { "term": { "source": "github-audit" } },
+        { "terms": { "action": ["org.add_member", "org.update_member"] } },
+        { "term": { "role": "admin" } },
+        { "term": { "result": "success" } }
+      ]
+    }
+  }
+}
