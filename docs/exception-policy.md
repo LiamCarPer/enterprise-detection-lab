@@ -48,7 +48,7 @@ Expired exceptions are reported as validation warnings. They do not silently dis
 | `EXC-IDN-002-001` | `DET-IDN-002` | Review only | Application onboarding workflows |
 | `EXC-CLD-001-001` | `DET-CLD-001` | Review only | IAM onboarding automation |
 | `EXC-CLD-002-001` | `DET-CLD-002` | Review only | CloudTrail maintenance |
-| `EXC-SAA-001-001` | `DET-SAA-001` | Query exclusion | Internal `example.test` forwarding domain |
+| `EXC-SAA-001-001` | `DET-SAA-001` | Query exclusion | Configured accepted mail domains |
 
 ## Validation
 

@@ -9,9 +9,10 @@ An inbox rule that forwards or redirects mail lets an attacker receive messages 
 - `source = m365-audit` restricts the query to the normalized Microsoft 365 audit source.
 - `action` covers `New-InboxRule` and `Set-InboxRule`; both can add a forwarding action.
 - `result = success` excludes failed attempts.
-- `forward_to` is populated from `ForwardTo`, `RedirectTo`, or `ForwardAsAttachmentTo` in the audit record parameters.
-- `forward_domain` is the lowercased domain of the first forwarding recipient.
-- The tuned query excludes the tenant accepted domain `example.test` so the alert focuses on external forwarding.
+- `forward_to` is the first forwarding recipient from `Parameters` or `OperationProperties`.
+- `forward_domains` contains every unique recipient domain in the rule.
+- `forward_external` is true when any recipient domain is outside `EDL_ACCEPTED_MAIL_DOMAINS`.
+- The tuned query uses `forward_external = true`, so accepted domains are configured once and are not hardcoded in the detection.
 
 The native query uses canonical fields. The Sigma rule uses source-level Unified Audit Log fields and is not executed by the runner.
 
@@ -21,6 +22,7 @@ The native query uses canonical fields. The Sigma rule uses source-level Unified
 |---|---|---|
 | 1.0.0 | Initial detection | Establish SaaS email-collection coverage |
 | 1.1.0 | Exclude the tenant accepted domain | Reduce internal forwarding noise after baseline tuning |
+| 1.2.0 | Normalize all recipients and use configured accepted domains | Support multi-recipient and `UpdateInboxRules` events without hardcoding a domain |
 
 ## Test corpus
 
@@ -36,13 +38,12 @@ The committed metrics are from local fixture replay, not production traffic.
 
 ## Known gaps
 
-- The accepted-domain exclusion is hardcoded to the lab domain and must be configured per tenant.
-- A rule can forward to more than one recipient; only the first forwarding parameter and domain are indexed.
+- Accepted domains come from `EDL_ACCEPTED_MAIL_DOMAINS` and must match the tenant's real domain inventory.
 - An attacker can use an internal compromised account as the forwarding destination.
-- `UpdateInboxRules` stores forwarding actions in a different parameter shape and is not normalized yet.
+- `OperationProperties` field names can vary across Microsoft 365 workloads and client versions.
 - Mailbox-level forwarding through `Set-Mailbox` is a separate behavior and is not covered.
 - The event-level query does not correlate rule creation with the actor's sign-in risk or source IP reputation; `DET-SAA-003` covers that sequence.
 
 ## Next tuning step
 
-Replace the hardcoded lab domain with the organization's accepted-domain configuration. Normalize every forwarding recipient, add `UpdateInboxRules` support, and correlate new rules with risky sign-ins and mailbox rule changes from the same actor.
+Load accepted domains from a versioned tenant configuration rather than an environment variable, and validate the list during ingestion. Correlate new rules with risky sign-ins, delegated mailbox changes, and subsequent mail access.

@@ -46,6 +46,8 @@
         "rule_name": { "type": "keyword" },
         "forward_to": { "type": "keyword" },
         "forward_domain": { "type": "keyword" },
+        "forward_domains": { "type": "keyword" },
+        "forward_external": { "type": "boolean" },
         "organization": { "type": "keyword" },
         "repository": { "type": "keyword" },
         "target_user": { "type": "keyword" },

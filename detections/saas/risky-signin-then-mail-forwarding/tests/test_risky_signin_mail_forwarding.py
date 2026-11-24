@@ -15,6 +15,7 @@ def test_query_returns_both_correlation_steps() -> None:
     assert "forward_to" in query
     assert "New-InboxRule" in query
     assert "Set-InboxRule" in query
+    assert "UpdateInboxRules" in query
 
 
 def test_correlation_metadata_defines_window_and_steps() -> None:

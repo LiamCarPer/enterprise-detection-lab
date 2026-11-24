@@ -2,7 +2,7 @@
 
 ## Alert meaning
 
-A Microsoft 365 mailbox rule was created or updated with `ForwardTo`, `RedirectTo`, or `ForwardAsAttachmentTo` to a domain outside the tenant accepted domain. The rule can send future mail to another address without the mailbox owner signing in.
+A Microsoft 365 mailbox rule was created or updated with forwarding recipients outside the configured accepted domains. The rule can send future mail to another address without the mailbox owner signing in.
 
 ## Triage
 
@@ -49,7 +49,7 @@ Escalate when:
 - A migration or journaling process creates external forwarding rules.
 - An approved mail-flow change forwards messages to an external partner or service.
 
-Internal forwarding to the tenant accepted domain is excluded by `EXC-SAA-001-001`; review it through mail-flow and data-loss-prevention controls instead.
+Internal forwarding to a configured accepted domain is excluded by `EXC-SAA-001-001`; review it through mail-flow and data-loss-prevention controls instead. Accepted domains are set with `EDL_ACCEPTED_MAIL_DOMAINS`.
 
 ## Closure
 

@@ -120,7 +120,7 @@ CloudTrail management events use the declared `management_event` class. The raw 
 
 SaaS additions:
 
-- Microsoft 365: `workload`, `record_type`, `object_id`, `rule_name`, `forward_to`, and `forward_domain`
+- Microsoft 365: `workload`, `record_type`, `object_id`, `rule_name`, `forward_to`, `forward_domain`, `forward_domains`, and `forward_external`
 - GitHub: `organization`, `repository`, `target_user`, `role` (from `permission`), `user_agent`, and `service=github`
 
 Microsoft 365 event classes follow the workload: Exchange maps to `mailbox`, SharePoint/OneDrive to `sharepoint`, Teams to `teams`, and other workloads to `audit`. GitHub maps `git.*` actions to `git`, login actions to `authentication`, and other audit actions to `audit_log`.
@@ -138,6 +138,8 @@ Kubernetes additions:
 - Falco: `rule_name`, `priority`, `host`, `user`, `namespace`, `pod`, `container`, `src_ip`, and `process`
 
 Kubernetes audit normalizes the API verb, object reference, response status, and privileged-container flag. Falco normalizes runtime alert fields and container context from `output_fields`.
+
+Microsoft 365 forwarding recipients are read from both `Parameters` and `OperationProperties`, including `New-InboxRule`, `Set-InboxRule`, and `UpdateInboxRules`. Domains listed in `EDL_ACCEPTED_MAIL_DOMAINS` are treated as internal; `forward_external` is true when any recipient domain is outside that list.
 
 The canonical fields are mapped in [`lab/bootstrap/opensearch/events-template.json`](../lab/bootstrap/opensearch/events-template.json). Unknown fields remain dynamically mapped; update the template when a field becomes part of the query contract.
 

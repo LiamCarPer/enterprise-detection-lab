@@ -1,13 +1,13 @@
 {
   "detection_id": "DET-SAA-001",
-  "measured_at": "2026-11-24T05:13:09.367825Z",
+  "measured_at": "2026-11-24T08:32:56.077997Z",
   "sample_size": 15,
   "evaluation_unit": "event",
   "precision": 1.0,
   "recall": 1.0,
   "false_positive_rate": 0.0,
-  "latency_ms_p50": 3.628,
-  "latency_ms_p95": 4.59,
+  "latency_ms_p50": 10.411,
+  "latency_ms_p95": 11.792,
   "method": "Synthetic fixture replay against OpenSearch; native query only.",
   "limitations": [
     "Curated synthetic fixtures; sample size 15.",

@@ -9,12 +9,13 @@ FIXTURE_KINDS = ("positive", "negative", "benign")
 
 def test_query_targets_mailbox_forwarding_rules() -> None:
     query = json.dumps(json.loads((PACKAGE / "queries" / "opensearch.json").read_text()))
-    for field in ("source", "action", "result", "forward_to", "forward_domain"):
+    for field in ("source", "action", "result", "forward_to", "forward_external"):
         assert field in query
-    assert "must_not" in query
-    assert "example.test" in query
+    assert "must_not" not in query
+    assert "example.test" not in query
     assert "New-InboxRule" in query
     assert "Set-InboxRule" in query
+    assert "UpdateInboxRules" in query
     assert "m365-audit" in query
 
 
@@ -35,6 +36,15 @@ def test_fixtures_are_synthetic_and_complete() -> None:
 def test_metadata_declares_the_m365_source() -> None:
     meta = (PACKAGE / "meta.yaml").read_text()
     assert "id: DET-SAA-001" in meta
-    assert "version: 1.1.0" in meta
+    assert "version: 1.2.0" in meta
     assert "source: m365-audit" in meta
     assert "T1114.003" in meta
+
+
+def test_one_positive_fixture_uses_update_inbox_rules() -> None:
+    fixtures = json.loads((PACKAGE / "fixtures" / "positive.json").read_text())
+    updates = [item for item in fixtures if item["event"].get("Operation") == "UpdateInboxRules"]
+    assert len(updates) == 1
+    properties = updates[0]["event"].get("OperationProperties")
+    assert isinstance(properties, list)
+    assert any(item.get("Name") == "ForwardToRecipientsAction" for item in properties)

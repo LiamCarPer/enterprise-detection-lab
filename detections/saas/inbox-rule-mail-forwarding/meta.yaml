@@ -1,11 +1,11 @@
 id: DET-SAA-001
 title: External Inbox Rule Mail Forwarding
-version: 1.1.0
+version: 1.2.0
 status: tested
 domain: saas
 severity: high
 hypothesis: An inbox rule that forwards or redirects mail can give an attacker durable access to email without signing in to the mailbox.
-description: Detects a successful Microsoft 365 inbox rule creation or update that forwards mail to an external domain.
+description: Detects a successful Microsoft 365 inbox rule creation or update that forwards mail to a domain outside the configured accepted domains.
 owner: detection-engineering
 created: "2026-11-25"
 updated: "2026-11-25"
@@ -28,6 +28,7 @@ telemetry:
       - RecordType
       - ResultStatus
       - Parameters
+      - OperationProperties
 queries:
   opensearch: queries/opensearch.json
 tests:

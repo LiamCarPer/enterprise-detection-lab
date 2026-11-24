@@ -3,12 +3,10 @@
     "bool": {
       "filter": [
         { "term": { "source": "m365-audit" } },
-        { "terms": { "action": ["New-InboxRule", "Set-InboxRule"] } },
+        { "terms": { "action": ["New-InboxRule", "Set-InboxRule", "UpdateInboxRules"] } },
         { "term": { "result": "success" } },
-        { "exists": { "field": "forward_to" } }
-      ],
-      "must_not": [
-        { "term": { "forward_domain": "example.test" } }
+        { "exists": { "field": "forward_to" } },
+        { "term": { "forward_external": true } }
       ]
     }
   }

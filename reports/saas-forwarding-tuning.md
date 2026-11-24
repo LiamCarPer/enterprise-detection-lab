@@ -2,12 +2,12 @@
 
 ## Summary
 
-`DET-SAA-001` was tuned after evaluating it against a 20-event synthetic Microsoft 365 forwarding baseline. The initial query matched eight internal forwarding rules. The tuned query excludes the tenant accepted domain and matches none of the internal forwarding events while preserving all positive fixtures.
+`DET-SAA-001` was tuned after evaluating it against a 20-event synthetic Microsoft 365 forwarding baseline. The initial query matched eight internal forwarding rules. The tuned query uses the configured accepted-domain list and matches none of the internal forwarding events while preserving all positive fixtures.
 
 | Version | Baseline events | Matches | False-positive rate | Positive fixtures |
 |---|---:|---:|---:|---:|
 | 1.0.0 — initial | 20 | 8 | 0.40 | 5 / 5 |
-| 1.1.0 — tuned | 20 | 0 | 0.00 | 5 / 5 |
+| 1.2.0 — tuned | 20 | 0 | 0.00 | 5 / 5 |
 
 ## Baseline
 
@@ -20,21 +20,27 @@ The baseline is separate from the detection fixture corpus. Its purpose is to ex
 
 ## Tuning change
 
-The normalizer now extracts `forward_domain` from the first forwarding recipient. The tuned query excludes the tenant accepted domain:
+The normalizer now extracts every forwarding recipient, computes `forward_domains`, and sets `forward_external` by comparing those domains with `EDL_ACCEPTED_MAIL_DOMAINS`. The tuned query requires an external recipient:
 
 ```json
 {
   "term": {
-    "forward_domain": "example.test"
+    "forward_external": true
   }
 }
+```
+
+The accepted-domain list is configured in `.env`:
+
+```bash
+EDL_ACCEPTED_MAIL_DOMAINS=example.test
 ```
 
 The before query is preserved in [`queries/opensearch-before.json`](../detections/saas/inbox-rule-mail-forwarding/queries/opensearch-before.json) for reproducibility. The final query remains in `queries/opensearch.json`.
 
 ## Trade-off
 
-The exclusion is based on the recipient domain and is specific to the lab tenant. It reduces noise from approved internal forwarding, but an attacker could use a compromised internal account as the forwarding destination. The exclusion is recorded as [`EXC-SAA-001-001`](../detections/exceptions.yaml) with a one-year expiry, owner, change ticket, and compensating controls. The next step is to replace the hardcoded lab domain with the tenant's accepted-domain configuration and review internal forwarding through mail-flow and data-loss-prevention controls.
+The exclusion is based on the configured recipient domains. It reduces noise from approved internal forwarding, but an attacker could use a compromised internal account as the forwarding destination. The exclusion is recorded as [`EXC-SAA-001-001`](../detections/exceptions.yaml) with a one-year expiry, owner, change ticket, and compensating controls. The next step is to load accepted domains from a versioned tenant configuration and review internal forwarding through mail-flow and data-loss-prevention controls.
 
 ## Reproduce
 
@@ -60,6 +66,6 @@ The lab test [`tests/lab/test_benign_baseline.py`](../tests/lab/test_benign_base
 
 - The baseline is synthetic and covers one tenant domain; it is not a production benign corpus.
 - The measurement covers one SaaS detection, not the full detection set.
-- Domain matching does not inspect every recipient when a rule forwards to multiple addresses.
+- Domain matching covers every recipient parsed from `Parameters` and `OperationProperties`; source shapes can vary by client and workload.
 - The exclusion would hide an internal-recipient attack that uses the accepted domain.
 - The baseline does not model delegated mailbox administration or mail-flow rules.

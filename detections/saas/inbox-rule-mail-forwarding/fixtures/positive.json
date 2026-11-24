@@ -11,9 +11,18 @@
       "ObjectId": "analyst@example.test\\Inbox\\Forward invoices",
       "ResultStatus": "Success",
       "Parameters": [
-        {"Name": "Name", "Value": "Forward invoices"},
-        {"Name": "SubjectContainsWords", "Value": "invoice"},
-        {"Name": "ForwardTo", "Value": "external@example.net"}
+        {
+          "Name": "Name",
+          "Value": "Forward invoices"
+        },
+        {
+          "Name": "SubjectContainsWords",
+          "Value": "invoice"
+        },
+        {
+          "Name": "ForwardTo",
+          "Value": "external@example.net"
+        }
       ]
     },
     "source": "m365-audit",
@@ -32,9 +41,18 @@
       "ObjectId": "finance@example.test\\Inbox\\Redirect wire",
       "ResultStatus": "Success",
       "Parameters": [
-        {"Name": "Name", "Value": "Redirect wire"},
-        {"Name": "BodyContainsWords", "Value": "wire"},
-        {"Name": "RedirectTo", "Value": "collector@example.org"}
+        {
+          "Name": "Name",
+          "Value": "Redirect wire"
+        },
+        {
+          "Name": "BodyContainsWords",
+          "Value": "wire"
+        },
+        {
+          "Name": "RedirectTo",
+          "Value": "collector@example.org"
+        }
       ]
     },
     "source": "m365-audit",
@@ -53,9 +71,18 @@
       "ObjectId": "executive@example.test\\Inbox\\Forward attachments",
       "ResultStatus": "Success",
       "Parameters": [
-        {"Name": "Name", "Value": "Forward attachments"},
-        {"Name": "From", "Value": "board@example.test"},
-        {"Name": "ForwardAsAttachmentTo", "Value": "archive@example.net"}
+        {
+          "Name": "Name",
+          "Value": "Forward attachments"
+        },
+        {
+          "Name": "From",
+          "Value": "board@example.test"
+        },
+        {
+          "Name": "ForwardAsAttachmentTo",
+          "Value": "archive@example.net"
+        }
       ]
     },
     "source": "m365-audit",
@@ -74,8 +101,14 @@
       "ObjectId": "analyst@example.test\\Inbox\\Forward all",
       "ResultStatus": "Success",
       "Parameters": [
-        {"Name": "Name", "Value": "Forward all"},
-        {"Name": "ForwardTo", "Value": "backup@example.org"}
+        {
+          "Name": "Name",
+          "Value": "Forward all"
+        },
+        {
+          "Name": "ForwardTo",
+          "Value": "backup@example.org"
+        }
       ]
     },
     "source": "m365-audit",
@@ -86,7 +119,7 @@
     "event": {
       "CreationTime": "2026-11-20T09:40:00Z",
       "Id": "00000000-0000-4000-8000-000000008105",
-      "Operation": "Set-InboxRule",
+      "Operation": "UpdateInboxRules",
       "UserId": "shared-mailbox@example.test",
       "Workload": "Exchange",
       "RecordType": 2,
@@ -94,13 +127,24 @@
       "ObjectId": "shared-mailbox@example.test\\Inbox\\Forward receipts",
       "ResultStatus": "Success",
       "Parameters": [
-        {"Name": "Name", "Value": "Forward receipts"},
-        {"Name": "SubjectContainsWords", "Value": "receipt"},
-        {"Name": "RedirectTo", "Value": "receipts@example.net"}
+        {
+          "Name": "Name",
+          "Value": "Forward receipts"
+        },
+        {
+          "Name": "SubjectContainsWords",
+          "Value": "receipt"
+        }
+      ],
+      "OperationProperties": [
+        {
+          "Name": "ForwardToRecipientsAction",
+          "Value": "receipts@example.net; archive@example.org"
+        }
       ]
     },
     "source": "m365-audit",
     "synthetic": true,
-    "note": "Shared mailbox rule redirects receipts to an external address"
+    "note": "Desktop client update adds forwarding recipients"
   }
 ]

@@ -39,6 +39,7 @@ telemetry:
       - RecordType
       - ResultStatus
       - Parameters
+      - OperationProperties
 queries:
   opensearch: queries/opensearch.json
 correlation:

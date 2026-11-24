@@ -1758,8 +1758,10 @@ def test_normalize_m365_audit_extracts_first_recipient_domain() -> None:
             ],
         }
     )
-    assert document["forward_to"] == "First@Example.Test; second@example.net"
+    assert document["forward_to"] == "First@Example.Test"
     assert document["forward_domain"] == "example.test"
+    assert document["forward_domains"] == ["example.net", "example.test"]
+    assert document["forward_external"] is True
 
 
 def test_normalize_m365_audit_omits_domain_for_non_email_recipient() -> None:
@@ -1774,3 +1776,104 @@ def test_normalize_m365_audit_omits_domain_for_non_email_recipient() -> None:
     )
     assert document["forward_to"] == "External Team"
     assert "forward_domain" not in document
+
+
+def test_normalize_m365_audit_tracks_all_forwarding_domains() -> None:
+    document = normalize_m365_audit(
+        {
+            **M365_RAW,
+            "Parameters": [
+                {"Name": "Name", "Value": "Forward multiple"},
+                {
+                    "Name": "ForwardTo",
+                    "Value": "first@example.net; second@example.test",
+                },
+                {"Name": "RedirectTo", "Value": ["third@example.org"]},
+            ],
+        }
+    )
+    assert document["forward_to"] == "first@example.net"
+    assert document["forward_domain"] == "example.net"
+    assert document["forward_domains"] == ["example.net", "example.org", "example.test"]
+    assert document["forward_external"] is True
+
+
+def test_normalize_m365_audit_marks_internal_only_forwarding() -> None:
+    document = normalize_m365_audit(
+        {
+            **M365_RAW,
+            "Parameters": [
+                {"Name": "Name", "Value": "Forward internal"},
+                {"Name": "ForwardTo", "Value": "team@example.test"},
+            ],
+        }
+    )
+    assert document["forward_domains"] == ["example.test"]
+    assert document["forward_external"] is False
+
+
+def test_normalize_m365_audit_reads_update_inbox_rules_properties() -> None:
+    document = normalize_m365_audit(
+        {
+            **M365_RAW,
+            "Operation": "UpdateInboxRules",
+            "Parameters": [{"Name": "Name", "Value": "Forward receipts"}],
+            "OperationProperties": [
+                {
+                    "Name": "ForwardToRecipientsAction",
+                    "Value": "receipts@example.net; archive@example.test",
+                }
+            ],
+        }
+    )
+    assert document["rule_name"] == "Forward receipts"
+    assert document["forward_to"] == "receipts@example.net"
+    assert document["forward_domains"] == ["example.net", "example.test"]
+    assert document["forward_external"] is True
+
+
+def test_normalize_m365_audit_uses_configured_accepted_domains(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("EDL_ACCEPTED_MAIL_DOMAINS", "example.net,example.org")
+    document = normalize_m365_audit(
+        {
+            **M365_RAW,
+            "Parameters": [
+                {"Name": "Name", "Value": "Forward partner"},
+                {"Name": "ForwardTo", "Value": "partner@example.net"},
+            ],
+        }
+    )
+    assert document["forward_external"] is False
+
+
+def test_normalize_m365_audit_reads_recipient_mapping() -> None:
+    document = normalize_m365_audit(
+        {
+            **M365_RAW,
+            "Parameters": [{"Name": "Name", "Value": "Mapped recipient"}],
+            "OperationProperties": [
+                {
+                    "Name": "ForwardToRecipientsAction",
+                    "Value": {"Address": "mapped@example.net"},
+                }
+            ],
+        }
+    )
+    assert document["forward_to"] == "mapped@example.net"
+    assert document["forward_external"] is True
+
+
+def test_normalize_m365_audit_ignores_unusable_recipient_values() -> None:
+    document = normalize_m365_audit(
+        {
+            **M365_RAW,
+            "Parameters": [
+                {"Name": "Name", "Value": "No recipient"},
+                {"Name": "ForwardTo", "Value": 123},
+            ],
+        }
+    )
+    assert "forward_to" not in document
+    assert "forward_external" not in document

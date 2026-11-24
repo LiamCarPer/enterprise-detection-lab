@@ -141,31 +141,78 @@ def _normalize_result(value: Any) -> str | None:
     return normalized or None
 
 
-def _email_domain(value: Any) -> str | None:
-    """Extract the lowercased domain from the first recipient in a value."""
-    if not isinstance(value, str):
+def _recipient_list(value: Any) -> list[str]:
+    """Expand a recipient value into individual address strings."""
+    if isinstance(value, str):
+        return [part.strip() for part in value.replace(";", ",").split(",") if part.strip()]
+    if isinstance(value, list):
+        recipients: list[str] = []
+        for item in value:
+            recipients.extend(_recipient_list(item))
+        return recipients
+    if isinstance(value, Mapping):
+        for key in ("Address", "EmailAddress", "Value"):
+            if key in value:
+                return _recipient_list(value[key])
+    return []
+
+
+def _recipient_domain(recipient: str) -> str | None:
+    """Return the lowercased domain from one forwarding recipient."""
+    candidate = recipient.strip()
+    if "@" not in candidate:
         return None
-    first = value.split(";")[0].split(",")[0].strip()
-    if "@" not in first:
-        return None
-    domain = first.rsplit("@", 1)[1].strip().rstrip(">").lower()
+    domain = candidate.rsplit("@", 1)[1].strip().rstrip(">").lower()
     return domain or None
 
 
+def _m365_parameter_items(raw: Mapping[str, Any]) -> list[tuple[str, Any]]:
+    """Return name/value pairs from Parameters and OperationProperties."""
+    items: list[tuple[str, Any]] = []
+    for key in ("Parameters", "OperationProperties"):
+        values = raw.get(key)
+        if isinstance(values, Mapping):
+            for name, value in values.items():
+                items.append((str(name), value))
+        elif isinstance(values, list):
+            for item in values:
+                if not isinstance(item, Mapping):
+                    continue
+                name = item.get("Name")
+                if isinstance(name, str):
+                    items.append((name, item.get("Value")))
+    return items
+
+
+FORWARD_PARAMETER_NAMES = frozenset(
+    {
+        "ForwardTo",
+        "RedirectTo",
+        "ForwardAsAttachmentTo",
+        "ForwardToRecipients",
+        "RedirectToRecipients",
+        "ForwardAsAttachmentToRecipients",
+        "ForwardToRecipientsAction",
+        "RedirectToRecipientsAction",
+        "ForwardAsAttachmentToRecipientsAction",
+    }
+)
+
+
+def _m365_forward_recipients(raw: Mapping[str, Any]) -> list[str]:
+    """Collect every forwarding recipient from inbox-rule audit parameters."""
+    recipients: list[str] = []
+    for name, value in _m365_parameter_items(raw):
+        if name not in FORWARD_PARAMETER_NAMES:
+            continue
+        for recipient in _recipient_list(value):
+            if recipient not in recipients:
+                recipients.append(recipient)
+    return recipients
+
+
 def _m365_parameters(raw: Mapping[str, Any]) -> dict[str, Any]:
-    parameters = raw.get("Parameters")
-    if isinstance(parameters, Mapping):
-        return dict(parameters)
-    if isinstance(parameters, list):
-        result: dict[str, Any] = {}
-        for item in parameters:
-            if not isinstance(item, Mapping):
-                continue
-            name = item.get("Name")
-            if isinstance(name, str):
-                result[name] = item.get("Value")
-        return result
-    return {}
+    return dict(_m365_parameter_items(raw))
 
 
 def _basename(value: Any) -> str | None:
@@ -494,11 +541,12 @@ def normalize_m365_audit(raw: Mapping[str, Any]) -> dict[str, Any]:
     """Map Microsoft 365 unified audit fields to the canonical SaaS shape."""
     parameters = _m365_parameters(raw)
     record_type = raw.get("RecordType")
-    forward_to = _meaningful(
-        parameters.get("ForwardTo")
-        or parameters.get("RedirectTo")
-        or parameters.get("ForwardAsAttachmentTo")
+    recipients = _m365_forward_recipients(raw)
+    domains = sorted(
+        {domain for recipient in recipients if (domain := _recipient_domain(recipient)) is not None}
     )
+    accepted = config.accepted_mail_domains()
+    forward_external = any(domain not in accepted for domain in domains) if domains else None
     document: dict[str, Any] = {
         "event_id": raw.get("Id"),
         "user": raw.get("UserId"),
@@ -509,8 +557,10 @@ def normalize_m365_audit(raw: Mapping[str, Any]) -> dict[str, Any]:
         "record_type": str(record_type) if record_type is not None else None,
         "object_id": raw.get("ObjectId"),
         "rule_name": _meaningful(parameters.get("Name")),
-        "forward_to": forward_to,
-        "forward_domain": _email_domain(forward_to),
+        "forward_to": recipients[0] if recipients else None,
+        "forward_domain": _recipient_domain(recipients[0]) if recipients else None,
+        "forward_domains": domains,
+        "forward_external": forward_external,
     }
     return _compact(document)
 

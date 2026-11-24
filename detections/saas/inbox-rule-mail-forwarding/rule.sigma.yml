@@ -13,13 +13,19 @@ detection:
     Operation:
       - New-InboxRule
       - Set-InboxRule
+      - UpdateInboxRules
     ResultStatus: Success
-  selection_forward:
+  selection_forward_parameters:
     Parameters|contains:
       - ForwardTo
       - RedirectTo
       - ForwardAsAttachmentTo
-  condition: selection and selection_forward
+  selection_forward_properties:
+    OperationProperties|contains:
+      - ForwardToRecipientsAction
+      - RedirectToRecipientsAction
+      - ForwardAsAttachmentToRecipientsAction
+  condition: selection and 1 of selection_forward_*
 falsepositives:
   - Legitimate user forwarding rules
   - Approved mailbox workflows

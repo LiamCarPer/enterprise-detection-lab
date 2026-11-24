@@ -13,6 +13,17 @@ OPENSEARCH_URL = os.getenv("EDL_OPENSEARCH_URL", "http://127.0.0.1:9200").rstrip
 DASHBOARDS_URL = os.getenv("EDL_DASHBOARDS_URL", "http://127.0.0.1:5601").rstrip("/")
 KUSTO_URL = os.getenv("EDL_KUSTO_URL", "http://127.0.0.1:18080").rstrip("/")
 KUSTO_DB = os.getenv("EDL_KUSTO_DB", "NetDefaultDB")
+ACCEPTED_MAIL_DOMAINS = os.getenv("EDL_ACCEPTED_MAIL_DOMAINS", "example.test")
+
+
+def accepted_mail_domains() -> set[str]:
+    """Return the lowercased domains treated as internal for mail forwarding."""
+    return {
+        domain.strip().lower()
+        for domain in os.getenv("EDL_ACCEPTED_MAIL_DOMAINS", ACCEPTED_MAIL_DOMAINS).split(",")
+        if domain.strip()
+    }
+
 
 _index_prefix = os.getenv("EDL_EVENTS_INDEX_PREFIX", "edl-events").strip("-")
 EVENTS_INDEX_PREFIX = _index_prefix or "edl-events"
