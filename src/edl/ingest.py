@@ -141,6 +141,17 @@ def _normalize_result(value: Any) -> str | None:
     return normalized or None
 
 
+def _email_domain(value: Any) -> str | None:
+    """Extract the lowercased domain from the first recipient in a value."""
+    if not isinstance(value, str):
+        return None
+    first = value.split(";")[0].split(",")[0].strip()
+    if "@" not in first:
+        return None
+    domain = first.rsplit("@", 1)[1].strip().rstrip(">").lower()
+    return domain or None
+
+
 def _m365_parameters(raw: Mapping[str, Any]) -> dict[str, Any]:
     parameters = raw.get("Parameters")
     if isinstance(parameters, Mapping):
@@ -483,6 +494,11 @@ def normalize_m365_audit(raw: Mapping[str, Any]) -> dict[str, Any]:
     """Map Microsoft 365 unified audit fields to the canonical SaaS shape."""
     parameters = _m365_parameters(raw)
     record_type = raw.get("RecordType")
+    forward_to = _meaningful(
+        parameters.get("ForwardTo")
+        or parameters.get("RedirectTo")
+        or parameters.get("ForwardAsAttachmentTo")
+    )
     document: dict[str, Any] = {
         "event_id": raw.get("Id"),
         "user": raw.get("UserId"),
@@ -493,11 +509,8 @@ def normalize_m365_audit(raw: Mapping[str, Any]) -> dict[str, Any]:
         "record_type": str(record_type) if record_type is not None else None,
         "object_id": raw.get("ObjectId"),
         "rule_name": _meaningful(parameters.get("Name")),
-        "forward_to": _meaningful(
-            parameters.get("ForwardTo")
-            or parameters.get("RedirectTo")
-            or parameters.get("ForwardAsAttachmentTo")
-        ),
+        "forward_to": forward_to,
+        "forward_domain": _email_domain(forward_to),
     }
     return _compact(document)
 

@@ -176,7 +176,7 @@ Each contract records event time and ingest time fields, deduplication keys, req
 | [`DET-IDN-003`](detections/identity/risky-signin-then-service-principal-owner/) | Identity | Risky sign-in followed by service principal ownership change | Tested |
 | [`DET-CLD-001`](detections/cloud/iam-access-key-created/) | Cloud | IAM access key created | Tested |
 | [`DET-CLD-002`](detections/cloud/cloudtrail-logging-stopped/) | Cloud | CloudTrail logging stopped | Tested |
-| [`DET-SAA-001`](detections/saas/inbox-rule-mail-forwarding/) | SaaS | Inbox rule created with mail forwarding | Tested |
+| [`DET-SAA-001`](detections/saas/inbox-rule-mail-forwarding/) | SaaS | External inbox rule mail forwarding | Tested |
 | [`DET-SAA-002`](detections/saas/github-organization-owner-added/) | SaaS | GitHub organization owner added | Tested |
 | [`DET-SAA-003`](detections/saas/risky-signin-then-mail-forwarding/) | SaaS | Risky sign-in followed by mail forwarding rule | Tested |
 | [`DET-NET-001`](detections/network/long-txt-dns-query/) | Network | Long TXT DNS query | Tested |
@@ -229,7 +229,7 @@ Investigations are **Tested** when the timeline, evidence, queries, response, an
 | Tested investigations | 2 of 2 | `INV-001` and `INV-002` pass evidence and detection-link checks |
 | CI | Complete | GitHub Actions quality and OpenSearch-backed test jobs |
 | Metrics reporting | Complete | Aggregated fixture metrics for fourteen detections in `reports/detection-metrics.md` |
-| Benign baseline | Complete | Twelve corpora, including two scenario-level correlation baselines |
+| Benign baseline | Complete | Thirteen corpora, including two tuning studies and two scenario-level correlation baselines |
 | Exception catalog | Complete | Reviewed exceptions with owner, scope, expiry, and compensating controls |
 | Correlation detections | Complete | `DET-IDN-003` and `DET-SAA-003` evaluate ordered identity and SaaS sequences |
 | Detection depth | In progress | Broader coverage, tuning, and automation across the ingested sources |
@@ -288,7 +288,8 @@ Out of scope for this repository:
 | [`docs/artifact-model.md`](docs/artifact-model.md) | Detection and investigation package contracts |
 | [`docs/detection-testing.md`](docs/detection-testing.md) | Fixture replay, pass criteria, and metric definitions |
 | [`reports/detection-metrics.md`](reports/detection-metrics.md) | Generated aggregate detection metrics and limitations |
-| [`reports/false-positive-tuning.md`](reports/false-positive-tuning.md) | Baseline measurement and before/after tuning analysis |
+| [`reports/false-positive-tuning.md`](reports/false-positive-tuning.md) | Endpoint baseline measurement and before/after tuning analysis |
+| [`reports/saas-forwarding-tuning.md`](reports/saas-forwarding-tuning.md) | SaaS forwarding baseline measurement and before/after tuning analysis |
 | [`reports/benign-baseline-results.md`](reports/benign-baseline-results.md) | Identity, endpoint, cloud, and scenario baseline results |
 | [`docs/exception-policy.md`](docs/exception-policy.md) | Exception types, approval requirements, and review lifecycle |
 | [`docs/cli.md`](docs/cli.md) | CLI commands, options, and exit codes |

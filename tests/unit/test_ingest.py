@@ -1132,6 +1132,7 @@ def test_normalize_m365_audit_maps_mail_rule_fields() -> None:
     assert document["record_type"] == "2"
     assert document["rule_name"] == "Forward external invoices"
     assert document["forward_to"] == "external@example.net"
+    assert document["forward_domain"] == "example.net"
     assert document["src_ip"] == "203.0.113.10"
 
 
@@ -1243,6 +1244,7 @@ def test_normalize_m365_audit_supports_attachment_forwarding() -> None:
         }
     )
     assert document["forward_to"] == "archive@example.net"
+    assert document["forward_domain"] == "example.net"
 
 
 def test_normalize_github_audit_accepts_role_alias_and_lowercases() -> None:
@@ -1741,3 +1743,34 @@ def test_pod_privilege_helper_handles_incomplete_specs() -> None:
         }
     )
     assert malformed_container["privileged"] is False
+
+
+def test_normalize_m365_audit_extracts_first_recipient_domain() -> None:
+    document = normalize_m365_audit(
+        {
+            **M365_RAW,
+            "Parameters": [
+                {"Name": "Name", "Value": "Forward external"},
+                {
+                    "Name": "ForwardTo",
+                    "Value": "First@Example.Test; second@example.net",
+                },
+            ],
+        }
+    )
+    assert document["forward_to"] == "First@Example.Test; second@example.net"
+    assert document["forward_domain"] == "example.test"
+
+
+def test_normalize_m365_audit_omits_domain_for_non_email_recipient() -> None:
+    document = normalize_m365_audit(
+        {
+            **M365_RAW,
+            "Parameters": [
+                {"Name": "Name", "Value": "Forward to team"},
+                {"Name": "ForwardTo", "Value": "External Team"},
+            ],
+        }
+    )
+    assert document["forward_to"] == "External Team"
+    assert "forward_domain" not in document

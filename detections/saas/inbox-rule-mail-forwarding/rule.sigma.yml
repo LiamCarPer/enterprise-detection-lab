@@ -1,7 +1,7 @@
-title: Inbox Rule Created With Mail Forwarding
+title: External Inbox Rule Mail Forwarding
 id: 00000000-0000-4000-8000-000000000401
 status: test
-description: Detects a successful Microsoft 365 inbox rule that forwards or redirects mail.
+description: Detects a successful Microsoft 365 inbox rule that forwards or redirects mail to an external domain.
 author: detection-engineering
 date: 2026/11/25
 logsource:

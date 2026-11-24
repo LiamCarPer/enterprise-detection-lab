@@ -161,3 +161,10 @@ datasets:
     license: synthetic
     provenance: Generated for this repository. No real users, tenants, or IPs.
     sha256: 8d4ad2b1ec1b08883a2302068c34e8bdb52dbc3a12fdd9ca8e50fedb70c26d64
+  - id: synthetic-m365-forwarding-benign-baseline
+    source: m365-audit
+    path: lab/datasets/synthetic/benign-baseline/m365-forwarding.json
+    synthetic: true
+    license: synthetic
+    provenance: Generated for this repository. No real users, tenants, or IPs.
+    sha256: afb513cafd751275910e1d600cb66d482c83c29d8f35b7bff0a0ea399b101071

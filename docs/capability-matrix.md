@@ -48,7 +48,7 @@ This matrix tracks the engineering capabilities implemented in the lab and the a
 | `tests/` + `Makefile` | Complete | Unit, integration, and lab tests; 90% statement-coverage gate |
 | `.github/workflows/ci.yml` | Complete | Quality job plus OpenSearch-backed ingestion, detection, and investigation tests |
 | `reports/detection-metrics.md` | Complete | Aggregated fixture metrics for fourteen detections with explicit limitations |
-| `lab/datasets/synthetic/benign-baseline/` + `reports/` | Complete | Twelve benign corpora, including SaaS, network, Kubernetes, and two scenario baselines, plus an 8/20 to 0/20 endpoint tuning result |
+| `lab/datasets/synthetic/benign-baseline/` + `reports/` | Complete | Thirteen benign corpora, including SaaS, network, Kubernetes, and two scenario baselines, plus endpoint and SaaS tuning results |
 | `detections/exceptions.yaml` + `docs/exception-policy.md` | Complete | Reviewed exceptions with owner, scope, expiry, change ticket, and compensating controls |
 | `docs/capability-matrix.md` + `docs/requirements-traceability.md` | Complete | Capability and engineering-requirement traceability |
 

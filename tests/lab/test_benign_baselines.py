@@ -17,6 +17,7 @@ CASES = (
     ("DET-CLD-001", BASELINE_DIR / "cloudtrail.json"),
     ("DET-CLD-002", BASELINE_DIR / "cloudtrail.json"),
     ("DET-SAA-001", BASELINE_DIR / "m365-audit.json"),
+    ("DET-SAA-001", BASELINE_DIR / "m365-forwarding.json"),
     ("DET-SAA-002", BASELINE_DIR / "github-audit.json"),
     ("DET-NET-001", BASELINE_DIR / "zeek-dns.json"),
     ("DET-NET-002", BASELINE_DIR / "suricata-alerts.json"),

@@ -63,3 +63,19 @@ exceptions:
       - Confirm secondary or organization-trail coverage during maintenance.
       - Review the trail name and maintenance window against the change record.
     notes: Review-only exceptions do not suppress the alert.
+
+  - id: EXC-SAA-001-001
+    detection_id: DET-SAA-001
+    type: query-exclusion
+    owner: collaboration-platform
+    reason: Internal forwarding to the tenant accepted domain is allowed for shared-mailbox workflows and is excluded from the external-forwarding alert.
+    scope:
+      field: forward_domain
+      value: example.test
+    change_ticket: CHG-2026-0233
+    created: "2026-11-25"
+    expires: "2027-05-31"
+    compensating_controls:
+      - Review internal forwarding through mail-flow and data-loss-prevention controls.
+      - Monitor external forwarding separately with DET-SAA-001.
+    notes: Replace the lab domain with the tenant accepted-domain list when configuration is added.

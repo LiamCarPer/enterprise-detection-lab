@@ -1,8 +1,8 @@
-# Runbook — Inbox Rule Created With Mail Forwarding
+# Runbook — External Inbox Rule Mail Forwarding
 
 ## Alert meaning
 
-A Microsoft 365 mailbox rule was created or updated with `ForwardTo`, `RedirectTo`, or `ForwardAsAttachmentTo`. The rule can send future mail to another address without the mailbox owner signing in.
+A Microsoft 365 mailbox rule was created or updated with `ForwardTo`, `RedirectTo`, or `ForwardAsAttachmentTo` to a domain outside the tenant accepted domain. The rule can send future mail to another address without the mailbox owner signing in.
 
 ## Triage
 
@@ -13,6 +13,7 @@ A Microsoft 365 mailbox rule was created or updated with `ForwardTo`, `RedirectT
 5. Inspect the rule conditions: a rule that forwards all mail or targets finance, invoices, approvals, or credentials is higher risk.
 6. Look for related mailbox changes: additional rules, mailbox-level forwarding, delegate changes, and mailbox permission changes.
 7. Review other mailboxes touched by the same actor or source IP.
+8. Review internal forwarding separately; it is excluded from this alert but remains a collection risk.
 
 ## Evidence
 
@@ -43,14 +44,16 @@ Escalate when:
 
 ## False positives
 
-- A user creates a forwarding rule for a personal workflow.
-- A delegate manages rules for an executive or shared mailbox.
-- A migration or journaling process creates forwarding rules.
-- An approved mail-flow change forwards messages to an internal team mailbox.
+- A user creates an external forwarding rule for a personal workflow.
+- A delegate manages external forwarding for an executive or shared mailbox.
+- A migration or journaling process creates external forwarding rules.
+- An approved mail-flow change forwards messages to an external partner or service.
+
+Internal forwarding to the tenant accepted domain is excluded by `EXC-SAA-001-001`; review it through mail-flow and data-loss-prevention controls instead.
 
 ## Closure
 
-Record the business justification, mailbox owner confirmation, recipient ownership, related sign-ins, containment, and whether the rule was removed. Tune with a narrow actor or mailbox allow-list, not a blanket forwarding exclusion.
+Record the business justification, mailbox owner confirmation, recipient ownership, related sign-ins, containment, and whether the rule was removed. The accepted-domain exclusion is reviewed annually; do not add broad recipient or actor exclusions without a matching exception record.
 
 ## References
 

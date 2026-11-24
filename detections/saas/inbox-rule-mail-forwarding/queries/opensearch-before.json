@@ -1,0 +1,12 @@
+{
+  "query": {
+    "bool": {
+      "filter": [
+        { "term": { "source": "m365-audit" } },
+        { "terms": { "action": ["New-InboxRule", "Set-InboxRule"] } },
+        { "term": { "result": "success" } },
+        { "exists": { "field": "forward_to" } }
+      ]
+    }
+  }
+}

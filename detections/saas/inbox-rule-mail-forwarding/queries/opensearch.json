@@ -6,6 +6,9 @@
         { "terms": { "action": ["New-InboxRule", "Set-InboxRule"] } },
         { "term": { "result": "success" } },
         { "exists": { "field": "forward_to" } }
+      ],
+      "must_not": [
+        { "term": { "forward_domain": "example.test" } }
       ]
     }
   }
