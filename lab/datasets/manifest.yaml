@@ -35,6 +35,20 @@ datasets:
     license: synthetic
     provenance: Generated for this repository. No real accounts, principals, or keys.
     sha256: 5208849dd52ae458ce91fb00d8755ba39af1a761964dc64f52f1c8feb90fa065
+  - id: synthetic-m365-audit-reference
+    source: m365-audit
+    path: lab/datasets/synthetic/m365-audit/reference.json
+    synthetic: true
+    license: synthetic
+    provenance: Generated for this repository. No real users, tenants, or IPs.
+    sha256: 58d6ad6fd6ca42c9de3cae1e7896e150fccf1205d3b2758dfe13abefc30f1b3e
+  - id: synthetic-github-audit-reference
+    source: github-audit
+    path: lab/datasets/synthetic/github-audit/reference.json
+    synthetic: true
+    license: synthetic
+    provenance: Generated for this repository. No real organizations, users, or IPs.
+    sha256: b00e6f69a9d1b274c8bc23562b46c5acf5063ae54ea3d83fca18b4b47915e92f
   - id: synthetic-endpoint-benign-baseline
     source: sysmon
     path: lab/datasets/synthetic/benign-baseline/endpoint.json

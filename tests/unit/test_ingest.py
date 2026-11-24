@@ -10,6 +10,8 @@ from edl.errors import IngestError
 from edl.ingest import (
     CLASSIFIERS,
     CanonicalEvent,
+    classify_github_audit,
+    classify_m365_audit,
     classify_sysmon,
     classify_windows_security,
     dedup_fingerprint,
@@ -20,17 +22,21 @@ from edl.ingest import (
     ingest_domain,
     ingest_endpoint,
     ingest_identity,
+    ingest_saas,
     ingest_source,
     load_cloud_sources,
     load_dataset,
     load_domain_sources,
     load_endpoint_sources,
     load_identity_sources,
+    load_saas_sources,
     normalize_aws_cloudtrail,
     normalize_dataset,
     normalize_entra_audit,
     normalize_entra_signin,
     normalize_event,
+    normalize_github_audit,
+    normalize_m365_audit,
     normalize_sysmon,
     normalize_windows_security,
     parse_timestamp,
@@ -1032,3 +1038,185 @@ def test_basename_handles_windows_and_posix_paths() -> None:
     assert _basename("/usr/bin/bash") == "bash"
     assert _basename(None) is None
     assert _basename("") is None
+
+
+M365_RAW = {
+    "CreationTime": "2026-11-25T09:00:00Z",
+    "Id": "00000000-0000-4000-8000-000000010101",
+    "Operation": "New-InboxRule",
+    "UserId": "analyst@example.test",
+    "Workload": "Exchange",
+    "RecordType": 2,
+    "ClientIP": "203.0.113.10",
+    "ObjectId": "analyst@example.test\\Inbox\\ForwardExternal",
+    "ResultStatus": "Success",
+    "Parameters": [
+        {"Name": "Name", "Value": "Forward external invoices"},
+        {"Name": "ForwardTo", "Value": "external@example.net"},
+    ],
+}
+
+GITHUB_RAW = {
+    "action": "org.add_member",
+    "actor": "admin",
+    "actor_ip": "203.0.113.10",
+    "created_at": "2026-11-25T10:00:00Z",
+    "id": "00000000-0000-4000-8000-000000020101",
+    "org": "example-org",
+    "repo": "example-org/lab",
+    "role": "admin",
+    "user": "new-owner",
+    "user_agent": "GitHub CLI",
+}
+
+
+def _saas_source(source_id: str) -> TelemetrySource:
+    m365 = source_id == "m365-audit"
+    return _source(
+        source_id,
+        event_classes=["audit", "mailbox"] if m365 else ["audit_log", "git", "authentication"],
+        event_time_field="CreationTime" if m365 else "created_at",
+        dedup_key=["Id"] if m365 else ["id"],
+        required_fields=(
+            ["CreationTime", "Id", "Operation", "UserId", "Workload", "RecordType"]
+            if m365
+            else ["action", "actor", "created_at", "id", "org", "repo"]
+        ),
+    )
+
+
+@pytest.mark.parametrize(
+    ("workload", "expected"),
+    [
+        ("Exchange", "mailbox"),
+        ("SharePoint", "sharepoint"),
+        ("OneDrive", "sharepoint"),
+        ("MicrosoftTeams", "teams"),
+        ("AzureActiveDirectory", "audit"),
+    ],
+)
+def test_classify_m365_workload(workload: str, expected: str) -> None:
+    assert classify_m365_audit({"Workload": workload}) == expected
+
+
+@pytest.mark.parametrize(
+    ("action", "expected"),
+    [
+        ("git.push", "git"),
+        ("user.login", "authentication"),
+        ("user.failed_login", "authentication"),
+        ("org.add_member", "audit_log"),
+    ],
+)
+def test_classify_github_action(action: str, expected: str) -> None:
+    assert classify_github_audit({"action": action}) == expected
+
+
+def test_normalize_m365_audit_maps_mail_rule_fields() -> None:
+    document = normalize_m365_audit(M365_RAW)
+    assert document["event_id"] == M365_RAW["Id"]
+    assert document["user"] == "analyst@example.test"
+    assert document["action"] == "New-InboxRule"
+    assert document["result"] == "success"
+    assert document["workload"] == "Exchange"
+    assert document["record_type"] == "2"
+    assert document["rule_name"] == "Forward external invoices"
+    assert document["forward_to"] == "external@example.net"
+    assert document["src_ip"] == "203.0.113.10"
+
+
+def test_normalize_m365_audit_handles_parameter_mapping_and_failure() -> None:
+    document = normalize_m365_audit(
+        {
+            **M365_RAW,
+            "Parameters": {"Name": "Rule", "RedirectTo": "redirect@example.net"},
+            "ResultStatus": "Failed",
+        }
+    )
+    assert document["rule_name"] == "Rule"
+    assert document["forward_to"] == "redirect@example.net"
+    assert document["result"] == "failure"
+
+
+def test_normalize_github_audit_maps_organization_fields() -> None:
+    document = normalize_github_audit(GITHUB_RAW)
+    assert document["event_id"] == GITHUB_RAW["id"]
+    assert document["user"] == "admin"
+    assert document["action"] == "org.add_member"
+    assert document["service"] == "github"
+    assert document["organization"] == "example-org"
+    assert document["repository"] == "example-org/lab"
+    assert document["target_user"] == "new-owner"
+    assert document["role"] == "admin"
+    assert document["src_ip"] == "203.0.113.10"
+    assert document["result"] == "success"
+
+
+def test_normalize_event_saas_classification() -> None:
+    m365 = normalize_event(
+        _saas_source("m365-audit"),
+        M365_RAW,
+        ingest_time=datetime(2026, 11, 25, tzinfo=UTC),
+    )
+    assert m365.event_class == "mailbox"
+
+    github = normalize_event(
+        _saas_source("github-audit"),
+        GITHUB_RAW,
+        ingest_time=datetime(2026, 11, 25, tzinfo=UTC),
+    )
+    assert github.event_class == "audit_log"
+
+
+def test_load_saas_sources_defaults_and_filters() -> None:
+    assert [source.id for source in load_saas_sources()] == ["m365-audit", "github-audit"]
+    assert [source.id for source in load_saas_sources(requested=("github-audit",))] == [
+        "github-audit"
+    ]
+
+
+def test_load_saas_sources_rejects_non_saas() -> None:
+    with pytest.raises(IngestError, match="Not saas source"):
+        load_saas_sources(requested=("entra-signin",))
+
+
+def test_ingest_saas_dry_run_uses_repository_samples() -> None:
+    results = ingest_saas(dry_run=True)
+    assert [result.source for result in results] == ["m365-audit", "github-audit"]
+    assert all(result.read == 2 for result in results)
+    assert results[0].indices == ("edl-events-m365-audit-2026.11.25",)
+    assert results[1].indices == ("edl-events-github-audit-2026.11.25",)
+
+
+def test_ingest_saas_opens_client_when_missing(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    client = FakeClient()
+
+    class FakeContext:
+        def __enter__(self) -> FakeClient:
+            return client
+
+        def __exit__(self, *_: object) -> None:
+            return None
+
+    monkeypatch.setattr("edl.ingest.OpenSearchClient", lambda: FakeContext())
+    results = ingest_saas(
+        ingest_time=datetime(2026, 11, 25, tzinfo=UTC),
+        index_prefix="edl-events-test",
+    )
+    assert len(results) == 2
+    assert all(result.mode == "ingested" for result in results)
+    assert all(result.counts for result in results)
+
+
+def test_normalize_m365_audit_keeps_unknown_result_and_ignores_bad_parameters() -> None:
+    document = normalize_m365_audit(
+        {
+            **M365_RAW,
+            "Parameters": ["bad", {"Name": "Name", "Value": "Rule"}],
+            "ResultStatus": "Pending",
+        }
+    )
+    assert document["result"] == "pending"
+    assert document["rule_name"] == "Rule"

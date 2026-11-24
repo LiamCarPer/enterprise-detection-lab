@@ -82,6 +82,7 @@ jobs:
           make ingest-identity
           make ingest-endpoint
           make ingest-cloud
+          make ingest-saas
 
       - name: Run OpenSearch-backed tests
         run: make test-opensearch

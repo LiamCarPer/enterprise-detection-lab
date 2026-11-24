@@ -1,0 +1,25 @@
+[
+  {
+    "action": "org.add_member",
+    "actor": "admin",
+    "actor_ip": "203.0.113.10",
+    "created_at": "2026-11-25T10:00:00Z",
+    "id": "00000000-0000-4000-8000-000000020101",
+    "org": "example-org",
+    "repo": "example-org/lab",
+    "role": "admin",
+    "user": "new-owner",
+    "user_agent": "GitHub CLI"
+  },
+  {
+    "action": "repo.push",
+    "actor": "developer",
+    "actor_ip": "198.51.100.23",
+    "created_at": "2026-11-25T10:15:00Z",
+    "id": "00000000-0000-4000-8000-000000020102",
+    "org": "example-org",
+    "repo": "example-org/lab",
+    "user": "developer",
+    "user_agent": "git/2.45"
+  }
+]

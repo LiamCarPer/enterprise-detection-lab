@@ -7,7 +7,7 @@ event_classes:
   - git
   - authentication
 schema_version: "1.0"
-status: documented
+status: ingested
 owner: detection-engineering
 event_time_field: created_at
 ingest_time_field: ingest_time
@@ -33,7 +33,13 @@ cost: Audit log access is plan-dependent; API rate limits apply.
 late_arrival: Expected; use event time and synthetic ingest time.
 duplicates: Possible during API pagination or retries; deduplicate by id.
 known_gaps:
-  - No GitHub sample data yet; synthetic events arrive with the SaaS detection work.
+  - The committed sample is synthetic and minimal.
   - Audit-log schema varies by GitHub product and event type.
   - API pagination and rate limiting are not replicated.
-notes: SaaS contract; sample data arrives with SaaS detections.
+notes: SaaS source contract.
+sample_data:
+  path: lab/datasets/synthetic/github-audit/reference.json
+  synthetic: true
+  license: synthetic
+  provenance: Generated for this repository. No real organizations, users, or IPs.
+  sha256: b00e6f69a9d1b274c8bc23562b46c5acf5063ae54ea3d83fca18b4b47915e92f

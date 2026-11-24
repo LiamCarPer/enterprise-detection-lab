@@ -68,6 +68,7 @@ the reference behavior before changing status from `draft` to `tested`.
 edl ingest identity
 edl ingest endpoint
 edl ingest cloud
+edl ingest saas
 edl ingest endpoint --source sysmon
 edl ingest cloud --dry-run
 edl ingest identity --source entra-signin

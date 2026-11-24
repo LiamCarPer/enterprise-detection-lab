@@ -23,10 +23,12 @@ Classifier = Callable[[Mapping[str, Any]], str]
 IDENTITY_SOURCES: tuple[str, ...] = ("entra-signin", "entra-audit")
 ENDPOINT_SOURCES: tuple[str, ...] = ("sysmon", "windows-security")
 CLOUD_SOURCES: tuple[str, ...] = ("aws-cloudtrail",)
+SAAS_SOURCES: tuple[str, ...] = ("m365-audit", "github-audit")
 DOMAIN_SOURCES: dict[str, tuple[str, ...]] = {
     "identity": IDENTITY_SOURCES,
     "endpoint": ENDPOINT_SOURCES,
     "cloud": CLOUD_SOURCES,
+    "saas": SAAS_SOURCES,
 }
 
 
@@ -115,6 +117,33 @@ def _meaningful(value: Any) -> Any:
     if value is None or value == "" or value == "-":
         return None
     return value
+
+
+def _normalize_result(value: Any) -> str | None:
+    if not isinstance(value, str):
+        return None
+    normalized = value.strip().lower()
+    if normalized in {"success", "succeeded", "true"}:
+        return "success"
+    if normalized in {"failure", "failed", "false"}:
+        return "failure"
+    return normalized or None
+
+
+def _m365_parameters(raw: Mapping[str, Any]) -> dict[str, Any]:
+    parameters = raw.get("Parameters")
+    if isinstance(parameters, Mapping):
+        return dict(parameters)
+    if isinstance(parameters, list):
+        result: dict[str, Any] = {}
+        for item in parameters:
+            if not isinstance(item, Mapping):
+                continue
+            name = item.get("Name")
+            if isinstance(name, str):
+                result[name] = item.get("Value")
+        return result
+    return {}
 
 
 def _basename(value: Any) -> str | None:
@@ -210,6 +239,28 @@ def classify_windows_security(raw: Mapping[str, Any]) -> str:
     if event_id in WINDOWS_ACCOUNT_MANAGEMENT_EVENT_IDS:
         return "account_management"
     return "other"
+
+
+def classify_m365_audit(raw: Mapping[str, Any]) -> str:
+    """Map an M365 workload to the declared event class."""
+    workload = str(raw.get("Workload", "")).lower()
+    if "exchange" in workload:
+        return "mailbox"
+    if "sharepoint" in workload or "onedrive" in workload:
+        return "sharepoint"
+    if "teams" in workload:
+        return "teams"
+    return "audit"
+
+
+def classify_github_audit(raw: Mapping[str, Any]) -> str:
+    """Map a GitHub audit action to the declared event class."""
+    action = str(raw.get("action", ""))
+    if action.startswith("git."):
+        return "git"
+    if action in {"user.login", "user.failed_login"}:
+        return "authentication"
+    return "audit_log"
 
 
 def normalize_entra_signin(raw: Mapping[str, Any]) -> dict[str, Any]:
@@ -401,17 +452,59 @@ def normalize_aws_cloudtrail(raw: Mapping[str, Any]) -> dict[str, Any]:
     return _compact(document)
 
 
+def normalize_m365_audit(raw: Mapping[str, Any]) -> dict[str, Any]:
+    """Map Microsoft 365 unified audit fields to the canonical SaaS shape."""
+    parameters = _m365_parameters(raw)
+    record_type = raw.get("RecordType")
+    document: dict[str, Any] = {
+        "event_id": raw.get("Id"),
+        "user": raw.get("UserId"),
+        "src_ip": _meaningful(raw.get("ClientIP")),
+        "action": raw.get("Operation"),
+        "result": _normalize_result(raw.get("ResultStatus")),
+        "workload": raw.get("Workload"),
+        "record_type": str(record_type) if record_type is not None else None,
+        "object_id": raw.get("ObjectId"),
+        "rule_name": _meaningful(parameters.get("Name")),
+        "forward_to": _meaningful(parameters.get("ForwardTo") or parameters.get("RedirectTo")),
+    }
+    return _compact(document)
+
+
+def normalize_github_audit(raw: Mapping[str, Any]) -> dict[str, Any]:
+    """Map GitHub organization audit fields to the canonical SaaS shape."""
+    status = raw.get("status") or raw.get("result")
+    document: dict[str, Any] = {
+        "event_id": raw.get("id"),
+        "user": raw.get("actor"),
+        "src_ip": _meaningful(raw.get("actor_ip")),
+        "action": raw.get("action"),
+        "result": _normalize_result(status) or "success",
+        "service": "github",
+        "organization": raw.get("org"),
+        "repository": raw.get("repo"),
+        "target_user": raw.get("user"),
+        "role": raw.get("role"),
+        "user_agent": _meaningful(raw.get("user_agent")),
+    }
+    return _compact(document)
+
+
 NORMALIZERS.update(
     {
         "sysmon": normalize_sysmon,
         "windows-security": normalize_windows_security,
         "aws-cloudtrail": normalize_aws_cloudtrail,
+        "m365-audit": normalize_m365_audit,
+        "github-audit": normalize_github_audit,
     }
 )
 
 CLASSIFIERS: dict[str, Classifier] = {
     "sysmon": classify_sysmon,
     "windows-security": classify_windows_security,
+    "m365-audit": classify_m365_audit,
+    "github-audit": classify_github_audit,
 }
 
 
@@ -860,6 +953,14 @@ def load_cloud_sources(
     return load_domain_sources("cloud", root, requested)
 
 
+def load_saas_sources(
+    root: Path = config.ROOT,
+    requested: Sequence[str] = (),
+) -> list[TelemetrySource]:
+    """Load and validate the selected SaaS source contracts."""
+    return load_domain_sources("saas", root, requested)
+
+
 def ingest_domain(
     domain: str,
     root: Path = config.ROOT,
@@ -960,6 +1061,31 @@ def ingest_cloud(
     """Ingest all selected cloud sources into OpenSearch."""
     return ingest_domain(
         "cloud",
+        root,
+        sources=sources,
+        client=client,
+        ingest_time=ingest_time,
+        index_prefix=index_prefix,
+        refresh=refresh,
+        batch_size=batch_size,
+        dry_run=dry_run,
+    )
+
+
+def ingest_saas(
+    root: Path = config.ROOT,
+    *,
+    sources: Sequence[str] = (),
+    client: OpenSearchClient | None = None,
+    ingest_time: datetime | None = None,
+    index_prefix: str = config.EVENTS_INDEX_PREFIX,
+    refresh: bool = True,
+    batch_size: int = 500,
+    dry_run: bool = False,
+) -> list[IngestResult]:
+    """Ingest all selected SaaS sources into OpenSearch."""
+    return ingest_domain(
+        "saas",
         root,
         sources=sources,
         client=client,

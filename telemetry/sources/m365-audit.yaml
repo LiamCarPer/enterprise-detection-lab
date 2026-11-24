@@ -8,7 +8,7 @@ event_classes:
   - sharepoint
   - teams
 schema_version: "1.0"
-status: documented
+status: ingested
 owner: detection-engineering
 event_time_field: CreationTime
 ingest_time_field: ingest_time
@@ -34,7 +34,13 @@ cost: Licensing and retention tier affect availability; export can be slow.
 late_arrival: Expected; use event time and synthetic ingest time.
 duplicates: Possible; deduplicate by Id.
 known_gaps:
-  - No M365 sample data yet; synthetic events arrive with the SaaS detection work.
+  - The committed sample is synthetic and minimal.
   - Unified audit log licensing and retention vary by plan.
   - Workload-specific schemas are not fully represented.
-notes: SaaS contract; sample data arrives with SaaS detections.
+notes: SaaS source contract.
+sample_data:
+  path: lab/datasets/synthetic/m365-audit/reference.json
+  synthetic: true
+  license: synthetic
+  provenance: Generated for this repository. No real users, tenants, or IPs.
+  sha256: 58d6ad6fd6ca42c9de3cae1e7896e150fccf1205d3b2758dfe13abefc30f1b3e

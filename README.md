@@ -4,7 +4,7 @@
 
 A reproducible local lab for developing and testing enterprise detection content across identity, endpoint, cloud, SaaS, network, and Kubernetes telemetry.
 
-**Status:** Alpha. Identity, endpoint, and cloud telemetry ingestion, seven core detections, two investigations, CI, and aggregated fixture metrics are complete. The next focus is SaaS, network, and Kubernetes telemetry expansion.
+**Status:** Alpha. Identity, endpoint, cloud, and SaaS telemetry ingestion, seven core detections, two investigations, CI, and aggregated fixture metrics are complete. The next focus is network and Kubernetes telemetry expansion.
 
 [Quick start](#quick-start) · [Architecture](#architecture) · [Project status](#project-status) · [Documentation](#documentation)
 
@@ -71,6 +71,7 @@ make lab-bootstrap
 make ingest-identity
 make ingest-endpoint
 make ingest-cloud
+make ingest-saas
 make test-detections
 make test-lab
 ```
@@ -156,7 +157,7 @@ uv run edl lab reset --yes   # deletes lab volumes
 | Identity | Entra ID sign-in, Entra ID audit | Ingested |
 | Endpoint | Sysmon, Windows Security | Ingested |
 | Cloud | AWS CloudTrail | Ingested |
-| SaaS | Microsoft 365 audit, GitHub audit | Documented |
+| SaaS | Microsoft 365 audit, GitHub audit | Ingested |
 | Network | Zeek, Suricata | Documented |
 | Kubernetes | Kubernetes audit, Falco | Documented |
 
@@ -199,10 +200,11 @@ Investigations are **Tested** when the timeline, evidence, queries, response, an
 
 | Component | Status | Notes |
 |---|---|---|
-| Telemetry contracts | Complete | 11 sources across six domains; 5 ingested, 6 documented |
+| Telemetry contracts | Complete | 11 sources across six domains; 7 ingested, 4 documented |
 | Identity ingestion | Complete | Entra sign-in and audit, normalized and replay-safe |
 | Endpoint ingestion | Complete | Sysmon and Windows Security, per-event classification |
 | Cloud ingestion | Complete | AWS CloudTrail, normalized and replay-safe |
+| SaaS ingestion | Complete | Microsoft 365 and GitHub audit, normalized and replay-safe |
 | Detection packages | In progress | Seven tested detections; production validation pending |
 | Detection testing | Complete | Normalized fixture replay, temporary-index isolation, pass/fail gate, and metrics generation |
 | Tested detections | 7 of 7 | All core detections pass fixture replay |
@@ -213,10 +215,10 @@ Investigations are **Tested** when the timeline, evidence, queries, response, an
 | Benign baseline | Complete | Five corpora, including a scenario-level correlation baseline |
 | Exception catalog | Complete | Reviewed exceptions with owner, scope, expiry, and compensating controls |
 | Correlation detection | Complete | `DET-IDN-003` evaluates ordered identity steps with a 30-minute window |
-| SaaS, network, Kubernetes | Planned | Contracts and samples before detections |
+| Network and Kubernetes | Planned | Contracts and samples before detections |
 | Automation | Planned | Enrichment, triage, evidence, and approval-gated response |
 
-Current focus: SaaS, network, and Kubernetes telemetry expansion.
+Current focus: network and Kubernetes telemetry expansion.
 
 ## Quality gates
 

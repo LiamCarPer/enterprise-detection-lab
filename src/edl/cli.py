@@ -207,6 +207,14 @@ def _run_ingest_command(
     batch_size: int,
 ) -> None:
     requested = tuple(part.strip() for part in source.split(",") if part.strip()) if source else ()
+    domain_label = {
+        "identity": "Identity",
+        "endpoint": "Endpoint",
+        "cloud": "Cloud",
+        "saas": "SaaS",
+        "network": "Network",
+        "kubernetes": "Kubernetes",
+    }.get(domain, domain.title())
     try:
         results = run_ingest_domain(
             domain,
@@ -229,7 +237,7 @@ def _run_ingest_command(
             )
         )
     else:
-        console.print(render_ingest_table(results, title=f"{domain.title()} Telemetry Ingest"))
+        console.print(render_ingest_table(results, title=f"{domain_label} Telemetry Ingest"))
 
 
 @ingest_app.command("identity")
@@ -317,6 +325,35 @@ def ingest_cloud(
 ) -> None:
     """Ingest AWS CloudTrail telemetry into OpenSearch."""
     _run_ingest_command("cloud", source, dry_run, json_output, refresh, batch_size)
+
+
+@ingest_app.command("saas")
+def ingest_saas(
+    source: str | None = typer.Option(
+        None,
+        "--source",
+        help="Comma-separated SaaS source IDs; defaults to all.",
+    ),
+    dry_run: bool = typer.Option(
+        False,
+        "--dry-run",
+        help="Normalize and validate without writing to OpenSearch.",
+    ),
+    json_output: bool = typer.Option(False, "--json", help="Emit machine-readable JSON."),
+    refresh: bool = typer.Option(
+        True,
+        "--refresh/--no-refresh",
+        help="Refresh indices before counting documents.",
+    ),
+    batch_size: int = typer.Option(
+        500,
+        "--batch-size",
+        min=1,
+        help="Documents per bulk request.",
+    ),
+) -> None:
+    """Ingest Microsoft 365 and GitHub audit telemetry into OpenSearch."""
+    _run_ingest_command("saas", source, dry_run, json_output, refresh, batch_size)
 
 
 def render_ingest_table(results: list[IngestResult], *, title: str) -> Table:

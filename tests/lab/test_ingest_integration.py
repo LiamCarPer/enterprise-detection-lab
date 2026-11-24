@@ -6,7 +6,13 @@ import httpx
 import pytest
 
 from edl import config
-from edl.ingest import OpenSearchClient, ingest_cloud, ingest_endpoint, ingest_identity
+from edl.ingest import (
+    OpenSearchClient,
+    ingest_cloud,
+    ingest_endpoint,
+    ingest_identity,
+    ingest_saas,
+)
 
 pytestmark = pytest.mark.lab
 
@@ -175,6 +181,57 @@ def test_cloud_ingest_is_idempotent_and_queryable() -> None:
         )
         assert second[0].counts == {second[0].indices[0]: 2}
         assert sorted(str(hit["_id"]) for hit in _search("aws-cloudtrail")) == cloud_ids
+    finally:
+        client.delete_matching(f"{TEST_PREFIX}-*")
+        client.close()
+
+
+def test_saas_ingest_is_idempotent_and_queryable() -> None:
+    client = OpenSearchClient()
+    try:
+        first = ingest_saas(
+            config.ROOT,
+            client=client,
+            ingest_time=datetime(2026, 11, 25, 12, 0, tzinfo=UTC),
+            index_prefix=TEST_PREFIX,
+        )
+        assert [result.source for result in first] == ["m365-audit", "github-audit"]
+        assert all(result.read == 2 for result in first)
+        assert all(result.unique == 2 for result in first)
+        assert all(result.written == 2 for result in first)
+        assert all(result.counts == {result.indices[0]: 2} for result in first)
+
+        m365_hits = _search("m365-audit")
+        assert len(m365_hits) == 2
+        m365_ids = sorted(str(hit["_id"]) for hit in m365_hits)
+        m365_event = m365_hits[0]["_source"]
+        assert m365_event["event_class"] == "mailbox"
+        assert m365_event["action"] == "New-InboxRule"
+        assert m365_event["user"] == "analyst@example.test"
+        assert m365_event["forward_to"] == "external@example.net"
+        assert m365_event["rule_name"] == "Forward external invoices"
+        assert m365_event["dedup_origin"] == "declared"
+
+        github_hits = _search("github-audit")
+        assert len(github_hits) == 2
+        github_ids = sorted(str(hit["_id"]) for hit in github_hits)
+        github_event = github_hits[0]["_source"]
+        assert github_event["event_class"] == "audit_log"
+        assert github_event["action"] == "org.add_member"
+        assert github_event["organization"] == "example-org"
+        assert github_event["repository"] == "example-org/lab"
+        assert github_event["target_user"] == "new-owner"
+        assert github_event["dedup_origin"] == "declared"
+
+        second = ingest_saas(
+            config.ROOT,
+            client=client,
+            ingest_time=datetime(2026, 11, 26, 12, 0, tzinfo=UTC),
+            index_prefix=TEST_PREFIX,
+        )
+        assert all(result.counts == {result.indices[0]: 2} for result in second)
+        assert sorted(str(hit["_id"]) for hit in _search("m365-audit")) == m365_ids
+        assert sorted(str(hit["_id"]) for hit in _search("github-audit")) == github_ids
     finally:
         client.delete_matching(f"{TEST_PREFIX}-*")
         client.close()

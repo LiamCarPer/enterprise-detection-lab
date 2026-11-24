@@ -1,6 +1,6 @@
 # Telemetry Ingestion
 
-`edl ingest` loads the sampled Entra ID, Windows endpoint, and AWS CloudTrail contracts into OpenSearch. The pipeline is deliberately small, but it treats ingestion as production software: validate first, normalize to a stable shape, classify each event, deduplicate deterministically, and make replay idempotent.
+`edl ingest` loads the sampled Entra ID, Windows endpoint, AWS CloudTrail, Microsoft 365, and GitHub contracts into OpenSearch. The pipeline is deliberately small, but it treats ingestion as production software: validate first, normalize to a stable shape, classify each event, deduplicate deterministically, and make replay idempotent.
 
 ```text
 telemetry/sources/*.yaml
@@ -26,6 +26,7 @@ make lab-bootstrap
 make ingest-identity
 make ingest-endpoint
 make ingest-cloud
+make ingest-saas
 ```
 
 Or directly:
@@ -40,6 +41,8 @@ edl ingest endpoint --source sysmon
 edl ingest endpoint --dry-run
 edl ingest cloud
 edl ingest cloud --dry-run
+edl ingest saas
+edl ingest saas --dry-run
 ```
 
 `--dry-run` performs the full preflight and prints the target indices without contacting OpenSearch. `--source` accepts one source or a comma-separated list. `--no-refresh` skips the post-ingest count because OpenSearch cannot report an accurate count before the next refresh.
@@ -109,6 +112,13 @@ AWS CloudTrail additions:
 
 CloudTrail management events use the declared `management_event` class. The raw request and response bodies remain available in `raw` but are not indexed.
 
+SaaS additions:
+
+- Microsoft 365: `workload`, `record_type`, `object_id`, `rule_name`, and `forward_to`
+- GitHub: `organization`, `repository`, `target_user`, `role`, `user_agent`, and `service=github`
+
+Microsoft 365 event classes follow the workload: Exchange maps to `mailbox`, SharePoint/OneDrive to `sharepoint`, Teams to `teams`, and other workloads to `audit`. GitHub maps `git.*` actions to `git`, login actions to `authentication`, and other audit actions to `audit_log`.
+
 The canonical fields are mapped in [`lab/bootstrap/opensearch/events-template.json`](../lab/bootstrap/opensearch/events-template.json). Unknown fields remain dynamically mapped; update the template when a field becomes part of the query contract.
 
 ## Time semantics
@@ -142,9 +152,11 @@ edl-events-entra-audit-2026.11.01
 edl-events-sysmon-2026.11.01
 edl-events-windows-security-2026.11.01
 edl-events-aws-cloudtrail-2026.11.01
+edl-events-m365-audit-2026.11.25
+edl-events-github-audit-2026.11.25
 ```
 
-The `edl-events-*` index template applies one shard, zero replicas, UTC date fields, keyword fields for identity, endpoint, and cloud pivots, and disabled indexing for `raw`.
+The `edl-events-*` index template applies one shard, zero replicas, UTC date fields, keyword fields for identity, endpoint, cloud, and SaaS pivots, and disabled indexing for `raw`.
 
 ## Result fields
 
@@ -167,12 +179,12 @@ The `edl-events-*` index template applies one shard, zero replicas, UTC date fie
 
 ## Status
 
-The five sampled sources move from `sampled` to `ingested` after a successful lab run. They move to `validated` only after detection replay and regression tests pass. The generated [telemetry matrix](telemetry-matrix.md) records the current status.
+The seven sampled sources move from `sampled` to `ingested` after a successful lab run. They move to `validated` only after detection replay and regression tests pass. The generated [telemetry matrix](telemetry-matrix.md) records the current status.
 
 ## Known gaps
 
-- Entra identity, Windows endpoint, and AWS CloudTrail sources are normalized currently; SaaS, network, and Kubernetes are next.
-- The sample has two events per source; it demonstrates semantics, not volume.
+- Entra identity, Windows endpoint, AWS CloudTrail, and SaaS sources are normalized currently; network and Kubernetes are next.
+- The samples are small; they demonstrate contract and pipeline behavior, not volume.
 - Sysmon field coverage depends on the Sysmon configuration; the sample covers process creation only.
 - Windows Security advanced audit policy determines which events exist; the sample covers logon success and failure.
 - CloudTrail data events, organization trails, and cross-account delivery are not sampled.

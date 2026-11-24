@@ -700,3 +700,21 @@ def test_detection_baseline_forwards_options(monkeypatch: pytest.MonkeyPatch) ->
     assert result.exit_code == 0
     assert captured["query_path"] == Path("queries/opensearch-before.json")
     assert captured["latency_runs"] == 2
+
+
+def test_ingest_saas_dry_run() -> None:
+    result = runner.invoke(app, ["ingest", "saas", "--dry-run"])
+    assert result.exit_code == 0
+    assert "SaaS Telemetry Ingest" in result.stdout
+    assert "m365-audit" in result.stdout
+    assert "github-audit" in result.stdout
+    assert "dry-run" in result.stdout
+
+
+def test_ingest_saas_json() -> None:
+    result = runner.invoke(app, ["ingest", "saas", "--dry-run", "--json"])
+    assert result.exit_code == 0
+    payload = json.loads(result.stdout)
+    assert [item["source"] for item in payload] == ["m365-audit", "github-audit"]
+    assert payload[0]["indices"] == ["edl-events-m365-audit-2026.11.25"]
+    assert payload[1]["indices"] == ["edl-events-github-audit-2026.11.25"]

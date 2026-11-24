@@ -21,6 +21,7 @@ make lab-bootstrap
 make ingest-identity
 make ingest-endpoint
 make ingest-cloud
+make ingest-saas
 ```
 
 `make lab-up` starts:
@@ -39,14 +40,17 @@ make ingest-cloud
 make ingest-identity
 make ingest-endpoint
 make ingest-cloud
+make ingest-saas
 ```
 
 Identity ingestion normalizes the Entra sign-in and audit samples. Endpoint
 ingestion normalizes Sysmon and Windows Security, classifies each event from its
 `EventID`, and validates the declared `Channel` dedup key. Cloud ingestion
 normalizes the AWS CloudTrail sample, including account, region, identity, and
-API context. All paths validate required fields and UTC timestamps and
-bulk-index into daily `edl-events-<source>-*` indices. Writes use deterministic
+API context. SaaS ingestion normalizes the Microsoft 365 and GitHub audit samples,
+including actor, workload, organization, repository, and forwarding context. All
+paths validate required fields and UTC timestamps and bulk-index into daily
+`edl-events-<source>-*` indices. Writes use deterministic
 document IDs, so replaying the same dataset is idempotent.
 
 Useful variants:
@@ -55,6 +59,7 @@ Useful variants:
 uv run edl ingest identity --dry-run
 uv run edl ingest endpoint --source sysmon --json
 uv run edl ingest cloud --dry-run
+uv run edl ingest saas --dry-run
 uv run edl ingest endpoint --no-refresh
 ```
 

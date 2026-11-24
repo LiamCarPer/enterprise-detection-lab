@@ -11,6 +11,8 @@ The lab uses synthetic or public, license-compatible data only. Raw datasets are
 - Sysmon
 - Windows Security
 - AWS CloudTrail
+- Microsoft 365 audit
+- GitHub audit
 
 The endpoint baseline under `lab/datasets/synthetic/benign-baseline/endpoint.json` is a separate benign corpus used for false-positive tuning. It is listed in the manifest for hash verification but is not a telemetry source sample loaded by `edl ingest`. Matching identity sign-in, identity audit, and CloudTrail baselines are stored beside it for the same purpose.
 

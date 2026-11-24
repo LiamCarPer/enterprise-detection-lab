@@ -19,6 +19,7 @@ This matrix tracks the engineering capabilities implemented in the lab and the a
 | **Identity telemetry** | Normalized Entra sign-in and audit events, UTC enforcement, deterministic IDs, idempotent replay | `src/edl/ingest.py`, `lab/datasets/synthetic/entra-*`, `docs/ingestion.md` | Complete |
 | **Endpoint telemetry** | Normalized Sysmon and Windows Security events, per-event classification, declared dedup keys | `src/edl/ingest.py`, `lab/datasets/synthetic/sysmon`, `lab/datasets/synthetic/windows-security` | Complete |
 | **Cloud telemetry** | AWS CloudTrail normalization, identity and request context, replay verification | `telemetry/sources/aws-cloudtrail.yaml`, `src/edl/ingest.py` | Complete |
+| **SaaS telemetry** | Microsoft 365 and GitHub audit normalization, actor and resource context, replay verification | `telemetry/sources/m365-audit.yaml`, `telemetry/sources/github-audit.yaml`, `src/edl/ingest.py` | Complete |
 | **Detection engineering** | Versioned packages with hypothesis, telemetry contract, Sigma rule, native query, fixtures, runbook, and metrics | `detections/`, `schemas/detection.schema.json` | In progress |
 | **Detection validation** | Positive, negative, and benign fixtures; schema checks; backend query checks; regression tests | `src/edl/validation.py`, `detections/*/tests/`, `tests/` | In progress |
 | **Investigation** | Timeline, queries, evidence, response, lessons, and an executive summary for a complete attack chain | `investigations/`, `schemas/investigation.schema.json` | Complete |
@@ -26,7 +27,7 @@ This matrix tracks the engineering capabilities implemented in the lab and the a
 | **Automation** | Enrichment, triage, evidence capture, and approval-gated containment proposals | `automation/` | Planned |
 | **Software engineering** | Typed Python, focused modules, schema validation, unit and integration tests, deterministic outputs, coverage gate | `src/edl/`, `tests/`, `Makefile`, `pyproject.toml` | Complete |
 | **Documentation** | Architecture, contracts, operating instructions, limitations, and generated matrices | `README.md`, `docs/`, `lab/README.md` | Complete |
-| **SaaS, network, and Kubernetes** | Contracts and samples followed by domain-specific detections | `telemetry/sources/`, `detections/` | Planned |
+| **Network and Kubernetes** | Contracts and samples followed by domain-specific detections | `telemetry/sources/`, `detections/` | Planned |
 
 ## Current evidence
 
@@ -36,8 +37,8 @@ This matrix tracks the engineering capabilities implemented in the lab and the a
 | `docs/artifact-model.md` | Complete | Detection and investigation package contracts |
 | `compose.yaml` + `lab/` | Complete | Local OpenSearch, Dashboards, Kusto, and DuckDB stack with pinned images and bootstrap |
 | `src/edl/` | Complete | Validation, reporting, ingestion, scaffolding, and lab lifecycle |
-| `telemetry/sources/` + `docs/telemetry-matrix.md` | Complete | 11 contracts (5 ingested, 6 documented) with generated matrix and freshness check |
-| `src/edl/ingest.py` + `docs/ingestion.md` | Complete | Identity, endpoint, and cloud normalization, classification, deduplication, and idempotent bulk ingest |
+| `telemetry/sources/` + `docs/telemetry-matrix.md` | Complete | 11 contracts (7 ingested, 4 documented) with generated matrix and freshness check |
+| `src/edl/ingest.py` + `docs/ingestion.md` | Complete | Identity, endpoint, cloud, and SaaS normalization, classification, deduplication, and idempotent bulk ingest |
 | `detections/endpoint/_template` + `investigations/_template` | Complete | Working reference packages and `edl new` scaffolding |
 | `detections/identity`, `detections/endpoint`, `detections/cloud` | Tested | Seven core detections, including one sequence correlation, with runbooks and committed metrics |
 | `investigations/01-identity-to-cloud` + `investigations/02-endpoint-to-cloud` | Tested | Evidence hashes, timelines, queries, response, lessons, and linked detection checks |
@@ -51,11 +52,11 @@ This matrix tracks the engineering capabilities implemented in the lab and the a
 
 ## Next evidence
 
-The next work is detection depth:
+The next work is breadth and depth:
 
-- Correlation detections using the existing identity, endpoint, and cloud telemetry.
-- Broader benign activity coverage across the other detection packages.
-- SaaS, network, and Kubernetes telemetry, followed by automation.
+- Network and Kubernetes telemetry contracts and samples.
+- Additional detections across the expanded telemetry set.
+- Broader benign coverage and automation.
 
 ## Evidence standards
 
