@@ -2,7 +2,7 @@
 
 ## Scope
 
-Thirteen synthetic benign corpora are used to measure false-positive behavior across the detection set.
+Fourteen synthetic benign corpora are used to measure false-positive behavior across the detection set.
 
 | Detection | Dataset | Unit | Cases | Matches | FPR |
 |---|---|---|---:|---:|---:|
@@ -20,12 +20,13 @@ Thirteen synthetic benign corpora are used to measure false-positive behavior ac
 | `DET-K8S-001` | `kubernetes-audit.json` | event | 20 | 0 | 0.00 |
 | `DET-K8S-002` | `falco.json` | event | 20 | 0 | 0.00 |
 | `DET-SAA-003` | `identity-saas-correlation.json` | scenario | 6 | 0 | 0.00 |
+| `DET-SAA-004` | `identity-saas-delegation.json` | scenario | 6 | 0 | 0.00 |
 
 The endpoint baseline also has a before/after tuning result: the initial query matched 8/20 approved management-agent events, and the tuned query matches 0/20. See [`false-positive-tuning.md`](false-positive-tuning.md).
 
 The SaaS forwarding baseline has the same measurement: the initial query matched 8/20 internal forwarding rules, and the tuned query matches 0/20. See [`saas-forwarding-tuning.md`](saas-forwarding-tuning.md).
 
-The identity correlation baseline contains six scenarios with only one step, mismatched users, or activity outside the 30-minute window. The identity-to-SaaS correlation baseline contains six scenarios covering the same failure modes for a one-hour window. Both are evaluated at scenario level.
+The identity correlation baseline contains six scenarios with only one step, mismatched users, or activity outside the 30-minute window. The identity-to-SaaS correlation and delegation baselines contain six scenarios each covering the same failure modes for a one-hour window. All three are evaluated at scenario level.
 
 ## Baseline contents
 
@@ -42,6 +43,7 @@ The identity correlation baseline contains six scenarios with only one step, mis
 - **Kubernetes audit:** unprivileged pod creation, deployment and service changes, inventory, and RBAC operations.
 - **Falco:** file, process, network, package, and configuration alerts without terminal-shell events.
 - **Identity-to-SaaS correlation:** sign-in-only, rule-only, mismatched-user, out-of-window, normal-sign-in, and non-forwarding-rule scenarios.
+- **Identity-to-SaaS delegation:** sign-in-only, permission-only, mismatched-user, out-of-window, normal-sign-in, and SendAs-only scenarios.
 
 ## Approved exceptions
 
@@ -109,6 +111,10 @@ edl detection baseline \
   --dataset lab/datasets/synthetic/benign-baseline/identity-saas-correlation.json
 
 edl detection baseline \
+  --id DET-SAA-004 \
+  --dataset lab/datasets/synthetic/benign-baseline/identity-saas-delegation.json
+
+edl detection baseline \
   --id DET-SAA-001 \
   --dataset lab/datasets/synthetic/benign-baseline/m365-forwarding.json
 ```
@@ -120,7 +126,7 @@ The lab test [`tests/lab/test_benign_baselines.py`](../tests/lab/test_benign_bas
 - The corpora are synthetic and small.
 - Approved owner additions, access-key automation, and logging maintenance are excluded rather than measured.
 - The baselines test query behavior, not analyst workload or production prevalence.
-- Each correlation baseline covers six curated scenarios; neither models long-running sequences or event lateness.
+- Each of the three correlation baselines covers six curated scenarios; they do not model long-running sequences or event lateness.
 - The SaaS baselines exclude events that intentionally match the detections, such as owner promotions and mail-forwarding rules.
 - The SaaS baselines are small and do not measure tenant or organization prevalence.
 - The SaaS forwarding tuning study covers one tenant accepted domain and one forwarding-recipient shape.

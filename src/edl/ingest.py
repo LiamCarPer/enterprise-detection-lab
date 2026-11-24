@@ -212,6 +212,18 @@ def _m365_forward_recipients(raw: Mapping[str, Any]) -> list[str]:
     return recipients
 
 
+def _access_rights(value: Any) -> list[str]:
+    """Expand an Exchange access-rights value into individual rights."""
+    if isinstance(value, str):
+        return [part.strip() for part in value.replace(";", ",").split(",") if part.strip()]
+    if isinstance(value, list):
+        rights: list[str] = []
+        for item in value:
+            rights.extend(_access_rights(item))
+        return rights
+    return []
+
+
 def _m365_parameters(raw: Mapping[str, Any]) -> dict[str, Any]:
     return dict(_m365_parameter_items(raw))
 
@@ -562,6 +574,9 @@ def normalize_m365_audit(raw: Mapping[str, Any]) -> dict[str, Any]:
         "forward_domain": _recipient_domain(recipients[0]) if recipients else None,
         "forward_domains": domains,
         "forward_external": forward_external,
+        "mailbox": _meaningful(parameters.get("Identity") or parameters.get("Mailbox")),
+        "delegate": _meaningful(parameters.get("User") or parameters.get("Member")),
+        "access_rights": _access_rights(parameters.get("AccessRights")),
     }
     return _compact(document)
 

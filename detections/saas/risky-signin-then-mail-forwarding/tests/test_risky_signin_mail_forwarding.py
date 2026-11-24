@@ -39,3 +39,10 @@ def test_metadata_declares_both_sources() -> None:
     meta = (PACKAGE / "meta.yaml").read_text()
     assert "id: DET-SAA-003" in meta
     assert "T1114.003" in meta
+
+
+def test_one_positive_fixture_uses_update_inbox_rules() -> None:
+    fixtures = json.loads((PACKAGE / "fixtures" / "positive.json").read_text())
+    updates = [item for item in fixtures if item["event"].get("Operation") == "UpdateInboxRules"]
+    assert len(updates) == 1
+    assert updates[0]["event"]["OperationProperties"][0]["Name"] == ("RedirectToRecipientsAction")

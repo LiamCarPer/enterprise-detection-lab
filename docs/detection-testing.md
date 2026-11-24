@@ -95,7 +95,7 @@ case. Correlation metrics are **scenario-level**: each scenario contributes one
 TP/FN/FP/TN result, not one result per event. The metrics `evaluation_unit`
 field and report column make that distinction explicit.
 
-`DET-IDN-003` and `DET-SAA-003` are the reference correlation detections. The first sequences identity sign-in and audit events; the second sequences an identity sign-in with a Microsoft 365 mailbox rule.
+`DET-IDN-003`, `DET-SAA-003`, and `DET-SAA-004` are the reference correlation detections. They sequence identity sign-in with audit events, a Microsoft 365 mailbox rule, and Microsoft 365 mailbox delegation respectively.
 
 ## Baseline evaluation
 

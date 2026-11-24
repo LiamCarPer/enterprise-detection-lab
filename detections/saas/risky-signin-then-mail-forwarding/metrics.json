@@ -1,13 +1,13 @@
 {
   "detection_id": "DET-SAA-003",
-  "measured_at": "2026-11-24T08:32:57.981819Z",
+  "measured_at": "2026-11-24T10:30:01.682285Z",
   "sample_size": 6,
   "evaluation_unit": "scenario",
   "precision": 1.0,
   "recall": 1.0,
   "false_positive_rate": 0.0,
-  "latency_ms_p50": 13.42,
-  "latency_ms_p95": 16.771,
+  "latency_ms_p50": 5.467,
+  "latency_ms_p95": 13.278,
   "method": "Synthetic sequence replay against OpenSearch; native query plus correlation evaluation.",
   "limitations": [
     "Curated synthetic scenarios; sample size 6.",

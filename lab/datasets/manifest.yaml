@@ -168,3 +168,10 @@ datasets:
     license: synthetic
     provenance: Generated for this repository. No real users, tenants, or IPs.
     sha256: afb513cafd751275910e1d600cb66d482c83c29d8f35b7bff0a0ea399b101071
+  - id: synthetic-identity-saas-delegation-benign-baseline
+    source: entra-signin+m365-audit
+    path: lab/datasets/synthetic/benign-baseline/identity-saas-delegation.json
+    synthetic: true
+    license: synthetic
+    provenance: Generated for this repository. No real users, tenants, or IPs.
+    sha256: 278187ab6e5572ace8be0501b3a22ee6ec2ec7e4fd45b0af8c7f6834f5d4158a

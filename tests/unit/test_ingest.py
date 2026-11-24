@@ -1883,3 +1883,37 @@ def test_normalize_m365_audit_ignores_unusable_recipient_values() -> None:
     )
     assert "forward_to" not in document
     assert "forward_external" not in document
+
+
+def test_normalize_m365_audit_maps_mailbox_permission_fields() -> None:
+    document = normalize_m365_audit(
+        {
+            **M365_RAW,
+            "Operation": "Add-MailboxPermission",
+            "ObjectId": "shared-mailbox@example.test",
+            "Parameters": [
+                {"Name": "Identity", "Value": "shared-mailbox@example.test"},
+                {"Name": "User", "Value": "analyst@example.test"},
+                {"Name": "AccessRights", "Value": "FullAccess, SendAs"},
+            ],
+        }
+    )
+    assert document["mailbox"] == "shared-mailbox@example.test"
+    assert document["delegate"] == "analyst@example.test"
+    assert document["access_rights"] == ["FullAccess", "SendAs"]
+
+
+def test_normalize_m365_audit_maps_mailbox_permission_list_rights() -> None:
+    document = normalize_m365_audit(
+        {
+            **M365_RAW,
+            "Operation": "Add-MailboxPermission",
+            "Parameters": [
+                {"Name": "Identity", "Value": "shared-mailbox@example.test"},
+                {"Name": "Member", "Value": "analyst@example.test"},
+                {"Name": "AccessRights", "Value": ["FullAccess", "SendAs"]},
+            ],
+        }
+    )
+    assert document["delegate"] == "analyst@example.test"
+    assert document["access_rights"] == ["FullAccess", "SendAs"]

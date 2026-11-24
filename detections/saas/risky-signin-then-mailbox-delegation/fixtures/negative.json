@@ -1,0 +1,82 @@
+[
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000019201",
+      "createdDateTime": "2026-11-02T09:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.11",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "neg-1",
+    "note": "Risky sign-in step"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-02T10:30:00Z",
+      "Id": "00000000-0000-4000-8000-000000019202",
+      "Operation": "Add-MailboxPermission",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.11",
+      "ObjectId": "executive@example.test",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {"Name": "Identity", "Value": "executive@example.test"},
+        {"Name": "User", "Value": "analyst@example.test"},
+        {"Name": "AccessRights", "Value": "FullAccess"}
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "neg-1",
+    "note": "Delegation is outside the 60-minute window"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000019203",
+      "createdDateTime": "2026-11-02T11:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Azure Portal",
+      "ipAddress": "198.51.100.77",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "high"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "neg-2",
+    "note": "Risky sign-in step"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-02T11:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000019204",
+      "Operation": "Add-MailboxPermission",
+      "UserId": "admin@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "198.51.100.77",
+      "ObjectId": "finance-archive@example.test",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {"Name": "Identity", "Value": "finance-archive@example.test"},
+        {"Name": "User", "Value": "contractor@example.test"},
+        {"Name": "AccessRights", "Value": "FullAccess"}
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "neg-2",
+    "note": "Delegation is performed by a different user"
+  }
+]

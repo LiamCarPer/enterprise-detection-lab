@@ -29,9 +29,18 @@
       "ObjectId": "analyst@example.test\\Inbox\\Forward invoices",
       "ResultStatus": "Success",
       "Parameters": [
-        {"Name": "Name", "Value": "Forward invoices"},
-        {"Name": "SubjectContainsWords", "Value": "invoice"},
-        {"Name": "ForwardTo", "Value": "external@example.net"}
+        {
+          "Name": "Name",
+          "Value": "Forward invoices"
+        },
+        {
+          "Name": "SubjectContainsWords",
+          "Value": "invoice"
+        },
+        {
+          "Name": "ForwardTo",
+          "Value": "external@example.net"
+        }
       ]
     },
     "source": "m365-audit",
@@ -61,7 +70,7 @@
     "event": {
       "CreationTime": "2026-11-01T10:20:00Z",
       "Id": "00000000-0000-4000-8000-000000016104",
-      "Operation": "Set-InboxRule",
+      "Operation": "UpdateInboxRules",
       "UserId": "finance@example.test",
       "Workload": "Exchange",
       "RecordType": 2,
@@ -69,14 +78,25 @@
       "ObjectId": "finance@example.test\\Inbox\\Redirect wire",
       "ResultStatus": "Success",
       "Parameters": [
-        {"Name": "Name", "Value": "Redirect wire"},
-        {"Name": "BodyContainsWords", "Value": "wire"},
-        {"Name": "RedirectTo", "Value": "collector@example.org"}
+        {
+          "Name": "Name",
+          "Value": "Redirect wire"
+        },
+        {
+          "Name": "BodyContainsWords",
+          "Value": "wire"
+        }
+      ],
+      "OperationProperties": [
+        {
+          "Name": "RedirectToRecipientsAction",
+          "Value": "collector@example.org"
+        }
       ]
     },
     "source": "m365-audit",
     "synthetic": true,
     "scenario": "pos-2",
-    "note": "Mail redirect rule after the risky sign-in"
+    "note": "Mail redirect rule updated after the risky sign-in"
   }
 ]
