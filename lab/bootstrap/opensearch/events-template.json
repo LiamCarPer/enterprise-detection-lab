@@ -49,6 +49,7 @@
         "forward_domains": { "type": "keyword" },
         "forward_external": { "type": "boolean" },
         "mailbox": { "type": "keyword" },
+        "folder": { "type": "keyword" },
         "delegate": { "type": "keyword" },
         "access_rights": { "type": "keyword" },
         "organization": { "type": "keyword" },

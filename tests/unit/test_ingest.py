@@ -1917,3 +1917,40 @@ def test_normalize_m365_audit_maps_mailbox_permission_list_rights() -> None:
     )
     assert document["delegate"] == "analyst@example.test"
     assert document["access_rights"] == ["FullAccess", "SendAs"]
+
+
+def test_normalize_m365_audit_maps_folder_permission_fields() -> None:
+    document = normalize_m365_audit(
+        {
+            **M365_RAW,
+            "Operation": "Add-MailboxFolderPermission",
+            "ObjectId": "executive@example.test:\\Calendar",
+            "Parameters": [
+                {"Name": "Identity", "Value": "executive@example.test:\\Calendar"},
+                {"Name": "User", "Value": "analyst@example.test"},
+                {"Name": "AccessRights", "Value": "Editor"},
+            ],
+        }
+    )
+    assert document["mailbox"] == "executive@example.test"
+    assert document["folder"] == "Calendar"
+    assert document["delegate"] == "analyst@example.test"
+    assert document["access_rights"] == ["Editor"]
+
+
+def test_normalize_m365_audit_prefers_folder_name_parameter() -> None:
+    document = normalize_m365_audit(
+        {
+            **M365_RAW,
+            "Operation": "Add-MailboxFolderPermission",
+            "Parameters": [
+                {"Name": "Identity", "Value": "executive@example.test:\\Inbox"},
+                {"Name": "FolderName", "Value": "Calendar"},
+                {"Name": "User", "Value": "analyst@example.test"},
+                {"Name": "AccessRights", "Value": "Owner"},
+            ],
+        }
+    )
+    assert document["mailbox"] == "executive@example.test"
+    assert document["folder"] == "Calendar"
+    assert document["access_rights"] == ["Owner"]

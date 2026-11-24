@@ -560,6 +560,14 @@ def normalize_m365_audit(raw: Mapping[str, Any]) -> dict[str, Any]:
     )
     accepted = accepted_mail_domains()
     forward_external = any(domain not in accepted for domain in domains) if domains else None
+    identity = _meaningful(parameters.get("Identity") or parameters.get("Mailbox"))
+    folder = _meaningful(parameters.get("FolderName"))
+    mailbox = identity
+    if isinstance(identity, str) and ":" in identity:
+        mailbox_part, folder_part = identity.split(":", 1)
+        mailbox = mailbox_part.strip() or identity
+        if folder is None:
+            folder = folder_part.strip().lstrip("\\/") or None
     document: dict[str, Any] = {
         "event_id": raw.get("Id"),
         "user": raw.get("UserId"),
@@ -574,7 +582,8 @@ def normalize_m365_audit(raw: Mapping[str, Any]) -> dict[str, Any]:
         "forward_domain": _recipient_domain(recipients[0]) if recipients else None,
         "forward_domains": domains,
         "forward_external": forward_external,
-        "mailbox": _meaningful(parameters.get("Identity") or parameters.get("Mailbox")),
+        "mailbox": mailbox,
+        "folder": folder,
         "delegate": _meaningful(parameters.get("User") or parameters.get("Member")),
         "access_rights": _access_rights(parameters.get("AccessRights")),
     }

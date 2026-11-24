@@ -22,6 +22,20 @@
               { "term": { "access_rights": "FullAccess" } }
             ]
           }
+        },
+        {
+          "bool": {
+            "filter": [
+              { "term": { "source": "m365-audit" } },
+              { "term": { "action": "Add-MailboxFolderPermission" } },
+              { "term": { "result": "success" } },
+              {
+                "terms": {
+                  "access_rights": ["Owner", "PublishingEditor", "Editor"]
+                }
+              }
+            ]
+          }
         }
       ],
       "minimum_should_match": 1

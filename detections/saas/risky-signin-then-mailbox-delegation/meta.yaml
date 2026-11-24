@@ -5,7 +5,7 @@ status: tested
 domain: saas
 severity: high
 hypothesis: A risky single-factor sign-in followed by a FullAccess mailbox delegation within an hour can indicate account compromise and email collection.
-description: Correlates an elevated-risk single-factor sign-in with a successful Microsoft 365 FullAccess mailbox permission grant for the same user within 60 minutes.
+description: Correlates an elevated-risk single-factor sign-in with a successful Microsoft 365 FullAccess mailbox grant or high-privilege folder permission for the same user within 60 minutes.
 owner: detection-engineering
 created: "2026-11-25"
 updated: "2026-11-25"
@@ -52,9 +52,9 @@ correlation:
     - source: m365-audit
       event_class: mailbox
 tests:
-  positive: 4
-  negative: 4
-  benign: 4
+  positive: 6
+  negative: 6
+  benign: 6
 false_positives:
   - An approved delegation request after legitimate travel or a new device.
   - A risk false positive followed by helpdesk mailbox administration.

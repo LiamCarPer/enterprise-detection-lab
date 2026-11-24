@@ -28,9 +28,18 @@
       "ObjectId": "finance-archive@example.test",
       "ResultStatus": "Success",
       "Parameters": [
-        {"Name": "Identity", "Value": "finance-archive@example.test"},
-        {"Name": "User", "Value": "finance@example.test"},
-        {"Name": "AccessRights", "Value": "FullAccess"}
+        {
+          "Name": "Identity",
+          "Value": "finance-archive@example.test"
+        },
+        {
+          "Name": "User",
+          "Value": "finance@example.test"
+        },
+        {
+          "Name": "AccessRights",
+          "Value": "FullAccess"
+        }
       ]
     },
     "source": "m365-audit",
@@ -66,9 +75,18 @@
       "ObjectId": "executive@example.test",
       "ResultStatus": "Success",
       "Parameters": [
-        {"Name": "Identity", "Value": "executive@example.test"},
-        {"Name": "User", "Value": "contractor@example.test"},
-        {"Name": "AccessRights", "Value": "FullAccess"}
+        {
+          "Name": "Identity",
+          "Value": "executive@example.test"
+        },
+        {
+          "Name": "User",
+          "Value": "contractor@example.test"
+        },
+        {
+          "Name": "AccessRights",
+          "Value": "FullAccess"
+        }
       ]
     },
     "source": "m365-audit",
@@ -104,9 +122,18 @@
       "ObjectId": "executive@example.test",
       "ResultStatus": "Success",
       "Parameters": [
-        {"Name": "Identity", "Value": "executive@example.test"},
-        {"Name": "User", "Value": "analyst@example.test"},
-        {"Name": "AccessRights", "Value": "FullAccess"}
+        {
+          "Name": "Identity",
+          "Value": "executive@example.test"
+        },
+        {
+          "Name": "User",
+          "Value": "analyst@example.test"
+        },
+        {
+          "Name": "AccessRights",
+          "Value": "FullAccess"
+        }
       ]
     },
     "source": "m365-audit",
@@ -142,9 +169,18 @@
       "ObjectId": "executive@example.test",
       "ResultStatus": "Success",
       "Parameters": [
-        {"Name": "Identity", "Value": "executive@example.test"},
-        {"Name": "User", "Value": "analyst@example.test"},
-        {"Name": "AccessRights", "Value": "FullAccess"}
+        {
+          "Name": "Identity",
+          "Value": "executive@example.test"
+        },
+        {
+          "Name": "User",
+          "Value": "analyst@example.test"
+        },
+        {
+          "Name": "AccessRights",
+          "Value": "FullAccess"
+        }
       ]
     },
     "source": "m365-audit",
@@ -180,13 +216,99 @@
       "ObjectId": "finance-archive@example.test",
       "ResultStatus": "Success",
       "Parameters": [
-        {"Name": "Identity", "Value": "finance-archive@example.test"},
-        {"Name": "User", "Value": "finance@example.test"},
-        {"Name": "AccessRights", "Value": "SendAs"}
+        {
+          "Name": "Identity",
+          "Value": "finance-archive@example.test"
+        },
+        {
+          "Name": "User",
+          "Value": "finance@example.test"
+        },
+        {
+          "Name": "AccessRights",
+          "Value": "SendAs"
+        }
       ]
     },
     "source": "m365-audit",
     "synthetic": true,
     "scenario": "sendas-only"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T09:20:00Z",
+      "Id": "00000000-0000-4000-8000-000000020201",
+      "Operation": "Add-MailboxFolderPermission",
+      "UserId": "finance@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "198.51.100.23",
+      "ObjectId": "finance-archive@example.test:\\Calendar",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "Identity",
+          "Value": "finance-archive@example.test:\\Calendar"
+        },
+        {
+          "Name": "User",
+          "Value": "finance@example.test"
+        },
+        {
+          "Name": "AccessRights",
+          "Value": "Editor"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "folder-only"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000020202",
+      "createdDateTime": "2026-11-18T09:30:00Z",
+      "userPrincipalName": "finance@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.11",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "folder-low-rights"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T09:40:00Z",
+      "Id": "00000000-0000-4000-8000-000000020203",
+      "Operation": "Add-MailboxFolderPermission",
+      "UserId": "finance@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.11",
+      "ObjectId": "finance-archive@example.test:\\Calendar",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "Identity",
+          "Value": "finance-archive@example.test:\\Calendar"
+        },
+        {
+          "Name": "User",
+          "Value": "finance@example.test"
+        },
+        {
+          "Name": "AccessRights",
+          "Value": "Reviewer"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "folder-low-rights"
   }
 ]

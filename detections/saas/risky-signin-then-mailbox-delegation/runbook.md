@@ -2,13 +2,13 @@
 
 ## Alert meaning
 
-A user completed a successful interactive sign-in with medium or high risk and single-factor authentication, then granted FullAccess to a mailbox within 60 minutes. The sequence can indicate credential compromise followed by email collection.
+A user completed a successful interactive sign-in with medium or high risk and single-factor authentication, then granted FullAccess to a mailbox or high-privilege access to a mailbox folder within 60 minutes. The sequence can indicate credential compromise followed by email collection.
 
 ## Triage
 
 1. Confirm both events share the same user and occur within the window.
 2. Review the sign-in risk detections, source IP, device, and authentication method.
-3. Identify the target mailbox, delegate identity, access rights, and whether the delegation was expected.
+3. Identify the target mailbox or folder, delegate identity, access rights, and whether the delegation was expected.
 4. Review the mailbox for mail access, forwarding rules, delegate changes, and permission changes.
 5. Check whether the actor has a helpdesk or mailbox-administration role.
 6. Pivot to endpoint, cloud, and other SaaS telemetry for the same user and time window.
@@ -17,7 +17,7 @@ A user completed a successful interactive sign-in with medium or high risk and s
 ## Evidence
 
 - Risky sign-in event and risk detection names
-- Mailbox permission event, target mailbox, delegate, and access rights
+- Mailbox or folder permission event, target mailbox, folder, delegate, and access rights
 - `user`, `src_ip`, `event_time`, and event IDs for both steps
 - Raw M365 `Parameters`
 - Mailbox ownership and delegation history

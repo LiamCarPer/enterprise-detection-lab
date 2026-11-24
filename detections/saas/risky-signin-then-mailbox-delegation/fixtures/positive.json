@@ -29,9 +29,18 @@
       "ObjectId": "executive@example.test",
       "ResultStatus": "Success",
       "Parameters": [
-        {"Name": "Identity", "Value": "executive@example.test"},
-        {"Name": "User", "Value": "analyst@example.test"},
-        {"Name": "AccessRights", "Value": "FullAccess"}
+        {
+          "Name": "Identity",
+          "Value": "executive@example.test"
+        },
+        {
+          "Name": "User",
+          "Value": "analyst@example.test"
+        },
+        {
+          "Name": "AccessRights",
+          "Value": "FullAccess"
+        }
       ]
     },
     "source": "m365-audit",
@@ -69,14 +78,72 @@
       "ObjectId": "finance-archive@example.test",
       "ResultStatus": "Success",
       "Parameters": [
-        {"Name": "Identity", "Value": "finance-archive@example.test"},
-        {"Name": "User", "Value": "finance@example.test"},
-        {"Name": "AccessRights", "Value": "FullAccess, SendAs"}
+        {
+          "Name": "Identity",
+          "Value": "finance-archive@example.test"
+        },
+        {
+          "Name": "User",
+          "Value": "finance@example.test"
+        },
+        {
+          "Name": "AccessRights",
+          "Value": "FullAccess, SendAs"
+        }
       ]
     },
     "source": "m365-audit",
     "synthetic": true,
     "scenario": "pos-2",
     "note": "FullAccess delegation with SendAs after the risky sign-in"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000021101",
+      "createdDateTime": "2026-11-01T11:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "192.0.2.44",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "pos-3",
+    "note": "Risky sign-in step"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-01T11:15:00Z",
+      "Id": "00000000-0000-4000-8000-000000021102",
+      "Operation": "Add-MailboxFolderPermission",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "192.0.2.44",
+      "ObjectId": "executive@example.test:\\Calendar",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "Identity",
+          "Value": "executive@example.test:\\Calendar"
+        },
+        {
+          "Name": "User",
+          "Value": "analyst@example.test"
+        },
+        {
+          "Name": "AccessRights",
+          "Value": "Editor"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "pos-3",
+    "note": "High-privilege folder delegation after the risky sign-in"
   }
 ]

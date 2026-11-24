@@ -29,9 +29,18 @@
       "ObjectId": "executive@example.test",
       "ResultStatus": "Success",
       "Parameters": [
-        {"Name": "Identity", "Value": "executive@example.test"},
-        {"Name": "User", "Value": "analyst@example.test"},
-        {"Name": "AccessRights", "Value": "FullAccess"}
+        {
+          "Name": "Identity",
+          "Value": "executive@example.test"
+        },
+        {
+          "Name": "User",
+          "Value": "analyst@example.test"
+        },
+        {
+          "Name": "AccessRights",
+          "Value": "FullAccess"
+        }
       ]
     },
     "source": "m365-audit",
@@ -69,14 +78,72 @@
       "ObjectId": "finance-archive@example.test",
       "ResultStatus": "Success",
       "Parameters": [
-        {"Name": "Identity", "Value": "finance-archive@example.test"},
-        {"Name": "User", "Value": "finance@example.test"},
-        {"Name": "AccessRights", "Value": "SendAs"}
+        {
+          "Name": "Identity",
+          "Value": "finance-archive@example.test"
+        },
+        {
+          "Name": "User",
+          "Value": "finance@example.test"
+        },
+        {
+          "Name": "AccessRights",
+          "Value": "SendAs"
+        }
       ]
     },
     "source": "m365-audit",
     "synthetic": true,
     "scenario": "benign-2",
     "note": "SendAs-only permission without FullAccess"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000021301",
+      "createdDateTime": "2026-11-03T11:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.10",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "none"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "benign-3",
+    "note": "Normal sign-in without elevated risk"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-03T11:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000021302",
+      "Operation": "Add-MailboxFolderPermission",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.10",
+      "ObjectId": "executive@example.test:\\Calendar",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "Identity",
+          "Value": "executive@example.test:\\Calendar"
+        },
+        {
+          "Name": "User",
+          "Value": "analyst@example.test"
+        },
+        {
+          "Name": "AccessRights",
+          "Value": "Editor"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "benign-3",
+    "note": "Approved folder delegation after a normal sign-in"
   }
 ]
