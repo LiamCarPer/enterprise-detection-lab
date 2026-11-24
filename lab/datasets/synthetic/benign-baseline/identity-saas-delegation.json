@@ -310,5 +310,74 @@
     "source": "m365-audit",
     "synthetic": true,
     "scenario": "folder-low-rights"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T09:50:00Z",
+      "Id": "00000000-0000-4000-8000-000000020301",
+      "Operation": "Add-DistributionGroupMember",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "198.51.100.23",
+      "ObjectId": "finance-team@example.test",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "Identity",
+          "Value": "finance-team@example.test"
+        },
+        {
+          "Name": "Member",
+          "Value": "analyst@example.test"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "group-only"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000020302",
+      "createdDateTime": "2026-11-18T10:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.11",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "group-failed"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T10:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000020303",
+      "Operation": "Add-DistributionGroupMember",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.11",
+      "ObjectId": "finance-team@example.test",
+      "ResultStatus": "Failed",
+      "Parameters": [
+        {
+          "Name": "Identity",
+          "Value": "finance-team@example.test"
+        },
+        {
+          "Name": "Member",
+          "Value": "analyst@example.test"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "group-failed"
   }
 ]

@@ -16,6 +16,7 @@ def test_query_returns_both_correlation_steps() -> None:
     assert "Add-MailboxFolderPermission" in query
     assert "FullAccess" in query
     assert "PublishingEditor" in query
+    assert "Add-DistributionGroupMember" in query
 
 
 def test_correlation_metadata_defines_window_and_steps() -> None:
@@ -29,10 +30,10 @@ def test_correlation_metadata_defines_window_and_steps() -> None:
 def test_fixtures_use_paired_scenarios() -> None:
     for kind in FIXTURE_KINDS:
         fixtures = json.loads((PACKAGE / "fixtures" / f"{kind}.json").read_text())
-        assert len(fixtures) == 6
+        assert len(fixtures) == 8
         assert all(item["synthetic"] is True for item in fixtures)
         assert all("scenario" in item for item in fixtures)
-        assert len({item["scenario"] for item in fixtures}) == 3
+        assert len({item["scenario"] for item in fixtures}) == 4
 
 
 def test_metadata_declares_the_detection_identity() -> None:
@@ -48,3 +49,12 @@ def test_one_positive_fixture_uses_folder_permission() -> None:
     ]
     assert len(folders) == 1
     assert folders[0]["event"]["Parameters"][2]["Value"] == "Editor"
+
+
+def test_one_positive_fixture_uses_distribution_group_membership() -> None:
+    fixtures = json.loads((PACKAGE / "fixtures" / "positive.json").read_text())
+    groups = [
+        item for item in fixtures if item["event"].get("Operation") == "Add-DistributionGroupMember"
+    ]
+    assert len(groups) == 1
+    assert groups[0]["event"]["Parameters"][1]["Value"] == "analyst@example.test"

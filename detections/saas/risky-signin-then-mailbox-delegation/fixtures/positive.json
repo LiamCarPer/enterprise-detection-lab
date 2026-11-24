@@ -145,5 +145,50 @@
     "synthetic": true,
     "scenario": "pos-3",
     "note": "High-privilege folder delegation after the risky sign-in"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000022101",
+      "createdDateTime": "2026-11-01T13:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "192.0.2.55",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "pos-4",
+    "note": "Risky sign-in step"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-01T13:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000022102",
+      "Operation": "Add-DistributionGroupMember",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "192.0.2.55",
+      "ObjectId": "finance-team@example.test",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "Identity",
+          "Value": "finance-team@example.test"
+        },
+        {
+          "Name": "Member",
+          "Value": "analyst@example.test"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "pos-4",
+    "note": "Distribution-group membership added after the risky sign-in"
   }
 ]

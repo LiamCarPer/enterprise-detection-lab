@@ -145,5 +145,50 @@
     "synthetic": true,
     "scenario": "neg-3",
     "note": "Folder permission below the high-privilege threshold"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000022201",
+      "createdDateTime": "2026-11-02T14:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "192.0.2.55",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "neg-4",
+    "note": "Risky sign-in step"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-02T14:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000022202",
+      "Operation": "Add-DistributionGroupMember",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "192.0.2.55",
+      "ObjectId": "finance-team@example.test",
+      "ResultStatus": "Failed",
+      "Parameters": [
+        {
+          "Name": "Identity",
+          "Value": "finance-team@example.test"
+        },
+        {
+          "Name": "Member",
+          "Value": "analyst@example.test"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "neg-4",
+    "note": "Distribution-group membership addition failed"
   }
 ]

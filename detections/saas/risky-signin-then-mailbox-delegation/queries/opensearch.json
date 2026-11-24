@@ -36,6 +36,15 @@
               }
             ]
           }
+        },
+        {
+          "bool": {
+            "filter": [
+              { "term": { "source": "m365-audit" } },
+              { "term": { "action": "Add-DistributionGroupMember" } },
+              { "term": { "result": "success" } }
+            ]
+          }
         }
       ],
       "minimum_should_match": 1

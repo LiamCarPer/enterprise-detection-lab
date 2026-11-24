@@ -562,8 +562,15 @@ def normalize_m365_audit(raw: Mapping[str, Any]) -> dict[str, Any]:
     forward_external = any(domain not in accepted for domain in domains) if domains else None
     identity = _meaningful(parameters.get("Identity") or parameters.get("Mailbox"))
     folder = _meaningful(parameters.get("FolderName"))
+    operation = str(raw.get("Operation", ""))
+    group: Any = None
+    group_member: Any = None
     mailbox = identity
-    if isinstance(identity, str) and ":" in identity:
+    if operation in {"Add-DistributionGroupMember", "Add-UnifiedGroupLinks"}:
+        group = identity
+        group_member = _meaningful(parameters.get("Member") or parameters.get("Links"))
+        mailbox = None
+    elif isinstance(identity, str) and ":" in identity:
         mailbox_part, folder_part = identity.split(":", 1)
         mailbox = mailbox_part.strip() or identity
         if folder is None:
@@ -584,6 +591,8 @@ def normalize_m365_audit(raw: Mapping[str, Any]) -> dict[str, Any]:
         "forward_external": forward_external,
         "mailbox": mailbox,
         "folder": folder,
+        "group": group,
+        "group_member": group_member,
         "delegate": _meaningful(parameters.get("User") or parameters.get("Member")),
         "access_rights": _access_rights(parameters.get("AccessRights")),
     }

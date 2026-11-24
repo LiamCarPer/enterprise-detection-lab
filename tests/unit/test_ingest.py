@@ -1954,3 +1954,20 @@ def test_normalize_m365_audit_prefers_folder_name_parameter() -> None:
     assert document["mailbox"] == "executive@example.test"
     assert document["folder"] == "Calendar"
     assert document["access_rights"] == ["Owner"]
+
+
+def test_normalize_m365_audit_maps_distribution_group_member() -> None:
+    document = normalize_m365_audit(
+        {
+            **M365_RAW,
+            "Operation": "Add-DistributionGroupMember",
+            "ObjectId": "finance-team@example.test",
+            "Parameters": [
+                {"Name": "Identity", "Value": "finance-team@example.test"},
+                {"Name": "Member", "Value": "analyst@example.test"},
+            ],
+        }
+    )
+    assert document["group"] == "finance-team@example.test"
+    assert document["group_member"] == "analyst@example.test"
+    assert "mailbox" not in document

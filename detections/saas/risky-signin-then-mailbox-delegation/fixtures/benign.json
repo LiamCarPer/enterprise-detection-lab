@@ -145,5 +145,50 @@
     "synthetic": true,
     "scenario": "benign-3",
     "note": "Approved folder delegation after a normal sign-in"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000022301",
+      "createdDateTime": "2026-11-03T13:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.10",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "none"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "benign-4",
+    "note": "Normal sign-in without elevated risk"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-03T13:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000022302",
+      "Operation": "Add-DistributionGroupMember",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.10",
+      "ObjectId": "finance-team@example.test",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "Identity",
+          "Value": "finance-team@example.test"
+        },
+        {
+          "Name": "Member",
+          "Value": "analyst@example.test"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "benign-4",
+    "note": "Approved group membership after a normal sign-in"
   }
 ]

@@ -179,7 +179,7 @@ Each contract records event time and ingest time fields, deduplication keys, req
 | [`DET-SAA-001`](detections/saas/inbox-rule-mail-forwarding/) | SaaS | External inbox rule mail forwarding | Tested |
 | [`DET-SAA-002`](detections/saas/github-organization-owner-added/) | SaaS | GitHub organization owner added | Tested |
 | [`DET-SAA-003`](detections/saas/risky-signin-then-mail-forwarding/) | SaaS | Risky sign-in followed by mail forwarding rule | Tested |
-| [`DET-SAA-004`](detections/saas/risky-signin-then-mailbox-delegation/) | SaaS | Risky sign-in followed by mailbox delegation | Tested |
+| [`DET-SAA-004`](detections/saas/risky-signin-then-mailbox-delegation/) | SaaS | Risky sign-in followed by mailbox or group delegation | Tested |
 | [`DET-NET-001`](detections/network/long-txt-dns-query/) | Network | Long TXT DNS query | Tested |
 | [`DET-NET-002`](detections/network/high-severity-malware-alert/) | Network | High-severity malware or trojan alert | Tested |
 | [`DET-K8S-001`](detections/kubernetes/privileged-pod-created/) | Kubernetes | Privileged pod created | Tested |

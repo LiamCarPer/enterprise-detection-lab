@@ -1,11 +1,11 @@
 id: DET-SAA-004
-title: Risky Sign-In Followed by Mailbox Delegation
+title: Risky Sign-In Followed by Mailbox or Group Delegation
 version: 1.0.0
 status: tested
 domain: saas
 severity: high
 hypothesis: A risky single-factor sign-in followed by a FullAccess mailbox delegation within an hour can indicate account compromise and email collection.
-description: Correlates an elevated-risk single-factor sign-in with a successful Microsoft 365 FullAccess mailbox grant or high-privilege folder permission for the same user within 60 minutes.
+description: Correlates an elevated-risk single-factor sign-in with a successful Microsoft 365 mailbox grant, high-privilege folder permission, or distribution-group membership addition for the same user within 60 minutes.
 owner: detection-engineering
 created: "2026-11-25"
 updated: "2026-11-25"
@@ -52,9 +52,9 @@ correlation:
     - source: m365-audit
       event_class: mailbox
 tests:
-  positive: 6
-  negative: 6
-  benign: 6
+  positive: 8
+  negative: 8
+  benign: 8
 false_positives:
   - An approved delegation request after legitimate travel or a new device.
   - A risk false positive followed by helpdesk mailbox administration.

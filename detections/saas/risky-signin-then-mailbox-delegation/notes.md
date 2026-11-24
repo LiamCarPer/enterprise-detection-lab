@@ -11,6 +11,7 @@ The native query returns candidate events from two sources:
 - successful interactive sign-ins with medium or high risk and single-factor authentication
 - successful `Add-MailboxPermission` events with the `FullAccess` right
 - successful `Add-MailboxFolderPermission` events with `Owner`, `PublishingEditor`, or `Editor` rights
+- successful `Add-DistributionGroupMember` events
 
 `correlation.group_by: [user]` requires both steps to share the user. `window_seconds: 3600` allows for Microsoft 365 audit latency while keeping the sequence tight.
 
@@ -24,18 +25,18 @@ The normalizer reads `Identity`, `User` or `Member`, and `AccessRights` from the
 
 ## Test corpus
 
-The package contains 18 synthetic events across nine scenarios:
+The package contains 24 synthetic events across twelve scenarios:
 
-- 3 positive scenarios with an in-window FullAccess mailbox grant or high-privilege folder grant by the same user.
-- 3 negative scenarios: grant outside the window; grant by a different user; low-privilege folder grant.
-- 3 benign scenarios: approved mailbox or folder delegation after a normal sign-in; SendAs-only permission after a risky sign-in.
+- 4 positive scenarios with an in-window FullAccess mailbox grant, high-privilege folder grant, or distribution-group addition by the same user.
+- 4 negative scenarios: grant outside the window; grant by a different user; low-privilege folder grant; failed group addition.
+- 4 benign scenarios: approved mailbox, folder, or group delegation after a normal sign-in; SendAs-only permission after a risky sign-in.
 
-Metrics are scenario-level: 3 positive scenarios, 3 negative scenarios, and 3 benign scenarios.
+Metrics are scenario-level: 4 positive scenarios, 4 negative scenarios, and 4 benign scenarios.
 
 ## Known gaps
 
 - Grouping by `user` assumes the actor appears in both events; delegated mailbox administration may use a different administrative identity.
-- The query covers mailbox and folder permissions but not distribution-group membership.
+- The query covers mailbox permissions, folder permissions, and distribution-group additions, but not distribution-group ownership changes.
 - `access_rights` matching is case-sensitive and depends on the Exchange value shape.
 - The detection does not require the sign-in and delegation to come from the same IP or device.
 - An approved helpdesk workflow can produce the same sequence.
