@@ -15,6 +15,7 @@ import httpx
 from . import config
 from .errors import IngestError
 from .telemetry import TelemetrySource, load_sources
+from .tenant import accepted_mail_domains
 from .utils import read_json, sha256_file
 
 Normalizer = Callable[[Mapping[str, Any]], dict[str, Any]]
@@ -545,7 +546,7 @@ def normalize_m365_audit(raw: Mapping[str, Any]) -> dict[str, Any]:
     domains = sorted(
         {domain for recipient in recipients if (domain := _recipient_domain(recipient)) is not None}
     )
-    accepted = config.accepted_mail_domains()
+    accepted = accepted_mail_domains()
     forward_external = any(domain not in accepted for domain in domains) if domains else None
     document: dict[str, Any] = {
         "event_id": raw.get("Id"),

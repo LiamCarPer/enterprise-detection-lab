@@ -11,7 +11,7 @@ An inbox rule that forwards or redirects mail lets an attacker receive messages 
 - `result = success` excludes failed attempts.
 - `forward_to` is the first forwarding recipient from `Parameters` or `OperationProperties`.
 - `forward_domains` contains every unique recipient domain in the rule.
-- `forward_external` is true when any recipient domain is outside `EDL_ACCEPTED_MAIL_DOMAINS`.
+- `forward_external` is true when any recipient domain is outside the accepted domains in `config/tenant.yaml`.
 - The tuned query uses `forward_external = true`, so accepted domains are configured once and are not hardcoded in the detection.
 
 The native query uses canonical fields. The Sigma rule uses source-level Unified Audit Log fields and is not executed by the runner.
@@ -23,6 +23,7 @@ The native query uses canonical fields. The Sigma rule uses source-level Unified
 | 1.0.0 | Initial detection | Establish SaaS email-collection coverage |
 | 1.1.0 | Exclude the tenant accepted domain | Reduce internal forwarding noise after baseline tuning |
 | 1.2.0 | Normalize all recipients and use configured accepted domains | Support multi-recipient and `UpdateInboxRules` events without hardcoding a domain |
+| 1.2.1 | Load accepted domains from versioned tenant config | Validate the domain inventory during ingestion and repository validation |
 
 ## Test corpus
 
@@ -38,7 +39,7 @@ The committed metrics are from local fixture replay, not production traffic.
 
 ## Known gaps
 
-- Accepted domains come from `EDL_ACCEPTED_MAIL_DOMAINS` and must match the tenant's real domain inventory.
+- Accepted domains come from `config/tenant.yaml` and must match the tenant's real domain inventory.
 - An attacker can use an internal compromised account as the forwarding destination.
 - `OperationProperties` field names can vary across Microsoft 365 workloads and client versions.
 - Mailbox-level forwarding through `Set-Mailbox` is a separate behavior and is not covered.
@@ -46,4 +47,4 @@ The committed metrics are from local fixture replay, not production traffic.
 
 ## Next tuning step
 
-Load accepted domains from a versioned tenant configuration rather than an environment variable, and validate the list during ingestion. Correlate new rules with risky sign-ins, delegated mailbox changes, and subsequent mail access.
+Add delegated mailbox administration and mail-flow changes to the correlation, and correlate new rules with risky sign-ins and subsequent mail access.

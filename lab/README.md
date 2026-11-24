@@ -57,7 +57,7 @@ Network ingestion normalizes Zeek and Suricata samples, including addresses,
 ports, protocol, DNS, HTTP, TLS, alerts, and flow metadata. Kubernetes ingestion
 normalizes audit and Falco samples, including request context, privileged pods,
 namespace, pod, container, and runtime process fields. Accepted mail domains
-are read from `EDL_ACCEPTED_MAIL_DOMAINS` (comma-separated) and control the
+are read from [`config/tenant.yaml`](../config/tenant.yaml) and control the
 `forward_external` field on Microsoft 365 forwarding events. All
 paths validate required fields and UTC timestamps and bulk-index into daily
 `edl-events-<source>-*` indices. Writes use deterministic

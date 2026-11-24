@@ -7,7 +7,7 @@
 | Version | Baseline events | Matches | False-positive rate | Positive fixtures |
 |---|---:|---:|---:|---:|
 | 1.0.0 — initial | 20 | 8 | 0.40 | 5 / 5 |
-| 1.2.0 — tuned | 20 | 0 | 0.00 | 5 / 5 |
+| 1.2.1 — tuned | 20 | 0 | 0.00 | 5 / 5 |
 
 ## Baseline
 
@@ -20,7 +20,7 @@ The baseline is separate from the detection fixture corpus. Its purpose is to ex
 
 ## Tuning change
 
-The normalizer now extracts every forwarding recipient, computes `forward_domains`, and sets `forward_external` by comparing those domains with `EDL_ACCEPTED_MAIL_DOMAINS`. The tuned query requires an external recipient:
+The normalizer now extracts every forwarding recipient, computes `forward_domains`, and sets `forward_external` by comparing those domains with the accepted domains in `config/tenant.yaml`. The tuned query requires an external recipient:
 
 ```json
 {
@@ -30,17 +30,19 @@ The normalizer now extracts every forwarding recipient, computes `forward_domain
 }
 ```
 
-The accepted-domain list is configured in `.env`:
+The accepted-domain list is versioned with the repository:
 
-```bash
-EDL_ACCEPTED_MAIL_DOMAINS=example.test
+```yaml
+version: 1
+accepted_mail_domains:
+  - example.test
 ```
 
 The before query is preserved in [`queries/opensearch-before.json`](../detections/saas/inbox-rule-mail-forwarding/queries/opensearch-before.json) for reproducibility. The final query remains in `queries/opensearch.json`.
 
 ## Trade-off
 
-The exclusion is based on the configured recipient domains. It reduces noise from approved internal forwarding, but an attacker could use a compromised internal account as the forwarding destination. The exclusion is recorded as [`EXC-SAA-001-001`](../detections/exceptions.yaml) with a one-year expiry, owner, change ticket, and compensating controls. The next step is to load accepted domains from a versioned tenant configuration and review internal forwarding through mail-flow and data-loss-prevention controls.
+The exclusion is based on the configured recipient domains. It reduces noise from approved internal forwarding, but an attacker could use a compromised internal account as the forwarding destination. The exclusion is recorded as [`EXC-SAA-001-001`](../detections/exceptions.yaml) with a one-year expiry, owner, change ticket, and compensating controls. The accepted-domain list is validated during ingestion and `edl validate`; internal forwarding remains under mail-flow and data-loss-prevention review.
 
 ## Reproduce
 

@@ -610,3 +610,33 @@ def test_exception_catalog_requires_exceptions_list(tmp_path: Path) -> None:
     path.write_text("version: 1\n", encoding="utf-8")
     report = validate_repository(tmp_path)
     assert any(issue.code == "schema" for issue in report.errors)
+
+
+def test_valid_tenant_config_is_reported(tmp_path: Path) -> None:
+    _valid_repo(tmp_path)
+    config_dir = tmp_path / "config"
+    config_dir.mkdir()
+    (config_dir / "tenant.yaml").write_text(
+        "version: 1\naccepted_mail_domains:\n  - example.test\n",
+        encoding="utf-8",
+    )
+    report = validate_repository(tmp_path)
+    assert report.ok, [issue.message for issue in report.errors]
+    tenant = next(
+        artifact for artifact in report.artifacts if artifact.artifact_type == "tenant-config"
+    )
+    assert tenant.artifact_id == "tenant"
+    assert tenant.status == "valid"
+
+
+def test_invalid_tenant_config_fails(tmp_path: Path) -> None:
+    _valid_repo(tmp_path)
+    config_dir = tmp_path / "config"
+    config_dir.mkdir()
+    (config_dir / "tenant.yaml").write_text(
+        "version: 1\naccepted_mail_domains: []\n",
+        encoding="utf-8",
+    )
+    report = validate_repository(tmp_path)
+    assert not report.ok
+    assert any(issue.code == "tenant.load" for issue in report.errors)

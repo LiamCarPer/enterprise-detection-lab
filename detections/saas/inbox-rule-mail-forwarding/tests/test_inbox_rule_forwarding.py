@@ -36,7 +36,7 @@ def test_fixtures_are_synthetic_and_complete() -> None:
 def test_metadata_declares_the_m365_source() -> None:
     meta = (PACKAGE / "meta.yaml").read_text()
     assert "id: DET-SAA-001" in meta
-    assert "version: 1.2.0" in meta
+    assert "version: 1.2.1" in meta
     assert "source: m365-audit" in meta
     assert "T1114.003" in meta
 

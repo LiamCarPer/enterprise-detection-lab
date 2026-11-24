@@ -139,7 +139,7 @@ Kubernetes additions:
 
 Kubernetes audit normalizes the API verb, object reference, response status, and privileged-container flag. Falco normalizes runtime alert fields and container context from `output_fields`.
 
-Microsoft 365 forwarding recipients are read from both `Parameters` and `OperationProperties`, including `New-InboxRule`, `Set-InboxRule`, and `UpdateInboxRules`. Domains listed in `EDL_ACCEPTED_MAIL_DOMAINS` are treated as internal; `forward_external` is true when any recipient domain is outside that list.
+Microsoft 365 forwarding recipients are read from both `Parameters` and `OperationProperties`, including `New-InboxRule`, `Set-InboxRule`, and `UpdateInboxRules`. Domains listed in [`config/tenant.yaml`](../config/tenant.yaml) are treated as internal; `forward_external` is true when any recipient domain is outside that list. The tenant configuration is schema-validated before ingestion and during `edl validate`.
 
 The canonical fields are mapped in [`lab/bootstrap/opensearch/events-template.json`](../lab/bootstrap/opensearch/events-template.json). Unknown fields remain dynamically mapped; update the template when a field becomes part of the query contract.
 

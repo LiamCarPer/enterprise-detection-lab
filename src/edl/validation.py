@@ -27,6 +27,7 @@ from .telemetry import (
     source_path,
     validate_source_shape,
 )
+from .tenant import load_tenant_config
 
 
 def _issue(
@@ -434,6 +435,24 @@ def _validate_exceptions(
                 pass
 
 
+def _validate_tenant_config(root: Path, report: ValidationReport) -> ArtifactResult | None:
+    path = root / "config" / "tenant.yaml"
+    if not path.exists():
+        return None
+    result = ArtifactResult(
+        artifact_type="tenant-config",
+        artifact_id="tenant",
+        path=relative_path(path, root),
+        status="valid",
+    )
+    try:
+        load_tenant_config(path)
+    except ValidationError as exc:
+        _issue(result, "tenant.load", str(exc))
+        result.status = "invalid"
+    return result
+
+
 def validate_repository(
     root: Path = config.ROOT,
     include_path: Path | None = None,
@@ -517,8 +536,11 @@ def validate_repository(
         source_results.append(result)
 
     _validate_exceptions(root, detection_ids, report)
+    tenant_result = _validate_tenant_config(root, report)
 
     report.artifacts = detection_results + investigation_results + source_results
+    if tenant_result is not None:
+        report.artifacts.append(tenant_result)
     _mark_duplicates(report.artifacts, report)
     report.recompute_summary()
 

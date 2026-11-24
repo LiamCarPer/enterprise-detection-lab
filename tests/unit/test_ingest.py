@@ -1833,9 +1833,15 @@ def test_normalize_m365_audit_reads_update_inbox_rules_properties() -> None:
 
 
 def test_normalize_m365_audit_uses_configured_accepted_domains(
+    tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setenv("EDL_ACCEPTED_MAIL_DOMAINS", "example.net,example.org")
+    tenant = tmp_path / "tenant.yaml"
+    tenant.write_text(
+        "version: 1\naccepted_mail_domains:\n  - example.net\n  - example.org\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setattr("edl.config.TENANT_CONFIG", tenant)
     document = normalize_m365_audit(
         {
             **M365_RAW,

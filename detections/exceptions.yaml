@@ -78,4 +78,4 @@ exceptions:
     compensating_controls:
       - Review internal forwarding through mail-flow and data-loss-prevention controls.
       - Monitor external forwarding separately with DET-SAA-001.
-    notes: The accepted-domain list is set with EDL_ACCEPTED_MAIL_DOMAINS and must be maintained with the tenant domain inventory.
+    notes: The accepted-domain list is maintained in config/tenant.yaml and must match the tenant domain inventory.

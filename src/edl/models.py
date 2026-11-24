@@ -7,9 +7,20 @@ from pathlib import Path
 from typing import Any, Literal
 
 Severity = Literal["error", "warning"]
-ArtifactType = Literal["detection", "investigation", "telemetry-source", "exception-catalog"]
+ArtifactType = Literal[
+    "detection",
+    "investigation",
+    "telemetry-source",
+    "exception-catalog",
+    "tenant-config",
+]
 IssueType = Literal[
-    "detection", "investigation", "telemetry-source", "exception-catalog", "repository"
+    "detection",
+    "investigation",
+    "telemetry-source",
+    "exception-catalog",
+    "tenant-config",
+    "repository",
 ]
 
 

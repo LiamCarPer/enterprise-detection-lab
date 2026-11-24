@@ -200,6 +200,7 @@ Investigations are **Tested** when the timeline, evidence, queries, response, an
 ```text
 .
 ├── src/edl/                 # CLI, validation, ingestion, and lab lifecycle
+├── config/                  # Versioned tenant configuration
 ├── schemas/                 # JSON schemas for artifact metadata and metrics
 ├── telemetry/               # Telemetry source contracts
 ├── detections/              # Detection packages and the reference template

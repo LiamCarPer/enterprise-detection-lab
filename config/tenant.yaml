@@ -1,0 +1,3 @@
+version: 1
+accepted_mail_domains:
+  - example.test

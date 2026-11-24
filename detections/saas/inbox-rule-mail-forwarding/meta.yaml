@@ -1,6 +1,6 @@
 id: DET-SAA-001
 title: External Inbox Rule Mail Forwarding
-version: 1.2.0
+version: 1.2.1
 status: tested
 domain: saas
 severity: high
