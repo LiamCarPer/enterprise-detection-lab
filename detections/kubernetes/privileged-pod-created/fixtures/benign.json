@@ -1,0 +1,81 @@
+[
+  {
+    "event": {
+      "auditID": "00000000-0000-4000-8000-000000012301",
+      "requestReceivedTimestamp": "2026-11-22T14:00:00Z",
+      "stage": "ResponseComplete",
+      "verb": "create",
+      "user": {"username": "developer@example.test"},
+      "objectRef": {"resource": "pods", "namespace": "lab", "name": "web-2"},
+      "responseStatus": {"code": 201},
+      "sourceIPs": ["203.0.113.10"],
+      "requestObject": {
+        "kind": "Pod",
+        "spec": {"containers": [{"name": "web", "image": "nginx:1.29"}]}
+      }
+    },
+    "source": "kubernetes-audit",
+    "synthetic": true,
+    "note": "Normal application pod"
+  },
+  {
+    "event": {
+      "auditID": "00000000-0000-4000-8000-000000012302",
+      "requestReceivedTimestamp": "2026-11-22T14:05:00Z",
+      "stage": "ResponseComplete",
+      "verb": "list",
+      "user": {"username": "developer@example.test"},
+      "objectRef": {"resource": "pods", "namespace": "lab"},
+      "responseStatus": {"code": 200},
+      "sourceIPs": ["203.0.113.10"]
+    },
+    "source": "kubernetes-audit",
+    "synthetic": true,
+    "note": "Pod inventory"
+  },
+  {
+    "event": {
+      "auditID": "00000000-0000-4000-8000-000000012303",
+      "requestReceivedTimestamp": "2026-11-22T14:10:00Z",
+      "stage": "ResponseComplete",
+      "verb": "get",
+      "user": {"username": "developer@example.test"},
+      "objectRef": {"resource": "configmaps", "namespace": "lab", "name": "app-config"},
+      "responseStatus": {"code": 200},
+      "sourceIPs": ["203.0.113.10"]
+    },
+    "source": "kubernetes-audit",
+    "synthetic": true,
+    "note": "Configuration read"
+  },
+  {
+    "event": {
+      "auditID": "00000000-0000-4000-8000-000000012304",
+      "requestReceivedTimestamp": "2026-11-22T14:15:00Z",
+      "stage": "ResponseComplete",
+      "verb": "create",
+      "user": {"username": "system:serviceaccount:lab:deployer"},
+      "objectRef": {"resource": "deployments", "namespace": "lab", "name": "web"},
+      "responseStatus": {"code": 201},
+      "sourceIPs": ["10.0.0.7"]
+    },
+    "source": "kubernetes-audit",
+    "synthetic": true,
+    "note": "Deployment rollout"
+  },
+  {
+    "event": {
+      "auditID": "00000000-0000-4000-8000-000000012305",
+      "requestReceivedTimestamp": "2026-11-22T14:20:00Z",
+      "stage": "ResponseComplete",
+      "verb": "create",
+      "user": {"username": "system:serviceaccount:lab:deployer"},
+      "objectRef": {"resource": "services", "namespace": "lab", "name": "web"},
+      "responseStatus": {"code": 201},
+      "sourceIPs": ["10.0.0.7"]
+    },
+    "source": "kubernetes-audit",
+    "synthetic": true,
+    "note": "Service creation"
+  }
+]

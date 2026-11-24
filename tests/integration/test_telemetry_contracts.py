@@ -31,7 +31,7 @@ def test_all_source_contracts_validate() -> None:
 def test_sources_with_samples_have_files() -> None:
     sources = _sources()
     with_samples = [source for source in sources if "sample_data" in source.data]
-    assert len(with_samples) == 9
+    assert len(with_samples) == 11
     for source in with_samples:
         sample = source.data.get("sample_data")
         assert isinstance(sample, dict)

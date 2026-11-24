@@ -25,12 +25,14 @@ ENDPOINT_SOURCES: tuple[str, ...] = ("sysmon", "windows-security")
 CLOUD_SOURCES: tuple[str, ...] = ("aws-cloudtrail",)
 SAAS_SOURCES: tuple[str, ...] = ("m365-audit", "github-audit")
 NETWORK_SOURCES: tuple[str, ...] = ("zeek", "suricata")
+KUBERNETES_SOURCES: tuple[str, ...] = ("kubernetes-audit", "falco")
 DOMAIN_SOURCES: dict[str, tuple[str, ...]] = {
     "identity": IDENTITY_SOURCES,
     "endpoint": ENDPOINT_SOURCES,
     "cloud": CLOUD_SOURCES,
     "saas": SAAS_SOURCES,
     "network": NETWORK_SOURCES,
+    "kubernetes": KUBERNETES_SOURCES,
 }
 
 
@@ -655,6 +657,94 @@ def normalize_suricata(raw: Mapping[str, Any]) -> dict[str, Any]:
     return _compact(document)
 
 
+def _pod_is_privileged(request_object: Any) -> bool | None:
+    if not isinstance(request_object, Mapping) or request_object.get("kind") != "Pod":
+        return None
+    spec = request_object.get("spec")
+    if not isinstance(spec, Mapping):
+        return None
+    containers: list[Any] = []
+    for key in ("containers", "initContainers"):
+        value = spec.get(key)
+        if isinstance(value, list):
+            containers.extend(value)
+    if not containers:
+        return None
+    for container in containers:
+        if not isinstance(container, Mapping):
+            continue
+        security = container.get("securityContext")
+        if isinstance(security, Mapping) and security.get("privileged") is True:
+            return True
+    return False
+
+
+def normalize_kubernetes_audit(raw: Mapping[str, Any]) -> dict[str, Any]:
+    """Map a Kubernetes audit record to the canonical Kubernetes shape."""
+    user = raw.get("user")
+    username: Any = user.get("username") if isinstance(user, Mapping) else None
+
+    object_ref = raw.get("objectRef")
+    resource: Any = None
+    namespace: Any = None
+    name: Any = None
+    if isinstance(object_ref, Mapping):
+        resource = object_ref.get("resource")
+        namespace = object_ref.get("namespace")
+        name = object_ref.get("name")
+
+    response = raw.get("responseStatus")
+    code: Any = response.get("code") if isinstance(response, Mapping) else None
+
+    source_ips = raw.get("sourceIPs")
+    source_ip: Any = source_ips[0] if isinstance(source_ips, list) and source_ips else None
+
+    result: str | None = None
+    if isinstance(code, int) and not isinstance(code, bool):
+        result = "success" if code < 400 else "failure"
+
+    document: dict[str, Any] = {
+        "event_id": raw.get("auditID"),
+        "user": username,
+        "src_ip": source_ip,
+        "action": raw.get("verb"),
+        "result": result,
+        "resource_name": resource,
+        "namespace": namespace,
+        "pod": name if resource == "pods" else None,
+        "audit_stage": raw.get("stage"),
+        "response_status": code,
+        "privileged": _pod_is_privileged(raw.get("requestObject")),
+    }
+    return _compact(document)
+
+
+def normalize_falco(raw: Mapping[str, Any]) -> dict[str, Any]:
+    """Map a Falco runtime alert to the canonical Kubernetes shape."""
+    fields = raw.get("output_fields")
+    output: Mapping[str, Any] = fields if isinstance(fields, Mapping) else {}
+    process = _compact(
+        {
+            "name": output.get("proc.name"),
+            "command_line": output.get("proc.cmdline"),
+        }
+    )
+    document: dict[str, Any] = {
+        "event_id": raw.get("uuid"),
+        "rule_name": raw.get("rule"),
+        "priority": raw.get("priority"),
+        "host": output.get("hostname"),
+        "user": output.get("user.name"),
+        "src_ip": output.get("fd.sip"),
+        "namespace": output.get("k8s.ns.name"),
+        "pod": output.get("k8s.pod.name"),
+        "container": output.get("container.name"),
+    }
+    if process:
+        document["process"] = process
+    return _compact(document)
+
+
 NORMALIZERS.update(
     {
         "sysmon": normalize_sysmon,
@@ -664,6 +754,8 @@ NORMALIZERS.update(
         "github-audit": normalize_github_audit,
         "zeek": normalize_zeek,
         "suricata": normalize_suricata,
+        "kubernetes-audit": normalize_kubernetes_audit,
+        "falco": normalize_falco,
     }
 )
 
@@ -1138,6 +1230,14 @@ def load_network_sources(
     return load_domain_sources("network", root, requested)
 
 
+def load_kubernetes_sources(
+    root: Path = config.ROOT,
+    requested: Sequence[str] = (),
+) -> list[TelemetrySource]:
+    """Load and validate the selected Kubernetes source contracts."""
+    return load_domain_sources("kubernetes", root, requested)
+
+
 def ingest_domain(
     domain: str,
     root: Path = config.ROOT,
@@ -1288,6 +1388,31 @@ def ingest_network(
     """Ingest all selected network sources into OpenSearch."""
     return ingest_domain(
         "network",
+        root,
+        sources=sources,
+        client=client,
+        ingest_time=ingest_time,
+        index_prefix=index_prefix,
+        refresh=refresh,
+        batch_size=batch_size,
+        dry_run=dry_run,
+    )
+
+
+def ingest_kubernetes(
+    root: Path = config.ROOT,
+    *,
+    sources: Sequence[str] = (),
+    client: OpenSearchClient | None = None,
+    ingest_time: datetime | None = None,
+    index_prefix: str = config.EVENTS_INDEX_PREFIX,
+    refresh: bool = True,
+    batch_size: int = 500,
+    dry_run: bool = False,
+) -> list[IngestResult]:
+    """Ingest all selected Kubernetes sources into OpenSearch."""
+    return ingest_domain(
+        "kubernetes",
         root,
         sources=sources,
         client=client,

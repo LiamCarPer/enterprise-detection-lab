@@ -1,0 +1,121 @@
+[
+  {
+    "event": {
+      "auditID": "00000000-0000-4000-8000-000000012201",
+      "requestReceivedTimestamp": "2026-11-21T14:00:00Z",
+      "stage": "ResponseComplete",
+      "verb": "create",
+      "user": {"username": "developer@example.test"},
+      "objectRef": {"resource": "pods", "namespace": "lab", "name": "web-1"},
+      "responseStatus": {"code": 201},
+      "sourceIPs": ["203.0.113.10"],
+      "requestObject": {
+        "kind": "Pod",
+        "spec": {
+          "containers": [
+            {"name": "web", "image": "nginx:1.29", "securityContext": {"privileged": false}}
+          ]
+        }
+      }
+    },
+    "source": "kubernetes-audit",
+    "synthetic": true,
+    "note": "Unprivileged pod creation"
+  },
+  {
+    "event": {
+      "auditID": "00000000-0000-4000-8000-000000012202",
+      "requestReceivedTimestamp": "2026-11-21T14:05:00Z",
+      "stage": "ResponseComplete",
+      "verb": "create",
+      "user": {"username": "contractor@example.test"},
+      "objectRef": {"resource": "pods", "namespace": "lab", "name": "blocked"},
+      "responseStatus": {"code": 403},
+      "sourceIPs": ["198.51.100.21"],
+      "requestObject": {
+        "kind": "Pod",
+        "spec": {
+          "containers": [
+            {"name": "debug", "image": "alpine:3.20", "securityContext": {"privileged": true}}
+          ]
+        }
+      }
+    },
+    "source": "kubernetes-audit",
+    "synthetic": true,
+    "note": "Privileged pod creation denied"
+  },
+  {
+    "event": {
+      "auditID": "00000000-0000-4000-8000-000000012203",
+      "requestReceivedTimestamp": "2026-11-21T14:10:00Z",
+      "stage": "ResponseComplete",
+      "verb": "create",
+      "user": {"username": "developer@example.test"},
+      "objectRef": {"resource": "deployments", "namespace": "lab", "name": "debug-deployment"},
+      "responseStatus": {"code": 201},
+      "sourceIPs": ["203.0.113.10"],
+      "requestObject": {
+        "kind": "Deployment",
+        "spec": {
+          "template": {
+            "spec": {
+              "containers": [
+                {
+                  "name": "debug",
+                  "image": "alpine:3.20",
+                  "securityContext": {"privileged": true}
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "source": "kubernetes-audit",
+    "synthetic": true,
+    "note": "Privileged template in a deployment, not a pod"
+  },
+  {
+    "event": {
+      "auditID": "00000000-0000-4000-8000-000000012204",
+      "requestReceivedTimestamp": "2026-11-21T14:15:00Z",
+      "stage": "ResponseComplete",
+      "verb": "delete",
+      "user": {"username": "admin@example.test"},
+      "objectRef": {"resource": "pods", "namespace": "lab", "name": "debug"},
+      "responseStatus": {"code": 200},
+      "sourceIPs": ["203.0.113.44"],
+      "requestObject": {
+        "kind": "Pod",
+        "spec": {
+          "containers": [
+            {"name": "debug", "image": "busybox:1.37", "securityContext": {"privileged": true}}
+          ]
+        }
+      }
+    },
+    "source": "kubernetes-audit",
+    "synthetic": true,
+    "note": "Deleting a privileged pod"
+  },
+  {
+    "event": {
+      "auditID": "00000000-0000-4000-8000-000000012205",
+      "requestReceivedTimestamp": "2026-11-21T14:20:00Z",
+      "stage": "ResponseComplete",
+      "verb": "create",
+      "user": {"username": "developer@example.test"},
+      "objectRef": {"resource": "pods", "namespace": "lab", "name": "exec-target"},
+      "responseStatus": {"code": 201},
+      "sourceIPs": ["203.0.113.10"],
+      "requestObject": {
+        "kind": "Pod",
+        "spec": {"containers": [{"name": "app", "image": "nginx:1.29"}]}
+      }
+    },
+    "source": "kubernetes-audit",
+    "synthetic": true,
+    "note": "Pod without a privileged container"
+  }
+]

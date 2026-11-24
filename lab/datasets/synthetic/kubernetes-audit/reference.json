@@ -1,0 +1,93 @@
+[
+  {
+    "auditID": "00000000-0000-4000-8000-000000010101",
+    "requestReceivedTimestamp": "2026-11-25T14:00:00Z",
+    "stage": "ResponseComplete",
+    "verb": "create",
+    "user": {
+      "username": "analyst@example.test",
+      "groups": ["system:authenticated"]
+    },
+    "objectRef": {
+      "resource": "pods",
+      "namespace": "lab",
+      "name": "web-0",
+      "apiVersion": "v1"
+    },
+    "responseStatus": {"code": 201},
+    "sourceIPs": ["10.0.0.5"],
+    "requestObject": {
+      "kind": "Pod",
+      "spec": {
+        "containers": [
+          {
+            "name": "web",
+            "image": "nginx:1.29",
+            "securityContext": {"privileged": false}
+          }
+        ]
+      }
+    }
+  },
+  {
+    "auditID": "00000000-0000-4000-8000-000000010102",
+    "requestReceivedTimestamp": "2026-11-25T14:05:00Z",
+    "stage": "ResponseComplete",
+    "verb": "create",
+    "user": {
+      "username": "system:serviceaccount:lab:deployer",
+      "groups": ["system:serviceaccounts"]
+    },
+    "objectRef": {
+      "resource": "pods",
+      "namespace": "lab",
+      "name": "debug-pod",
+      "apiVersion": "v1"
+    },
+    "responseStatus": {"code": 201},
+    "sourceIPs": ["10.0.0.7"],
+    "requestObject": {
+      "kind": "Pod",
+      "spec": {
+        "containers": [
+          {
+            "name": "debug",
+            "image": "busybox:1.37",
+            "securityContext": {"privileged": true}
+          }
+        ]
+      }
+    }
+  },
+  {
+    "auditID": "00000000-0000-4000-8000-000000010103",
+    "requestReceivedTimestamp": "2026-11-25T14:10:00Z",
+    "stage": "ResponseComplete",
+    "verb": "create",
+    "user": {
+      "username": "admin@example.test",
+      "groups": ["system:masters"]
+    },
+    "objectRef": {
+      "resource": "pods",
+      "namespace": "lab",
+      "name": "host-debug",
+      "apiVersion": "v1"
+    },
+    "responseStatus": {"code": 201},
+    "sourceIPs": ["198.51.100.20"],
+    "requestObject": {
+      "kind": "Pod",
+      "spec": {
+        "hostNetwork": true,
+        "containers": [
+          {
+            "name": "host-debug",
+            "image": "alpine:3.20",
+            "securityContext": {"privileged": true}
+          }
+        ]
+      }
+    }
+  }
+]

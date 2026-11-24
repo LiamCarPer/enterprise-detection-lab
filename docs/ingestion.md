@@ -28,6 +28,7 @@ make ingest-endpoint
 make ingest-cloud
 make ingest-saas
 make ingest-network
+make ingest-kubernetes
 ```
 
 Or directly:
@@ -46,6 +47,8 @@ edl ingest saas
 edl ingest saas --dry-run
 edl ingest network
 edl ingest network --dry-run
+edl ingest kubernetes
+edl ingest kubernetes --dry-run
 ```
 
 `--dry-run` performs the full preflight and prints the target indices without contacting OpenSearch. `--source` accepts one source or a comma-separated list. `--no-refresh` skips the post-ingest count because OpenSearch cannot report an accurate count before the next refresh.
@@ -129,6 +132,13 @@ Network additions:
 
 Zeek uses `_path` for event classification, and Suricata uses `event_type`. Both sources accept ISO 8601 event times; Zeek also accepts epoch seconds.
 
+Kubernetes additions:
+
+- Kubernetes audit: `user`, `action`, `result`, `resource_name`, `namespace`, `pod`, `response_status`, `audit_stage`, `privileged`, and `src_ip`
+- Falco: `rule_name`, `priority`, `host`, `user`, `namespace`, `pod`, `container`, `src_ip`, and `process`
+
+Kubernetes audit normalizes the API verb, object reference, response status, and privileged-container flag. Falco normalizes runtime alert fields and container context from `output_fields`.
+
 The canonical fields are mapped in [`lab/bootstrap/opensearch/events-template.json`](../lab/bootstrap/opensearch/events-template.json). Unknown fields remain dynamically mapped; update the template when a field becomes part of the query contract.
 
 ## Time semantics
@@ -189,11 +199,11 @@ The `edl-events-*` index template applies one shard, zero replicas, UTC date fie
 
 ## Status
 
-The nine sampled sources move from `sampled` to `ingested` after a successful lab run. They move to `validated` only after detection replay and regression tests pass. The generated [telemetry matrix](telemetry-matrix.md) records the current status.
+All eleven sampled sources move from `sampled` to `ingested` after a successful lab run. They move to `validated` only after detection replay and regression tests pass. The generated [telemetry matrix](telemetry-matrix.md) records the current status.
 
 ## Known gaps
 
-- Entra identity, Windows endpoint, AWS CloudTrail, SaaS, and network sources are normalized currently; Kubernetes is next.
+- All contracted sources are normalized currently, including Kubernetes audit and Falco runtime alerts.
 - The samples are small; they demonstrate contract and pipeline behavior, not volume.
 - Sysmon field coverage depends on the Sysmon configuration; the sample covers process creation only.
 - Windows Security advanced audit policy determines which events exist; the sample covers logon success and failure.

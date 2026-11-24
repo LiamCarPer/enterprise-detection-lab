@@ -1,0 +1,99 @@
+[
+  {
+    "event": {
+      "uuid": "00000000-0000-4000-8000-000000013301",
+      "time": "2026-11-22T15:00:00Z",
+      "rule": "Unexpected outbound connection destination",
+      "priority": "Notice",
+      "output_fields": {
+        "container.name": "app",
+        "k8s.ns.name": "lab",
+        "k8s.pod.name": "web-0",
+        "proc.name": "curl",
+        "proc.cmdline": "curl http://intranet.example.test/status",
+        "fd.sip": "198.51.100.25",
+        "user.name": "app"
+      }
+    },
+    "source": "falco",
+    "synthetic": true,
+    "note": "Application health check connection"
+  },
+  {
+    "event": {
+      "uuid": "00000000-0000-4000-8000-000000013302",
+      "time": "2026-11-22T15:05:00Z",
+      "rule": "Read sensitive file untrusted",
+      "priority": "Warning",
+      "output_fields": {
+        "container.name": "app",
+        "k8s.ns.name": "lab",
+        "k8s.pod.name": "web-0",
+        "proc.name": "cat",
+        "proc.cmdline": "cat /etc/os-release",
+        "user.name": "root"
+      }
+    },
+    "source": "falco",
+    "synthetic": true,
+    "note": "Container image metadata read"
+  },
+  {
+    "event": {
+      "uuid": "00000000-0000-4000-8000-000000013303",
+      "time": "2026-11-22T15:10:00Z",
+      "rule": "Write below etc",
+      "priority": "Error",
+      "output_fields": {
+        "container.name": "init",
+        "k8s.ns.name": "lab",
+        "k8s.pod.name": "web-0",
+        "proc.name": "sed",
+        "proc.cmdline": "sed -i s/host=old/host=new/ /etc/app.conf",
+        "user.name": "root"
+      }
+    },
+    "source": "falco",
+    "synthetic": true,
+    "note": "Startup configuration update"
+  },
+  {
+    "event": {
+      "uuid": "00000000-0000-4000-8000-000000013304",
+      "time": "2026-11-22T15:15:00Z",
+      "rule": "Package management process launched in container",
+      "priority": "Error",
+      "output_fields": {
+        "container.name": "build",
+        "k8s.ns.name": "ci",
+        "k8s.pod.name": "builder",
+        "proc.name": "apk",
+        "proc.cmdline": "apk add curl",
+        "user.name": "root"
+      }
+    },
+    "source": "falco",
+    "synthetic": true,
+    "note": "CI image build"
+  },
+  {
+    "event": {
+      "uuid": "00000000-0000-4000-8000-000000013305",
+      "time": "2026-11-22T15:20:00Z",
+      "rule": "Unexpected outbound connection destination",
+      "priority": "Notice",
+      "output_fields": {
+        "container.name": "agent",
+        "k8s.ns.name": "kube-system",
+        "k8s.pod.name": "node-agent",
+        "proc.name": "agent",
+        "proc.cmdline": "agent --report",
+        "fd.sip": "203.0.113.55",
+        "user.name": "root"
+      }
+    },
+    "source": "falco",
+    "synthetic": true,
+    "note": "Management agent reporting"
+  }
+]

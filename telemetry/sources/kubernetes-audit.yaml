@@ -5,7 +5,7 @@ product: Kubernetes
 event_classes:
   - audit
 schema_version: "1.0"
-status: documented
+status: ingested
 owner: detection-engineering
 event_time_field: requestReceivedTimestamp
 ingest_time_field: stageTimestamp
@@ -33,7 +33,13 @@ cost: Open source; storage and audit-policy volume are the main cost.
 late_arrival: Expected; preserve requestReceivedTimestamp and stageTimestamp.
 duplicates: Possible across retries; deduplicate by auditID.
 known_gaps:
-  - No Kubernetes sample data yet; kind audit events arrive with the Kubernetes detection work.
+  - The committed sample is synthetic and minimal.
   - Audit policy determines which stages and request bodies are present.
   - API server audit logging has a performance cost at high volume.
-notes: Kubernetes contract; sample data arrives with Kubernetes detections.
+notes: Kubernetes source contract.
+sample_data:
+  path: lab/datasets/synthetic/kubernetes-audit/reference.json
+  synthetic: true
+  license: synthetic
+  provenance: Generated for this repository. No real clusters, users, or workloads.
+  sha256: fea15d3fe29c60445424d7e6ce77d017262d1180134048e89938910906a6efb0

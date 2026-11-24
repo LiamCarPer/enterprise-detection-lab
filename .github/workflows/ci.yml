@@ -84,6 +84,7 @@ jobs:
           make ingest-cloud
           make ingest-saas
           make ingest-network
+          make ingest-kubernetes
 
       - name: Run OpenSearch-backed tests
         run: make test-opensearch

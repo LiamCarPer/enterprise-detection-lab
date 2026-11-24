@@ -1,0 +1,591 @@
+[
+  {
+    "event": {
+      "auditID": "00000000-0000-4000-8000-000000014001",
+      "requestReceivedTimestamp": "2026-11-19T14:01:00Z",
+      "stage": "ResponseComplete",
+      "verb": "create",
+      "user": {
+        "username": "developer@example.test"
+      },
+      "objectRef": {
+        "resource": "pods",
+        "namespace": "lab",
+        "name": "web-0"
+      },
+      "responseStatus": {
+        "code": 201
+      },
+      "sourceIPs": [
+        "10.0.0.5"
+      ],
+      "requestObject": {
+        "kind": "Pod",
+        "spec": {
+          "containers": [
+            {
+              "name": "app",
+              "image": "nginx:1.29",
+              "securityContext": {
+                "privileged": false
+              }
+            }
+          ]
+        }
+      }
+    },
+    "source": "kubernetes-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "auditID": "00000000-0000-4000-8000-000000014002",
+      "requestReceivedTimestamp": "2026-11-19T14:02:00Z",
+      "stage": "ResponseComplete",
+      "verb": "create",
+      "user": {
+        "username": "developer@example.test"
+      },
+      "objectRef": {
+        "resource": "pods",
+        "namespace": "lab",
+        "name": "web-1"
+      },
+      "responseStatus": {
+        "code": 201
+      },
+      "sourceIPs": [
+        "10.0.0.5"
+      ],
+      "requestObject": {
+        "kind": "Pod",
+        "spec": {
+          "containers": [
+            {
+              "name": "app",
+              "image": "nginx:1.29",
+              "securityContext": {
+                "privileged": false
+              }
+            }
+          ]
+        }
+      }
+    },
+    "source": "kubernetes-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "auditID": "00000000-0000-4000-8000-000000014003",
+      "requestReceivedTimestamp": "2026-11-19T14:03:00Z",
+      "stage": "ResponseComplete",
+      "verb": "list",
+      "user": {
+        "username": "developer@example.test"
+      },
+      "objectRef": {
+        "resource": "pods",
+        "namespace": "lab"
+      },
+      "responseStatus": {
+        "code": 200
+      },
+      "sourceIPs": [
+        "10.0.0.5"
+      ]
+    },
+    "source": "kubernetes-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "auditID": "00000000-0000-4000-8000-000000014004",
+      "requestReceivedTimestamp": "2026-11-19T14:04:00Z",
+      "stage": "ResponseComplete",
+      "verb": "get",
+      "user": {
+        "username": "developer@example.test"
+      },
+      "objectRef": {
+        "resource": "configmaps",
+        "namespace": "lab",
+        "name": "app-config"
+      },
+      "responseStatus": {
+        "code": 200
+      },
+      "sourceIPs": [
+        "10.0.0.5"
+      ]
+    },
+    "source": "kubernetes-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "auditID": "00000000-0000-4000-8000-000000014005",
+      "requestReceivedTimestamp": "2026-11-19T14:05:00Z",
+      "stage": "ResponseComplete",
+      "verb": "create",
+      "user": {
+        "username": "system:serviceaccount:lab:deployer"
+      },
+      "objectRef": {
+        "resource": "services",
+        "namespace": "lab",
+        "name": "web"
+      },
+      "responseStatus": {
+        "code": 201
+      },
+      "sourceIPs": [
+        "10.0.0.7"
+      ]
+    },
+    "source": "kubernetes-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "auditID": "00000000-0000-4000-8000-000000014006",
+      "requestReceivedTimestamp": "2026-11-19T14:06:00Z",
+      "stage": "ResponseComplete",
+      "verb": "create",
+      "user": {
+        "username": "system:serviceaccount:lab:deployer"
+      },
+      "objectRef": {
+        "resource": "deployments",
+        "namespace": "lab",
+        "name": "api"
+      },
+      "responseStatus": {
+        "code": 201
+      },
+      "sourceIPs": [
+        "10.0.0.7"
+      ]
+    },
+    "source": "kubernetes-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "auditID": "00000000-0000-4000-8000-000000014007",
+      "requestReceivedTimestamp": "2026-11-19T14:07:00Z",
+      "stage": "ResponseComplete",
+      "verb": "create",
+      "user": {
+        "username": "developer@example.test"
+      },
+      "objectRef": {
+        "resource": "pods",
+        "namespace": "staging",
+        "name": "worker-0"
+      },
+      "responseStatus": {
+        "code": 201
+      },
+      "sourceIPs": [
+        "198.51.100.21"
+      ],
+      "requestObject": {
+        "kind": "Pod",
+        "spec": {
+          "containers": [
+            {
+              "name": "app",
+              "image": "nginx:1.29",
+              "securityContext": {
+                "privileged": false
+              }
+            }
+          ]
+        }
+      }
+    },
+    "source": "kubernetes-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "auditID": "00000000-0000-4000-8000-000000014008",
+      "requestReceivedTimestamp": "2026-11-19T14:08:00Z",
+      "stage": "ResponseComplete",
+      "verb": "get",
+      "user": {
+        "username": "system:serviceaccount:lab:deployer"
+      },
+      "objectRef": {
+        "resource": "secrets",
+        "namespace": "lab",
+        "name": "app-secret"
+      },
+      "responseStatus": {
+        "code": 200
+      },
+      "sourceIPs": [
+        "10.0.0.7"
+      ]
+    },
+    "source": "kubernetes-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "auditID": "00000000-0000-4000-8000-000000014009",
+      "requestReceivedTimestamp": "2026-11-19T14:09:00Z",
+      "stage": "ResponseComplete",
+      "verb": "create",
+      "user": {
+        "username": "developer@example.test"
+      },
+      "objectRef": {
+        "resource": "pods",
+        "namespace": "lab",
+        "name": "cache-0"
+      },
+      "responseStatus": {
+        "code": 201
+      },
+      "sourceIPs": [
+        "10.0.0.5"
+      ],
+      "requestObject": {
+        "kind": "Pod",
+        "spec": {
+          "containers": [
+            {
+              "name": "app",
+              "image": "nginx:1.29",
+              "securityContext": {
+                "privileged": false
+              }
+            }
+          ]
+        }
+      }
+    },
+    "source": "kubernetes-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "auditID": "00000000-0000-4000-8000-000000014010",
+      "requestReceivedTimestamp": "2026-11-19T14:10:00Z",
+      "stage": "ResponseComplete",
+      "verb": "update",
+      "user": {
+        "username": "system:serviceaccount:lab:deployer"
+      },
+      "objectRef": {
+        "resource": "deployments",
+        "namespace": "lab",
+        "name": "api"
+      },
+      "responseStatus": {
+        "code": 200
+      },
+      "sourceIPs": [
+        "10.0.0.7"
+      ]
+    },
+    "source": "kubernetes-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "auditID": "00000000-0000-4000-8000-000000014011",
+      "requestReceivedTimestamp": "2026-11-19T14:11:00Z",
+      "stage": "ResponseComplete",
+      "verb": "create",
+      "user": {
+        "username": "developer@example.test"
+      },
+      "objectRef": {
+        "resource": "configmaps",
+        "namespace": "lab",
+        "name": "feature-flags"
+      },
+      "responseStatus": {
+        "code": 201
+      },
+      "sourceIPs": [
+        "10.0.0.5"
+      ]
+    },
+    "source": "kubernetes-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "auditID": "00000000-0000-4000-8000-000000014012",
+      "requestReceivedTimestamp": "2026-11-19T14:12:00Z",
+      "stage": "ResponseComplete",
+      "verb": "create",
+      "user": {
+        "username": "system:serviceaccount:lab:deployer"
+      },
+      "objectRef": {
+        "resource": "pods",
+        "namespace": "lab",
+        "name": "batch-0"
+      },
+      "responseStatus": {
+        "code": 201
+      },
+      "sourceIPs": [
+        "10.0.0.7"
+      ],
+      "requestObject": {
+        "kind": "Pod",
+        "spec": {
+          "containers": [
+            {
+              "name": "app",
+              "image": "nginx:1.29",
+              "securityContext": {
+                "privileged": false
+              }
+            }
+          ]
+        }
+      }
+    },
+    "source": "kubernetes-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "auditID": "00000000-0000-4000-8000-000000014013",
+      "requestReceivedTimestamp": "2026-11-19T14:13:00Z",
+      "stage": "ResponseComplete",
+      "verb": "get",
+      "user": {
+        "username": "developer@example.test"
+      },
+      "objectRef": {
+        "resource": "pods",
+        "namespace": "lab",
+        "name": "web-0"
+      },
+      "responseStatus": {
+        "code": 200
+      },
+      "sourceIPs": [
+        "10.0.0.5"
+      ]
+    },
+    "source": "kubernetes-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "auditID": "00000000-0000-4000-8000-000000014014",
+      "requestReceivedTimestamp": "2026-11-19T14:14:00Z",
+      "stage": "ResponseComplete",
+      "verb": "create",
+      "user": {
+        "username": "admin@example.test"
+      },
+      "objectRef": {
+        "resource": "serviceaccounts",
+        "namespace": "lab",
+        "name": "reporter"
+      },
+      "responseStatus": {
+        "code": 201
+      },
+      "sourceIPs": [
+        "203.0.113.10"
+      ]
+    },
+    "source": "kubernetes-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "auditID": "00000000-0000-4000-8000-000000014015",
+      "requestReceivedTimestamp": "2026-11-19T14:15:00Z",
+      "stage": "ResponseComplete",
+      "verb": "create",
+      "user": {
+        "username": "admin@example.test"
+      },
+      "objectRef": {
+        "resource": "rolebindings",
+        "namespace": "lab",
+        "name": "reporter-read"
+      },
+      "responseStatus": {
+        "code": 201
+      },
+      "sourceIPs": [
+        "203.0.113.10"
+      ]
+    },
+    "source": "kubernetes-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "auditID": "00000000-0000-4000-8000-000000014016",
+      "requestReceivedTimestamp": "2026-11-19T14:16:00Z",
+      "stage": "ResponseComplete",
+      "verb": "list",
+      "user": {
+        "username": "developer@example.test"
+      },
+      "objectRef": {
+        "resource": "events",
+        "namespace": "lab"
+      },
+      "responseStatus": {
+        "code": 200
+      },
+      "sourceIPs": [
+        "10.0.0.5"
+      ]
+    },
+    "source": "kubernetes-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "auditID": "00000000-0000-4000-8000-000000014017",
+      "requestReceivedTimestamp": "2026-11-19T14:17:00Z",
+      "stage": "ResponseComplete",
+      "verb": "create",
+      "user": {
+        "username": "developer@example.test"
+      },
+      "objectRef": {
+        "resource": "pods",
+        "namespace": "lab",
+        "name": "queue-0"
+      },
+      "responseStatus": {
+        "code": 201
+      },
+      "sourceIPs": [
+        "198.51.100.21"
+      ],
+      "requestObject": {
+        "kind": "Pod",
+        "spec": {
+          "containers": [
+            {
+              "name": "app",
+              "image": "nginx:1.29",
+              "securityContext": {
+                "privileged": false
+              }
+            }
+          ]
+        }
+      }
+    },
+    "source": "kubernetes-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "auditID": "00000000-0000-4000-8000-000000014018",
+      "requestReceivedTimestamp": "2026-11-19T14:18:00Z",
+      "stage": "ResponseComplete",
+      "verb": "get",
+      "user": {
+        "username": "admin@example.test"
+      },
+      "objectRef": {
+        "resource": "nodes",
+        "name": "node-1"
+      },
+      "responseStatus": {
+        "code": 200
+      },
+      "sourceIPs": [
+        "203.0.113.10"
+      ]
+    },
+    "source": "kubernetes-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "auditID": "00000000-0000-4000-8000-000000014019",
+      "requestReceivedTimestamp": "2026-11-19T14:19:00Z",
+      "stage": "ResponseComplete",
+      "verb": "create",
+      "user": {
+        "username": "system:serviceaccount:lab:deployer"
+      },
+      "objectRef": {
+        "resource": "pods",
+        "namespace": "lab",
+        "name": "cron-0"
+      },
+      "responseStatus": {
+        "code": 201
+      },
+      "sourceIPs": [
+        "10.0.0.7"
+      ],
+      "requestObject": {
+        "kind": "Pod",
+        "spec": {
+          "containers": [
+            {
+              "name": "app",
+              "image": "nginx:1.29",
+              "securityContext": {
+                "privileged": false
+              }
+            }
+          ]
+        }
+      }
+    },
+    "source": "kubernetes-audit",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "auditID": "00000000-0000-4000-8000-000000014020",
+      "requestReceivedTimestamp": "2026-11-19T14:20:00Z",
+      "stage": "ResponseComplete",
+      "verb": "create",
+      "user": {
+        "username": "system:serviceaccount:lab:deployer"
+      },
+      "objectRef": {
+        "resource": "pods",
+        "namespace": "lab",
+        "name": "metrics-0"
+      },
+      "responseStatus": {
+        "code": 201
+      },
+      "sourceIPs": [
+        "10.0.0.7"
+      ],
+      "requestObject": {
+        "kind": "Pod",
+        "spec": {
+          "containers": [
+            {
+              "name": "app",
+              "image": "nginx:1.29",
+              "securityContext": {
+                "privileged": false
+              }
+            }
+          ]
+        }
+      }
+    },
+    "source": "kubernetes-audit",
+    "synthetic": true
+  }
+]

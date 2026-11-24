@@ -1,0 +1,97 @@
+[
+  {
+    "event": {
+      "uuid": "00000000-0000-4000-8000-000000013101",
+      "time": "2026-11-20T15:00:00Z",
+      "rule": "Terminal shell in container",
+      "priority": "Notice",
+      "output_fields": {
+        "container.name": "debug",
+        "k8s.ns.name": "lab",
+        "k8s.pod.name": "debug-pod",
+        "proc.name": "bash",
+        "proc.cmdline": "bash -i",
+        "user.name": "root"
+      }
+    },
+    "source": "falco",
+    "synthetic": true,
+    "note": "Interactive bash in a debugging pod"
+  },
+  {
+    "event": {
+      "uuid": "00000000-0000-4000-8000-000000013102",
+      "time": "2026-11-20T15:05:00Z",
+      "rule": "Terminal shell in container",
+      "priority": "Notice",
+      "output_fields": {
+        "container.name": "app",
+        "k8s.ns.name": "production",
+        "k8s.pod.name": "web-0",
+        "proc.name": "sh",
+        "proc.cmdline": "sh",
+        "user.name": "app"
+      }
+    },
+    "source": "falco",
+    "synthetic": true,
+    "note": "Shell in a production application container"
+  },
+  {
+    "event": {
+      "uuid": "00000000-0000-4000-8000-000000013103",
+      "time": "2026-11-20T15:10:00Z",
+      "rule": "Terminal shell in container",
+      "priority": "Notice",
+      "output_fields": {
+        "container.name": "agent",
+        "k8s.ns.name": "kube-system",
+        "k8s.pod.name": "node-agent",
+        "proc.name": "zsh",
+        "proc.cmdline": "zsh -i",
+        "user.name": "root"
+      }
+    },
+    "source": "falco",
+    "synthetic": true,
+    "note": "Shell in a system namespace"
+  },
+  {
+    "event": {
+      "uuid": "00000000-0000-4000-8000-000000013104",
+      "time": "2026-11-20T15:15:00Z",
+      "rule": "Terminal shell in container",
+      "priority": "Notice",
+      "output_fields": {
+        "container.name": "worker",
+        "k8s.ns.name": "staging",
+        "k8s.pod.name": "worker-1",
+        "proc.name": "bash",
+        "proc.cmdline": "bash",
+        "user.name": "worker"
+      }
+    },
+    "source": "falco",
+    "synthetic": true,
+    "note": "Shell in a staging worker"
+  },
+  {
+    "event": {
+      "uuid": "00000000-0000-4000-8000-000000013105",
+      "time": "2026-11-20T15:20:00Z",
+      "rule": "Terminal shell in container",
+      "priority": "Notice",
+      "output_fields": {
+        "container.name": "tools",
+        "k8s.ns.name": "default",
+        "k8s.pod.name": "tools-pod",
+        "proc.name": "dash",
+        "proc.cmdline": "dash -i",
+        "user.name": "root"
+      }
+    },
+    "source": "falco",
+    "synthetic": true,
+    "note": "Shell in an ad hoc tools pod"
+  }
+]

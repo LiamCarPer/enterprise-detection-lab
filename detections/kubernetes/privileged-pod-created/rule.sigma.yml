@@ -1,0 +1,24 @@
+title: Privileged Pod Created
+id: 00000000-0000-4000-8000-000000000601
+status: test
+description: Detects a successful Kubernetes pod creation with a privileged container.
+author: detection-engineering
+date: 2026/11/25
+logsource:
+  product: kubernetes
+  service: audit
+detection:
+  selection:
+    verb: create
+    objectRef.resource: pods
+    responseStatus.code|gte: 200
+    responseStatus.code|lt: 400
+    requestObject.spec.containers.securityContext.privileged: true
+  condition: selection
+falsepositives:
+  - Approved debugging pods
+  - Platform agents
+level: high
+tags:
+  - attack.t1610
+  - attack.t1611

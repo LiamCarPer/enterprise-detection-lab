@@ -1,0 +1,14 @@
+{
+  "query": {
+    "bool": {
+      "filter": [
+        { "term": { "source": "kubernetes-audit" } },
+        { "term": { "event_class": "audit" } },
+        { "term": { "action": "create" } },
+        { "term": { "resource_name": "pods" } },
+        { "term": { "result": "success" } },
+        { "term": { "privileged": true } }
+      ]
+    }
+  }
+}

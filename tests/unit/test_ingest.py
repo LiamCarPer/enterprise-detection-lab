@@ -24,6 +24,7 @@ from edl.ingest import (
     ingest_domain,
     ingest_endpoint,
     ingest_identity,
+    ingest_kubernetes,
     ingest_network,
     ingest_saas,
     ingest_source,
@@ -32,6 +33,7 @@ from edl.ingest import (
     load_domain_sources,
     load_endpoint_sources,
     load_identity_sources,
+    load_kubernetes_sources,
     load_network_sources,
     load_saas_sources,
     normalize_aws_cloudtrail,
@@ -39,7 +41,9 @@ from edl.ingest import (
     normalize_entra_audit,
     normalize_entra_signin,
     normalize_event,
+    normalize_falco,
     normalize_github_audit,
+    normalize_kubernetes_audit,
     normalize_m365_audit,
     normalize_suricata,
     normalize_sysmon,
@@ -1538,3 +1542,202 @@ def test_ingest_network_opens_client_when_missing(
     assert len(results) == 2
     assert all(result.mode == "ingested" for result in results)
     assert all(result.counts for result in results)
+
+
+KUBERNETES_RAW = {
+    "auditID": "00000000-0000-4000-8000-000000010102",
+    "requestReceivedTimestamp": "2026-11-25T14:05:00Z",
+    "stage": "ResponseComplete",
+    "verb": "create",
+    "user": {"username": "system:serviceaccount:lab:deployer"},
+    "objectRef": {"resource": "pods", "namespace": "lab", "name": "debug-pod"},
+    "responseStatus": {"code": 201},
+    "sourceIPs": ["10.0.0.7"],
+    "requestObject": {
+        "kind": "Pod",
+        "spec": {
+            "containers": [
+                {
+                    "name": "debug",
+                    "image": "busybox:1.37",
+                    "securityContext": {"privileged": True},
+                }
+            ]
+        },
+    },
+}
+
+FALCO_RAW = {
+    "uuid": "00000000-0000-4000-8000-000000011101",
+    "time": "2026-11-25T14:15:00Z",
+    "rule": "Terminal shell in container",
+    "priority": "Notice",
+    "output_fields": {
+        "container.name": "debug",
+        "k8s.ns.name": "lab",
+        "k8s.pod.name": "debug-pod",
+        "proc.name": "bash",
+        "proc.cmdline": "bash -i",
+        "user.name": "root",
+    },
+}
+
+
+def _kubernetes_source(source_id: str) -> TelemetrySource:
+    audit = source_id == "kubernetes-audit"
+    return _source(
+        source_id,
+        event_classes=["audit"] if audit else ["runtime_alert"],
+        event_time_field="requestReceivedTimestamp" if audit else "time",
+        dedup_key=["auditID"] if audit else ["uuid"],
+        required_fields=(
+            [
+                "auditID",
+                "requestReceivedTimestamp",
+                "stage",
+                "verb",
+                "user",
+                "objectRef",
+                "responseStatus",
+                "sourceIPs",
+            ]
+            if audit
+            else ["time", "rule", "priority", "output_fields", "uuid"]
+        ),
+    )
+
+
+def test_normalize_kubernetes_privileged_pod_creation() -> None:
+    document = normalize_kubernetes_audit(KUBERNETES_RAW)
+    assert document["event_id"] == KUBERNETES_RAW["auditID"]
+    assert document["user"] == "system:serviceaccount:lab:deployer"
+    assert document["action"] == "create"
+    assert document["result"] == "success"
+    assert document["resource_name"] == "pods"
+    assert document["namespace"] == "lab"
+    assert document["pod"] == "debug-pod"
+    assert document["response_status"] == 201
+    assert document["audit_stage"] == "ResponseComplete"
+    assert document["privileged"] is True
+    assert document["src_ip"] == "10.0.0.7"
+
+
+def test_normalize_kubernetes_marks_failures_and_non_pod_requests() -> None:
+    failed = normalize_kubernetes_audit(
+        {
+            **KUBERNETES_RAW,
+            "verb": "delete",
+            "objectRef": {"resource": "secrets", "namespace": "lab", "name": "db"},
+            "responseStatus": {"code": 403},
+            "requestObject": None,
+        }
+    )
+    assert failed["result"] == "failure"
+    assert failed["resource_name"] == "secrets"
+    assert "pod" not in failed
+    assert "privileged" not in failed
+
+    unprivileged = normalize_kubernetes_audit(
+        {
+            **KUBERNETES_RAW,
+            "requestObject": {
+                "kind": "Pod",
+                "spec": {
+                    "initContainers": [{"name": "init", "securityContext": {"privileged": False}}],
+                    "containers": [{"name": "app", "securityContext": {"privileged": False}}],
+                },
+            },
+        }
+    )
+    assert unprivileged["privileged"] is False
+
+
+def test_normalize_falco_runtime_alert() -> None:
+    document = normalize_falco(FALCO_RAW)
+    assert document["event_id"] == FALCO_RAW["uuid"]
+    assert document["rule_name"] == "Terminal shell in container"
+    assert document["priority"] == "Notice"
+    assert document["namespace"] == "lab"
+    assert document["pod"] == "debug-pod"
+    assert document["container"] == "debug"
+    assert document["user"] == "root"
+    assert document["process"] == {"name": "bash", "command_line": "bash -i"}
+
+
+def test_normalize_event_kubernetes_classification() -> None:
+    audit = normalize_event(
+        _kubernetes_source("kubernetes-audit"),
+        KUBERNETES_RAW,
+        ingest_time=datetime(2026, 11, 25, tzinfo=UTC),
+    )
+    assert audit.event_class == "audit"
+
+    falco = normalize_event(
+        _kubernetes_source("falco"),
+        FALCO_RAW,
+        ingest_time=datetime(2026, 11, 25, tzinfo=UTC),
+    )
+    assert falco.event_class == "runtime_alert"
+
+
+def test_load_kubernetes_sources_defaults_and_filters() -> None:
+    assert [source.id for source in load_kubernetes_sources()] == [
+        "kubernetes-audit",
+        "falco",
+    ]
+    assert [source.id for source in load_kubernetes_sources(requested=("falco",))] == ["falco"]
+
+
+def test_load_kubernetes_sources_rejects_non_kubernetes() -> None:
+    with pytest.raises(IngestError, match="Not kubernetes source"):
+        load_kubernetes_sources(requested=("zeek",))
+
+
+def test_ingest_kubernetes_dry_run_uses_repository_samples() -> None:
+    results = ingest_kubernetes(dry_run=True)
+    assert [result.source for result in results] == ["kubernetes-audit", "falco"]
+    assert [result.read for result in results] == [3, 2]
+    assert results[0].indices == ("edl-events-kubernetes-audit-2026.11.25",)
+    assert results[1].indices == ("edl-events-falco-2026.11.25",)
+
+
+def test_ingest_kubernetes_opens_client_when_missing(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    client = FakeClient()
+
+    class FakeContext:
+        def __enter__(self) -> FakeClient:
+            return client
+
+        def __exit__(self, *_: object) -> None:
+            return None
+
+    monkeypatch.setattr("edl.ingest.OpenSearchClient", lambda: FakeContext())
+    results = ingest_kubernetes(
+        ingest_time=datetime(2026, 11, 25, tzinfo=UTC),
+        index_prefix="edl-events-test",
+    )
+    assert len(results) == 2
+    assert all(result.mode == "ingested" for result in results)
+    assert all(result.counts for result in results)
+
+
+def test_pod_privilege_helper_handles_incomplete_specs() -> None:
+    missing_spec = normalize_kubernetes_audit(
+        {**KUBERNETES_RAW, "requestObject": {"kind": "Pod", "spec": []}}
+    )
+    assert "privileged" not in missing_spec
+
+    empty_spec = normalize_kubernetes_audit(
+        {**KUBERNETES_RAW, "requestObject": {"kind": "Pod", "spec": {}}}
+    )
+    assert "privileged" not in empty_spec
+
+    malformed_container = normalize_kubernetes_audit(
+        {
+            **KUBERNETES_RAW,
+            "requestObject": {"kind": "Pod", "spec": {"containers": ["not-a-container"]}},
+        }
+    )
+    assert malformed_container["privileged"] is False

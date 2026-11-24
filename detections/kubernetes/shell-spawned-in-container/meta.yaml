@@ -1,0 +1,40 @@
+id: DET-K8S-002
+title: Shell Spawned in Container
+version: 1.0.0
+status: tested
+domain: kubernetes
+severity: medium
+hypothesis: An interactive shell inside a running container can indicate hands-on intrusion, post-exploitation, or unauthorized troubleshooting.
+description: Detects a Falco terminal-shell runtime alert in a container.
+owner: detection-engineering
+created: "2026-11-25"
+updated: "2026-11-25"
+attack:
+  - T1059
+  - T1609
+tags:
+  - kubernetes
+  - container
+  - execution
+telemetry:
+  - source: falco
+    event_class: runtime_alert
+    required_fields:
+      - time
+      - rule
+      - priority
+      - output_fields
+      - uuid
+queries:
+  opensearch: queries/opensearch.json
+tests:
+  positive: 5
+  negative: 5
+  benign: 5
+false_positives:
+  - Approved debugging with kubectl exec or a platform console.
+  - Health checks or startup scripts that launch an interactive shell.
+  - Break-glass troubleshooting during an incident.
+runbook: runbook.md
+metrics: metrics.json
+notes: notes.md

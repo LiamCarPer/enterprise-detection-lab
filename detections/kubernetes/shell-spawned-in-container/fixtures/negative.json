@@ -1,0 +1,98 @@
+[
+  {
+    "event": {
+      "uuid": "00000000-0000-4000-8000-000000013201",
+      "time": "2026-11-21T15:00:00Z",
+      "rule": "Write below etc",
+      "priority": "Error",
+      "output_fields": {
+        "container.name": "app",
+        "k8s.ns.name": "lab",
+        "k8s.pod.name": "web-0",
+        "proc.name": "sh",
+        "proc.cmdline": "sh -c echo test > /etc/motd",
+        "user.name": "root"
+      }
+    },
+    "source": "falco",
+    "synthetic": true,
+    "note": "File write under /etc"
+  },
+  {
+    "event": {
+      "uuid": "00000000-0000-4000-8000-000000013202",
+      "time": "2026-11-21T15:05:00Z",
+      "rule": "Read sensitive file untrusted",
+      "priority": "Warning",
+      "output_fields": {
+        "container.name": "app",
+        "k8s.ns.name": "lab",
+        "k8s.pod.name": "web-0",
+        "proc.name": "cat",
+        "proc.cmdline": "cat /etc/shadow",
+        "user.name": "root"
+      }
+    },
+    "source": "falco",
+    "synthetic": true,
+    "note": "Sensitive file read"
+  },
+  {
+    "event": {
+      "uuid": "00000000-0000-4000-8000-000000013203",
+      "time": "2026-11-21T15:10:00Z",
+      "rule": "Unexpected outbound connection destination",
+      "priority": "Notice",
+      "output_fields": {
+        "container.name": "app",
+        "k8s.ns.name": "lab",
+        "k8s.pod.name": "web-0",
+        "proc.name": "curl",
+        "proc.cmdline": "curl http://198.51.100.66",
+        "fd.sip": "198.51.100.66",
+        "user.name": "app"
+      }
+    },
+    "source": "falco",
+    "synthetic": true,
+    "note": "Outbound connection alert"
+  },
+  {
+    "event": {
+      "uuid": "00000000-0000-4000-8000-000000013204",
+      "time": "2026-11-21T15:15:00Z",
+      "rule": "Run shell untrusted",
+      "priority": "Warning",
+      "output_fields": {
+        "container.name": "app",
+        "k8s.ns.name": "lab",
+        "k8s.pod.name": "web-0",
+        "proc.name": "sh",
+        "proc.cmdline": "sh -c id",
+        "user.name": "app"
+      }
+    },
+    "source": "falco",
+    "synthetic": true,
+    "note": "Untrusted shell rule, not the terminal shell rule"
+  },
+  {
+    "event": {
+      "uuid": "00000000-0000-4000-8000-000000013205",
+      "time": "2026-11-21T15:20:00Z",
+      "rule": "Package management process launched in container",
+      "priority": "Error",
+      "output_fields": {
+        "container.name": "app",
+        "k8s.ns.name": "lab",
+        "k8s.pod.name": "web-0",
+        "proc.name": "apt-get",
+        "proc.cmdline": "apt-get update",
+        "user.name": "root"
+      }
+    },
+    "source": "falco",
+    "synthetic": true,
+    "note": "Package manager execution"
+  }
+]

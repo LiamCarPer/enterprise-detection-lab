@@ -1,0 +1,20 @@
+title: Shell Spawned in Container
+id: 00000000-0000-4000-8000-000000000602
+status: test
+description: Detects a Falco terminal shell alert in a container.
+author: detection-engineering
+date: 2026/11/25
+logsource:
+  product: falco
+  service: runtime
+detection:
+  selection:
+    rule: Terminal shell in container
+  condition: selection
+falsepositives:
+  - Approved debugging
+  - Startup scripts
+level: medium
+tags:
+  - attack.t1059
+  - attack.t1609

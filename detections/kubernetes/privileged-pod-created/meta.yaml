@@ -1,0 +1,44 @@
+id: DET-K8S-001
+title: Privileged Pod Created
+version: 1.0.0
+status: tested
+domain: kubernetes
+severity: high
+hypothesis: A privileged pod runs with elevated kernel capabilities and can escape container isolation, access host devices, or persist on a node.
+description: Detects a successful Kubernetes pod creation with a privileged container.
+owner: detection-engineering
+created: "2026-11-25"
+updated: "2026-11-25"
+attack:
+  - T1610
+  - T1611
+tags:
+  - kubernetes
+  - container
+  - privilege-escalation
+telemetry:
+  - source: kubernetes-audit
+    event_class: audit
+    required_fields:
+      - auditID
+      - requestReceivedTimestamp
+      - stage
+      - verb
+      - user
+      - objectRef
+      - responseStatus
+      - sourceIPs
+      - requestObject
+queries:
+  opensearch: queries/opensearch.json
+tests:
+  positive: 5
+  negative: 5
+  benign: 5
+false_positives:
+  - Approved debugging or node-level troubleshooting pods.
+  - CI or platform automation that requires privileged access for a documented task.
+  - Storage, networking, or security agents deployed with privileged containers.
+runbook: runbook.md
+metrics: metrics.json
+notes: notes.md

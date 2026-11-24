@@ -11,6 +11,7 @@ from edl.ingest import (
     ingest_cloud,
     ingest_endpoint,
     ingest_identity,
+    ingest_kubernetes,
     ingest_network,
     ingest_saas,
 )
@@ -287,6 +288,60 @@ def test_network_ingest_is_idempotent_and_queryable() -> None:
         assert [result.counts[result.indices[0]] for result in second] == [4, 5]
         assert sorted(str(hit["_id"]) for hit in _search("zeek")) == zeek_ids
         assert sorted(str(hit["_id"]) for hit in _search("suricata")) == suricata_ids
+    finally:
+        client.delete_matching(f"{TEST_PREFIX}-*")
+        client.close()
+
+
+def test_kubernetes_ingest_is_idempotent_and_queryable() -> None:
+    client = OpenSearchClient()
+    try:
+        first = ingest_kubernetes(
+            config.ROOT,
+            client=client,
+            ingest_time=datetime(2026, 11, 25, 14, 0, tzinfo=UTC),
+            index_prefix=TEST_PREFIX,
+        )
+        assert [result.source for result in first] == ["kubernetes-audit", "falco"]
+        assert [result.read for result in first] == [3, 2]
+        assert all(result.unique == result.read for result in first)
+
+        audit_hits = _search("kubernetes-audit")
+        assert len(audit_hits) == 3
+        audit_ids = sorted(str(hit["_id"]) for hit in audit_hits)
+        audit_event = audit_hits[0]["_source"]
+        assert audit_event["event_class"] == "audit"
+        assert audit_event["action"] == "create"
+        assert audit_event["resource_name"] == "pods"
+        assert audit_event["namespace"] == "lab"
+        assert audit_event["pod"] == "web-0"
+        assert audit_event["result"] == "success"
+        assert audit_event["privileged"] is False
+
+        privileged = audit_hits[1]["_source"]
+        assert privileged["pod"] == "debug-pod"
+        assert privileged["privileged"] is True
+
+        falco_hits = _search("falco")
+        assert len(falco_hits) == 2
+        falco_ids = sorted(str(hit["_id"]) for hit in falco_hits)
+        falco_event = falco_hits[0]["_source"]
+        assert falco_event["event_class"] == "runtime_alert"
+        assert falco_event["rule_name"] == "Terminal shell in container"
+        assert falco_event["namespace"] == "lab"
+        assert falco_event["pod"] == "debug-pod"
+        assert falco_event["process"]["name"] == "bash"
+        assert falco_event["dedup_origin"] == "declared"
+
+        second = ingest_kubernetes(
+            config.ROOT,
+            client=client,
+            ingest_time=datetime(2026, 11, 26, 14, 0, tzinfo=UTC),
+            index_prefix=TEST_PREFIX,
+        )
+        assert [result.counts[result.indices[0]] for result in second] == [3, 2]
+        assert sorted(str(hit["_id"]) for hit in _search("kubernetes-audit")) == audit_ids
+        assert sorted(str(hit["_id"]) for hit in _search("falco")) == falco_ids
     finally:
         client.delete_matching(f"{TEST_PREFIX}-*")
         client.close()

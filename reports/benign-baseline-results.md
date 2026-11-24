@@ -2,7 +2,7 @@
 
 ## Scope
 
-Nine synthetic benign corpora are used to measure false-positive behavior across the detection set.
+Eleven synthetic benign corpora are used to measure false-positive behavior across the detection set.
 
 | Detection | Dataset | Unit | Cases | Matches | FPR |
 |---|---|---|---:|---:|---:|
@@ -16,6 +16,8 @@ Nine synthetic benign corpora are used to measure false-positive behavior across
 | `DET-SAA-002` | `github-audit.json` | event | 20 | 0 | 0.00 |
 | `DET-NET-001` | `zeek-dns.json` | event | 20 | 0 | 0.00 |
 | `DET-NET-002` | `suricata-alerts.json` | event | 20 | 0 | 0.00 |
+| `DET-K8S-001` | `kubernetes-audit.json` | event | 20 | 0 | 0.00 |
+| `DET-K8S-002` | `falco.json` | event | 20 | 0 | 0.00 |
 
 The endpoint baseline also has a before/after tuning result: the initial query matched 8/20 approved management-agent events, and the tuned query matches 0/20. See [`false-positive-tuning.md`](false-positive-tuning.md).
 
@@ -32,6 +34,8 @@ The correlation baseline contains six scenarios with only one step, mismatched u
 - **GitHub audit:** pushes, pull requests, issues, member onboarding, team changes, repository changes, and sign-ins.
 - **Zeek DNS:** internal, mail, service, reverse, and content-delivery lookups with no long TXT queries.
 - **Suricata alerts:** normal network records and policy, scan, denial-of-service, and lower-severity alerts.
+- **Kubernetes audit:** unprivileged pod creation, deployment and service changes, inventory, and RBAC operations.
+- **Falco:** file, process, network, package, and configuration alerts without terminal-shell events.
 
 ## Approved exceptions
 
@@ -84,6 +88,14 @@ edl detection baseline \
 edl detection baseline \
   --id DET-NET-002 \
   --dataset lab/datasets/synthetic/benign-baseline/suricata-alerts.json
+
+edl detection baseline \
+  --id DET-K8S-001 \
+  --dataset lab/datasets/synthetic/benign-baseline/kubernetes-audit.json
+
+edl detection baseline \
+  --id DET-K8S-002 \
+  --dataset lab/datasets/synthetic/benign-baseline/falco.json
 ```
 
 The lab test [`tests/lab/test_benign_baselines.py`](../tests/lab/test_benign_baselines.py) asserts the same zero-match results in CI.
@@ -97,3 +109,4 @@ The lab test [`tests/lab/test_benign_baselines.py`](../tests/lab/test_benign_bas
 - The SaaS baselines exclude events that intentionally match the detections, such as owner promotions and mail-forwarding rules.
 - The SaaS baselines are small and do not measure tenant or organization prevalence.
 - The network baselines are small and do not measure sensor coverage, traffic mix, or rule-set changes.
+- The Kubernetes baselines are small and do not measure cluster size, workload churn, or admission-policy differences.

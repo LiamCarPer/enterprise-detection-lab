@@ -736,3 +736,20 @@ def test_ingest_network_json() -> None:
     assert [item["source"] for item in payload] == ["zeek", "suricata"]
     assert payload[0]["indices"] == ["edl-events-zeek-2026.11.25"]
     assert payload[1]["indices"] == ["edl-events-suricata-2026.11.25"]
+
+
+def test_ingest_kubernetes_dry_run() -> None:
+    result = runner.invoke(app, ["ingest", "kubernetes", "--dry-run"])
+    assert result.exit_code == 0
+    assert "Kubernetes Telemetry Ingest" in result.stdout
+    assert "dry-run" in result.stdout
+    assert "dry-run" in result.stdout
+
+
+def test_ingest_kubernetes_json() -> None:
+    result = runner.invoke(app, ["ingest", "kubernetes", "--dry-run", "--json"])
+    assert result.exit_code == 0
+    payload = json.loads(result.stdout)
+    assert [item["source"] for item in payload] == ["kubernetes-audit", "falco"]
+    assert payload[0]["indices"] == ["edl-events-kubernetes-audit-2026.11.25"]
+    assert payload[1]["indices"] == ["edl-events-falco-2026.11.25"]

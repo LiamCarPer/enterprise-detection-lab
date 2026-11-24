@@ -1,0 +1,125 @@
+[
+  {
+    "event": {
+      "auditID": "00000000-0000-4000-8000-000000012101",
+      "requestReceivedTimestamp": "2026-11-20T14:00:00Z",
+      "stage": "ResponseComplete",
+      "verb": "create",
+      "user": {"username": "admin@example.test"},
+      "objectRef": {"resource": "pods", "namespace": "lab", "name": "debug"},
+      "responseStatus": {"code": 201},
+      "sourceIPs": ["203.0.113.10"],
+      "requestObject": {
+        "kind": "Pod",
+        "spec": {
+          "containers": [
+            {"name": "debug", "image": "busybox:1.37", "securityContext": {"privileged": true}}
+          ]
+        }
+      }
+    },
+    "source": "kubernetes-audit",
+    "synthetic": true,
+    "note": "Privileged debugging pod"
+  },
+  {
+    "event": {
+      "auditID": "00000000-0000-4000-8000-000000012102",
+      "requestReceivedTimestamp": "2026-11-20T14:05:00Z",
+      "stage": "ResponseComplete",
+      "verb": "create",
+      "user": {"username": "system:serviceaccount:lab:deployer"},
+      "objectRef": {"resource": "pods", "namespace": "lab", "name": "debug-init"},
+      "responseStatus": {"code": 201},
+      "sourceIPs": ["10.0.0.7"],
+      "requestObject": {
+        "kind": "Pod",
+        "spec": {
+          "initContainers": [
+            {"name": "init", "image": "alpine:3.20", "securityContext": {"privileged": true}}
+          ],
+          "containers": [{"name": "app", "image": "nginx:1.29"}]
+        }
+      }
+    },
+    "source": "kubernetes-audit",
+    "synthetic": true,
+    "note": "Privileged init container"
+  },
+  {
+    "event": {
+      "auditID": "00000000-0000-4000-8000-000000012103",
+      "requestReceivedTimestamp": "2026-11-20T14:10:00Z",
+      "stage": "ResponseComplete",
+      "verb": "create",
+      "user": {"username": "developer@example.test"},
+      "objectRef": {"resource": "pods", "namespace": "staging", "name": "host-debug"},
+      "responseStatus": {"code": 201},
+      "sourceIPs": ["198.51.100.21"],
+      "requestObject": {
+        "kind": "Pod",
+        "spec": {
+          "containers": [
+            {"name": "app", "image": "nginx:1.29"},
+            {"name": "debug", "image": "alpine:3.20", "securityContext": {"privileged": true}}
+          ]
+        }
+      }
+    },
+    "source": "kubernetes-audit",
+    "synthetic": true,
+    "note": "One privileged container among multiple containers"
+  },
+  {
+    "event": {
+      "auditID": "00000000-0000-4000-8000-000000012104",
+      "requestReceivedTimestamp": "2026-11-20T14:15:00Z",
+      "stage": "ResponseComplete",
+      "verb": "create",
+      "user": {"username": "contractor@example.test"},
+      "objectRef": {"resource": "pods", "namespace": "default", "name": "node-shell"},
+      "responseStatus": {"code": 201},
+      "sourceIPs": ["192.0.2.32"],
+      "requestObject": {
+        "kind": "Pod",
+        "spec": {
+          "hostNetwork": true,
+          "hostPID": true,
+          "containers": [
+            {"name": "shell", "image": "alpine:3.20", "securityContext": {"privileged": true}}
+          ]
+        }
+      }
+    },
+    "source": "kubernetes-audit",
+    "synthetic": true,
+    "note": "Privileged host namespace pod"
+  },
+  {
+    "event": {
+      "auditID": "00000000-0000-4000-8000-000000012105",
+      "requestReceivedTimestamp": "2026-11-20T14:20:00Z",
+      "stage": "ResponseComplete",
+      "verb": "create",
+      "user": {"username": "admin@example.test"},
+      "objectRef": {"resource": "pods", "namespace": "kube-system", "name": "agent"},
+      "responseStatus": {"code": 201},
+      "sourceIPs": ["203.0.113.44"],
+      "requestObject": {
+        "kind": "Pod",
+        "spec": {
+          "containers": [
+            {
+              "name": "agent",
+              "image": "example/agent:2.1",
+              "securityContext": {"privileged": true}
+            }
+          ]
+        }
+      }
+    },
+    "source": "kubernetes-audit",
+    "synthetic": true,
+    "note": "Privileged pod in a system namespace"
+  }
+]

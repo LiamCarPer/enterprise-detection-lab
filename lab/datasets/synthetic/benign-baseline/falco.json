@@ -1,0 +1,362 @@
+[
+  {
+    "event": {
+      "uuid": "00000000-0000-4000-8000-000000015001",
+      "time": "2026-11-19T15:01:00Z",
+      "rule": "Write below etc",
+      "priority": "Warning",
+      "output_fields": {
+        "container.name": "app",
+        "k8s.ns.name": "lab",
+        "k8s.pod.name": "web-0",
+        "proc.name": "app",
+        "proc.cmdline": "app --serve",
+        "user.name": "app"
+      }
+    },
+    "source": "falco",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "uuid": "00000000-0000-4000-8000-000000015002",
+      "time": "2026-11-19T15:02:00Z",
+      "rule": "Read sensitive file untrusted",
+      "priority": "Notice",
+      "output_fields": {
+        "container.name": "app",
+        "k8s.ns.name": "lab",
+        "k8s.pod.name": "web-0",
+        "proc.name": "app",
+        "proc.cmdline": "app --serve",
+        "user.name": "app"
+      }
+    },
+    "source": "falco",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "uuid": "00000000-0000-4000-8000-000000015003",
+      "time": "2026-11-19T15:03:00Z",
+      "rule": "Unexpected outbound connection destination",
+      "priority": "Warning",
+      "output_fields": {
+        "container.name": "app",
+        "k8s.ns.name": "lab",
+        "k8s.pod.name": "web-0",
+        "proc.name": "app",
+        "proc.cmdline": "app --serve",
+        "user.name": "app"
+      }
+    },
+    "source": "falco",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "uuid": "00000000-0000-4000-8000-000000015004",
+      "time": "2026-11-19T15:04:00Z",
+      "rule": "Package management process launched in container",
+      "priority": "Notice",
+      "output_fields": {
+        "container.name": "app",
+        "k8s.ns.name": "lab",
+        "k8s.pod.name": "web-0",
+        "proc.name": "app",
+        "proc.cmdline": "app --serve",
+        "user.name": "app"
+      }
+    },
+    "source": "falco",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "uuid": "00000000-0000-4000-8000-000000015005",
+      "time": "2026-11-19T15:05:00Z",
+      "rule": "Unexpected UDP traffic",
+      "priority": "Warning",
+      "output_fields": {
+        "container.name": "app",
+        "k8s.ns.name": "lab",
+        "k8s.pod.name": "web-0",
+        "proc.name": "app",
+        "proc.cmdline": "app --serve",
+        "user.name": "app"
+      }
+    },
+    "source": "falco",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "uuid": "00000000-0000-4000-8000-000000015006",
+      "time": "2026-11-19T15:06:00Z",
+      "rule": "Contacted Kubernetes API server from container",
+      "priority": "Notice",
+      "output_fields": {
+        "container.name": "app",
+        "k8s.ns.name": "lab",
+        "k8s.pod.name": "web-0",
+        "proc.name": "app",
+        "proc.cmdline": "app --serve",
+        "user.name": "app"
+      }
+    },
+    "source": "falco",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "uuid": "00000000-0000-4000-8000-000000015007",
+      "time": "2026-11-19T15:07:00Z",
+      "rule": "File below a known binary directory opened for writing",
+      "priority": "Warning",
+      "output_fields": {
+        "container.name": "app",
+        "k8s.ns.name": "lab",
+        "k8s.pod.name": "web-0",
+        "proc.name": "app",
+        "proc.cmdline": "app --serve",
+        "user.name": "app"
+      }
+    },
+    "source": "falco",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "uuid": "00000000-0000-4000-8000-000000015008",
+      "time": "2026-11-19T15:08:00Z",
+      "rule": "Change thread namespace",
+      "priority": "Notice",
+      "output_fields": {
+        "container.name": "app",
+        "k8s.ns.name": "lab",
+        "k8s.pod.name": "web-0",
+        "proc.name": "app",
+        "proc.cmdline": "app --serve",
+        "user.name": "app"
+      }
+    },
+    "source": "falco",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "uuid": "00000000-0000-4000-8000-000000015009",
+      "time": "2026-11-19T15:09:00Z",
+      "rule": "Create hardlink to a sensitive file",
+      "priority": "Warning",
+      "output_fields": {
+        "container.name": "app",
+        "k8s.ns.name": "lab",
+        "k8s.pod.name": "web-0",
+        "proc.name": "app",
+        "proc.cmdline": "app --serve",
+        "user.name": "app"
+      }
+    },
+    "source": "falco",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "uuid": "00000000-0000-4000-8000-000000015010",
+      "time": "2026-11-19T15:10:00Z",
+      "rule": "Read shell configuration file",
+      "priority": "Notice",
+      "output_fields": {
+        "container.name": "app",
+        "k8s.ns.name": "lab",
+        "k8s.pod.name": "web-0",
+        "proc.name": "app",
+        "proc.cmdline": "app --serve",
+        "user.name": "app"
+      }
+    },
+    "source": "falco",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "uuid": "00000000-0000-4000-8000-000000015011",
+      "time": "2026-11-19T15:11:00Z",
+      "rule": "Run shell untrusted",
+      "priority": "Warning",
+      "output_fields": {
+        "container.name": "app",
+        "k8s.ns.name": "lab",
+        "k8s.pod.name": "web-0",
+        "proc.name": "app",
+        "proc.cmdline": "app --serve",
+        "user.name": "app"
+      }
+    },
+    "source": "falco",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "uuid": "00000000-0000-4000-8000-000000015012",
+      "time": "2026-11-19T15:12:00Z",
+      "rule": "Non sudo setuid",
+      "priority": "Notice",
+      "output_fields": {
+        "container.name": "app",
+        "k8s.ns.name": "lab",
+        "k8s.pod.name": "web-0",
+        "proc.name": "app",
+        "proc.cmdline": "app --serve",
+        "user.name": "app"
+      }
+    },
+    "source": "falco",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "uuid": "00000000-0000-4000-8000-000000015013",
+      "time": "2026-11-19T15:13:00Z",
+      "rule": "Setuid usage",
+      "priority": "Warning",
+      "output_fields": {
+        "container.name": "app",
+        "k8s.ns.name": "lab",
+        "k8s.pod.name": "web-0",
+        "proc.name": "app",
+        "proc.cmdline": "app --serve",
+        "user.name": "app"
+      }
+    },
+    "source": "falco",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "uuid": "00000000-0000-4000-8000-000000015014",
+      "time": "2026-11-19T15:14:00Z",
+      "rule": "Ptrace attached to a process",
+      "priority": "Notice",
+      "output_fields": {
+        "container.name": "app",
+        "k8s.ns.name": "lab",
+        "k8s.pod.name": "web-0",
+        "proc.name": "app",
+        "proc.cmdline": "app --serve",
+        "user.name": "app"
+      }
+    },
+    "source": "falco",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "uuid": "00000000-0000-4000-8000-000000015015",
+      "time": "2026-11-19T15:15:00Z",
+      "rule": "Open directory below /etc",
+      "priority": "Warning",
+      "output_fields": {
+        "container.name": "app",
+        "k8s.ns.name": "lab",
+        "k8s.pod.name": "web-0",
+        "proc.name": "app",
+        "proc.cmdline": "app --serve",
+        "user.name": "app"
+      }
+    },
+    "source": "falco",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "uuid": "00000000-0000-4000-8000-000000015016",
+      "time": "2026-11-19T15:16:00Z",
+      "rule": "Open sensitive file for writing",
+      "priority": "Notice",
+      "output_fields": {
+        "container.name": "app",
+        "k8s.ns.name": "lab",
+        "k8s.pod.name": "web-0",
+        "proc.name": "app",
+        "proc.cmdline": "app --serve",
+        "user.name": "app"
+      }
+    },
+    "source": "falco",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "uuid": "00000000-0000-4000-8000-000000015017",
+      "time": "2026-11-19T15:17:00Z",
+      "rule": "System user created",
+      "priority": "Warning",
+      "output_fields": {
+        "container.name": "app",
+        "k8s.ns.name": "lab",
+        "k8s.pod.name": "web-0",
+        "proc.name": "app",
+        "proc.cmdline": "app --serve",
+        "user.name": "app"
+      }
+    },
+    "source": "falco",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "uuid": "00000000-0000-4000-8000-000000015018",
+      "time": "2026-11-19T15:18:00Z",
+      "rule": "Container with sensitive mount started",
+      "priority": "Notice",
+      "output_fields": {
+        "container.name": "app",
+        "k8s.ns.name": "lab",
+        "k8s.pod.name": "web-0",
+        "proc.name": "app",
+        "proc.cmdline": "app --serve",
+        "user.name": "app"
+      }
+    },
+    "source": "falco",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "uuid": "00000000-0000-4000-8000-000000015019",
+      "time": "2026-11-19T15:19:00Z",
+      "rule": "Executing binary from a temporary directory",
+      "priority": "Warning",
+      "output_fields": {
+        "container.name": "app",
+        "k8s.ns.name": "lab",
+        "k8s.pod.name": "web-0",
+        "proc.name": "app",
+        "proc.cmdline": "app --serve",
+        "user.name": "app"
+      }
+    },
+    "source": "falco",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "uuid": "00000000-0000-4000-8000-000000015020",
+      "time": "2026-11-19T15:20:00Z",
+      "rule": "Netcat remote code execution in container",
+      "priority": "Notice",
+      "output_fields": {
+        "container.name": "app",
+        "k8s.ns.name": "lab",
+        "k8s.pod.name": "web-0",
+        "proc.name": "app",
+        "proc.cmdline": "app --serve",
+        "user.name": "app"
+      }
+    },
+    "source": "falco",
+    "synthetic": true
+  }
+]

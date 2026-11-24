@@ -70,6 +70,7 @@ edl ingest endpoint
 edl ingest cloud
 edl ingest saas
 edl ingest network
+edl ingest kubernetes
 edl ingest endpoint --source sysmon
 edl ingest cloud --dry-run
 edl ingest identity --source entra-signin
@@ -78,7 +79,7 @@ edl ingest identity --json
 ```
 
 The commands validate the sample contract, normalize events to the canonical
-identity, endpoint, cloud, SaaS, or network shape, classify per-event where the source requires
+identity, endpoint, cloud, SaaS, network, or Kubernetes shape, classify per-event where the source requires
 it, use deterministic document IDs, and bulk-index into daily
 `edl-events-<source>-YYYY.MM.DD` indices. Replays overwrite the same document
 IDs instead of creating duplicates.

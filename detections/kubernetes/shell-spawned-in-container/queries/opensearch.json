@@ -1,0 +1,11 @@
+{
+  "query": {
+    "bool": {
+      "filter": [
+        { "term": { "source": "falco" } },
+        { "term": { "event_class": "runtime_alert" } },
+        { "term": { "rule_name": "Terminal shell in container" } }
+      ]
+    }
+  }
+}

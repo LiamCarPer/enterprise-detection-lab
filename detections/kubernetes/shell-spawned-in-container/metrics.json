@@ -1,0 +1,17 @@
+{
+  "detection_id": "DET-K8S-002",
+  "measured_at": "2026-11-24T02:23:00.524497Z",
+  "sample_size": 15,
+  "evaluation_unit": "event",
+  "precision": 1.0,
+  "recall": 1.0,
+  "false_positive_rate": 0.0,
+  "latency_ms_p50": 2.684,
+  "latency_ms_p95": 3.066,
+  "method": "Synthetic fixture replay against OpenSearch; native query only.",
+  "limitations": [
+    "Curated synthetic fixtures; sample size 15.",
+    "Local OpenSearch latency; not representative of production.",
+    "Sigma rule is not executed; the native OpenSearch query is the tested path."
+  ]
+}

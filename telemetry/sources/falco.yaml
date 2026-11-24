@@ -5,7 +5,7 @@ product: Falco
 event_classes:
   - runtime_alert
 schema_version: "1.0"
-status: documented
+status: ingested
 owner: detection-engineering
 event_time_field: time
 ingest_time_field: ingest_time
@@ -28,7 +28,13 @@ cost: Open source; telemetry volume and storage are the main cost.
 late_arrival: Expected under load; preserve event time.
 duplicates: Possible during retries; deduplicate by uuid.
 known_gaps:
-  - No Falco sample data yet; synthetic events arrive with the Kubernetes detection work.
+  - The committed sample is synthetic and minimal.
   - eBPF and kernel-version behavior vary by host.
   - Container isolation and host PID namespaces can hide context.
-notes: Falco contract; sample data arrives with Kubernetes/Falco detections.
+notes: Falco source contract.
+sample_data:
+  path: lab/datasets/synthetic/falco/reference.json
+  synthetic: true
+  license: synthetic
+  provenance: Generated for this repository. No real clusters, users, or workloads.
+  sha256: b41acab816c5e5a826de2028b80e8ad8194dfad0af8bacff7ae268dc4c8827f3

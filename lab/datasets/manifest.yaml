@@ -126,3 +126,31 @@ datasets:
     license: synthetic
     provenance: Generated for this repository. No real hosts, addresses, or traffic.
     sha256: ec8780d5c569adaf9f1b588c2011b0f0c0a84c2a181b52d10707a94df47bf40c
+  - id: synthetic-kubernetes-audit-reference
+    source: kubernetes-audit
+    path: lab/datasets/synthetic/kubernetes-audit/reference.json
+    synthetic: true
+    license: synthetic
+    provenance: Generated for this repository. No real clusters, users, or workloads.
+    sha256: fea15d3fe29c60445424d7e6ce77d017262d1180134048e89938910906a6efb0
+  - id: synthetic-falco-reference
+    source: falco
+    path: lab/datasets/synthetic/falco/reference.json
+    synthetic: true
+    license: synthetic
+    provenance: Generated for this repository. No real clusters, users, or workloads.
+    sha256: b41acab816c5e5a826de2028b80e8ad8194dfad0af8bacff7ae268dc4c8827f3
+  - id: synthetic-kubernetes-audit-benign-baseline
+    source: kubernetes-audit
+    path: lab/datasets/synthetic/benign-baseline/kubernetes-audit.json
+    synthetic: true
+    license: synthetic
+    provenance: Generated for this repository. No real clusters, users, or workloads.
+    sha256: e4634a5dde6dc60f94298bf9a3e856232df2e17b771d13e744b0d6860ce72e3f
+  - id: synthetic-falco-benign-baseline
+    source: falco
+    path: lab/datasets/synthetic/benign-baseline/falco.json
+    synthetic: true
+    license: synthetic
+    provenance: Generated for this repository. No real clusters, users, or workloads.
+    sha256: 6bfad318aa2c3a21a943905493f06a760cb184be73e2f9eb3f16f2842ab301f5

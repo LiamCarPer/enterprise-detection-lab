@@ -20,6 +20,8 @@ CASES = (
     ("DET-SAA-002", BASELINE_DIR / "github-audit.json"),
     ("DET-NET-001", BASELINE_DIR / "zeek-dns.json"),
     ("DET-NET-002", BASELINE_DIR / "suricata-alerts.json"),
+    ("DET-K8S-001", BASELINE_DIR / "kubernetes-audit.json"),
+    ("DET-K8S-002", BASELINE_DIR / "falco.json"),
 )
 
 
