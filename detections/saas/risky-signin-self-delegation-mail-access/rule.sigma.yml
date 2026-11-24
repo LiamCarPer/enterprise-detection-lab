@@ -1,0 +1,25 @@
+title: Risky Sign-In, Self-Delegation, and Mail Access
+id: 00000000-0000-4000-8000-000000000405
+status: test
+description: Detects the risky sign-in component of a sequence that ends in self-delegation and mailbox access.
+author: detection-engineering
+date: 2026/11/25
+logsource:
+  product: azure
+  service: signinlogs
+detection:
+  selection:
+    status: success
+    authenticationRequirement: singleFactorAuthentication
+    isInteractive: true
+    riskLevelDuringSignIn:
+      - medium
+      - high
+  condition: selection
+falsepositives:
+  - Legitimate travel or a new device
+level: high
+tags:
+  - attack.t1078
+  - attack.t1098
+  - attack.t1114.002

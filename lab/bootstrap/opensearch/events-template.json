@@ -54,6 +54,7 @@
         "group_member": { "type": "keyword" },
         "delegate": { "type": "keyword" },
         "access_rights": { "type": "keyword" },
+        "self_delegation": { "type": "boolean" },
         "organization": { "type": "keyword" },
         "repository": { "type": "keyword" },
         "target_user": { "type": "keyword" },

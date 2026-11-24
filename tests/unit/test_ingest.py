@@ -1971,3 +1971,64 @@ def test_normalize_m365_audit_maps_distribution_group_member() -> None:
     assert document["group"] == "finance-team@example.test"
     assert document["group_member"] == "analyst@example.test"
     assert "mailbox" not in document
+
+
+def test_normalize_m365_audit_marks_self_delegation() -> None:
+    document = normalize_m365_audit(
+        {
+            **M365_RAW,
+            "Operation": "Add-MailboxPermission",
+            "Parameters": [
+                {"Name": "Identity", "Value": "executive@example.test"},
+                {"Name": "User", "Value": "analyst@example.test"},
+                {"Name": "AccessRights", "Value": "FullAccess"},
+            ],
+        }
+    )
+    assert document["self_delegation"] is True
+
+    other = normalize_m365_audit(
+        {
+            **M365_RAW,
+            "Operation": "Add-MailboxPermission",
+            "Parameters": [
+                {"Name": "Identity", "Value": "executive@example.test"},
+                {"Name": "User", "Value": "contractor@example.test"},
+                {"Name": "AccessRights", "Value": "FullAccess"},
+            ],
+        }
+    )
+    assert other["self_delegation"] is False
+
+
+def test_normalize_m365_audit_maps_mail_access_target() -> None:
+    document = normalize_m365_audit(
+        {
+            **M365_RAW,
+            "Operation": "MailItemsAccessed",
+            "ObjectId": "executive@example.test\\Inbox",
+            "Parameters": [{"Name": "MailAccessType", "Value": "Bind"}],
+        }
+    )
+    assert document["mailbox"] == "executive@example.test"
+    assert document["folder"] == "Inbox"
+
+
+def test_classify_m365_operation_overrides_workload() -> None:
+    assert (
+        classify_m365_audit({"Workload": "Exchange", "Operation": "Add-MailboxPermission"})
+        == "mailbox_permission"
+    )
+    assert (
+        classify_m365_audit({"Workload": "Exchange", "Operation": "Add-MailboxFolderPermission"})
+        == "mailbox_permission"
+    )
+    assert (
+        classify_m365_audit({"Workload": "Exchange", "Operation": "Add-UnifiedGroupLinks"})
+        == "mailbox_permission"
+    )
+    assert (
+        classify_m365_audit({"Workload": "Exchange", "Operation": "MailItemsAccessed"})
+        == "mail_access"
+    )
+    assert classify_m365_audit({"Workload": "Exchange", "Operation": "New-InboxRule"}) == "mailbox"

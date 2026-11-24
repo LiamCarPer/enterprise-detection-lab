@@ -1,0 +1,118 @@
+[
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000023101",
+      "createdDateTime": "2026-11-01T09:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.11",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "pos-1",
+    "note": "Risky sign-in step"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-01T09:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000023102",
+      "Operation": "Add-MailboxPermission",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.11",
+      "ObjectId": "executive@example.test",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {"Name": "Identity", "Value": "executive@example.test"},
+        {"Name": "User", "Value": "analyst@example.test"},
+        {"Name": "AccessRights", "Value": "FullAccess"}
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "pos-1",
+    "note": "Self-delegation of FullAccess"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-01T09:20:00Z",
+      "Id": "00000000-0000-4000-8000-000000023103",
+      "Operation": "MailItemsAccessed",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.11",
+      "ObjectId": "executive@example.test\\Inbox",
+      "ResultStatus": "Success",
+      "Parameters": [{"Name": "MailAccessType", "Value": "Bind"}]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "pos-1",
+    "note": "Mailbox access after self-delegation"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000023104",
+      "createdDateTime": "2026-11-01T10:00:00Z",
+      "userPrincipalName": "finance@example.test",
+      "appDisplayName": "Azure Portal",
+      "ipAddress": "198.51.100.77",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "high"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "pos-2",
+    "note": "Risky sign-in step"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-01T10:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000023105",
+      "Operation": "Add-MailboxFolderPermission",
+      "UserId": "finance@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "198.51.100.77",
+      "ObjectId": "executive@example.test:\\Calendar",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {"Name": "Identity", "Value": "executive@example.test:\\Calendar"},
+        {"Name": "User", "Value": "finance@example.test"},
+        {"Name": "AccessRights", "Value": "Editor"}
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "pos-2",
+    "note": "Self-delegation of folder access"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-01T10:20:00Z",
+      "Id": "00000000-0000-4000-8000-000000023106",
+      "Operation": "MailItemsAccessed",
+      "UserId": "finance@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "198.51.100.77",
+      "ObjectId": "executive@example.test\\Calendar",
+      "ResultStatus": "Success",
+      "Parameters": [{"Name": "MailAccessType", "Value": "Bind"}]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "pos-2",
+    "note": "Folder access after self-delegation"
+  }
+]

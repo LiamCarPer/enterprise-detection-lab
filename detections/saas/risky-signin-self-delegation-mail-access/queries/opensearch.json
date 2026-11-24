@@ -1,0 +1,65 @@
+{
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "bool": {
+            "filter": [
+              { "term": { "source": "entra-signin" } },
+              { "term": { "result": "success" } },
+              { "terms": { "risk_level": ["medium", "high"] } },
+              { "term": { "auth_requirement": "singleFactorAuthentication" } },
+              { "term": { "is_interactive": true } }
+            ]
+          }
+        },
+        {
+          "bool": {
+            "filter": [
+              { "term": { "source": "m365-audit" } },
+              { "term": { "result": "success" } },
+              { "term": { "self_delegation": true } },
+              {
+                "bool": {
+                  "should": [
+                    {
+                      "bool": {
+                        "filter": [
+                          { "term": { "action": "Add-MailboxPermission" } },
+                          { "term": { "access_rights": "FullAccess" } }
+                        ]
+                      }
+                    },
+                    {
+                      "bool": {
+                        "filter": [
+                          { "term": { "action": "Add-MailboxFolderPermission" } },
+                          {
+                            "terms": {
+                              "access_rights": ["Owner", "PublishingEditor", "Editor"]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "minimum_should_match": 1
+                }
+              }
+            ]
+          }
+        },
+        {
+          "bool": {
+            "filter": [
+              { "term": { "source": "m365-audit" } },
+              { "term": { "action": "MailItemsAccessed" } },
+              { "term": { "result": "success" } }
+            ]
+          }
+        }
+      ],
+      "minimum_should_match": 1
+    }
+  }
+}

@@ -123,7 +123,7 @@ SaaS additions:
 - Microsoft 365: `workload`, `record_type`, `object_id`, `rule_name`, `forward_to`, `forward_domain`, `forward_domains`, and `forward_external`
 - GitHub: `organization`, `repository`, `target_user`, `role` (from `permission`), `user_agent`, and `service=github`
 
-Microsoft 365 event classes follow the workload: Exchange maps to `mailbox`, SharePoint/OneDrive to `sharepoint`, Teams to `teams`, and other workloads to `audit`. GitHub maps `git.*` actions to `git`, login actions to `authentication`, and other audit actions to `audit_log`.
+Microsoft 365 event classes follow the operation and workload: mailbox permission grants map to `mailbox_permission`, `MailItemsAccessed` maps to `mail_access`, Exchange maps to `mailbox`, SharePoint/OneDrive to `sharepoint`, Teams to `teams`, and other workloads to `audit`. GitHub maps `git.*` actions to `git`, login actions to `authentication`, and other audit actions to `audit_log`.
 
 Network additions:
 

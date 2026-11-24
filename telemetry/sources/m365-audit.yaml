@@ -5,6 +5,8 @@ product: Microsoft 365
 event_classes:
   - audit
   - mailbox
+  - mailbox_permission
+  - mail_access
   - sharepoint
   - teams
 schema_version: "1.0"

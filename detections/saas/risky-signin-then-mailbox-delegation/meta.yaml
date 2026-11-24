@@ -50,7 +50,7 @@ correlation:
     - source: entra-signin
       event_class: sign_in
     - source: m365-audit
-      event_class: mailbox
+      event_class: mailbox_permission
 tests:
   positive: 8
   negative: 8

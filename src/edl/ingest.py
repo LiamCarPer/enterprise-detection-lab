@@ -324,7 +324,21 @@ def classify_windows_security(raw: Mapping[str, Any]) -> str:
 
 
 def classify_m365_audit(raw: Mapping[str, Any]) -> str:
-    """Map an M365 workload to the declared event class."""
+    """Map an M365 operation or workload to the declared event class."""
+    operation = str(raw.get("Operation", ""))
+    if operation in {
+        "Add-MailboxPermission",
+        "Add-MailboxFolderPermission",
+        "Add-DistributionGroupMember",
+        "Add-UnifiedGroupLinks",
+        "Remove-MailboxPermission",
+        "Remove-MailboxFolderPermission",
+        "Remove-DistributionGroupMember",
+        "Remove-UnifiedGroupLinks",
+    }:
+        return "mailbox_permission"
+    if operation == "MailItemsAccessed":
+        return "mail_access"
     workload = str(raw.get("Workload", "")).lower()
     if "exchange" in workload:
         return "mailbox"
@@ -575,6 +589,18 @@ def normalize_m365_audit(raw: Mapping[str, Any]) -> dict[str, Any]:
         mailbox = mailbox_part.strip() or identity
         if folder is None:
             folder = folder_part.strip().lstrip("\\/") or None
+    if operation == "MailItemsAccessed" and not mailbox:
+        object_id = _meaningful(raw.get("ObjectId"))
+        if isinstance(object_id, str):
+            mailbox_part, _, folder_part = object_id.partition("\\")
+            mailbox = mailbox_part.strip() or None
+            if folder is None and folder_part:
+                folder = folder_part.strip() or None
+    delegate = _meaningful(parameters.get("User") or parameters.get("Member"))
+    user = raw.get("UserId")
+    self_delegation: bool | None = None
+    if isinstance(delegate, str) and isinstance(user, str) and delegate and user:
+        self_delegation = delegate.lower() == user.lower()
     document: dict[str, Any] = {
         "event_id": raw.get("Id"),
         "user": raw.get("UserId"),
@@ -593,7 +619,8 @@ def normalize_m365_audit(raw: Mapping[str, Any]) -> dict[str, Any]:
         "folder": folder,
         "group": group,
         "group_member": group_member,
-        "delegate": _meaningful(parameters.get("User") or parameters.get("Member")),
+        "delegate": delegate,
+        "self_delegation": self_delegation,
         "access_rights": _access_rights(parameters.get("AccessRights")),
     }
     return _compact(document)
