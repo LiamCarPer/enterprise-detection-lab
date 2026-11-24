@@ -2,19 +2,20 @@
 
 ## Scope
 
-Four synthetic benign corpora are used to measure false-positive behavior across the detection set.
+Five synthetic benign corpora are used to measure false-positive behavior across the detection set.
 
-| Detection | Dataset | Events | Matches | FPR |
-|---|---|---:|---:|---:|
-| `DET-IDN-001` | `identity-signin.json` | 20 | 0 | 0.00 |
-| `DET-IDN-002` | `identity-audit.json` | 20 | 0 | 0.00 |
-| `DET-END-001` | `endpoint.json` | 20 | 0 | 0.00 |
-| `DET-CLD-001` | `cloudtrail.json` | 20 | 0 | 0.00 |
-| `DET-CLD-002` | `cloudtrail.json` | 20 | 0 | 0.00 |
+| Detection | Dataset | Unit | Cases | Matches | FPR |
+|---|---|---|---:|---:|---:|
+| `DET-IDN-001` | `identity-signin.json` | event | 20 | 0 | 0.00 |
+| `DET-IDN-002` | `identity-audit.json` | event | 20 | 0 | 0.00 |
+| `DET-END-001` | `endpoint.json` | event | 20 | 0 | 0.00 |
+| `DET-CLD-001` | `cloudtrail.json` | event | 20 | 0 | 0.00 |
+| `DET-CLD-002` | `cloudtrail.json` | event | 20 | 0 | 0.00 |
+| `DET-IDN-003` | `identity-correlation.json` | scenario | 6 | 0 | 0.00 |
 
 The endpoint baseline also has a before/after tuning result: the initial query matched 8/20 approved management-agent events, and the tuned query matches 0/20. See [`false-positive-tuning.md`](false-positive-tuning.md).
 
-`DET-IDN-003` is a scenario-level correlation. Its event baseline is not meaningful without sequence evaluation, so it is excluded from this table.
+The correlation baseline contains six scenarios with only one step, mismatched users, or activity outside the 30-minute window. It is evaluated at scenario level.
 
 ## Baseline contents
 
@@ -22,6 +23,7 @@ The endpoint baseline also has a before/after tuning result: the initial query m
 - **Identity audit:** application registration and updates, owner removals, and group membership changes.
 - **Endpoint:** approved management-agent encoded PowerShell, normal PowerShell, Office helpers, discovery, and nested PowerShell.
 - **CloudTrail:** access-key inventory and status updates, trail inventory, and role assumptions.
+- **Identity correlation:** sign-in-only, audit-only, mismatched-user, and out-of-window scenarios.
 
 ## Approved exceptions
 
@@ -54,6 +56,10 @@ edl detection baseline \
 edl detection baseline \
   --id DET-CLD-002 \
   --dataset lab/datasets/synthetic/benign-baseline/cloudtrail.json
+
+edl detection baseline \
+  --id DET-IDN-003 \
+  --dataset lab/datasets/synthetic/benign-baseline/identity-correlation.json
 ```
 
 The lab test [`tests/lab/test_benign_baselines.py`](../tests/lab/test_benign_baselines.py) asserts the same zero-match results in CI.
@@ -63,4 +69,4 @@ The lab test [`tests/lab/test_benign_baselines.py`](../tests/lab/test_benign_bas
 - The corpora are synthetic and small.
 - Approved owner additions, access-key automation, and logging maintenance are excluded rather than measured.
 - The baselines test query behavior, not analyst workload or production prevalence.
-- The correlation detection requires a scenario-level baseline in a future iteration.
+- The correlation baseline covers six curated scenarios; it does not model long-running sequences or event lateness.

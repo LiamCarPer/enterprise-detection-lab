@@ -2,7 +2,7 @@
 
 A detection here is a versioned package, not a single Sigma file.
 
-Read [`docs/artifact-model.md`](../docs/artifact-model.md) first. The machine-readable contract is [`schemas/detection.schema.json`](../schemas/detection.schema.json).
+Read [`docs/artifact-model.md`](../docs/artifact-model.md) first. The machine-readable contract is [`schemas/detection.schema.json`](../schemas/detection.schema.json). Approved exceptions are recorded in [`detections/exceptions.yaml`](exceptions.yaml) under the [exception policy](../docs/exception-policy.md).
 
 ## Layout
 

@@ -181,3 +181,22 @@ def test_run_baseline_closes_owned_client(tmp_path: Path, monkeypatch: pytest.Mo
 def test_run_baseline_rejects_non_object_fixture(tmp_path: Path) -> None:
     with pytest.raises(DetectionError, match="baseline event 1 must be an object"):
         run_baseline(DETECTION_ID, _dataset(tmp_path, "bad"))
+
+
+CORRELATION = config.ROOT / "detections" / "identity" / "risky-signin-then-service-principal-owner"
+
+
+def test_run_baseline_evaluates_correlation_scenarios(tmp_path: Path) -> None:
+    positive = load_json(CORRELATION / "fixtures" / "positive.json")
+    dataset = _dataset(tmp_path, *positive)
+    client = FakeBaselineClient({"baseline-001", "baseline-002", "baseline-003", "baseline-004"})
+    result = run_baseline(
+        "DET-IDN-003",
+        dataset,
+        client=client,  # type: ignore[arg-type]
+        latency_runs=1,
+    )
+    assert result.evaluation_unit == "scenario"
+    assert result.sample_size == 2
+    assert result.matched_count == 2
+    assert result.matched_ids == ("pos-1", "pos-2")

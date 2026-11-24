@@ -509,3 +509,104 @@ def test_strict_validation_promotes_no_warnings_on_valid_repo(tmp_path: Path) ->
     report = validate_repository(tmp_path, strict=True)
     assert report.ok
     assert report.summary["warnings"] == 0
+
+
+def _write_exceptions(
+    root: Path,
+    *,
+    detection_id: str = "DET-IDN-001",
+    exception_id: str = "EXC-IDN-001-001",
+    expires: str = "2027-05-31",
+    duplicate: bool = False,
+    invalid_type: bool = False,
+    non_object: bool = False,
+) -> Path:
+    path = root / "detections" / "exceptions.yaml"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    exception = f"""  - id: {exception_id}
+    detection_id: {detection_id}
+    type: {"invalid" if invalid_type else "review-only"}
+    owner: identity-platform
+    reason: Approved application onboarding workflow requires review.
+    scope:
+      workflow: application-onboarding
+    change_ticket: CHG-2026-0187
+    created: "2026-11-24"
+    expires: "{expires}"
+    compensating_controls:
+      - Require a change ticket and owner approval.
+"""
+    body = exception
+    if duplicate:
+        body += exception.replace(exception_id, exception_id)
+    if non_object:
+        body += "  - not-an-object\n"
+    path.write_text(f"version: 1\nexceptions:\n{body}", encoding="utf-8")
+    return path
+
+
+def test_valid_exception_catalog(tmp_path: Path) -> None:
+    _write_detection(tmp_path)
+    _write_exceptions(tmp_path)
+    report = validate_repository(tmp_path)
+    assert report.ok, [issue.message for issue in report.errors]
+    assert report.summary["warnings"] == 0
+
+
+def test_exception_references_unknown_detection(tmp_path: Path) -> None:
+    _write_detection(tmp_path)
+    _write_exceptions(tmp_path, detection_id="DET-IDN-999")
+    report = validate_repository(tmp_path)
+    assert any(issue.code == "exception.detection" for issue in report.errors)
+
+
+def test_exception_duplicate_id(tmp_path: Path) -> None:
+    _write_detection(tmp_path)
+    _write_exceptions(tmp_path, duplicate=True)
+    report = validate_repository(tmp_path)
+    assert any(issue.code == "exception.duplicate" for issue in report.errors)
+
+
+def test_exception_expired_is_a_warning(tmp_path: Path) -> None:
+    _write_detection(tmp_path)
+    _write_exceptions(tmp_path, expires="2020-01-01")
+    report = validate_repository(tmp_path)
+    assert report.ok
+    assert any(issue.code == "exception.expired" for issue in report.warnings)
+
+
+def test_exception_schema_error(tmp_path: Path) -> None:
+    _write_detection(tmp_path)
+    _write_exceptions(tmp_path, invalid_type=True)
+    report = validate_repository(tmp_path)
+    assert any(issue.code == "schema" for issue in report.errors)
+
+
+def test_exception_invalid_date_is_schema_error(tmp_path: Path) -> None:
+    _write_detection(tmp_path)
+    _write_exceptions(tmp_path, expires="not-a-date")
+    report = validate_repository(tmp_path)
+    assert any(issue.code == "schema" for issue in report.errors)
+
+
+def test_exception_non_object_entry(tmp_path: Path) -> None:
+    _write_detection(tmp_path)
+    _write_exceptions(tmp_path, non_object=True)
+    report = validate_repository(tmp_path)
+    assert any(issue.code == "schema" for issue in report.errors)
+
+
+def test_exception_invalid_yaml(tmp_path: Path) -> None:
+    _write_detection(tmp_path)
+    path = tmp_path / "detections" / "exceptions.yaml"
+    path.write_text("exceptions: [unterminated\n", encoding="utf-8")
+    report = validate_repository(tmp_path)
+    assert any(issue.code == "exception.load" for issue in report.errors)
+
+
+def test_exception_catalog_requires_exceptions_list(tmp_path: Path) -> None:
+    _write_detection(tmp_path)
+    path = tmp_path / "detections" / "exceptions.yaml"
+    path.write_text("version: 1\n", encoding="utf-8")
+    report = validate_repository(tmp_path)
+    assert any(issue.code == "schema" for issue in report.errors)

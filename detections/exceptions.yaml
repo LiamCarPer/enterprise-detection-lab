@@ -1,0 +1,65 @@
+version: 1
+exceptions:
+  - id: EXC-END-001-001
+    detection_id: DET-END-001
+    type: query-exclusion
+    owner: endpoint-platform
+    reason: The approved CorMgmt endpoint management agent uses encoded PowerShell for inventory and is excluded by parent process name.
+    scope:
+      field: process.parent_name
+      value: corpmgmt.exe
+    change_ticket: CHG-2026-0142
+    created: "2026-11-24"
+    expires: "2027-05-31"
+    compensating_controls:
+      - Monitor CorMgmt binary signatures and file integrity.
+      - Review management-agent process trees for unusual child processes.
+    notes: Replace the parent-name exclusion with a signed-binary or hash condition when that telemetry is available.
+
+  - id: EXC-IDN-002-001
+    detection_id: DET-IDN-002
+    type: review-only
+    owner: identity-platform
+    reason: Approved application onboarding can add service principal owners and remains alertable for analyst review.
+    scope:
+      operation: Add owner to service principal
+      workflow: application-onboarding
+    change_ticket: CHG-2026-0187
+    created: "2026-11-24"
+    expires: "2027-05-31"
+    compensating_controls:
+      - Require a change ticket and application owner approval.
+      - Review the initiating administrator and target application before closure.
+    notes: Review-only exceptions do not suppress the alert.
+
+  - id: EXC-CLD-001-001
+    detection_id: DET-CLD-001
+    type: review-only
+    owner: cloud-platform
+    reason: Approved onboarding automation creates IAM access keys for documented service accounts and remains alertable.
+    scope:
+      workflow: iam-onboarding-automation
+      identity_type: IAMUser
+    change_ticket: CHG-2026-0204
+    created: "2026-11-24"
+    expires: "2027-05-31"
+    compensating_controls:
+      - Maintain an inventory of automation identities.
+      - Review new access keys for expected owner, age, and usage.
+    notes: Review-only exceptions do not suppress the alert.
+
+  - id: EXC-CLD-002-001
+    detection_id: DET-CLD-002
+    type: review-only
+    owner: cloud-platform
+    reason: Approved CloudTrail maintenance can stop logging on a specific trail for a short, documented window.
+    scope:
+      operation: StopLogging
+      workflow: cloudtrail-maintenance
+    change_ticket: CHG-2026-0211
+    created: "2026-11-24"
+    expires: "2027-05-31"
+    compensating_controls:
+      - Confirm secondary or organization-trail coverage during maintenance.
+      - Review the trail name and maintenance window against the change record.
+    notes: Review-only exceptions do not suppress the alert.

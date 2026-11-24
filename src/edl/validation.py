@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import shutil
 import subprocess
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -371,6 +372,68 @@ def _mark_duplicates(results: list[ArtifactResult], report: ValidationReport) ->
         )
 
 
+def _validate_exceptions(
+    root: Path,
+    detection_ids: set[str],
+    report: ValidationReport,
+) -> None:
+    path = root / "detections" / "exceptions.yaml"
+    if not path.exists():
+        return
+    try:
+        data = load_mapping(path)
+    except ValidationError as exc:
+        _global_issue(report, "exception.load", str(exc))
+        return
+
+    catalog = ArtifactResult(
+        artifact_type="exception-catalog",
+        artifact_id="detections/exceptions.yaml",
+        path=relative_path(path, root),
+        status="tested",
+    )
+    _schema_validate(data, "exceptions.schema.json", catalog)
+    report.global_issues.extend(catalog.issues)
+
+    exceptions = data.get("exceptions")
+    if not isinstance(exceptions, list):
+        return
+
+    seen: set[str] = set()
+    for exception in exceptions:
+        if not isinstance(exception, dict):
+            continue
+        exception_id = str(exception.get("id", ""))
+        detection_id = str(exception.get("detection_id", ""))
+        if exception_id in seen:
+            _global_issue(
+                report,
+                "exception.duplicate",
+                f"Duplicate exception ID: {exception_id}",
+            )
+        seen.add(exception_id)
+
+        if detection_id not in detection_ids:
+            _global_issue(
+                report,
+                "exception.detection",
+                f"Exception {exception_id} references unknown detection {detection_id}",
+            )
+
+        expires = exception.get("expires")
+        if isinstance(expires, str):
+            try:
+                if date.fromisoformat(expires) < date.today():
+                    _global_issue(
+                        report,
+                        "exception.expired",
+                        f"Exception {exception_id} expired on {expires}",
+                        severity="warning",
+                    )
+            except ValueError:
+                pass
+
+
 def validate_repository(
     root: Path = config.ROOT,
     include_path: Path | None = None,
@@ -452,6 +515,8 @@ def validate_repository(
         except ValidationError as exc:
             _issue(result, "telemetry.load", str(exc))
         source_results.append(result)
+
+    _validate_exceptions(root, detection_ids, report)
 
     report.artifacts = detection_results + investigation_results + source_results
     _mark_duplicates(report.artifacts, report)

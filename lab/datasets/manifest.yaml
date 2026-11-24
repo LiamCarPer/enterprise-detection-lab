@@ -63,3 +63,10 @@ datasets:
     license: synthetic
     provenance: Generated for this repository. No real accounts, principals, or keys.
     sha256: 9460e1443eea48595adfcb3037e61f418c9df1653e64a25dafb1e2c3b1f587f4
+  - id: synthetic-identity-correlation-benign-baseline
+    source: entra-signin+entra-audit
+    path: lab/datasets/synthetic/benign-baseline/identity-correlation.json
+    synthetic: true
+    license: synthetic
+    provenance: Generated for this repository. No real users, tenants, or IPs.
+    sha256: 880218632d275fe2ae4c3695fec2a0bc74834872cb5da9c9640b2944894e5061

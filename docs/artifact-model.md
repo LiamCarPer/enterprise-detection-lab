@@ -153,6 +153,12 @@ An investigation is done when:
 
 ---
 
+## Exception catalog
+
+Path: `detections/exceptions.yaml`
+
+Approved exceptions are recorded centrally under [`docs/exception-policy.md`](exception-policy.md) and validated by [`schemas/exceptions.schema.json`](../schemas/exceptions.schema.json). Each entry identifies the detection, exception type, owner, reason, scope, change ticket, dates, and compensating controls. Query exclusions are narrow; review-only exceptions do not suppress alerts.
+
 ## Naming and versioning
 
 - Directory slugs: lowercase, hyphen-separated, stable.

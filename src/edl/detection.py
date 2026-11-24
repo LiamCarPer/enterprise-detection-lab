@@ -127,12 +127,14 @@ class BaselineResult:
     latency_ms_p50: float
     latency_ms_p95: float
     matched_ids: tuple[str, ...]
+    evaluation_unit: str = "event"
 
     def to_dict(self) -> dict[str, Any]:
         return {
             "detection_id": self.detection_id,
             "dataset": str(self.dataset),
             "sample_size": self.sample_size,
+            "evaluation_unit": self.evaluation_unit,
             "matched_count": self.matched_count,
             "false_positive_rate": self.false_positive_rate,
             "latency_ms_p50": self.latency_ms_p50,
@@ -331,13 +333,16 @@ def _load_baseline_cases(
             normalized = normalize_event(source, raw_event, ingest_time=ingest_time)
         except IngestError as exc:
             raise DetectionError(f"{dataset_path}: baseline event {position}: {exc}") from exc
+        scenario = fixture.get("scenario")
+        if not isinstance(scenario, str) or not scenario:
+            scenario = f"baseline-{position:03d}"
         cases.append(
             DetectionCase(
                 case_id=f"baseline-{position:03d}",
                 kind="benign",
                 source=source_id,
                 event=normalized,
-                scenario=f"baseline-{position:03d}",
+                scenario=scenario,
             )
         )
     return tuple(cases)
@@ -715,6 +720,8 @@ def run_baseline(
         raise DetectionError(f"Multiple detections found for ID: {detection_id}")
     package_path = selected[0].path
     meta = load_mapping(package_path / "meta.yaml")
+    allowed_sources = _allowed_sources(package_path, meta)
+    correlation = _load_correlation(package_path, meta, allowed_sources)
 
     query = _load_query(package_path, meta, query_path)
     dataset_path = dataset if dataset.is_absolute() else root / dataset
@@ -744,6 +751,30 @@ def run_baseline(
             latencies.append((time.perf_counter() - started) * 1000.0)
 
         matched = extract_hit_ids(response) & case_ids
+        if correlation is not None:
+            scenarios: dict[str, list[DetectionCase]] = {}
+            for case in cases:
+                scenarios.setdefault(case.scenario, []).append(case)
+            matched_scenarios = [
+                scenario
+                for scenario, scenario_cases in scenarios.items()
+                if _correlation_hit(
+                    [case for case in scenario_cases if case.case_id in matched],
+                    correlation,
+                )
+            ]
+            return BaselineResult(
+                detection_id=detection_id,
+                dataset=dataset_path,
+                sample_size=len(scenarios),
+                matched_count=len(matched_scenarios),
+                false_positive_rate=len(matched_scenarios) / len(scenarios),
+                latency_ms_p50=_percentile(latencies, 0.50),
+                latency_ms_p95=_percentile(latencies, 0.95),
+                matched_ids=tuple(sorted(matched_scenarios)),
+                evaluation_unit="scenario",
+            )
+
         return BaselineResult(
             detection_id=detection_id,
             dataset=dataset_path,

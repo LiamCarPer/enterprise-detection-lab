@@ -4,7 +4,7 @@
 
 A reproducible local lab for developing and testing enterprise detection content across identity, endpoint, cloud, SaaS, network, and Kubernetes telemetry.
 
-**Status:** Alpha. Identity, endpoint, and cloud telemetry ingestion, seven core detections, two investigations, CI, and aggregated fixture metrics are complete. The next focus is approved-exception handling and scenario-level baseline coverage.
+**Status:** Alpha. Identity, endpoint, and cloud telemetry ingestion, seven core detections, two investigations, CI, and aggregated fixture metrics are complete. The next focus is SaaS, network, and Kubernetes telemetry expansion.
 
 [Quick start](#quick-start) · [Architecture](#architecture) · [Project status](#project-status) · [Documentation](#documentation)
 
@@ -210,12 +210,13 @@ Investigations are **Tested** when the timeline, evidence, queries, response, an
 | Tested investigations | 2 of 2 | `INV-001` and `INV-002` pass evidence and detection-link checks |
 | CI | Complete | GitHub Actions quality and OpenSearch-backed test jobs |
 | Metrics reporting | Complete | Aggregated fixture metrics in `reports/detection-metrics.md` |
-| Benign baseline | Complete | Four 20-event corpora across identity, endpoint, and cloud, plus an endpoint tuning study |
+| Benign baseline | Complete | Five corpora, including a scenario-level correlation baseline |
+| Exception catalog | Complete | Reviewed exceptions with owner, scope, expiry, and compensating controls |
 | Correlation detection | Complete | `DET-IDN-003` evaluates ordered identity steps with a 30-minute window |
 | SaaS, network, Kubernetes | Planned | Contracts and samples before detections |
 | Automation | Planned | Enrichment, triage, evidence, and approval-gated response |
 
-Current focus: approved-exception handling and a scenario-level baseline for the correlation detection.
+Current focus: SaaS, network, and Kubernetes telemetry expansion.
 
 ## Quality gates
 
@@ -227,6 +228,7 @@ Current focus: approved-exception handling and a scenario-level baseline for the
 - An investigation must distinguish observed evidence from inference and include a timeline, queries, evidence, response, and lessons.
 - An investigation query must return its observed evidence and every linked detection must pass.
 - Telemetry changes must update the contract, sample hash, manifest, and generated matrix together.
+- Exceptions must include an owner, narrow scope, change ticket, expiry, and compensating control.
 
 ## Design principles
 
@@ -268,7 +270,8 @@ Out of scope for this repository:
 | [`docs/detection-testing.md`](docs/detection-testing.md) | Fixture replay, pass criteria, and metric definitions |
 | [`reports/detection-metrics.md`](reports/detection-metrics.md) | Generated aggregate detection metrics and limitations |
 | [`reports/false-positive-tuning.md`](reports/false-positive-tuning.md) | Baseline measurement and before/after tuning analysis |
-| [`reports/benign-baseline-results.md`](reports/benign-baseline-results.md) | Identity, endpoint, and cloud baseline results |
+| [`reports/benign-baseline-results.md`](reports/benign-baseline-results.md) | Identity, endpoint, cloud, and scenario baseline results |
+| [`docs/exception-policy.md`](docs/exception-policy.md) | Exception types, approval requirements, and review lifecycle |
 | [`docs/cli.md`](docs/cli.md) | CLI commands, options, and exit codes |
 | [`docs/telemetry-matrix.md`](docs/telemetry-matrix.md) | Generated source contract matrix |
 | [`docs/capability-matrix.md`](docs/capability-matrix.md) | Implemented capabilities and evidence |

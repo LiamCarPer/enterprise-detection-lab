@@ -108,13 +108,14 @@ edl detection baseline \
   --dataset lab/datasets/synthetic/benign-baseline/endpoint.json
 ```
 
-The result reports the number of baseline events, matched events, and the
-false-positive rate. `--query` accepts an alternative query path relative to
+The result reports the number of cases, matched cases, and the false-positive
+rate. Event detections are measured per event; correlation detections are
+measured per scenario. `--query` accepts an alternative query path relative to
 the detection package, which makes before/after tuning reproducible.
 
 The endpoint tuning result is documented in
 [`reports/false-positive-tuning.md`](../reports/false-positive-tuning.md). The
-identity and cloud results are summarized in
+identity, cloud, and correlation results are summarized in
 [`reports/benign-baseline-results.md`](../reports/benign-baseline-results.md).
 
 ## Fixture sources

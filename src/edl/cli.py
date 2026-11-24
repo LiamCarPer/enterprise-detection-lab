@@ -436,13 +436,15 @@ def render_baseline_table(result: BaselineResult) -> Table:
     table = Table(title="Benign Baseline Evaluation")
     table.add_column("Detection", no_wrap=True)
     table.add_column("Dataset", no_wrap=True)
-    table.add_column("Events", justify="right")
+    table.add_column("Unit", no_wrap=True)
+    table.add_column("Cases", justify="right")
     table.add_column("Matched", justify="right")
     table.add_column("FPR", justify="right")
     table.add_column("p95ms", justify="right")
     table.add_row(
         result.detection_id,
         result.dataset.name,
+        result.evaluation_unit,
         str(result.sample_size),
         str(result.matched_count),
         f"{result.false_positive_rate:.2f}",
