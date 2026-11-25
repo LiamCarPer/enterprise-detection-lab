@@ -721,13 +721,17 @@ def test_ingest_saas_json() -> None:
         "github-audit",
         "exchange-message-trace",
         "m365-dlp",
+        "servicenow-approval",
     ]
     assert payload[0]["indices"] == [
         "edl-events-m365-audit-2026.11.01",
         "edl-events-m365-audit-2026.11.25",
     ]
     assert payload[1]["indices"] == ["edl-events-github-audit-2026.11.25"]
-    assert payload[2]["indices"] == ["edl-events-exchange-message-trace-2026.11.01"]
+    assert payload[2]["indices"] == [
+        "edl-events-exchange-message-trace-2026.11.01",
+        "edl-events-exchange-message-trace-2026.11.20",
+    ]
     assert payload[3]["indices"] == [
         "edl-events-m365-dlp-2026.11.01",
         "edl-events-m365-dlp-2026.11.02",
@@ -735,6 +739,12 @@ def test_ingest_saas_json() -> None:
         "edl-events-m365-dlp-2026.11.04",
         "edl-events-m365-dlp-2026.11.05",
         "edl-events-m365-dlp-2026.11.06",
+        "edl-events-m365-dlp-2026.11.20",
+    ]
+    assert payload[4]["indices"] == [
+        "edl-events-servicenow-approval-2026.11.20",
+        "edl-events-servicenow-approval-2026.11.21",
+        "edl-events-servicenow-approval-2026.11.22",
     ]
 
 

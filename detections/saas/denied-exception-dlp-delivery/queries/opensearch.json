@@ -1,0 +1,39 @@
+{
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "bool": {
+            "filter": [
+              { "term": { "source": "servicenow-approval" } },
+              { "term": { "event_class": "approval" } },
+              { "term": { "decision": "denied" } }
+            ]
+          }
+        },
+        {
+          "bool": {
+            "filter": [
+              { "term": { "source": "exchange-message-trace" } },
+              { "term": { "event_class": "deliver" } },
+              { "term": { "external_recipient": true } },
+              { "term": { "result": "success" } }
+            ]
+          }
+        },
+        {
+          "bool": {
+            "filter": [
+              { "term": { "source": "m365-dlp" } },
+              { "term": { "event_class": "dlp_alert" } },
+              { "term": { "status": "active" } },
+              { "term": { "severity": "high" } },
+              { "term": { "workload": "Exchange" } }
+            ]
+          }
+        }
+      ],
+      "minimum_should_match": 1
+    }
+  }
+}

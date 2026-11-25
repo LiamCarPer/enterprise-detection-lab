@@ -1,0 +1,24 @@
+{
+  "size": 50,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "range": {
+            "event_time": {
+              "gte": "2026-11-20T13:45:00Z",
+              "lte": "2026-11-20T15:15:00Z"
+            }
+          }
+        }
+      ],
+      "should": [
+        { "term": { "message_id": "<20261120144000.701@example.org>" } },
+        { "term": { "mailbox": "analyst@example.test" } },
+        { "term": { "delivery_recipient": "partner@example.org" } },
+        { "term": { "user": "analyst@example.test" } }
+      ],
+      "minimum_should_match": 1
+    }
+  }
+}

@@ -1,0 +1,69 @@
+[
+  {
+    "event": {
+      "sys_id": "00000000-0000-4000-8000-000000080301",
+      "number": "REQ0008301",
+      "sys_updated_on": "2026-11-23T15:00:00Z",
+      "state": "Closed",
+      "approval": "Denied",
+      "requested_for": "analyst@example.test",
+      "requested_by": "analyst@example.test",
+      "approver": "data-owner@example.test",
+      "recipient": "partner@example.org",
+      "message_id": "<20261123150000.821@example.org>",
+      "short_description": "Draft campaign"
+    },
+    "source": "servicenow-approval",
+    "synthetic": true,
+    "scenario": "benign-1",
+    "note": "Denied request with no delivery"
+  },
+  {
+    "event": {
+      "Organization": "example.onmicrosoft.test",
+      "MessageTraceId": "00000000-0000-4000-8000-000000080302",
+      "MessageId": "<20261123160000.822@example.org>",
+      "Date": "2026-11-23T16:00:00Z",
+      "Event": "DELIVER",
+      "Source": "SMTP",
+      "SenderAddress": "analyst@example.test",
+      "RecipientAddress": "partner@example.org",
+      "Subject": "Public announcement",
+      "Status": "Delivered",
+      "Directionality": "Outbound",
+      "Action": "Deliver",
+      "Detail": "Message delivered to external recipient partner@example.org",
+      "Size": 98304,
+      "FromIP": "203.0.113.10",
+      "ToIP": "198.51.100.44",
+      "RelatedRecipientAddress": "analyst@example.test",
+      "TenantId": "00000000-0000-4000-8000-000000009001",
+      "Reference": "ref-denied-exception-1",
+      "Index": 1
+    },
+    "source": "exchange-message-trace",
+    "synthetic": true,
+    "scenario": "benign-2",
+    "note": "External delivery without an approval record"
+  },
+  {
+    "event": {
+      "AlertId": "00000000-0000-4000-8000-000000080303",
+      "CreationTime": "2026-11-23T16:02:00Z",
+      "PolicyName": "External marketing content",
+      "Severity": "High",
+      "Status": "Active",
+      "User": "analyst@example.test",
+      "Workload": "Exchange",
+      "Recipient": "partner@example.org",
+      "Subject": "Public announcement",
+      "MessageId": "<20261123160000.822@example.org>",
+      "DetectionMethod": "DLP",
+      "Action": "Notify"
+    },
+    "source": "m365-dlp",
+    "synthetic": true,
+    "scenario": "benign-2",
+    "note": "DLP alert on a public announcement without a denied request"
+  }
+]

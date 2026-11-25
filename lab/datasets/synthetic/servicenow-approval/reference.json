@@ -1,0 +1,80 @@
+[
+  {
+    "sys_id": "00000000-0000-4000-8000-000000070101",
+    "number": "REQ0007001",
+    "sys_updated_on": "2026-11-20T14:05:00Z",
+    "state": "Closed",
+    "approval": "Denied",
+    "requested_for": "analyst@example.test",
+    "requested_by": "analyst@example.test",
+    "approver": "data-owner@example.test",
+    "recipient": "partner@example.org",
+    "message_id": "<20261120144000.701@example.org>",
+    "short_description": "Customer dataset export"
+  },
+  {
+    "sys_id": "00000000-0000-4000-8000-000000070102",
+    "number": "REQ0007002",
+    "sys_updated_on": "2026-11-21T09:15:00Z",
+    "state": "Closed",
+    "approval": "Approved",
+    "requested_for": "finance@example.test",
+    "requested_by": "finance@example.test",
+    "approver": "data-owner@example.test",
+    "recipient": "archive@example.net",
+    "message_id": "<20261121093000.702@example.net>",
+    "short_description": "Quarterly archive transfer"
+  },
+  {
+    "sys_id": "00000000-0000-4000-8000-000000070103",
+    "number": "REQ0007003",
+    "sys_updated_on": "2026-11-21T11:00:00Z",
+    "state": "Open",
+    "approval": "Pending",
+    "requested_for": "developer@example.test",
+    "requested_by": "developer@example.test",
+    "approver": "security@example.test",
+    "recipient": "contractor@example.org",
+    "message_id": "<20261121110000.703@example.org>",
+    "short_description": "Design review package"
+  },
+  {
+    "sys_id": "00000000-0000-4000-8000-000000070104",
+    "number": "REQ0007004",
+    "sys_updated_on": "2026-11-21T13:30:00Z",
+    "state": "Canceled",
+    "approval": "Denied",
+    "requested_for": "support@example.test",
+    "requested_by": "support@example.test",
+    "approver": "data-owner@example.test",
+    "recipient": "customer@example.net",
+    "message_id": "<20261121133000.704@example.net>",
+    "short_description": "Case export"
+  },
+  {
+    "sys_id": "00000000-0000-4000-8000-000000070105",
+    "number": "REQ0007005",
+    "sys_updated_on": "2026-11-22T08:45:00Z",
+    "state": "Closed",
+    "approval": "Approved",
+    "requested_for": "analyst@example.test",
+    "requested_by": "analyst@example.test",
+    "approver": "legal@example.test",
+    "recipient": "partner@example.org",
+    "message_id": "<20261122090000.705@example.org>",
+    "short_description": "Contract review"
+  },
+  {
+    "sys_id": "00000000-0000-4000-8000-000000070106",
+    "number": "REQ0007006",
+    "sys_updated_on": "2026-11-22T10:20:00Z",
+    "state": "Closed",
+    "approval": "Denied",
+    "requested_for": "marketing@example.test",
+    "requested_by": "marketing@example.test",
+    "approver": "data-owner@example.test",
+    "recipient": "vendor@example.org",
+    "message_id": "<20261122102000.706@example.org>",
+    "short_description": "Campaign assets"
+  }
+]

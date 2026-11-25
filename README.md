@@ -4,7 +4,7 @@
 
 A reproducible local lab for developing and testing enterprise detection content across identity, endpoint, cloud, SaaS, network, and Kubernetes telemetry.
 
-**Status:** Alpha. Identity, endpoint, cloud, SaaS, network, and Kubernetes telemetry ingestion, nineteen core detections, three investigations, CI, and aggregated fixture metrics are complete. The next focus is broader detection coverage and automation.
+**Status:** Alpha. Identity, endpoint, cloud, SaaS, network, and Kubernetes telemetry ingestion, twenty core detections, four investigations, CI, and aggregated fixture metrics are complete. The next focus is broader detection coverage and automation.
 
 [Quick start](#quick-start) · [Architecture](#architecture) · [Project status](#project-status) · [Documentation](#documentation)
 
@@ -159,7 +159,7 @@ uv run edl lab reset --yes   # deletes lab volumes
 | Identity | Entra ID sign-in, Entra ID audit | Ingested |
 | Endpoint | Sysmon, Windows Security | Ingested |
 | Cloud | AWS CloudTrail | Ingested |
-| SaaS | Microsoft 365 audit, GitHub audit, Exchange Online message trace, Microsoft Purview DLP | Ingested |
+| SaaS | Microsoft 365 audit, GitHub audit, Exchange Online message trace, Microsoft Purview DLP, ServiceNow approvals | Ingested |
 | Network | Zeek, Suricata | Ingested |
 | Kubernetes | Kubernetes audit, Falco | Ingested |
 
@@ -184,6 +184,7 @@ Each contract records event time and ingest time fields, deduplication keys, req
 | [`DET-SAA-006`](detections/saas/risky-signin-delegation-mail-access-forwarding/) | SaaS | Risky sign-in, self-delegation, mail access, and external forwarding | Tested |
 | [`DET-SAA-007`](detections/saas/forwarding-rule-then-external-delivery/) | SaaS | Forwarding rule followed by external delivery | Tested |
 | [`DET-SAA-008`](detections/saas/external-delivery-dlp-match/) | SaaS | External delivery confirmed by DLP alert | Tested |
+| [`DET-SAA-009`](detections/saas/denied-exception-dlp-delivery/) | SaaS | Denied exception followed by DLP-confirmed external delivery | Tested |
 | [`DET-NET-001`](detections/network/long-txt-dns-query/) | Network | Long TXT DNS query | Tested |
 | [`DET-NET-002`](detections/network/high-severity-malware-alert/) | Network | High-severity malware or trojan alert | Tested |
 | [`DET-K8S-001`](detections/kubernetes/privileged-pod-created/) | Kubernetes | Privileged pod created | Tested |
@@ -198,6 +199,7 @@ A detection is **Tested** when its positive, negative, and benign fixtures pass 
 | [`INV-001`](investigations/01-identity-to-cloud/) | Identity, cloud | Identity persistence to cloud credential access | Tested |
 | [`INV-002`](investigations/02-endpoint-to-cloud/) | Endpoint, cloud | Endpoint execution to cloud persistence | Tested |
 | [`INV-003`](investigations/03-saas-mailbox-takeover/) | Identity, SaaS | SaaS mailbox takeover to external forwarding | Tested |
+| [`INV-004`](investigations/04-denied-external-sharing/) | SaaS | Denied data-sharing exception to external delivery | Tested |
 
 Investigations are **Tested** when the timeline, evidence, queries, response, and linked detections are complete and the lab query returns the observed evidence.
 
@@ -222,23 +224,23 @@ Investigations are **Tested** when the timeline, evidence, queries, response, an
 
 | Component | Status | Notes |
 |---|---|---|
-| Telemetry contracts | Complete | 13 sources across six domains; 13 ingested |
+| Telemetry contracts | Complete | 14 sources across six domains; 14 ingested |
 | Identity ingestion | Complete | Entra sign-in and audit, normalized and replay-safe |
 | Endpoint ingestion | Complete | Sysmon and Windows Security, per-event classification |
 | Cloud ingestion | Complete | AWS CloudTrail, normalized and replay-safe |
-| SaaS ingestion | Complete | Microsoft 365 audit, GitHub audit, and Exchange Online message trace, normalized and replay-safe |
+| SaaS ingestion | Complete | Microsoft 365 audit, GitHub audit, Exchange Online message trace, Purview DLP, and ServiceNow approvals, normalized and replay-safe |
 | Network ingestion | Complete | Zeek and Suricata, normalized and replay-safe |
 | Kubernetes ingestion | Complete | Kubernetes audit and Falco, normalized and replay-safe |
-| Detection packages | In progress | Nineteen tested detections; production validation pending |
+| Detection packages | In progress | Twenty tested detections; production validation pending |
 | Detection testing | Complete | Normalized fixture replay, temporary-index isolation, pass/fail gate, and metrics generation |
-| Tested detections | 19 of 19 | All core detections pass fixture replay |
-| Investigations | Complete | Three tested investigation packages with hashed evidence |
-| Tested investigations | 3 of 3 | `INV-001`, `INV-002`, and `INV-003` pass evidence and detection-link checks |
+| Tested detections | 20 of 20 | All core detections pass fixture replay |
+| Investigations | Complete | Four tested investigation packages with hashed evidence |
+| Tested investigations | 4 of 4 | `INV-001`, `INV-002`, `INV-003`, and `INV-004` pass evidence and detection-link checks |
 | CI | Complete | GitHub Actions quality and OpenSearch-backed test jobs |
-| Metrics reporting | Complete | Aggregated fixture metrics for nineteen detections in `reports/detection-metrics.md` |
-| Benign baseline | Complete | Eighteen corpora, including two tuning studies and seven scenario-level correlation baselines |
+| Metrics reporting | Complete | Aggregated fixture metrics for twenty detections in `reports/detection-metrics.md` |
+| Benign baseline | Complete | Nineteen corpora, including two tuning studies and eight scenario-level correlation baselines |
 | Exception catalog | Complete | Reviewed exceptions with owner, scope, expiry, and compensating controls |
-| Correlation detections | Complete | `DET-IDN-003`, `DET-SAA-003`, `DET-SAA-004`, `DET-SAA-005`, `DET-SAA-006`, `DET-SAA-007`, and `DET-SAA-008` evaluate ordered identity and SaaS sequences |
+| Correlation detections | Complete | `DET-IDN-003`, `DET-SAA-003`, `DET-SAA-004`, `DET-SAA-005`, `DET-SAA-006`, `DET-SAA-007`, `DET-SAA-008`, and `DET-SAA-009` evaluate ordered identity and SaaS sequences |
 | Detection depth | In progress | Broader coverage, tuning, and automation across the ingested sources |
 | Automation | Planned | Enrichment, triage, evidence, and approval-gated response |
 

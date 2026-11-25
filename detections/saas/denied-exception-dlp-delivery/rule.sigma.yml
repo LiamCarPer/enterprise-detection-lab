@@ -1,0 +1,19 @@
+title: Denied External-Sharing Approval
+id: 00000000-0000-4000-8000-000000000409
+status: test
+description: Detects a denied approval for an external-sharing request.
+author: detection-engineering
+date: 2026/11/25
+logsource:
+  product: servicenow
+  service: approval
+detection:
+  selection:
+    approval: Denied
+  condition: selection
+falsepositives:
+  - A denied request that was replaced by a later approved request
+  - Test or duplicate approval records
+level: medium
+tags:
+  - attack.t1048.003

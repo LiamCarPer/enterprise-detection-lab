@@ -20,7 +20,7 @@ def test_all_source_contracts_validate() -> None:
     schema = load_json(config.SCHEMAS_DIR / "telemetry-source.schema.json")
     validator = Draft202012Validator(schema, format_checker=FormatChecker())
     paths = discover_telemetry_sources(config.ROOT)
-    assert len(paths) == 13
+    assert len(paths) == 14
 
     for path in paths:
         source = load_telemetry_source(path)
@@ -31,7 +31,7 @@ def test_all_source_contracts_validate() -> None:
 def test_sources_with_samples_have_files() -> None:
     sources = _sources()
     with_samples = [source for source in sources if "sample_data" in source.data]
-    assert len(with_samples) == 13
+    assert len(with_samples) == 14
     for source in with_samples:
         sample = source.data.get("sample_data")
         assert isinstance(sample, dict)

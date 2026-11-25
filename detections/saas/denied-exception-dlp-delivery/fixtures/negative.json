@@ -1,0 +1,183 @@
+[
+  {
+    "event": {
+      "sys_id": "00000000-0000-4000-8000-000000080201",
+      "number": "REQ0008201",
+      "sys_updated_on": "2026-11-23T12:00:00Z",
+      "state": "Closed",
+      "approval": "Approved",
+      "requested_for": "legal@example.test",
+      "requested_by": "legal@example.test",
+      "approver": "legal-owner@example.test",
+      "recipient": "partner@example.org",
+      "message_id": "<20261123122000.811@example.org>",
+      "short_description": "Contract review"
+    },
+    "source": "servicenow-approval",
+    "synthetic": true,
+    "scenario": "neg-1",
+    "note": "Approved request is excluded from the detection"
+  },
+  {
+    "event": {
+      "Organization": "example.onmicrosoft.test",
+      "MessageTraceId": "00000000-0000-4000-8000-000000080202",
+      "MessageId": "<20261123122000.811@example.org>",
+      "Date": "2026-11-23T12:20:00Z",
+      "Event": "DELIVER",
+      "Source": "SMTP",
+      "SenderAddress": "legal@example.test",
+      "RecipientAddress": "partner@example.org",
+      "Subject": "Contract review",
+      "Status": "Delivered",
+      "Directionality": "Outbound",
+      "Action": "Deliver",
+      "Detail": "Message delivered to external recipient partner@example.org",
+      "Size": 98304,
+      "FromIP": "203.0.113.10",
+      "ToIP": "198.51.100.44",
+      "RelatedRecipientAddress": "legal@example.test",
+      "TenantId": "00000000-0000-4000-8000-000000009001",
+      "Reference": "ref-denied-exception-1",
+      "Index": 1
+    },
+    "source": "exchange-message-trace",
+    "synthetic": true,
+    "scenario": "neg-1",
+    "note": "Delivery under an approved exception"
+  },
+  {
+    "event": {
+      "AlertId": "00000000-0000-4000-8000-000000080203",
+      "CreationTime": "2026-11-23T12:22:00Z",
+      "PolicyName": "External legal documents",
+      "Severity": "High",
+      "Status": "Active",
+      "User": "analyst@example.test",
+      "Workload": "Exchange",
+      "Recipient": "partner@example.org",
+      "Subject": "Contract review",
+      "MessageId": "<20261123122000.811@example.org>",
+      "DetectionMethod": "DLP",
+      "Action": "Notify"
+    },
+    "source": "m365-dlp",
+    "synthetic": true,
+    "scenario": "neg-1",
+    "note": "DLP alert on an approved transfer"
+  },
+  {
+    "event": {
+      "sys_id": "00000000-0000-4000-8000-000000080204",
+      "number": "REQ0008204",
+      "sys_updated_on": "2026-11-23T13:00:00Z",
+      "state": "Closed",
+      "approval": "Denied",
+      "requested_for": "analyst@example.test",
+      "requested_by": "analyst@example.test",
+      "approver": "data-owner@example.test",
+      "recipient": "vendor@example.org",
+      "message_id": "<20261123133000.812@example.org>",
+      "short_description": "Vendor forecast"
+    },
+    "source": "servicenow-approval",
+    "synthetic": true,
+    "scenario": "neg-2",
+    "note": "Denied request for a vendor forecast"
+  },
+  {
+    "event": {
+      "Organization": "example.onmicrosoft.test",
+      "MessageTraceId": "00000000-0000-4000-8000-000000080205",
+      "MessageId": "<20261123133000.812@example.org>",
+      "Date": "2026-11-23T13:30:00Z",
+      "Event": "DELIVER",
+      "Source": "SMTP",
+      "SenderAddress": "analyst@example.test",
+      "RecipientAddress": "vendor@example.org",
+      "Subject": "Vendor forecast",
+      "Status": "Delivered",
+      "Directionality": "Outbound",
+      "Action": "Deliver",
+      "Detail": "Message delivered to external recipient vendor@example.org",
+      "Size": 98304,
+      "FromIP": "203.0.113.10",
+      "ToIP": "198.51.100.44",
+      "RelatedRecipientAddress": "analyst@example.test",
+      "TenantId": "00000000-0000-4000-8000-000000009001",
+      "Reference": "ref-denied-exception-2",
+      "Index": 2
+    },
+    "source": "exchange-message-trace",
+    "synthetic": true,
+    "scenario": "neg-2",
+    "note": "Delivery to the denied vendor"
+  },
+  {
+    "event": {
+      "AlertId": "00000000-0000-4000-8000-000000080206",
+      "CreationTime": "2026-11-23T13:32:00Z",
+      "PolicyName": "External financial data",
+      "Severity": "High",
+      "Status": "Active",
+      "User": "analyst@example.test",
+      "Workload": "Exchange",
+      "Recipient": "vendor@example.org",
+      "Subject": "Vendor forecast",
+      "MessageId": "<20261123133200.822@example.org>",
+      "DetectionMethod": "DLP",
+      "Action": "Notify"
+    },
+    "source": "m365-dlp",
+    "synthetic": true,
+    "scenario": "neg-2",
+    "note": "Alert belongs to a different message identity"
+  },
+  {
+    "event": {
+      "sys_id": "00000000-0000-4000-8000-000000080207",
+      "number": "REQ0008207",
+      "sys_updated_on": "2026-11-23T14:00:00Z",
+      "state": "Closed",
+      "approval": "Denied",
+      "requested_for": "analyst@example.test",
+      "requested_by": "analyst@example.test",
+      "approver": "data-owner@example.test",
+      "recipient": "customer@example.net",
+      "message_id": "<20261123143000.813@example.net>",
+      "short_description": "Case export"
+    },
+    "source": "servicenow-approval",
+    "synthetic": true,
+    "scenario": "neg-3",
+    "note": "Denied request with no DLP alert"
+  },
+  {
+    "event": {
+      "Organization": "example.onmicrosoft.test",
+      "MessageTraceId": "00000000-0000-4000-8000-000000080208",
+      "MessageId": "<20261123143000.813@example.net>",
+      "Date": "2026-11-23T14:30:00Z",
+      "Event": "DELIVER",
+      "Source": "SMTP",
+      "SenderAddress": "analyst@example.test",
+      "RecipientAddress": "customer@example.net",
+      "Subject": "Case export",
+      "Status": "Delivered",
+      "Directionality": "Outbound",
+      "Action": "Deliver",
+      "Detail": "Message delivered to external recipient customer@example.net",
+      "Size": 98304,
+      "FromIP": "203.0.113.10",
+      "ToIP": "198.51.100.44",
+      "RelatedRecipientAddress": "analyst@example.test",
+      "TenantId": "00000000-0000-4000-8000-000000009001",
+      "Reference": "ref-denied-exception-3",
+      "Index": 3
+    },
+    "source": "exchange-message-trace",
+    "synthetic": true,
+    "scenario": "neg-3",
+    "note": "Delivery without a matching DLP alert"
+  }
+]

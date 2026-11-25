@@ -1,0 +1,13 @@
+{
+  "sys_id": "00000000-0000-4000-8000-000000070101",
+  "number": "REQ0007001",
+  "sys_updated_on": "2026-11-20T14:05:00Z",
+  "state": "Closed",
+  "approval": "Denied",
+  "requested_for": "analyst@example.test",
+  "requested_by": "analyst@example.test",
+  "approver": "data-owner@example.test",
+  "recipient": "partner@example.org",
+  "message_id": "<20261120144000.701@example.org>",
+  "short_description": "Customer dataset export"
+}

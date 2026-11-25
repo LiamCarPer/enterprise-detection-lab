@@ -1,0 +1,106 @@
+id: DET-SAA-009
+title: Denied Exception Followed by DLP-Confirmed External Delivery
+version: 1.0.0
+status: tested
+domain: saas
+severity: critical
+hypothesis: An explicit denial of an external-sharing exception followed by delivery to the same recipient and a DLP match indicates that the data-handling decision was bypassed.
+description: Correlates a denied ServiceNow approval, a successful external Exchange Online delivery to the same mailbox and recipient, and an active high-severity Purview DLP alert for the delivered message within 24 hours.
+owner: detection-engineering
+created: "2026-11-25"
+updated: "2026-11-25"
+attack:
+  - T1048.003
+tags:
+  - saas
+  - servicenow
+  - exchange-online
+  - purview
+  - dlp
+  - exfiltration
+  - correlation
+telemetry:
+  - source: servicenow-approval
+    event_class: approval
+    required_fields:
+      - sys_id
+      - number
+      - sys_updated_on
+      - state
+      - approval
+      - requested_for
+      - recipient
+      - message_id
+      - short_description
+      - approver
+  - source: exchange-message-trace
+    event_class: deliver
+    required_fields:
+      - MessageTraceId
+      - MessageId
+      - SenderAddress
+      - RecipientAddress
+      - Date
+      - Event
+      - Status
+      - RelatedRecipientAddress
+      - TenantId
+  - source: m365-dlp
+    event_class: dlp_alert
+    required_fields:
+      - AlertId
+      - CreationTime
+      - PolicyName
+      - Status
+      - User
+      - MessageId
+      - Severity
+      - Workload
+      - Recipient
+      - Action
+queries:
+  opensearch: queries/opensearch.json
+correlation:
+  window_seconds: 86400
+  group_by:
+    - delivery_recipient
+  steps:
+    - source: servicenow-approval
+      event_class: approval
+      filters:
+        all:
+          decision: denied
+      match_fields:
+        - mailbox
+        - delivery_recipient
+        - message_id
+    - source: exchange-message-trace
+      event_class: deliver
+      filters:
+        all:
+          result: success
+          external_recipient: true
+      match_fields:
+        - mailbox
+        - delivery_recipient
+        - message_id
+    - source: m365-dlp
+      event_class: dlp_alert
+      filters:
+        all:
+          status: active
+          severity: high
+          workload: Exchange
+      match_fields:
+        - message_id
+tests:
+  positive: 6
+  negative: 8
+  benign: 3
+false_positives:
+  - An approval was denied for one dataset but a later request for different content was approved.
+  - A delivery used an approved exception that was recorded under a different request or message identifier.
+  - A DLP policy matched a message that the data owner later approved retrospectively.
+runbook: runbook.md
+metrics: metrics.json
+notes: notes.md

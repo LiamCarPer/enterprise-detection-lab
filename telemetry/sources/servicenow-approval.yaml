@@ -1,0 +1,50 @@
+id: servicenow-approval
+name: ServiceNow approval decisions
+provider: ServiceNow
+product: ServiceNow ITSM
+event_classes:
+  - approval
+schema_version: "1.0"
+status: ingested
+owner: detection-engineering
+event_time_field: sys_updated_on
+ingest_time_field: ingest_time
+timezone: UTC
+ordering: unordered
+dedup_key:
+  - sys_id
+required_fields:
+  - sys_id
+  - number
+  - sys_updated_on
+  - state
+  - approval
+  - requested_for
+  - recipient
+  - message_id
+sensitive_fields:
+  - requested_for
+  - requested_by
+  - approver
+  - recipient
+  - message_id
+  - short_description
+expected_volume: Tenant-dependent; approval records are low volume compared with mail and audit events.
+expected_latency: Minutes to hours; approval state can change after the request is opened.
+retention: ServiceNow retention is instance-dependent; the lab retains normalized records until reset.
+cost: Approval-table access depends on the ServiceNow edition and integration method.
+late_arrival: Expected; use the decision update time as the event time.
+duplicates: Possible when an approval is exported more than once; deduplicate by sys_id.
+known_gaps:
+  - The committed sample is synthetic and models a small set of approval fields.
+  - Approval workflows vary by catalog item, instance, and integration.
+  - A denial record shows a decision, not whether the requester received or understood it.
+  - Message identifiers are not present in every approval workflow; the sample includes them to support message-level correlation.
+  - Approval state can change after the decision, so a later export may supersede an earlier record.
+notes: ServiceNow approval records for distinguishing approved external sharing from a denied request that was bypassed.
+sample_data:
+  path: lab/datasets/synthetic/servicenow-approval/reference.json
+  synthetic: true
+  license: synthetic
+  provenance: Generated for this repository. No real users, tenants, or requests.
+  sha256: c2eff2176ae4fff60bb156830247ff40fd33aac075943e8a3c508ad33ef1f8a2

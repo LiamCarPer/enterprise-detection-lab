@@ -29,6 +29,7 @@ SAAS_SOURCES: tuple[str, ...] = (
     "github-audit",
     "exchange-message-trace",
     "m365-dlp",
+    "servicenow-approval",
 )
 NETWORK_SOURCES: tuple[str, ...] = ("zeek", "suricata")
 KUBERNETES_SOURCES: tuple[str, ...] = ("kubernetes-audit", "falco")
@@ -701,6 +702,7 @@ def normalize_m365_dlp(raw: Mapping[str, Any]) -> dict[str, Any]:
     status = raw.get("Status")
     severity = raw.get("Severity")
     message_id = raw.get("MessageId")
+    recipient = raw.get("Recipient")
     document: dict[str, Any] = {
         "event_id": raw.get("AlertId"),
         "user": raw.get("User"),
@@ -708,13 +710,38 @@ def normalize_m365_dlp(raw: Mapping[str, Any]) -> dict[str, Any]:
         "status": str(status).lower() if status is not None else None,
         "severity": str(severity).lower() if severity is not None else None,
         "policy_name": raw.get("PolicyName"),
-        "recipient": raw.get("Recipient"),
+        "recipient": recipient,
         "subject": raw.get("Subject"),
         "message_id": message_id.lower() if isinstance(message_id, str) else message_id,
         "workload": raw.get("Workload"),
         "detection_method": raw.get("DetectionMethod"),
         "dlp_action": raw.get("Action"),
+        "delivery_recipient": recipient.lower() if isinstance(recipient, str) else recipient,
         "service": "purview-dlp",
+    }
+    return _compact(document)
+
+
+def normalize_servicenow_approval(raw: Mapping[str, Any]) -> dict[str, Any]:
+    """Map a ServiceNow approval decision to the canonical SaaS shape."""
+    mailbox = raw.get("requested_for")
+    recipient = raw.get("recipient")
+    message_id = raw.get("message_id")
+    state = raw.get("state")
+    approval = raw.get("approval")
+    document: dict[str, Any] = {
+        "event_id": raw.get("sys_id"),
+        "request_number": raw.get("number"),
+        "requested_by": raw.get("requested_by"),
+        "approver": raw.get("approver"),
+        "status": str(state).lower() if state is not None else None,
+        "decision": str(approval).lower() if approval is not None else None,
+        "mailbox": mailbox.lower() if isinstance(mailbox, str) else mailbox,
+        "recipient": recipient,
+        "delivery_recipient": recipient.lower() if isinstance(recipient, str) else recipient,
+        "message_id": message_id.lower() if isinstance(message_id, str) else message_id,
+        "subject": raw.get("short_description"),
+        "service": "servicenow-approval",
     }
     return _compact(document)
 
@@ -1049,6 +1076,7 @@ NORMALIZERS.update(
         "github-audit": normalize_github_audit,
         "exchange-message-trace": normalize_exchange_message_trace,
         "m365-dlp": normalize_m365_dlp,
+        "servicenow-approval": normalize_servicenow_approval,
         "zeek": normalize_zeek,
         "suricata": normalize_suricata,
         "kubernetes-audit": normalize_kubernetes_audit,

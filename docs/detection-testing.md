@@ -113,7 +113,10 @@ Steps may declare `match_fields` to require the same field values across
 successive steps. In `DET-SAA-005`, the delegation and mail-access steps both
 declare `mailbox`, so the accessed mailbox must match the delegated mailbox. In
 `DET-SAA-008`, the external delivery and the DLP alert both declare
-`message_id`, so the alert must describe the delivered message.
+`message_id`, so the alert must describe the delivered message. In
+`DET-SAA-009`, the approval, delivery, and DLP steps all declare `message_id`,
+so a three-step sequence can carry the message identity from the approval
+record through transport and into the DLP alert.
 
 Steps may also declare `match_any_fields` to require a non-empty intersection
 between list-valued fields across steps. `DET-SAA-007` uses this for

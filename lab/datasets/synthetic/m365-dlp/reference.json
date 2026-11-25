@@ -82,5 +82,19 @@
     "MessageId": "<20261106140000.405@example.org>",
     "DetectionMethod": "DLP",
     "Action": "Notify"
+  },
+  {
+    "AlertId": "00000000-0000-4000-8000-000000040107",
+    "CreationTime": "2026-11-20T14:42:00Z",
+    "PolicyName": "Customer identifier protection",
+    "Severity": "High",
+    "Status": "Active",
+    "User": "analyst@example.test",
+    "Workload": "Exchange",
+    "Recipient": "partner@example.org",
+    "Subject": "Customer dataset export",
+    "MessageId": "<20261120144000.701@example.org>",
+    "DetectionMethod": "DLP",
+    "Action": "Notify"
   }
 ]

@@ -48,6 +48,7 @@ from edl.ingest import (
     normalize_kubernetes_audit,
     normalize_m365_audit,
     normalize_m365_dlp,
+    normalize_servicenow_approval,
     normalize_suricata,
     normalize_sysmon,
     normalize_windows_security,
@@ -1387,6 +1388,7 @@ def test_load_saas_sources_defaults_and_filters() -> None:
         "github-audit",
         "exchange-message-trace",
         "m365-dlp",
+        "servicenow-approval",
     ]
     assert [source.id for source in load_saas_sources(requested=("github-audit",))] == [
         "github-audit"
@@ -1409,14 +1411,18 @@ def test_ingest_saas_dry_run_uses_repository_samples() -> None:
         "github-audit",
         "exchange-message-trace",
         "m365-dlp",
+        "servicenow-approval",
     ]
-    assert [result.read for result in results] == [6, 2, 9, 6]
+    assert [result.read for result in results] == [6, 2, 10, 7, 6]
     assert results[0].indices == (
         "edl-events-m365-audit-2026.11.01",
         "edl-events-m365-audit-2026.11.25",
     )
     assert results[1].indices == ("edl-events-github-audit-2026.11.25",)
-    assert results[2].indices == ("edl-events-exchange-message-trace-2026.11.01",)
+    assert results[2].indices == (
+        "edl-events-exchange-message-trace-2026.11.01",
+        "edl-events-exchange-message-trace-2026.11.20",
+    )
     assert results[3].indices == (
         "edl-events-m365-dlp-2026.11.01",
         "edl-events-m365-dlp-2026.11.02",
@@ -1424,6 +1430,12 @@ def test_ingest_saas_dry_run_uses_repository_samples() -> None:
         "edl-events-m365-dlp-2026.11.04",
         "edl-events-m365-dlp-2026.11.05",
         "edl-events-m365-dlp-2026.11.06",
+        "edl-events-m365-dlp-2026.11.20",
+    )
+    assert results[4].indices == (
+        "edl-events-servicenow-approval-2026.11.20",
+        "edl-events-servicenow-approval-2026.11.21",
+        "edl-events-servicenow-approval-2026.11.22",
     )
 
 
@@ -1444,7 +1456,7 @@ def test_ingest_saas_opens_client_when_missing(
         ingest_time=datetime(2026, 11, 25, tzinfo=UTC),
         index_prefix="edl-events-test",
     )
-    assert len(results) == 4
+    assert len(results) == 5
     assert all(result.mode == "ingested" for result in results)
     assert all(result.counts for result in results)
 
@@ -2364,6 +2376,7 @@ def test_normalize_m365_dlp_maps_alert_fields() -> None:
     assert document["severity"] == "high"
     assert document["policy_name"] == "External financial data"
     assert document["recipient"] == "collector@example.org"
+    assert document["delivery_recipient"] == "collector@example.org"
     assert document["subject"] == "Quarterly invoice redirect"
     assert document["message_id"] == "<20261101094600.102@example.org>"
     assert document["workload"] == "Exchange"
@@ -2388,3 +2401,59 @@ def test_normalize_exchange_message_trace_lowercases_message_id() -> None:
         {**EXCHANGE_MESSAGE_TRACE_RAW, "MessageId": "<20261101094500.101@Example.NET>"}
     )
     assert document["message_id"] == "<20261101094500.101@example.net>"
+
+
+SERVICENOW_APPROVAL_RAW = {
+    "sys_id": "00000000-0000-4000-8000-000000070101",
+    "number": "REQ0007001",
+    "sys_updated_on": "2026-11-20T14:05:00Z",
+    "state": "Closed",
+    "approval": "Denied",
+    "requested_for": "Analyst@Example.TEST",
+    "requested_by": "analyst@example.test",
+    "approver": "data-owner@example.test",
+    "recipient": "Partner@Example.ORG",
+    "message_id": "<20261120144000.701@Example.ORG>",
+    "short_description": "Customer dataset export",
+}
+
+
+def test_normalize_servicenow_approval_maps_decision_fields() -> None:
+    document = normalize_servicenow_approval(SERVICENOW_APPROVAL_RAW)
+    assert document["event_id"] == SERVICENOW_APPROVAL_RAW["sys_id"]
+    assert document["request_number"] == "REQ0007001"
+    assert document["status"] == "closed"
+    assert document["decision"] == "denied"
+    assert document["mailbox"] == "analyst@example.test"
+    assert document["requested_by"] == "analyst@example.test"
+    assert document["approver"] == "data-owner@example.test"
+    assert document["recipient"] == "Partner@Example.ORG"
+    assert document["delivery_recipient"] == "partner@example.org"
+    assert document["message_id"] == "<20261120144000.701@example.org>"
+    assert document["subject"] == "Customer dataset export"
+    assert document["service"] == "servicenow-approval"
+
+
+def test_normalize_servicenow_approval_handles_missing_optional_fields() -> None:
+    document = normalize_servicenow_approval(
+        {**SERVICENOW_APPROVAL_RAW, "approver": None, "requested_by": None}
+    )
+    assert "approver" not in document
+    assert "requested_by" not in document
+
+
+def test_normalize_event_servicenow_approval_is_approval_class() -> None:
+    source = _source(
+        "servicenow-approval",
+        event_classes=["approval"],
+        event_time_field="sys_updated_on",
+        dedup_key=["sys_id"],
+        required_fields=["sys_id", "sys_updated_on", "state", "approval"],
+    )
+    event = normalize_event(
+        source,
+        SERVICENOW_APPROVAL_RAW,
+        ingest_time=datetime(2026, 11, 25, tzinfo=UTC),
+    )
+    assert event.event_class == "approval"
+    assert event.document["decision"] == "denied"

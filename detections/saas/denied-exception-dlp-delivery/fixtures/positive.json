@@ -1,0 +1,136 @@
+[
+  {
+    "event": {
+      "sys_id": "00000000-0000-4000-8000-000000080101",
+      "number": "REQ0008101",
+      "sys_updated_on": "2026-11-23T09:05:00Z",
+      "state": "Closed",
+      "approval": "Denied",
+      "requested_for": "analyst@example.test",
+      "requested_by": "analyst@example.test",
+      "approver": "data-owner@example.test",
+      "recipient": "partner@example.org",
+      "message_id": "<20261123100000.801@example.org>",
+      "short_description": "Customer dataset export"
+    },
+    "source": "servicenow-approval",
+    "synthetic": true,
+    "scenario": "pos-1",
+    "note": "External-sharing request denied before the message was sent"
+  },
+  {
+    "event": {
+      "Organization": "example.onmicrosoft.test",
+      "MessageTraceId": "00000000-0000-4000-8000-000000080102",
+      "MessageId": "<20261123100000.801@example.org>",
+      "Date": "2026-11-23T10:00:00Z",
+      "Event": "DELIVER",
+      "Source": "SMTP",
+      "SenderAddress": "analyst@example.test",
+      "RecipientAddress": "partner@example.org",
+      "Subject": "Customer dataset export",
+      "Status": "Delivered",
+      "Directionality": "Outbound",
+      "Action": "Deliver",
+      "Detail": "Message delivered to external recipient partner@example.org",
+      "Size": 98304,
+      "FromIP": "203.0.113.10",
+      "ToIP": "198.51.100.44",
+      "RelatedRecipientAddress": "analyst@example.test",
+      "TenantId": "00000000-0000-4000-8000-000000009001",
+      "Reference": "ref-denied-exception-1",
+      "Index": 1
+    },
+    "source": "exchange-message-trace",
+    "synthetic": true,
+    "scenario": "pos-1",
+    "note": "Message delivered to the denied recipient"
+  },
+  {
+    "event": {
+      "AlertId": "00000000-0000-4000-8000-000000080103",
+      "CreationTime": "2026-11-23T10:02:00Z",
+      "PolicyName": "Customer identifier protection",
+      "Severity": "High",
+      "Status": "Active",
+      "User": "analyst@example.test",
+      "Workload": "Exchange",
+      "Recipient": "partner@example.org",
+      "Subject": "Customer dataset export",
+      "MessageId": "<20261123100000.801@example.org>",
+      "DetectionMethod": "DLP",
+      "Action": "Notify"
+    },
+    "source": "m365-dlp",
+    "synthetic": true,
+    "scenario": "pos-1",
+    "note": "High-severity DLP alert for the delivered message"
+  },
+  {
+    "event": {
+      "sys_id": "00000000-0000-4000-8000-000000080104",
+      "number": "REQ0008104",
+      "sys_updated_on": "2026-11-23T10:45:00Z",
+      "state": "Closed",
+      "approval": "Denied",
+      "requested_for": "finance@example.test",
+      "requested_by": "finance@example.test",
+      "approver": "data-owner@example.test",
+      "recipient": "archive@example.net",
+      "message_id": "<20261123111500.802@example.net>",
+      "short_description": "Quarterly archive transfer"
+    },
+    "source": "servicenow-approval",
+    "synthetic": true,
+    "scenario": "pos-2",
+    "note": "Archive transfer denied before delivery"
+  },
+  {
+    "event": {
+      "Organization": "example.onmicrosoft.test",
+      "MessageTraceId": "00000000-0000-4000-8000-000000080105",
+      "MessageId": "<20261123111500.802@example.net>",
+      "Date": "2026-11-23T11:15:00Z",
+      "Event": "DELIVER",
+      "Source": "SMTP",
+      "SenderAddress": "finance@example.test",
+      "RecipientAddress": "archive@example.net",
+      "Subject": "Quarterly archive transfer",
+      "Status": "Delivered",
+      "Directionality": "Outbound",
+      "Action": "Deliver",
+      "Detail": "Message delivered to external recipient archive@example.net",
+      "Size": 98304,
+      "FromIP": "203.0.113.10",
+      "ToIP": "198.51.100.44",
+      "RelatedRecipientAddress": "finance@example.test",
+      "TenantId": "00000000-0000-4000-8000-000000009001",
+      "Reference": "ref-denied-exception-2",
+      "Index": 2
+    },
+    "source": "exchange-message-trace",
+    "synthetic": true,
+    "scenario": "pos-2",
+    "note": "Message delivered to the external archive"
+  },
+  {
+    "event": {
+      "AlertId": "00000000-0000-4000-8000-000000080106",
+      "CreationTime": "2026-11-23T11:18:00Z",
+      "PolicyName": "External financial data",
+      "Severity": "High",
+      "Status": "Active",
+      "User": "analyst@example.test",
+      "Workload": "Exchange",
+      "Recipient": "archive@example.net",
+      "Subject": "Quarterly archive transfer",
+      "MessageId": "<20261123111500.802@example.net>",
+      "DetectionMethod": "DLP",
+      "Action": "Notify"
+    },
+    "source": "m365-dlp",
+    "synthetic": true,
+    "scenario": "pos-2",
+    "note": "DLP matched the denied archive transfer"
+  }
+]
