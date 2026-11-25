@@ -13,6 +13,7 @@ The lab uses synthetic or public, license-compatible data only. Raw datasets are
 - AWS CloudTrail
 - Microsoft 365 audit
 - GitHub audit
+- Exchange Online message trace
 - Zeek
 - Suricata
 - Kubernetes audit

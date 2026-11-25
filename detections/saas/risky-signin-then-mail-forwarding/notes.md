@@ -11,7 +11,7 @@ The native query returns candidate events from two sources:
 - successful interactive sign-ins with medium or high risk and single-factor authentication
 - successful Microsoft 365 inbox rule creation or updates with a forwarding recipient
 
-`correlation.group_by: [user]` requires both steps to share the user. `correlation.window_seconds: 3600` requires the mailbox step to occur at or after the sign-in and within 60 minutes. The window is wider than the identity-to-application correlation because Microsoft 365 audit records can arrive late.
+`correlation.group_by: [user]` requires both steps to share the user. Step `filters` require a successful risky interactive single-factor sign-in and a successful inbox-rule change with a forwarding recipient (`forward_to` exists). `correlation.window_seconds: 3600` requires the mailbox step to occur at or after the sign-in and within 60 minutes. The window is wider than the identity-to-application correlation because Microsoft 365 audit records can arrive late.
 
 The Sigma rule represents the sign-in component. The temporal correlation is defined in `meta.yaml` and executed by the detection runner.
 

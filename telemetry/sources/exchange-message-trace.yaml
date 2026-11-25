@@ -1,0 +1,70 @@
+id: exchange-message-trace
+name: Exchange Online message trace events
+provider: Microsoft
+product: Exchange Online
+event_classes:
+  - deliver
+  - forward
+  - redirect
+  - send
+  - receive
+  - fail
+  - defer
+  - expand
+  - transfer
+  - resolve
+  - other
+schema_version: "1.0"
+status: ingested
+owner: detection-engineering
+event_time_field: Date
+ingest_time_field: ingest_time
+timezone: UTC
+ordering: unordered
+dedup_key:
+  - MessageTraceId
+  - RecipientAddress
+  - Event
+  - Date
+required_fields:
+  - MessageTraceId
+  - MessageId
+  - SenderAddress
+  - RecipientAddress
+  - Date
+  - Event
+sensitive_fields:
+  - SenderAddress
+  - RecipientAddress
+  - RelatedRecipientAddress
+  - Subject
+  - Detail
+  - MessageId
+  - MessageTraceId
+  - FromIP
+  - ToIP
+  - ClientIP
+  - OriginalClientIP
+  - TenantId
+  - Organization
+expected_volume: Tenant-dependent; the committed sample is synthetic and small.
+expected_latency: Detail events are near real-time; summary reports are delayed by minutes to hours.
+retention: Message trace retention is plan-dependent, commonly 10 days for detail and 90 days for summary; the lab retains normalized events until reset.
+cost: Message trace access is included with Exchange Online but export and retention vary by plan.
+late_arrival: Expected; use event time and synthetic ingest time.
+duplicates: Possible across detail and summary exports; deduplicate by MessageTraceId, RecipientAddress, Event, and Date.
+known_gaps:
+  - The committed sample is synthetic and small; it covers detail events, not summary reports.
+  - Detail events describe per-recipient transport actions and do not reconstruct the full message path by themselves.
+  - Summary reports aggregate delivery outcomes and use different fields; do not mix them with detail events under one dedup key.
+  - Microsoft retains detail records for a shorter window than summary records, so late joins can miss transport context.
+  - Detail latency varies by transport component and may lag the event timestamp.
+  - External-domain status depends on config/tenant.yaml accepted domains, not on internet reachability.
+  - Client IP fields are often absent, internal, or a transport hop rather than the original sender.
+notes: Exchange Online message trace detail events for per-recipient transport actions. Detail records are event-level and more immediate than summary reports; treat summary data as a separate aggregate and keep the declared dedup key so replayed detail exports stay idempotent. Accepted mail domains in config/tenant.yaml distinguish internal from external recipients; external-domain flags describe tenant policy context, not whether an address exists on the internet.
+sample_data:
+  path: lab/datasets/synthetic/exchange-message-trace/reference.json
+  synthetic: true
+  license: synthetic
+  provenance: Generated for this repository. No real users, tenants, or IPs.
+  sha256: 2877ba5350d22d104f5484d9115b5ef0d5119a33882ac7a6f0522bec7432b430

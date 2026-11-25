@@ -12,7 +12,7 @@ The native query returns candidates for three ordered steps:
 - successful mailbox or high-privilege folder permission grants where the delegate is the actor
 - successful `MailItemsAccessed` events
 
-`correlation.group_by: [user]` requires all steps to share the acting user. The permission and access steps declare `match_fields: [mailbox]`, so the sequence must target the same mailbox. `window_seconds: 3600` gives each successive step up to 60 minutes.
+`correlation.group_by: [user]` requires all steps to share the acting user. The permission and access steps declare `match_fields: [mailbox]`, so the sequence must target the same mailbox. Step `filters` require a successful risky single-factor sign-in, a successful self-delegation (`self_delegation: true`) with the expected `access_rights`, and a successful `MailItemsAccessed` event. `window_seconds: 3600` gives each successive step up to 60 minutes.
 
 Microsoft 365 event classes distinguish the steps: permission grants use `mailbox_permission`, and mailbox reads use `mail_access`. The normalizer sets `self_delegation` by comparing the delegate with the actor and derives `mailbox` and `folder` from `MailItemsAccessed.ObjectId`.
 

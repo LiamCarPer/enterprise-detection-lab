@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 import time
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
@@ -33,11 +34,40 @@ class DetectionCase:
     scenario: str
 
 
+FilterScalar = str | int | float | bool
+
+
+@dataclass(frozen=True)
+class ExistsFilter:
+    """A filter that only checks whether a field is present."""
+
+    value: bool
+
+
+FilterValue = FilterScalar | tuple[FilterScalar, ...] | ExistsFilter
+
+
+@dataclass(frozen=True)
+class FilterGroup:
+    """A conjunction of field filters."""
+
+    conditions: tuple[tuple[str, FilterValue], ...]
+
+
+@dataclass(frozen=True)
+class StepFilters:
+    """Optional step filters: all conditions plus any-of condition groups."""
+
+    all: FilterGroup | None = None
+    any_of: tuple[FilterGroup, ...] = ()
+
+
 @dataclass(frozen=True)
 class CorrelationStep:
     source: str
     event_class: str
     match_fields: tuple[str, ...] = ()
+    filters: StepFilters = StepFilters()
 
 
 @dataclass(frozen=True)
@@ -171,17 +201,28 @@ def _load_query(
     return dict(query)
 
 
-def _allowed_sources(path: Path, meta: Mapping[str, Any]) -> set[str]:
+def _telemetry_event_classes(path: Path, meta: Mapping[str, Any]) -> dict[str, set[str]]:
     telemetry = meta.get("telemetry")
     if not isinstance(telemetry, list) or not telemetry:
         raise DetectionError(f"{path}: meta.telemetry must be a non-empty list")
-    allowed: set[str] = set()
+    event_classes: dict[str, set[str]] = {}
     for item in telemetry:
-        if isinstance(item, Mapping) and isinstance(item.get("source"), str):
-            allowed.add(str(item["source"]))
-    if not allowed:
+        if not isinstance(item, Mapping):
+            continue
+        source = item.get("source")
+        if not isinstance(source, str) or not source:
+            continue
+        declared = event_classes.setdefault(source, set())
+        event_class = item.get("event_class")
+        if isinstance(event_class, str) and event_class:
+            declared.add(event_class)
+    if not event_classes:
         raise DetectionError(f"{path}: meta.telemetry has no source")
-    return allowed
+    return event_classes
+
+
+def _allowed_sources(path: Path, meta: Mapping[str, Any]) -> set[str]:
+    return set(_telemetry_event_classes(path, meta))
 
 
 def _load_cases(
@@ -242,10 +283,122 @@ def _load_cases(
     return tuple(cases)
 
 
+_FIELD_PATH = re.compile(r"^[^\s.]+(?:\.[^\s.]+)*$")
+
+
+def _parse_filter_value(
+    path: Path,
+    position: int,
+    field: str,
+    value: Any,
+) -> FilterValue:
+    if isinstance(value, Mapping):
+        unknown = set(value) - {"exists"}
+        if unknown or "exists" not in value:
+            raise DetectionError(
+                f"{path}: correlation step {position} filter {field!r} must be a scalar, "
+                "a non-empty list of scalars, or an object with only an exists boolean"
+            )
+        exists = value["exists"]
+        if not isinstance(exists, bool):
+            raise DetectionError(
+                f"{path}: correlation step {position} filter {field!r} exists value "
+                "must be a boolean"
+            )
+        return ExistsFilter(exists)
+
+    if isinstance(value, list):
+        if not value:
+            raise DetectionError(
+                f"{path}: correlation step {position} filter {field!r} list must not be empty"
+            )
+        normalized: list[FilterScalar] = []
+        seen: set[tuple[str, Any]] = set()
+        for item in value:
+            if isinstance(item, bool):
+                key: tuple[str, Any] = ("bool", item)
+            elif isinstance(item, (int, float)):
+                key = ("number", float(item))
+            elif isinstance(item, str):
+                key = ("string", item)
+            else:
+                raise DetectionError(
+                    f"{path}: correlation step {position} filter {field!r} list items "
+                    "must be scalars"
+                )
+            if key in seen:
+                raise DetectionError(
+                    f"{path}: correlation step {position} filter {field!r} list must not "
+                    "contain duplicates"
+                )
+            seen.add(key)
+            normalized.append(item)
+        return tuple(normalized)
+
+    if isinstance(value, (str, int, float, bool)):
+        return value
+    raise DetectionError(
+        f"{path}: correlation step {position} filter {field!r} has an unsupported value type"
+    )
+
+
+def _parse_filter_group(
+    path: Path,
+    position: int,
+    label: str,
+    raw: Any,
+) -> FilterGroup:
+    if not isinstance(raw, Mapping) or not raw:
+        raise DetectionError(
+            f"{path}: correlation step {position} filters {label} must be a non-empty object"
+        )
+    conditions: list[tuple[str, FilterValue]] = []
+    for field, value in raw.items():
+        if not isinstance(field, str) or not _FIELD_PATH.match(field):
+            raise DetectionError(
+                f"{path}: correlation step {position} filter field {field!r} must be a "
+                "dotted path without empty segments or whitespace"
+            )
+        conditions.append((field, _parse_filter_value(path, position, field, value)))
+    return FilterGroup(tuple(conditions))
+
+
+def _parse_filters(path: Path, position: int, raw: Any) -> StepFilters:
+    if not isinstance(raw, Mapping):
+        raise DetectionError(f"{path}: correlation step {position} filters must be an object")
+    unknown = set(raw) - {"all", "any_of"}
+    if unknown:
+        raise DetectionError(
+            f"{path}: correlation step {position} filters has unknown keys: {sorted(unknown)}"
+        )
+
+    all_group: FilterGroup | None = None
+    if "all" in raw:
+        all_group = _parse_filter_group(path, position, "all", raw["all"])
+
+    any_groups: tuple[FilterGroup, ...] = ()
+    if "any_of" in raw:
+        items = raw["any_of"]
+        if not isinstance(items, list) or not items:
+            raise DetectionError(
+                f"{path}: correlation step {position} filters any_of must be a non-empty array"
+            )
+        any_groups = tuple(
+            _parse_filter_group(path, position, f"any_of entry {index}", item)
+            for index, item in enumerate(items, start=1)
+        )
+
+    if all_group is None and not any_groups:
+        raise DetectionError(
+            f"{path}: correlation step {position} filters must declare all or any_of"
+        )
+    return StepFilters(all=all_group, any_of=any_groups)
+
+
 def _load_correlation(
     path: Path,
     meta: Mapping[str, Any],
-    allowed_sources: set[str],
+    event_classes: Mapping[str, set[str]],
 ) -> CorrelationSpec | None:
     raw = meta.get("correlation")
     if raw is None:
@@ -274,13 +427,18 @@ def _load_correlation(
             raise DetectionError(f"{path}: correlation step {position} must be an object")
         source = item.get("source")
         event_class = item.get("event_class")
-        if not isinstance(source, str) or source not in allowed_sources:
+        if not isinstance(source, str) or source not in event_classes:
             raise DetectionError(
                 f"{path}: correlation step {position} source {source!r} "
                 "is not declared in meta.telemetry"
             )
         if not isinstance(event_class, str) or not event_class:
             raise DetectionError(f"{path}: correlation step {position} event_class is missing")
+        if event_class not in event_classes[source]:
+            raise DetectionError(
+                f"{path}: correlation step {position} event_class {event_class!r} "
+                f"is not declared for source {source!r} in meta.telemetry"
+            )
         raw_match = item.get("match_fields", [])
         if (
             not isinstance(raw_match, list)
@@ -290,11 +448,18 @@ def _load_correlation(
             raise DetectionError(
                 f"{path}: correlation step {position} match_fields must be a unique string array"
             )
+        raw_filters = item.get("filters")
+        filters = (
+            _parse_filters(path, position, raw_filters)
+            if raw_filters is not None
+            else StepFilters()
+        )
         steps.append(
             CorrelationStep(
                 source=source,
                 event_class=event_class,
                 match_fields=tuple(raw_match),
+                filters=filters,
             )
         )
 
@@ -384,8 +549,8 @@ def load_detection_package(
         raise DetectionError(f"{path}: meta.title is missing")
 
     query = _load_query(path, meta)
-    allowed_sources = _allowed_sources(path, meta)
-    correlation = _load_correlation(path, meta, allowed_sources)
+    event_classes = _telemetry_event_classes(path, meta)
+    correlation = _load_correlation(path, meta, event_classes)
     cases = _load_cases(
         path,
         meta,
@@ -438,13 +603,91 @@ def _percentile(values: Sequence[float], fraction: float) -> float:
     return ordered[max(0, min(position, len(ordered) - 1))]
 
 
-def _lookup_document(document: Mapping[str, Any], field: str) -> Any:
+_MISSING = object()
+
+
+def _lookup_field(document: Mapping[str, Any], field: str) -> Any:
     current: Any = document
     for part in field.split("."):
         if not isinstance(current, Mapping) or part not in current:
-            return None
+            return _MISSING
         current = current[part]
     return current
+
+
+def _lookup_document(document: Mapping[str, Any], field: str) -> Any:
+    value = _lookup_field(document, field)
+    return None if value is _MISSING else value
+
+
+def _scalar_equal(expected: FilterScalar, actual: Any) -> bool:
+    if isinstance(expected, bool) or isinstance(actual, bool):
+        return isinstance(expected, bool) and isinstance(actual, bool) and expected == actual
+    if isinstance(expected, (int, float)) and isinstance(actual, (int, float)):
+        return expected == actual
+    return type(expected) is type(actual) and expected == actual
+
+
+def _filter_value_matches(expected: FilterValue, actual: Any) -> bool:
+    if isinstance(expected, ExistsFilter):
+        present = actual is not _MISSING and actual is not None
+        return present == expected.value
+    if actual is _MISSING or actual is None:
+        return False
+    expected_values: tuple[FilterScalar, ...]
+    expected_values = expected if isinstance(expected, tuple) else (expected,)
+    actual_values = actual if isinstance(actual, (list, tuple)) else (actual,)
+    return any(_scalar_equal(item, value) for item in expected_values for value in actual_values)
+
+
+def _filter_group_matches(document: Mapping[str, Any], group: FilterGroup) -> bool:
+    return all(
+        _filter_value_matches(expected, _lookup_field(document, field))
+        for field, expected in group.conditions
+    )
+
+
+def _filters_match(document: Mapping[str, Any], filters: StepFilters) -> bool:
+    if filters.all is not None and not _filter_group_matches(document, filters.all):
+        return False
+    return not filters.any_of or any(
+        _filter_group_matches(document, group) for group in filters.any_of
+    )
+
+
+def _match_steps(
+    ordered: Sequence[Sequence[DetectionCase]],
+    spec: CorrelationSpec,
+) -> bool:
+    def extend(
+        step_index: int,
+        current_time: datetime | None,
+        targets: dict[str, Any],
+    ) -> bool:
+        if step_index == len(ordered):
+            return True
+        step = spec.steps[step_index]
+        for case in ordered[step_index]:
+            event_time = case.event.event_time
+            if current_time is not None and (
+                event_time < current_time
+                or event_time > current_time + timedelta(seconds=spec.window_seconds)
+            ):
+                continue
+            values = {
+                field: _lookup_document(case.event.document, field) for field in step.match_fields
+            }
+            if any(value is None or value == "" for value in values.values()):
+                continue
+            if any(field in targets and targets[field] != value for field, value in values.items()):
+                continue
+            next_targets = dict(targets)
+            next_targets.update(values)
+            if extend(step_index + 1, event_time, next_targets):
+                return True
+        return False
+
+    return extend(0, None, {})
 
 
 def _correlation_hit(cases: Sequence[DetectionCase], spec: CorrelationSpec) -> bool:
@@ -453,6 +696,8 @@ def _correlation_hit(cases: Sequence[DetectionCase], spec: CorrelationSpec) -> b
         for case in cases:
             if case.source != step.source or case.event.event_class != step.event_class:
                 continue
+            if not _filters_match(case.event.document, step.filters):
+                continue
             key = tuple(_lookup_document(case.event.document, field) for field in spec.group_by)
             if any(value is None or value == "" for value in key):
                 continue
@@ -460,38 +705,9 @@ def _correlation_hit(cases: Sequence[DetectionCase], spec: CorrelationSpec) -> b
             groups[step_index].append(case)
 
     for groups in grouped.values():
-        for first in groups[0]:
-            current = first.event.event_time
-            deadline = current + timedelta(seconds=spec.window_seconds)
-            targets: dict[str, Any] = {}
-            found = True
-            for step_index in range(1, len(spec.steps)):
-                step = spec.steps[step_index]
-                candidates: list[tuple[DetectionCase, dict[str, Any]]] = []
-                for event in groups[step_index]:
-                    if not (current <= event.event.event_time <= deadline):
-                        continue
-                    values = {
-                        field: _lookup_document(event.event.document, field)
-                        for field in step.match_fields
-                    }
-                    if any(value is None or value == "" for value in values.values()):
-                        continue
-                    if any(
-                        field in targets and targets[field] != value
-                        for field, value in values.items()
-                    ):
-                        continue
-                    candidates.append((event, values))
-                candidates.sort(key=lambda item: item[0].event.event_time)
-                if not candidates:
-                    found = False
-                    break
-                chosen, values = candidates[0]
-                current = chosen.event.event_time
-                targets.update(values)
-            if found:
-                return True
+        ordered = [sorted(group, key=lambda case: case.event.event_time) for group in groups]
+        if _match_steps(ordered, spec):
+            return True
     return False
 
 
@@ -749,8 +965,8 @@ def run_baseline(
         raise DetectionError(f"Multiple detections found for ID: {detection_id}")
     package_path = selected[0].path
     meta = load_mapping(package_path / "meta.yaml")
-    allowed_sources = _allowed_sources(package_path, meta)
-    correlation = _load_correlation(package_path, meta, allowed_sources)
+    event_classes = _telemetry_event_classes(package_path, meta)
+    correlation = _load_correlation(package_path, meta, event_classes)
 
     query = _load_query(package_path, meta, query_path)
     dataset_path = dataset if dataset.is_absolute() else root / dataset

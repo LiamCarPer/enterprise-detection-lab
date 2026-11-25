@@ -49,8 +49,25 @@ correlation:
   steps:
     - source: entra-signin
       event_class: sign_in
+      filters:
+        all:
+          result: success
+          risk_level:
+            - medium
+            - high
+          auth_requirement: singleFactorAuthentication
+          is_interactive: true
     - source: m365-audit
       event_class: mailbox
+      filters:
+        all:
+          action:
+            - New-InboxRule
+            - Set-InboxRule
+            - UpdateInboxRules
+          result: success
+          forward_to:
+            exists: true
 tests:
   positive: 4
   negative: 4

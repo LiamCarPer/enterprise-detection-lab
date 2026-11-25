@@ -51,8 +51,10 @@ Identity ingestion normalizes the Entra sign-in and audit samples. Endpoint
 ingestion normalizes Sysmon and Windows Security, classifies each event from its
 `EventID`, and validates the declared `Channel` dedup key. Cloud ingestion
 normalizes the AWS CloudTrail sample, including account, region, identity, and
-API context. SaaS ingestion normalizes the Microsoft 365 and GitHub audit samples,
-including actor, workload, organization, repository, and forwarding context.
+API context. SaaS ingestion normalizes the Microsoft 365, GitHub audit, and
+Exchange Online message trace samples, including actor, workload, organization,
+repository, forwarding context, per-recipient transport actions, and detail-event
+delivery outcomes.
 Network ingestion normalizes Zeek and Suricata samples, including addresses,
 ports, protocol, DNS, HTTP, TLS, alerts, and flow metadata. Kubernetes ingestion
 normalizes audit and Falco samples, including request context, privileged pods,
@@ -70,6 +72,7 @@ uv run edl ingest identity --dry-run
 uv run edl ingest endpoint --source sysmon --json
 uv run edl ingest cloud --dry-run
 uv run edl ingest saas --dry-run
+uv run edl ingest saas --source exchange-message-trace --json
 uv run edl ingest endpoint --no-refresh
 ```
 

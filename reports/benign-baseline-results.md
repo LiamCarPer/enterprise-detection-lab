@@ -2,7 +2,7 @@
 
 ## Scope
 
-Sixteen synthetic benign corpora are used to measure false-positive behavior across the detection set.
+Seventeen synthetic benign corpora are used to measure false-positive behavior across the detection set.
 
 | Detection | Dataset | Unit | Cases | Matches | FPR |
 |---|---|---|---:|---:|---:|
@@ -23,12 +23,13 @@ Sixteen synthetic benign corpora are used to measure false-positive behavior acr
 | `DET-SAA-004` | `identity-saas-delegation.json` | scenario | 10 | 0 | 0.00 |
 | `DET-SAA-005` | `identity-saas-mail-access.json` | scenario | 7 | 0 | 0.00 |
 | `DET-SAA-006` | `identity-saas-forwarding-chain.json` | scenario | 6 | 0 | 0.00 |
+| `DET-SAA-007` | `forwarding-delivery.json` | scenario | 6 | 0 | 0.00 |
 
 The endpoint baseline also has a before/after tuning result: the initial query matched 8/20 approved management-agent events, and the tuned query matches 0/20. See [`false-positive-tuning.md`](false-positive-tuning.md).
 
 The SaaS forwarding baseline has the same measurement: the initial query matched 8/20 internal forwarding rules, and the tuned query matches 0/20. See [`saas-forwarding-tuning.md`](saas-forwarding-tuning.md).
 
-The identity correlation baseline contains six scenarios with only one step, mismatched users, or activity outside the 30-minute window. The identity-to-SaaS correlation baseline contains six scenarios, the delegation baseline contains ten, and the mail-access baseline contains seven. The forwarding-chain baseline contains six. All five are evaluated at scenario level.
+The identity correlation baseline contains six scenarios with only one step, mismatched users, or activity outside the 30-minute window. The identity-to-SaaS correlation baseline contains six scenarios, the delegation baseline contains ten, and the mail-access baseline contains seven. The forwarding-chain baseline contains six, and the forwarding-delivery baseline contains six. All six are evaluated at scenario level.
 
 ## Baseline contents
 
@@ -48,6 +49,7 @@ The identity correlation baseline contains six scenarios with only one step, mis
 - **Identity-to-SaaS delegation:** sign-in-only, permission-only, folder-only, group-only, mismatched-user, out-of-window, normal-sign-in, SendAs-only, low-privilege-folder, and failed-group scenarios.
 - **Identity-to-SaaS mail access:** sign-in-only, self-delegation-only, mail-access-only, sign-in-plus-delegation, sign-in-plus-access, delegation-plus-access, and mismatched-mailbox scenarios.
 - **Identity-to-SaaS forwarding chain:** sign-in-only, delegation-only, access-only, partial chains, internal forwarding, and normal-sign-in scenarios.
+- **Forwarding rule to external delivery:** rule-only, external-delivery-only, internal delivery, failed external delivery, delivery for a different mailbox, and delivery outside the 60-minute window.
 
 ## Approved exceptions
 
@@ -127,6 +129,10 @@ edl detection baseline \
   --dataset lab/datasets/synthetic/benign-baseline/identity-saas-forwarding-chain.json
 
 edl detection baseline \
+  --id DET-SAA-007 \
+  --dataset lab/datasets/synthetic/benign-baseline/forwarding-delivery.json
+
+edl detection baseline \
   --id DET-SAA-001 \
   --dataset lab/datasets/synthetic/benign-baseline/m365-forwarding.json
 ```
@@ -138,7 +144,8 @@ The lab test [`tests/lab/test_benign_baselines.py`](../tests/lab/test_benign_bas
 - The corpora are synthetic and small.
 - Approved owner additions, access-key automation, and logging maintenance are excluded rather than measured.
 - The baselines test query behavior, not analyst workload or production prevalence.
-- The correlation baselines cover six to ten curated scenarios each; they do not model long-running sequences, event lateness, or mail-flow delivery.
+- The correlation baselines cover six to ten curated scenarios each; they do not model long-running sequences or event lateness.
+- The forwarding-delivery baseline correlates mailbox and external delivery timing but does not join the rule recipient to the delivered message, so it does not measure message-identity precision.
 - The SaaS baselines exclude events that intentionally match the detections, such as owner promotions and mail-forwarding rules.
 - The SaaS baselines are small and do not measure tenant or organization prevalence.
 - The SaaS forwarding tuning study covers one tenant accepted domain and one forwarding-recipient shape.

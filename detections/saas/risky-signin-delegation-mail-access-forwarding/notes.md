@@ -13,7 +13,7 @@ The native query returns candidates for four ordered steps:
 - `MailItemsAccessed` events
 - external inbox forwarding rules
 
-`correlation.group_by: [user]` requires all steps to share the acting user. The permission, access, and forwarding steps declare `match_fields: [mailbox]`, so they must reference the same mailbox. `window_seconds: 3600` gives each successive step up to 60 minutes.
+`correlation.group_by: [user]` requires all steps to share the acting user. The permission, access, and forwarding steps declare `match_fields: [mailbox]`, so they must reference the same mailbox. Step `filters` require a successful risky sign-in, a successful self-delegation (`self_delegation: true`) with the expected `access_rights`, a successful `MailItemsAccessed` event, and a successful external forwarding rule (`forward_external: true`). `window_seconds: 3600` gives each successive step up to 60 minutes.
 
 Microsoft 365 event classes distinguish permission grants (`mailbox_permission`), mailbox reads (`mail_access`), and forwarding rules (`mailbox`). The normalizer derives `mailbox` from `ObjectId` for inbox-rule and mail-access events.
 

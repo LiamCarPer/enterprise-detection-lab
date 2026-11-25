@@ -42,6 +42,13 @@ datasets:
     license: synthetic
     provenance: Generated for this repository. No real users, tenants, or IPs.
     sha256: e19662d00ad6a3a3b475cac7ab2c96a9285bb6fde1e435f2cb61ecfc7a60817c
+  - id: synthetic-exchange-message-trace-reference
+    source: exchange-message-trace
+    path: lab/datasets/synthetic/exchange-message-trace/reference.json
+    synthetic: true
+    license: synthetic
+    provenance: Generated for this repository. No real users, tenants, or IPs.
+    sha256: 2877ba5350d22d104f5484d9115b5ef0d5119a33882ac7a6f0522bec7432b430
   - id: synthetic-github-audit-reference
     source: github-audit
     path: lab/datasets/synthetic/github-audit/reference.json
@@ -189,3 +196,10 @@ datasets:
     license: synthetic
     provenance: Generated for this repository. No real users, tenants, or IPs.
     sha256: 97d7c329f3f02b989e5200026601abac48963b6f523b0e0623d85fbc224c5003
+  - id: synthetic-forwarding-delivery-benign-baseline
+    source: m365-audit+exchange-message-trace
+    path: lab/datasets/synthetic/benign-baseline/forwarding-delivery.json
+    synthetic: true
+    license: synthetic
+    provenance: Generated for this repository. No real users, tenants, or IPs.
+    sha256: cde0de7ca828d5e261bf98935817f20edb8260831b84525c6f534d2053ed1128

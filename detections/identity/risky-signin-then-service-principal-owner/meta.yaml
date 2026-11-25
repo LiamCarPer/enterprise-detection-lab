@@ -45,8 +45,21 @@ correlation:
   steps:
     - source: entra-signin
       event_class: sign_in
+      filters:
+        all:
+          result: success
+          risk_level:
+            - medium
+            - high
+          auth_requirement: singleFactorAuthentication
+          is_interactive: true
     - source: entra-audit
       event_class: audit
+      filters:
+        all:
+          action: Add owner to service principal
+          result: success
+          resource.type: ServicePrincipal
 tests:
   positive: 4
   negative: 4

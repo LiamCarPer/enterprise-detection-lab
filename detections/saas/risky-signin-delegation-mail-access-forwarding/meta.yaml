@@ -72,16 +72,48 @@ correlation:
   steps:
     - source: entra-signin
       event_class: sign_in
+      filters:
+        all:
+          result: success
+          risk_level:
+            - medium
+            - high
+          auth_requirement: singleFactorAuthentication
+          is_interactive: true
     - source: m365-audit
       event_class: mailbox_permission
+      filters:
+        all:
+          result: success
+          self_delegation: true
+        any_of:
+          - action: Add-MailboxPermission
+            access_rights: FullAccess
+          - action: Add-MailboxFolderPermission
+            access_rights:
+              - Owner
+              - PublishingEditor
+              - Editor
       match_fields:
         - mailbox
     - source: m365-audit
       event_class: mail_access
+      filters:
+        all:
+          action: MailItemsAccessed
+          result: success
       match_fields:
         - mailbox
     - source: m365-audit
       event_class: mailbox
+      filters:
+        all:
+          action:
+            - New-InboxRule
+            - Set-InboxRule
+            - UpdateInboxRules
+          result: success
+          forward_external: true
       match_fields:
         - mailbox
 tests:

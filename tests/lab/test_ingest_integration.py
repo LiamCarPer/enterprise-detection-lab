@@ -197,15 +197,20 @@ def test_saas_ingest_is_idempotent_and_queryable() -> None:
             ingest_time=datetime(2026, 11, 25, 12, 0, tzinfo=UTC),
             index_prefix=TEST_PREFIX,
         )
-        assert [result.source for result in first] == ["m365-audit", "github-audit"]
-        assert [result.read for result in first] == [6, 2]
-        assert [result.unique for result in first] == [6, 2]
-        assert [result.written for result in first] == [6, 2]
+        assert [result.source for result in first] == [
+            "m365-audit",
+            "github-audit",
+            "exchange-message-trace",
+        ]
+        assert [result.read for result in first] == [6, 2, 9]
+        assert [result.unique for result in first] == [6, 2, 9]
+        assert [result.written for result in first] == [6, 2, 9]
         assert first[0].counts == {
             first[0].indices[0]: 4,
             first[0].indices[1]: 2,
         }
         assert first[1].counts == {first[1].indices[0]: 2}
+        assert first[2].counts == {first[2].indices[0]: 9}
 
         m365_hits = _search("m365-audit")
         assert len(m365_hits) == 6
@@ -233,6 +238,34 @@ def test_saas_ingest_is_idempotent_and_queryable() -> None:
         assert github_event["target_user"] == "new-owner"
         assert github_event["dedup_origin"] == "declared"
 
+        exchange_hits = _search("exchange-message-trace")
+        assert len(exchange_hits) == 9
+        exchange_ids = sorted(str(hit["_id"]) for hit in exchange_hits)
+        exchange_event = next(
+            hit["_source"]
+            for hit in exchange_hits
+            if hit["_source"]["event_time"] == "2026-11-01T09:45:00Z"
+        )
+        assert exchange_event["event_class"] == "redirect"
+        assert exchange_event["action"] == "REDIRECT"
+        assert exchange_event["trace_event"] == "REDIRECT"
+        assert exchange_event["trace_action"] == "Redirect"
+        assert exchange_event["sender"] == "vendor@example.net"
+        assert exchange_event["recipient"] == "executive@example.test"
+        assert exchange_event["subject"] == "Quarterly invoice redirect"
+        assert exchange_event["recipient_domains"] == ["example.test"]
+        assert exchange_event["external_recipient"] is False
+        assert exchange_event["related_recipient"] == "collector@example.org"
+        assert exchange_event["related_external"] is True
+        assert exchange_event["mailbox"] == "executive@example.test"
+        assert exchange_event["delivery_status"] == "Delivered"
+        assert exchange_event["directionality"] == "outbound"
+        assert exchange_event["result"] == "success"
+        assert exchange_event["service"] == "exchange"
+        assert exchange_event["source_component"] == "SMTP"
+        assert exchange_event["trace_index"] == 1
+        assert exchange_event["dedup_origin"] == "declared"
+
         second = ingest_saas(
             config.ROOT,
             client=client,
@@ -241,8 +274,10 @@ def test_saas_ingest_is_idempotent_and_queryable() -> None:
         )
         assert second[0].counts == first[0].counts
         assert second[1].counts == first[1].counts
+        assert second[2].counts == first[2].counts
         assert sorted(str(hit["_id"]) for hit in _search("m365-audit")) == m365_ids
         assert sorted(str(hit["_id"]) for hit in _search("github-audit")) == github_ids
+        assert sorted(str(hit["_id"]) for hit in _search("exchange-message-trace")) == exchange_ids
     finally:
         client.delete_matching(f"{TEST_PREFIX}-*")
         client.close()

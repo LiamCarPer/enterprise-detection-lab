@@ -73,6 +73,7 @@ edl ingest network
 edl ingest kubernetes
 edl ingest endpoint --source sysmon
 edl ingest cloud --dry-run
+edl ingest saas --source exchange-message-trace
 edl ingest identity --source entra-signin
 edl ingest identity --dry-run
 edl ingest identity --json

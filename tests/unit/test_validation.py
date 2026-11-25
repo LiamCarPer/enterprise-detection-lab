@@ -640,3 +640,80 @@ def test_invalid_tenant_config_fails(tmp_path: Path) -> None:
     report = validate_repository(tmp_path)
     assert not report.ok
     assert any(issue.code == "tenant.load" for issue in report.errors)
+
+
+def _with_correlation(detection: Path, block: str) -> None:
+    meta = detection / "meta.yaml"
+    meta.write_text(meta.read_text() + block, encoding="utf-8")
+
+
+def _correlation_block(step_filters: str) -> str:
+    return (
+        "correlation:\n"
+        "  window_seconds: 1800\n"
+        "  group_by:\n"
+        "    - user\n"
+        "  steps:\n"
+        "    - source: entra-audit\n"
+        "      event_class: audit\n"
+        f"{step_filters}"
+        "    - source: entra-audit\n"
+        "      event_class: audit\n"
+    )
+
+
+def test_correlation_filters_accept_supported_shapes(tmp_path: Path) -> None:
+    detection = _write_detection(tmp_path)
+    _with_correlation(
+        detection,
+        _correlation_block(
+            "      filters:\n"
+            "        all:\n"
+            "          result: success\n"
+            "          access_rights:\n"
+            "            - FullAccess\n"
+            "            - SendAs\n"
+            "          resource.type: ServicePrincipal\n"
+            "          is_interactive: true\n"
+            "          score: 3.5\n"
+        )
+        + "      filters:\n"
+        "        any_of:\n"
+        "          - action: Add-MailboxPermission\n"
+        "          - action: Add-MailboxFolderPermission\n"
+        "            access_rights:\n"
+        "              - Owner\n"
+        "              - Editor\n"
+        "          - forward_to:\n"
+        "              exists: true\n",
+    )
+    report = validate_repository(tmp_path)
+    assert report.ok, [issue.message for issue in report.errors]
+
+
+@pytest.mark.parametrize(
+    "step_filters",
+    [
+        "      filters: {}\n",
+        "      filters:\n        all: {}\n",
+        "      filters:\n        any_of: []\n",
+        "      filters:\n        other: {}\n",
+        "      filters:\n        all:\n          result: success\n        unknown: true\n",
+        "      filters:\n        all:\n          'user name': value\n",
+        "      filters:\n        all:\n          'user..name': value\n",
+        "      filters:\n        all:\n          user: null\n",
+        "      filters:\n        all:\n          user: []\n",
+        "      filters:\n        all:\n          user: [alpha, alpha]\n",
+        "      filters:\n        all:\n          user:\n            exists: 1\n",
+        "      filters:\n        all:\n          user:\n"
+        "            exists: true\n            extra: value\n",
+        "      filters:\n        all:\n          user: [{nested: map}]\n",
+        "      filters:\n        any_of:\n          - {}\n",
+        "      filters: []\n",
+    ],
+)
+def test_correlation_filters_reject_invalid_shapes(tmp_path: Path, step_filters: str) -> None:
+    detection = _write_detection(tmp_path)
+    _with_correlation(detection, _correlation_block(step_filters))
+    report = validate_repository(tmp_path)
+    assert any(issue.code == "schema" for issue in report.errors)

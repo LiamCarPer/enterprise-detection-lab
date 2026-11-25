@@ -85,15 +85,53 @@ correlation:
   steps:
     - source: entra-signin
       event_class: sign_in
+      filters:
+        all:
+          result: success
+          risk_level:
+            - medium
+            - high
     - source: entra-audit
       event_class: audit
+      filters:
+        all:
+          action: Add owner to service principal
+          resource.type: ServicePrincipal
       match_fields:
         - user
 ```
 
+Each step's `source` and `event_class` must be declared in `meta.telemetry` for
+that source.
+
+`window_seconds` applies to each consecutive pair of steps: step `N+1` must
+occur at or after step `N` and no more than `window_seconds` later. The window
+is not measured from the first event, so a four-step sequence can span up to
+three windows.
+
 Steps may declare `match_fields` to require the same field values across
 successive steps. In `DET-SAA-005`, the delegation and mail-access steps both
 declare `mailbox`, so the accessed mailbox must match the delegated mailbox.
+
+Steps may also declare optional `filters` to narrow the events that can satisfy
+that step. Filters are evaluated after the native query and before grouping and
+`match_fields`. They only remove candidate events; they never add events that
+the query did not return, so the committed native query must still be broad
+enough to return every candidate. Two keys are supported:
+
+- `filters.all`: a non-empty mapping of field to value. Every condition must
+  match.
+- `filters.any_of`: a non-empty array of non-empty mappings. At least one
+  mapping must match. When both keys are present, both must hold.
+
+Field names are dotted paths such as `resource.type`; empty segments and
+whitespace are rejected. Values have these meanings:
+
+| Value | Matching |
+|---|---|
+| Scalar string, number, or boolean | Exact match with strict types. `true` does not match `1` or `"true"`. |
+| Non-empty array of scalars | IN semantics: matches when the document field equals any listed value. For a list-valued document field, matches on a non-empty intersection. |
+| `{exists: true}` or `{exists: false}` | Presence check. A missing or null field fails positive filters and matches `exists: false`. |
 
 The runner executes the native query, then evaluates the returned events as
 ordered scenarios. Fixtures can use a `scenario` field to group events into one

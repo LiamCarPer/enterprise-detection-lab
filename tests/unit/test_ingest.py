@@ -10,6 +10,7 @@ from edl.errors import IngestError
 from edl.ingest import (
     CLASSIFIERS,
     CanonicalEvent,
+    classify_exchange_message_trace,
     classify_github_audit,
     classify_m365_audit,
     classify_suricata,
@@ -41,6 +42,7 @@ from edl.ingest import (
     normalize_entra_audit,
     normalize_entra_signin,
     normalize_event,
+    normalize_exchange_message_trace,
     normalize_falco,
     normalize_github_audit,
     normalize_kubernetes_audit,
@@ -1079,19 +1081,70 @@ GITHUB_RAW = {
     "user_agent": "GitHub CLI",
 }
 
+EXCHANGE_MESSAGE_TRACE_RAW = {
+    "MessageTraceId": "00000000-0000-4000-8000-000000030101",
+    "MessageId": "<20261101094500.101@example.net>",
+    "Date": "2026-11-01T09:45:00Z",
+    "Event": "REDIRECT",
+    "Source": "SMTP",
+    "SenderAddress": "vendor@example.net",
+    "RecipientAddress": "executive@example.test",
+    "Subject": "Quarterly invoice redirect",
+    "Status": "Delivered",
+    "Directionality": "Outbound",
+    "Action": "Redirect",
+    "Detail": "Message redirected to external recipient collector@example.org",
+    "Size": 48213,
+    "FromIP": "203.0.113.31",
+    "ToIP": "203.0.113.10",
+    "RelatedRecipientAddress": "collector@example.org",
+    "TenantId": "00000000-0000-4000-8000-000000009001",
+    "Reference": "ref-redirect-external-101",
+    "Index": 1,
+}
+
 
 def _saas_source(source_id: str) -> TelemetrySource:
-    m365 = source_id == "m365-audit"
+    if source_id == "m365-audit":
+        event_classes = ["audit", "mailbox"]
+        event_time_field = "CreationTime"
+        dedup_key = ["Id"]
+        required_fields = ["CreationTime", "Id", "Operation", "UserId", "Workload", "RecordType"]
+    elif source_id == "exchange-message-trace":
+        event_classes = [
+            "deliver",
+            "forward",
+            "redirect",
+            "send",
+            "receive",
+            "fail",
+            "defer",
+            "expand",
+            "transfer",
+            "resolve",
+            "other",
+        ]
+        event_time_field = "Date"
+        dedup_key = ["MessageTraceId", "RecipientAddress", "Event", "Date"]
+        required_fields = [
+            "MessageTraceId",
+            "MessageId",
+            "SenderAddress",
+            "RecipientAddress",
+            "Date",
+            "Event",
+        ]
+    else:
+        event_classes = ["audit_log", "git", "authentication"]
+        event_time_field = "created_at"
+        dedup_key = ["id"]
+        required_fields = ["action", "actor", "created_at", "id", "org", "repo"]
     return _source(
         source_id,
-        event_classes=["audit", "mailbox"] if m365 else ["audit_log", "git", "authentication"],
-        event_time_field="CreationTime" if m365 else "created_at",
-        dedup_key=["Id"] if m365 else ["id"],
-        required_fields=(
-            ["CreationTime", "Id", "Operation", "UserId", "Workload", "RecordType"]
-            if m365
-            else ["action", "actor", "created_at", "id", "org", "repo"]
-        ),
+        event_classes=event_classes,
+        event_time_field=event_time_field,
+        dedup_key=dedup_key,
+        required_fields=required_fields,
     )
 
 
@@ -1163,6 +1216,146 @@ def test_normalize_github_audit_maps_organization_fields() -> None:
     assert document["result"] == "success"
 
 
+@pytest.mark.parametrize(
+    ("event", "expected"),
+    [
+        ("DELIVER", "deliver"),
+        ("deliver", "deliver"),
+        ("FORWARD", "forward"),
+        ("REDIRECT", "redirect"),
+        ("SEND", "send"),
+        ("RECEIVE", "receive"),
+        ("FAIL", "fail"),
+        ("DEFER", "defer"),
+        ("EXPAND", "expand"),
+        ("TRANSFER", "transfer"),
+        ("RESOLVE", "resolve"),
+        ("UNKNOWN", "other"),
+    ],
+)
+def test_classify_exchange_message_trace_event(event: str, expected: str) -> None:
+    assert classify_exchange_message_trace({"Event": event}) == expected
+
+
+def test_classify_exchange_message_trace_handles_missing_event() -> None:
+    assert classify_exchange_message_trace({}) == "other"
+    assert classify_exchange_message_trace({"Event": None}) == "other"
+    assert classify_exchange_message_trace({"Event": 7}) == "other"
+
+
+def test_normalize_exchange_message_trace_maps_external_redirect() -> None:
+    document = normalize_exchange_message_trace(EXCHANGE_MESSAGE_TRACE_RAW)
+    assert document["event_id"] == EXCHANGE_MESSAGE_TRACE_RAW["MessageTraceId"]
+    assert document["message_trace_id"] == EXCHANGE_MESSAGE_TRACE_RAW["MessageTraceId"]
+    assert document["message_id"] == EXCHANGE_MESSAGE_TRACE_RAW["MessageId"]
+    assert document["sender"] == "vendor@example.net"
+    assert document["recipient"] == "executive@example.test"
+    assert document["recipients"] == ["executive@example.test"]
+    assert document["recipient_domain"] == "example.test"
+    assert document["recipient_domains"] == ["example.test"]
+    assert document["external_recipient"] is False
+    assert document["subject"] == "Quarterly invoice redirect"
+    assert document["related_recipient"] == "collector@example.org"
+    assert document["related_external"] is True
+    assert document["mailbox"] == "executive@example.test"
+    assert document["action"] == "REDIRECT"
+    assert document["trace_event"] == "REDIRECT"
+    assert document["trace_action"] == "Redirect"
+    assert document["trace_detail"].startswith("Message redirected")
+    assert document["delivery_status"] == "Delivered"
+    assert document["directionality"] == "outbound"
+    assert document["result"] == "success"
+    assert document["size_bytes"] == 48213
+    assert document["from_ip"] == "203.0.113.31"
+    assert document["to_ip"] == "203.0.113.10"
+    assert document["tenant_id"] == "00000000-0000-4000-8000-000000009001"
+    assert document["source_component"] == "SMTP"
+    assert document["trace_reference"] == "ref-redirect-external-101"
+    assert document["trace_index"] == 1
+    assert document["service"] == "exchange"
+
+
+def test_normalize_exchange_message_trace_maps_internal_redirect() -> None:
+    document = normalize_exchange_message_trace(
+        {
+            **EXCHANGE_MESSAGE_TRACE_RAW,
+            "SenderAddress": "analyst@example.test",
+            "RecipientAddress": "executive@example.test",
+            "RelatedRecipientAddress": "manager@example.test",
+            "Directionality": "Intra-org",
+        }
+    )
+    assert document["related_recipient"] == "manager@example.test"
+    assert document["related_external"] is False
+    assert document["mailbox"] == "manager@example.test"
+    assert document["directionality"] == "intra-org"
+
+
+def test_normalize_exchange_message_trace_flags_external_recipient() -> None:
+    document = normalize_exchange_message_trace(
+        {
+            **EXCHANGE_MESSAGE_TRACE_RAW,
+            "Event": "SEND",
+            "RecipientAddress": "recipient@example.net",
+            "RelatedRecipientAddress": None,
+        }
+    )
+    assert document["recipient_domains"] == ["example.net"]
+    assert document["external_recipient"] is True
+    assert "related_recipient" not in document
+    assert "related_external" not in document
+    assert "mailbox" not in document
+
+
+@pytest.mark.parametrize(
+    ("event", "expected"),
+    [
+        ("DELIVER", "success"),
+        ("FORWARD", "success"),
+        ("REDIRECT", "success"),
+        ("SEND", "success"),
+        ("RECEIVE", "success"),
+        ("EXPAND", "success"),
+        ("TRANSFER", "success"),
+        ("RESOLVE", "success"),
+        ("FAIL", "failure"),
+        ("DEFER", "pending"),
+        ("UNKNOWN", None),
+    ],
+)
+def test_normalize_exchange_message_trace_maps_result(event: str, expected: str | None) -> None:
+    document = normalize_exchange_message_trace({**EXCHANGE_MESSAGE_TRACE_RAW, "Event": event})
+    assert document.get("result") == expected
+
+
+def test_normalize_exchange_message_trace_uses_original_client_ip_fallback() -> None:
+    document = normalize_exchange_message_trace(
+        {
+            **EXCHANGE_MESSAGE_TRACE_RAW,
+            "ClientIP": None,
+            "OriginalClientIP": "198.51.100.12",
+        }
+    )
+    assert document["client_ip"] == "198.51.100.12"
+
+
+def test_normalize_exchange_message_trace_supports_recipient_lists() -> None:
+    document = normalize_exchange_message_trace(
+        {
+            **EXCHANGE_MESSAGE_TRACE_RAW,
+            "RecipientAddress": "analyst@example.test; partner@example.net",
+            "RelatedRecipientAddress": ["manager@example.test", "vendor@example.org"],
+        }
+    )
+    assert document["recipients"] == ["analyst@example.test", "partner@example.net"]
+    assert document["recipient"] == "analyst@example.test"
+    assert document["recipient_domains"] == ["example.net", "example.test"]
+    assert document["external_recipient"] is True
+    assert document["related_recipient"] == "manager@example.test"
+    assert document["related_external"] is True
+    assert document["mailbox"] == "manager@example.test"
+
+
 def test_normalize_event_saas_classification() -> None:
     m365 = normalize_event(
         _saas_source("m365-audit"),
@@ -1178,12 +1371,28 @@ def test_normalize_event_saas_classification() -> None:
     )
     assert github.event_class == "audit_log"
 
+    exchange = normalize_event(
+        _saas_source("exchange-message-trace"),
+        EXCHANGE_MESSAGE_TRACE_RAW,
+        ingest_time=datetime(2026, 11, 25, tzinfo=UTC),
+    )
+    assert exchange.event_class == "redirect"
+    assert exchange.document["service"] == "exchange"
+
 
 def test_load_saas_sources_defaults_and_filters() -> None:
-    assert [source.id for source in load_saas_sources()] == ["m365-audit", "github-audit"]
+    assert [source.id for source in load_saas_sources()] == [
+        "m365-audit",
+        "github-audit",
+        "exchange-message-trace",
+    ]
     assert [source.id for source in load_saas_sources(requested=("github-audit",))] == [
         "github-audit"
     ]
+    assert [
+        source.id
+        for source in load_saas_sources(requested=("exchange-message-trace", "m365-audit"))
+    ] == ["exchange-message-trace", "m365-audit"]
 
 
 def test_load_saas_sources_rejects_non_saas() -> None:
@@ -1193,13 +1402,18 @@ def test_load_saas_sources_rejects_non_saas() -> None:
 
 def test_ingest_saas_dry_run_uses_repository_samples() -> None:
     results = ingest_saas(dry_run=True)
-    assert [result.source for result in results] == ["m365-audit", "github-audit"]
-    assert [result.read for result in results] == [6, 2]
+    assert [result.source for result in results] == [
+        "m365-audit",
+        "github-audit",
+        "exchange-message-trace",
+    ]
+    assert [result.read for result in results] == [6, 2, 9]
     assert results[0].indices == (
         "edl-events-m365-audit-2026.11.01",
         "edl-events-m365-audit-2026.11.25",
     )
     assert results[1].indices == ("edl-events-github-audit-2026.11.25",)
+    assert results[2].indices == ("edl-events-exchange-message-trace-2026.11.01",)
 
 
 def test_ingest_saas_opens_client_when_missing(
@@ -1219,7 +1433,7 @@ def test_ingest_saas_opens_client_when_missing(
         ingest_time=datetime(2026, 11, 25, tzinfo=UTC),
         index_prefix="edl-events-test",
     )
-    assert len(results) == 2
+    assert len(results) == 3
     assert all(result.mode == "ingested" for result in results)
     assert all(result.counts for result in results)
 

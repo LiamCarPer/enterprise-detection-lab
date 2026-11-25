@@ -1,0 +1,83 @@
+id: DET-SAA-007
+title: Forwarding Rule Followed by External Delivery
+version: 1.0.0
+status: tested
+domain: saas
+severity: high
+hypothesis: A mailbox forwarding rule followed by an external delivery confirms that mail left the tenant.
+description: Correlates a successful Microsoft 365 inbox forwarding rule with a successful external Exchange Online message-trace delivery for the same mailbox within 60 minutes.
+owner: detection-engineering
+created: "2026-11-25"
+updated: "2026-11-25"
+attack:
+  - T1114.003
+tags:
+  - saas
+  - microsoft-365
+  - exchange-online
+  - email
+  - collection
+  - correlation
+telemetry:
+  - source: m365-audit
+    event_class: mailbox
+    required_fields:
+      - CreationTime
+      - Id
+      - Operation
+      - UserId
+      - Workload
+      - RecordType
+      - ResultStatus
+      - ObjectId
+      - Parameters
+  - source: exchange-message-trace
+    event_class: deliver
+    required_fields:
+      - MessageTraceId
+      - MessageId
+      - SenderAddress
+      - RecipientAddress
+      - Date
+      - Event
+      - Status
+      - RelatedRecipientAddress
+      - TenantId
+queries:
+  opensearch: queries/opensearch.json
+correlation:
+  window_seconds: 3600
+  group_by:
+    - mailbox
+  steps:
+    - source: m365-audit
+      event_class: mailbox
+      filters:
+        all:
+          result: success
+          forward_external: true
+        any_of:
+          - action: New-InboxRule
+          - action: Set-InboxRule
+          - action: UpdateInboxRules
+      match_fields:
+        - mailbox
+    - source: exchange-message-trace
+      event_class: deliver
+      filters:
+        all:
+          result: success
+          external_recipient: true
+      match_fields:
+        - mailbox
+tests:
+  positive: 4
+  negative: 4
+  benign: 2
+false_positives:
+  - An approved external forwarding rule that the tenant intentionally uses to route mail.
+  - A journaling or migration process that forwards mail to an external archive.
+  - A user forwards mail to an external partner after an approved request.
+runbook: runbook.md
+metrics: metrics.json
+notes: notes.md

@@ -55,6 +55,39 @@
         "delegate": { "type": "keyword" },
         "access_rights": { "type": "keyword" },
         "self_delegation": { "type": "boolean" },
+        "message_trace_id": { "type": "keyword" },
+        "message_id": { "type": "keyword" },
+        "sender": { "type": "keyword" },
+        "recipient": { "type": "keyword" },
+        "recipient_domain": { "type": "keyword" },
+        "recipient_domains": { "type": "keyword" },
+        "external_recipient": { "type": "boolean" },
+        "related_recipient": { "type": "keyword" },
+        "related_external": { "type": "boolean" },
+        "trace_event": { "type": "keyword" },
+        "trace_action": { "type": "keyword" },
+        "trace_detail": {
+          "type": "text",
+          "fields": {
+            "keyword": { "type": "keyword", "ignore_above": 2048 }
+          }
+        },
+        "delivery_status": { "type": "keyword" },
+        "directionality": { "type": "keyword" },
+        "from_ip": { "type": "keyword" },
+        "to_ip": { "type": "keyword" },
+        "client_ip": { "type": "keyword" },
+        "tenant_id": { "type": "keyword" },
+        "source_component": { "type": "keyword" },
+        "trace_reference": { "type": "keyword" },
+        "trace_index": { "type": "long" },
+        "size_bytes": { "type": "long" },
+        "subject": {
+          "type": "text",
+          "fields": {
+            "keyword": { "type": "keyword", "ignore_above": 1024 }
+          }
+        },
         "organization": { "type": "keyword" },
         "repository": { "type": "keyword" },
         "target_user": { "type": "keyword" },

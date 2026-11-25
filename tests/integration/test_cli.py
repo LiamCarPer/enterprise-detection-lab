@@ -708,6 +708,7 @@ def test_ingest_saas_dry_run() -> None:
     assert "SaaS Telemetry Ingest" in result.stdout
     assert "m365-audit" in result.stdout
     assert "github-audit" in result.stdout
+    assert "exchange-mess" in result.stdout
     assert "dry-run" in result.stdout
 
 
@@ -715,12 +716,17 @@ def test_ingest_saas_json() -> None:
     result = runner.invoke(app, ["ingest", "saas", "--dry-run", "--json"])
     assert result.exit_code == 0
     payload = json.loads(result.stdout)
-    assert [item["source"] for item in payload] == ["m365-audit", "github-audit"]
+    assert [item["source"] for item in payload] == [
+        "m365-audit",
+        "github-audit",
+        "exchange-message-trace",
+    ]
     assert payload[0]["indices"] == [
         "edl-events-m365-audit-2026.11.01",
         "edl-events-m365-audit-2026.11.25",
     ]
     assert payload[1]["indices"] == ["edl-events-github-audit-2026.11.25"]
+    assert payload[2]["indices"] == ["edl-events-exchange-message-trace-2026.11.01"]
 
 
 def test_ingest_network_dry_run() -> None:

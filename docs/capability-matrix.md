@@ -19,7 +19,7 @@ This matrix tracks the engineering capabilities implemented in the lab and the a
 | **Identity telemetry** | Normalized Entra sign-in and audit events, UTC enforcement, deterministic IDs, idempotent replay | `src/edl/ingest.py`, `lab/datasets/synthetic/entra-*`, `docs/ingestion.md` | Complete |
 | **Endpoint telemetry** | Normalized Sysmon and Windows Security events, per-event classification, declared dedup keys | `src/edl/ingest.py`, `lab/datasets/synthetic/sysmon`, `lab/datasets/synthetic/windows-security` | Complete |
 | **Cloud telemetry** | AWS CloudTrail normalization, identity and request context, replay verification | `telemetry/sources/aws-cloudtrail.yaml`, `src/edl/ingest.py` | Complete |
-| **SaaS telemetry** | Microsoft 365 and GitHub audit normalization, actor and resource context, replay verification | `telemetry/sources/m365-audit.yaml`, `telemetry/sources/github-audit.yaml`, `src/edl/ingest.py` | Complete |
+| **SaaS telemetry** | Microsoft 365, GitHub, and Exchange Online message trace normalization, actor, resource, and transport context, replay verification | `telemetry/sources/m365-audit.yaml`, `telemetry/sources/github-audit.yaml`, `telemetry/sources/exchange-message-trace.yaml`, `src/edl/ingest.py` | Complete |
 | **Network telemetry** | Zeek and Suricata normalization, DNS, HTTP, TLS, alert, and flow context, replay verification | `telemetry/sources/zeek.yaml`, `telemetry/sources/suricata.yaml`, `src/edl/ingest.py` | Complete |
 | **Kubernetes telemetry** | Kubernetes audit and Falco normalization, identity, workload, and runtime context, replay verification | `telemetry/sources/kubernetes-audit.yaml`, `telemetry/sources/falco.yaml`, `src/edl/ingest.py` | Complete |
 | **Detection engineering** | Versioned packages with hypothesis, telemetry contract, Sigma rule, native query, fixtures, runbook, and metrics | `detections/`, `schemas/detection.schema.json` | In progress |
@@ -39,16 +39,16 @@ This matrix tracks the engineering capabilities implemented in the lab and the a
 | `docs/artifact-model.md` | Complete | Detection and investigation package contracts |
 | `compose.yaml` + `lab/` | Complete | Local OpenSearch, Dashboards, Kusto, and DuckDB stack with pinned images and bootstrap |
 | `src/edl/` | Complete | Validation, reporting, ingestion, scaffolding, and lab lifecycle |
-| `telemetry/sources/` + `docs/telemetry-matrix.md` | Complete | 11 contracts (11 ingested) with generated matrix and freshness check |
+| `telemetry/sources/` + `docs/telemetry-matrix.md` | Complete | 12 contracts (12 ingested) with generated matrix and freshness check |
 | `src/edl/ingest.py` + `docs/ingestion.md` | Complete | Identity, endpoint, cloud, SaaS, network, and Kubernetes normalization, classification, deduplication, and idempotent bulk ingest |
 | `detections/endpoint/_template` + `investigations/_template` | Complete | Working reference packages and `edl new` scaffolding |
-| `detections/identity`, `detections/endpoint`, `detections/cloud`, `detections/saas`, `detections/network`, `detections/kubernetes` | Tested | Seventeen core detections, including five sequence correlations, with runbooks and committed metrics |
+| `detections/identity`, `detections/endpoint`, `detections/cloud`, `detections/saas`, `detections/network`, `detections/kubernetes` | Tested | Eighteen core detections, including six sequence correlations, with runbooks and committed metrics |
 | `investigations/01-identity-to-cloud` + `investigations/02-endpoint-to-cloud` + `investigations/03-saas-mailbox-takeover` | Tested | Evidence hashes, timelines, queries, response, lessons, and linked detection checks |
 | `src/edl/detection.py` + `docs/detection-testing.md` | Complete | Fixture normalization, temporary-index replay, pass/fail scoring, and metrics generation |
 | `tests/` + `Makefile` | Complete | Unit, integration, and lab tests; 90% statement-coverage gate |
 | `.github/workflows/ci.yml` | Complete | Quality job plus OpenSearch-backed ingestion, detection, and investigation tests |
-| `reports/detection-metrics.md` | Complete | Aggregated fixture metrics for seventeen detections with explicit limitations |
-| `lab/datasets/synthetic/benign-baseline/` + `reports/` | Complete | Sixteen benign corpora, including SaaS, network, Kubernetes, and five scenario baselines, plus endpoint and SaaS tuning results |
+| `reports/detection-metrics.md` | Complete | Aggregated fixture metrics for eighteen detections with explicit limitations |
+| `lab/datasets/synthetic/benign-baseline/` + `reports/` | Complete | Seventeen benign corpora, including SaaS, network, Kubernetes, and six scenario baselines, plus endpoint and SaaS tuning results |
 | `detections/exceptions.yaml` + `docs/exception-policy.md` | Complete | Reviewed exceptions with owner, scope, expiry, change ticket, and compensating controls |
 | `config/tenant.yaml` + `schemas/tenant.schema.json` | Complete | Versioned accepted mail domains with schema validation during ingestion and repository checks |
 | `docs/capability-matrix.md` + `docs/requirements-traceability.md` | Complete | Capability and engineering-requirement traceability |

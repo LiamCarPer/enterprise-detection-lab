@@ -10,6 +10,7 @@ A risky single-factor sign-in followed by a service principal ownership change w
   - successful interactive sign-ins with medium/high risk and single-factor authentication
   - successful owner additions to service principals
 - `correlation.group_by: [user]` requires both steps to share the initiating user.
+- Step `filters` require a successful risky interactive single-factor sign-in and a successful service-principal owner addition, including the dotted `resource.type` field.
 - `correlation.window_seconds: 1800` requires the audit step to occur at or after the sign-in and within 30 minutes.
 - The runner evaluates ordered scenarios over the query results.
 

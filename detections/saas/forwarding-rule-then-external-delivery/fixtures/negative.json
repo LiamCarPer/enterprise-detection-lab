@@ -1,0 +1,110 @@
+[
+  {
+    "event": {
+      "CreationTime": "2026-11-25T11:00:00Z",
+      "Id": "00000000-0000-4000-8000-000000020201",
+      "Operation": "New-InboxRule",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.31",
+      "ObjectId": "executive@example.test\\Inbox\\Forward invoices",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "Name",
+          "Value": "Forward invoices"
+        },
+        {
+          "Name": "ForwardTo",
+          "Value": "collector@example.org"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "neg-1",
+    "note": "External forwarding rule created on the executive mailbox"
+  },
+  {
+    "event": {
+      "Organization": "example.onmicrosoft.test",
+      "MessageTraceId": "00000000-0000-4000-8000-000000020202",
+      "MessageId": "<20261125110300.203@example.test>",
+      "Date": "2026-11-25T11:03:00Z",
+      "Event": "DELIVER",
+      "Source": "STOREDRIVER",
+      "SenderAddress": "vendor@example.net",
+      "RecipientAddress": "archive@example.test",
+      "Subject": "Quarterly invoice redirect",
+      "Status": "Delivered",
+      "Directionality": "Intra-org",
+      "Action": "Deliver",
+      "Detail": "Message delivered to internal recipient",
+      "Size": 18342,
+      "TenantId": "00000000-0000-4000-8000-000000009001",
+      "Reference": "ref-fixture-deliver-internal-203",
+      "Index": 1,
+      "RelatedRecipientAddress": "executive@example.test"
+    },
+    "source": "exchange-message-trace",
+    "synthetic": true,
+    "scenario": "neg-1",
+    "note": "Delivery stayed inside the tenant, so external_recipient is false"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-25T12:00:00Z",
+      "Id": "00000000-0000-4000-8000-000000020203",
+      "Operation": "New-InboxRule",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.31",
+      "ObjectId": "executive@example.test\\Inbox\\Forward invoices",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "Name",
+          "Value": "Forward invoices"
+        },
+        {
+          "Name": "ForwardTo",
+          "Value": "collector@example.org"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "neg-2",
+    "note": "External forwarding rule created on the executive mailbox"
+  },
+  {
+    "event": {
+      "Organization": "example.onmicrosoft.test",
+      "MessageTraceId": "00000000-0000-4000-8000-000000020204",
+      "MessageId": "<20261125120400.204@example.org>",
+      "Date": "2026-11-25T12:04:00Z",
+      "Event": "FAIL",
+      "Source": "SMTP",
+      "SenderAddress": "vendor@example.net",
+      "RecipientAddress": "collector@example.org",
+      "Subject": "Quarterly invoice redirect",
+      "Status": "Failed",
+      "Directionality": "Outbound",
+      "Action": "Fail",
+      "Detail": "550 5.7.1 Message rejected by policy",
+      "Size": 18342,
+      "FromIP": "203.0.113.31",
+      "ToIP": "203.0.113.80",
+      "RelatedRecipientAddress": "executive@example.test",
+      "TenantId": "00000000-0000-4000-8000-000000009001",
+      "Reference": "ref-fixture-fail-external-204",
+      "Index": 2
+    },
+    "source": "exchange-message-trace",
+    "synthetic": true,
+    "scenario": "neg-2",
+    "note": "External transport failed instead of delivering"
+  }
+]

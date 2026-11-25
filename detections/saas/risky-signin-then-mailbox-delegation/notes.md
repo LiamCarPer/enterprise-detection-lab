@@ -13,7 +13,7 @@ The native query returns candidate events from two sources:
 - successful `Add-MailboxFolderPermission` events with `Owner`, `PublishingEditor`, or `Editor` rights
 - successful `Add-DistributionGroupMember` events
 
-`correlation.group_by: [user]` requires both steps to share the user. `window_seconds: 3600` allows for Microsoft 365 audit latency while keeping the sequence tight.
+`correlation.group_by: [user]` requires both steps to share the user. Step `filters` apply the grant semantics per step: an `any_of` group covers `Add-MailboxPermission` with `FullAccess`, `Add-MailboxFolderPermission` with owner/editor rights, and `Add-DistributionGroupMember`. `window_seconds: 3600` allows for Microsoft 365 audit latency while keeping the sequence tight.
 
 The normalizer reads `Identity`, `User` or `Member`, and `AccessRights` from the audit parameters, producing canonical `mailbox`, `delegate`, and `access_rights` fields.
 

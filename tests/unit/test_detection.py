@@ -2,13 +2,21 @@ from __future__ import annotations
 
 import json
 import shutil
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import pytest
 
 from edl import config
 from edl.detection import (
+    CanonicalEvent,
+    CorrelationSpec,
+    CorrelationStep,
+    DetectionCase,
+    ExistsFilter,
+    FilterGroup,
+    StepFilters,
+    _correlation_hit,
     build_search_body,
     extract_hit_ids,
     load_detection_package,
@@ -395,6 +403,13 @@ def test_load_detection_package_rejects_invalid_query_json(tmp_path: Path) -> No
         load_detection_package(path, _sources())  # type: ignore[arg-type]
 
 
+def test_load_detection_package_ignores_non_mapping_telemetry_entries(tmp_path: Path) -> None:
+    path = _copy_template(tmp_path)
+    _mutate_meta(path, "queries:", "  - not-a-mapping\nqueries:")
+    package = load_detection_package(path, _sources())  # type: ignore[arg-type]
+    assert package.detection_id == "DET-END-000"
+
+
 def test_load_detection_package_rejects_telemetry_without_source(tmp_path: Path) -> None:
     path = _copy_template(tmp_path)
     meta = path / "meta.yaml"
@@ -491,6 +506,7 @@ def test_run_detections_includes_templates_when_requested() -> None:
         "DET-SAA-004",
         "DET-SAA-005",
         "DET-SAA-006",
+        "DET-SAA-007",
     }
     assert all(result.passed for result in results)
 
@@ -660,4 +676,526 @@ def test_correlation_spec_validation(tmp_path: Path, replacement: str, message: 
     path = _copy_correlation(tmp_path)
     _replace_correlation(path, replacement)
     with pytest.raises(DetectionError, match=message):
+        load_detection_package(path, _sources())  # type: ignore[arg-type]
+
+
+def _make_case(
+    case_id: str,
+    source: str,
+    event_class: str,
+    event_time: datetime,
+    document: dict[str, object],
+) -> DetectionCase:
+    return DetectionCase(
+        case_id=case_id,
+        kind="positive",
+        source=source,
+        event=CanonicalEvent(
+            source=source,
+            event_class=event_class,
+            event_time=event_time,
+            ingest_time=event_time,
+            document=document,
+            dedup_id=case_id,
+        ),
+        scenario="scenario",
+    )
+
+
+def _filter_value(value: object) -> object:
+    return tuple(value) if isinstance(value, list) else value
+
+
+def _filters(
+    all_conditions: dict[str, object] | None = None,
+    any_of: list[dict[str, object]] | None = None,
+) -> StepFilters:
+    return StepFilters(
+        all=FilterGroup(
+            tuple((field, _filter_value(value)) for field, value in (all_conditions or {}).items())
+        )
+        if all_conditions
+        else None,
+        any_of=tuple(
+            FilterGroup(tuple((field, _filter_value(value)) for field, value in group.items()))
+            for group in (any_of or [])
+        ),
+    )
+
+
+def _step(
+    source: str,
+    event_class: str,
+    *,
+    filters: StepFilters | None = None,
+    match_fields: tuple[str, ...] = (),
+) -> CorrelationStep:
+    return CorrelationStep(
+        source=source,
+        event_class=event_class,
+        match_fields=match_fields,
+        filters=filters or StepFilters(),
+    )
+
+
+def _spec(*steps: CorrelationStep, window_seconds: int = 60) -> CorrelationSpec:
+    return CorrelationSpec(
+        window_seconds=window_seconds,
+        group_by=("user",),
+        steps=tuple(steps),
+    )
+
+
+def test_correlation_filter_scalar_on_first_step() -> None:
+    base = datetime(2026, 11, 1, tzinfo=UTC)
+    spec = _spec(
+        _step("src", "first", filters=_filters({"action": "sign_in"})),
+        _step("src", "second"),
+    )
+    wrong = _make_case("first-wrong", "src", "first", base, {"user": "u", "action": "other"})
+    right = _make_case("first-right", "src", "first", base, {"user": "u", "action": "sign_in"})
+    second = _make_case("second", "src", "second", base + timedelta(seconds=1), {"user": "u"})
+
+    assert not _correlation_hit([wrong, second], spec)
+    assert _correlation_hit([right, second], spec)
+
+
+def test_correlation_filter_list_is_in_and_matches_document_lists() -> None:
+    base = datetime(2026, 11, 1, tzinfo=UTC)
+    spec = _spec(
+        _step("src", "first", filters=_filters({"risk_level": ["medium", "high"]})),
+        _step("src", "second"),
+    )
+    second = _make_case("second", "src", "second", base + timedelta(seconds=1), {"user": "u"})
+    low = _make_case("first-low", "src", "first", base, {"user": "u", "risk_level": "low"})
+    high = _make_case("first-high", "src", "first", base, {"user": "u", "risk_level": "high"})
+    listed = _make_case(
+        "first-listed", "src", "first", base, {"user": "u", "risk_level": ["low", "high"]}
+    )
+
+    assert not _correlation_hit([low, second], spec)
+    assert _correlation_hit([high, second], spec)
+    assert _correlation_hit([listed, second], spec)
+
+
+def test_correlation_filter_exists_true_and_false() -> None:
+    base = datetime(2026, 11, 1, tzinfo=UTC)
+    second = _make_case("second", "src", "second", base + timedelta(seconds=1), {"user": "u"})
+    missing = _make_case("first-missing", "src", "first", base, {"user": "u"})
+    present = _make_case(
+        "first-present", "src", "first", base, {"user": "u", "forward_to": "x@example.test"}
+    )
+    require_present = _spec(
+        _step("src", "first", filters=_filters({"forward_to": ExistsFilter(True)})),
+        _step("src", "second"),
+    )
+    require_missing = _spec(
+        _step("src", "first", filters=_filters({"forward_to": ExistsFilter(False)})),
+        _step("src", "second"),
+    )
+
+    assert not _correlation_hit([missing, second], require_present)
+    assert _correlation_hit([present, second], require_present)
+    assert _correlation_hit([missing, second], require_missing)
+    assert not _correlation_hit([present, second], require_missing)
+
+
+def test_correlation_filter_nested_field_and_missing_field() -> None:
+    base = datetime(2026, 11, 1, tzinfo=UTC)
+    spec = _spec(
+        _step("src", "first", filters=_filters({"resource.type": "ServicePrincipal"})),
+        _step("src", "second"),
+    )
+    second = _make_case("second", "src", "second", base + timedelta(seconds=1), {"user": "u"})
+    nested = _make_case(
+        "first-nested",
+        "src",
+        "first",
+        base,
+        {"user": "u", "resource": {"type": "ServicePrincipal"}},
+    )
+    wrong_type = _make_case(
+        "first-wrong", "src", "first", base, {"user": "u", "resource": {"type": "User"}}
+    )
+    missing = _make_case("first-missing", "src", "first", base, {"user": "u"})
+
+    assert _correlation_hit([nested, second], spec)
+    assert not _correlation_hit([wrong_type, second], spec)
+    assert not _correlation_hit([missing, second], spec)
+
+
+def test_correlation_filter_all_and_any_of() -> None:
+    base = datetime(2026, 11, 1, tzinfo=UTC)
+    spec = _spec(
+        _step(
+            "src",
+            "first",
+            filters=_filters(
+                {"action": "Add-MailboxPermission", "result": "success"},
+                any_of=[
+                    {"access_rights": "FullAccess"},
+                    {"access_rights": ["Owner", "PublishingEditor", "Editor"]},
+                ],
+            ),
+        ),
+        _step("src", "second"),
+    )
+    second = _make_case("second", "src", "second", base + timedelta(seconds=1), {"user": "u"})
+    full_access = _make_case(
+        "first-full",
+        "src",
+        "first",
+        base,
+        {
+            "user": "u",
+            "action": "Add-MailboxPermission",
+            "result": "success",
+            "access_rights": ["FullAccess", "SendAs"],
+        },
+    )
+    editor = _make_case(
+        "first-editor",
+        "src",
+        "first",
+        base,
+        {
+            "user": "u",
+            "action": "Add-MailboxPermission",
+            "result": "success",
+            "access_rights": ["Reviewer", "Editor"],
+        },
+    )
+    wrong_action = _make_case(
+        "first-action",
+        "src",
+        "first",
+        base,
+        {
+            "user": "u",
+            "action": "MailItemsAccessed",
+            "result": "success",
+            "access_rights": ["FullAccess"],
+        },
+    )
+    wrong_rights = _make_case(
+        "first-rights",
+        "src",
+        "first",
+        base,
+        {
+            "user": "u",
+            "action": "Add-MailboxPermission",
+            "result": "success",
+            "access_rights": ["Reviewer"],
+        },
+    )
+
+    assert _correlation_hit([full_access, second], spec)
+    assert _correlation_hit([editor, second], spec)
+    assert not _correlation_hit([wrong_action, second], spec)
+    assert not _correlation_hit([wrong_rights, second], spec)
+
+
+def test_correlation_filter_respects_group_by() -> None:
+    base = datetime(2026, 11, 1, tzinfo=UTC)
+    spec = _spec(
+        _step("src", "first", filters=_filters({"action": "sign_in"})),
+        _step("src", "second"),
+    )
+    first = _make_case("first", "src", "first", base, {"user": "alice", "action": "sign_in"})
+    other_user = _make_case(
+        "second-other", "src", "second", base + timedelta(seconds=1), {"user": "bob"}
+    )
+    same_user = _make_case(
+        "second-same", "src", "second", base + timedelta(seconds=1), {"user": "alice"}
+    )
+
+    assert not _correlation_hit([first, other_user], spec)
+    assert _correlation_hit([first, same_user], spec)
+
+
+def test_correlation_filter_applies_before_match_fields() -> None:
+    base = datetime(2026, 11, 1, tzinfo=UTC)
+    spec = _spec(
+        _step("src", "first"),
+        _step(
+            "src",
+            "delegation",
+            filters=_filters({"action": "Add-MailboxPermission"}),
+            match_fields=("mailbox",),
+        ),
+        _step("src", "access", match_fields=("mailbox",)),
+    )
+    first = _make_case("first", "src", "first", base, {"user": "u"})
+    ignored = _make_case(
+        "delegation-ignored",
+        "src",
+        "delegation",
+        base + timedelta(seconds=10),
+        {"user": "u", "action": "MailItemsAccessed", "mailbox": "target"},
+    )
+    allowed_other = _make_case(
+        "delegation-allowed",
+        "src",
+        "delegation",
+        base + timedelta(seconds=20),
+        {"user": "u", "action": "Add-MailboxPermission", "mailbox": "other"},
+    )
+    access = _make_case(
+        "access",
+        "src",
+        "access",
+        base + timedelta(seconds=30),
+        {"user": "u", "mailbox": "target"},
+    )
+
+    assert not _correlation_hit([first, ignored, allowed_other, access], spec)
+
+    allowed_target = _make_case(
+        "delegation-target",
+        "src",
+        "delegation",
+        base + timedelta(seconds=20),
+        {"user": "u", "action": "Add-MailboxPermission", "mailbox": "target"},
+    )
+    assert _correlation_hit([first, ignored, allowed_target, access], spec)
+
+
+def test_correlation_backtracks_to_later_matching_candidate() -> None:
+    base = datetime(2026, 11, 1, tzinfo=UTC)
+    spec = _spec(
+        _step("src", "first"),
+        _step("src", "delegation", match_fields=("mailbox",)),
+        _step("src", "access", match_fields=("mailbox",)),
+    )
+    first = _make_case("first", "src", "first", base, {"user": "u"})
+    early_other = _make_case(
+        "delegation-early",
+        "src",
+        "delegation",
+        base + timedelta(seconds=10),
+        {"user": "u", "mailbox": "other"},
+    )
+    later_target = _make_case(
+        "delegation-later",
+        "src",
+        "delegation",
+        base + timedelta(seconds=20),
+        {"user": "u", "mailbox": "target"},
+    )
+    access = _make_case(
+        "access", "src", "access", base + timedelta(seconds=30), {"user": "u", "mailbox": "target"}
+    )
+
+    assert _correlation_hit([first, early_other, later_target, access], spec)
+
+
+@pytest.mark.parametrize(
+    ("filter_value", "document_value"),
+    [
+        (True, 1),
+        (True, "true"),
+        (1, True),
+        ("true", True),
+        (False, 0),
+        (0, False),
+    ],
+)
+def test_correlation_filter_type_strictness(filter_value: object, document_value: object) -> None:
+    base = datetime(2026, 11, 1, tzinfo=UTC)
+    spec = _spec(
+        _step("src", "first", filters=_filters({"flag": filter_value})),
+        _step("src", "second"),
+    )
+    first = _make_case("first", "src", "first", base, {"user": "u", "flag": document_value})
+    second = _make_case("second", "src", "second", base + timedelta(seconds=1), {"user": "u"})
+
+    assert not _correlation_hit([first, second], spec)
+
+
+def test_correlation_filter_numeric_scalars_match() -> None:
+    base = datetime(2026, 11, 1, tzinfo=UTC)
+    spec = _spec(
+        _step("src", "first", filters=_filters({"score": 1})),
+        _step("src", "second"),
+    )
+    first = _make_case("first", "src", "first", base, {"user": "u", "score": 1.0})
+    second = _make_case("second", "src", "second", base + timedelta(seconds=1), {"user": "u"})
+
+    assert _correlation_hit([first, second], spec)
+
+
+def test_correlation_window_is_measured_from_the_previous_step() -> None:
+    base = datetime(2026, 11, 1, tzinfo=UTC)
+    spec = _spec(
+        _step("src", "first"),
+        _step("src", "second"),
+        _step("src", "third"),
+        window_seconds=60,
+    )
+    first = _make_case("first", "src", "first", base, {"user": "u"})
+    second = _make_case("second", "src", "second", base + timedelta(seconds=60), {"user": "u"})
+    third = _make_case("third", "src", "third", base + timedelta(seconds=120), {"user": "u"})
+
+    assert _correlation_hit([first, second, third], spec)
+
+
+def test_correlation_window_rejects_step_beyond_previous_boundary() -> None:
+    base = datetime(2026, 11, 1, tzinfo=UTC)
+    spec = _spec(
+        _step("src", "first"),
+        _step("src", "second"),
+        _step("src", "third"),
+        window_seconds=60,
+    )
+    first = _make_case("first", "src", "first", base, {"user": "u"})
+    second = _make_case("second", "src", "second", base + timedelta(seconds=60), {"user": "u"})
+    third = _make_case("third", "src", "third", base + timedelta(seconds=121), {"user": "u"})
+
+    assert not _correlation_hit([first, second, third], spec)
+
+
+def test_correlation_filters_parse_all_supported_shapes(tmp_path: Path) -> None:
+    path = _copy_correlation(tmp_path)
+    _replace_correlation(
+        path,
+        "correlation:\n"
+        "  window_seconds: 1800\n"
+        "  group_by:\n"
+        "    - user\n"
+        "  steps:\n"
+        "    - source: entra-signin\n"
+        "      event_class: sign_in\n"
+        "      filters:\n"
+        "        all:\n"
+        "          result: success\n"
+        "          risk_level:\n"
+        "            - medium\n"
+        "            - high\n"
+        "          is_interactive: true\n"
+        "          nested.value: 3.5\n"
+        "          mixed_values:\n"
+        "            - true\n"
+        "            - 1\n"
+        "            - alpha\n"
+        "    - source: entra-audit\n"
+        "      event_class: audit\n"
+        "      filters:\n"
+        "        all:\n"
+        "          action: Add owner to service principal\n"
+        "        any_of:\n"
+        "          - result: success\n"
+        "          - forward_to:\n"
+        "              exists: false\n"
+        "            resource.type: ServicePrincipal\n",
+    )
+    package = load_detection_package(
+        path,
+        _sources(),  # type: ignore[arg-type]
+        ingest_time=datetime(2026, 11, 22, tzinfo=UTC),
+    )
+    spec = package.correlation
+    assert spec is not None
+
+    first = spec.steps[0].filters.all
+    assert first is not None
+    conditions = dict(first.conditions)
+    assert conditions["result"] == "success"
+    assert conditions["risk_level"] == ("medium", "high")
+    assert conditions["is_interactive"] is True
+    assert conditions["nested.value"] == 3.5
+    assert conditions["mixed_values"] == (True, 1, "alpha")
+
+    second = spec.steps[1].filters
+    assert second.all is not None
+    assert dict(second.all.conditions)["action"] == "Add owner to service principal"
+    assert dict(second.any_of[0].conditions) == {"result": "success"}
+    nested_group = dict(second.any_of[1].conditions)
+    assert nested_group["forward_to"] == ExistsFilter(False)
+    assert nested_group["resource.type"] == "ServicePrincipal"
+
+
+def _filters_correlation(filters_yaml: str) -> str:
+    return (
+        "correlation:\n"
+        "  window_seconds: 1800\n"
+        "  group_by:\n"
+        "    - user\n"
+        "  steps:\n"
+        "    - source: entra-signin\n"
+        "      event_class: sign_in\n"
+        f"{filters_yaml}"
+        "    - source: entra-audit\n"
+        "      event_class: audit\n"
+    )
+
+
+@pytest.mark.parametrize(
+    ("filters_yaml", "message"),
+    [
+        ("      filters: []\n", "filters must be an object"),
+        ("      filters: {}\n", "must declare all or any_of"),
+        ("      filters:\n        other: {}\n", "unknown keys"),
+        ("      filters:\n        all: {}\n", "must be a non-empty object"),
+        ("      filters:\n        any_of: []\n", "any_of must be a non-empty array"),
+        (
+            "      filters:\n        any_of:\n          - {}\n",
+            "any_of entry 1 must be a non-empty object",
+        ),
+        (
+            "      filters:\n        all:\n          'user..name': value\n",
+            "dotted path",
+        ),
+        (
+            "      filters:\n        all:\n          'user name': value\n",
+            "dotted path",
+        ),
+        ("      filters:\n        all:\n          user: null\n", "unsupported value type"),
+        ("      filters:\n        all:\n          user: []\n", "list must not be empty"),
+        (
+            "      filters:\n        all:\n          user: [alpha, alpha]\n",
+            "must not contain duplicates",
+        ),
+        (
+            "      filters:\n        all:\n          user:\n            exists: 1\n",
+            "exists value must be a boolean",
+        ),
+        (
+            "      filters:\n        all:\n          user:\n"
+            "            exists: true\n            extra: value\n",
+            "object with only an exists boolean",
+        ),
+        (
+            "      filters:\n        all:\n          user:\n"
+            "            - alpha\n            - {beta: gamma}\n",
+            "list items must be scalars",
+        ),
+        (
+            "      filters:\n        all:\n          user:\n            other: true\n",
+            "object with only an exists boolean",
+        ),
+    ],
+)
+def test_correlation_filter_validation(tmp_path: Path, filters_yaml: str, message: str) -> None:
+    path = _copy_correlation(tmp_path)
+    _replace_correlation(path, _filters_correlation(filters_yaml))
+    with pytest.raises(DetectionError, match=message):
+        load_detection_package(path, _sources())  # type: ignore[arg-type]
+
+
+def test_correlation_requires_event_class_declared_for_source(tmp_path: Path) -> None:
+    path = _copy_correlation(tmp_path)
+    _replace_correlation(
+        path,
+        "correlation:\n"
+        "  window_seconds: 1800\n"
+        "  group_by:\n"
+        "    - user\n"
+        "  steps:\n"
+        "    - source: entra-signin\n"
+        "      event_class: audit\n"
+        "    - source: entra-audit\n"
+        "      event_class: audit\n",
+    )
+    with pytest.raises(DetectionError, match="not declared for source"):
         load_detection_package(path, _sources())  # type: ignore[arg-type]

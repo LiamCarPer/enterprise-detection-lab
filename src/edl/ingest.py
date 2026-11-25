@@ -24,7 +24,7 @@ Classifier = Callable[[Mapping[str, Any]], str]
 IDENTITY_SOURCES: tuple[str, ...] = ("entra-signin", "entra-audit")
 ENDPOINT_SOURCES: tuple[str, ...] = ("sysmon", "windows-security")
 CLOUD_SOURCES: tuple[str, ...] = ("aws-cloudtrail",)
-SAAS_SOURCES: tuple[str, ...] = ("m365-audit", "github-audit")
+SAAS_SOURCES: tuple[str, ...] = ("m365-audit", "github-audit", "exchange-message-trace")
 NETWORK_SOURCES: tuple[str, ...] = ("zeek", "suricata")
 KUBERNETES_SOURCES: tuple[str, ...] = ("kubernetes-audit", "falco")
 DOMAIN_SOURCES: dict[str, tuple[str, ...]] = {
@@ -359,6 +359,44 @@ def classify_github_audit(raw: Mapping[str, Any]) -> str:
     return "audit_log"
 
 
+EXCHANGE_MESSAGE_TRACE_EVENT_CLASSES: frozenset[str] = frozenset(
+    {
+        "deliver",
+        "forward",
+        "redirect",
+        "send",
+        "receive",
+        "fail",
+        "defer",
+        "expand",
+        "transfer",
+        "resolve",
+    }
+)
+
+EXCHANGE_MESSAGE_TRACE_SUCCESS_EVENTS: frozenset[str] = frozenset(
+    {
+        "deliver",
+        "forward",
+        "redirect",
+        "send",
+        "receive",
+        "expand",
+        "transfer",
+        "resolve",
+    }
+)
+
+
+def classify_exchange_message_trace(raw: Mapping[str, Any]) -> str:
+    """Map an Exchange message trace Event to the declared event class."""
+    event = raw.get("Event")
+    normalized = event.strip().lower() if isinstance(event, str) else ""
+    if normalized in EXCHANGE_MESSAGE_TRACE_EVENT_CLASSES:
+        return normalized
+    return "other"
+
+
 def classify_zeek(raw: Mapping[str, Any]) -> str:
     """Map a Zeek log path to the declared event class."""
     path = str(raw.get("_path", "")).lower()
@@ -651,6 +689,93 @@ def normalize_github_audit(raw: Mapping[str, Any]) -> dict[str, Any]:
     return _compact(document)
 
 
+def normalize_exchange_message_trace(raw: Mapping[str, Any]) -> dict[str, Any]:
+    """Map Exchange Online message trace detail fields to the canonical SaaS shape."""
+    accepted = accepted_mail_domains()
+    recipients = _recipient_list(raw.get("RecipientAddress"))
+    recipient_domains = sorted(
+        {domain for recipient in recipients if (domain := _recipient_domain(recipient)) is not None}
+    )
+    related_recipients = _recipient_list(raw.get("RelatedRecipientAddress"))
+    related_domains = sorted(
+        {
+            domain
+            for recipient in related_recipients
+            if (domain := _recipient_domain(recipient)) is not None
+        }
+    )
+    external_recipient = (
+        any(domain not in accepted for domain in recipient_domains) if recipient_domains else None
+    )
+    related_external = (
+        any(domain not in accepted for domain in related_domains) if related_domains else None
+    )
+    internal_related = next(
+        (
+            recipient
+            for recipient in related_recipients
+            if (domain := _recipient_domain(recipient)) is not None and domain in accepted
+        ),
+        None,
+    )
+    internal_recipient = next(
+        (
+            recipient
+            for recipient in recipients
+            if (domain := _recipient_domain(recipient)) is not None and domain in accepted
+        ),
+        None,
+    )
+    event = raw.get("Event")
+    normalized_event = event.strip().lower() if isinstance(event, str) else ""
+    result: str | None = None
+    if normalized_event in EXCHANGE_MESSAGE_TRACE_SUCCESS_EVENTS:
+        result = "success"
+    elif normalized_event == "fail":
+        result = "failure"
+    elif normalized_event == "defer":
+        result = "pending"
+
+    directionality = raw.get("Directionality")
+    directionality = (
+        directionality.strip().lower() if isinstance(directionality, str) else directionality
+    )
+    client_ip = raw.get("ClientIP") or raw.get("OriginalClientIP")
+
+    document: dict[str, Any] = {
+        "event_id": raw.get("MessageTraceId"),
+        "message_trace_id": raw.get("MessageTraceId"),
+        "message_id": raw.get("MessageId"),
+        "sender": raw.get("SenderAddress"),
+        "recipient": recipients[0] if recipients else None,
+        "recipients": recipients,
+        "recipient_domains": recipient_domains,
+        "recipient_domain": _recipient_domain(recipients[0]) if recipients else None,
+        "external_recipient": external_recipient,
+        "subject": raw.get("Subject"),
+        "related_recipient": related_recipients[0] if related_recipients else None,
+        "related_external": related_external,
+        "mailbox": internal_related or internal_recipient,
+        "action": raw.get("Event"),
+        "trace_event": raw.get("Event"),
+        "trace_action": raw.get("Action"),
+        "trace_detail": raw.get("Detail"),
+        "delivery_status": raw.get("Status"),
+        "directionality": directionality,
+        "result": result,
+        "size_bytes": raw.get("Size"),
+        "from_ip": raw.get("FromIP"),
+        "to_ip": raw.get("ToIP"),
+        "client_ip": client_ip,
+        "tenant_id": raw.get("TenantId"),
+        "source_component": raw.get("Source"),
+        "trace_reference": raw.get("Reference"),
+        "trace_index": raw.get("Index"),
+        "service": "exchange",
+    }
+    return _compact(document)
+
+
 def normalize_zeek(raw: Mapping[str, Any]) -> dict[str, Any]:
     """Map a Zeek log record to the canonical network shape."""
     network = _compact(
@@ -881,6 +1006,7 @@ NORMALIZERS.update(
         "aws-cloudtrail": normalize_aws_cloudtrail,
         "m365-audit": normalize_m365_audit,
         "github-audit": normalize_github_audit,
+        "exchange-message-trace": normalize_exchange_message_trace,
         "zeek": normalize_zeek,
         "suricata": normalize_suricata,
         "kubernetes-audit": normalize_kubernetes_audit,
@@ -893,6 +1019,7 @@ CLASSIFIERS: dict[str, Classifier] = {
     "windows-security": classify_windows_security,
     "m365-audit": classify_m365_audit,
     "github-audit": classify_github_audit,
+    "exchange-message-trace": classify_exchange_message_trace,
     "zeek": classify_zeek,
     "suricata": classify_suricata,
 }

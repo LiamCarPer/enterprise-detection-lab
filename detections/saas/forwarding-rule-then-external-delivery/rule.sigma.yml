@@ -1,0 +1,25 @@
+title: Forwarding Rule Followed by External Delivery
+id: 00000000-0000-4000-8000-000000000407
+status: test
+description: Detects the external forwarding inbox-rule component of a sequence that ends in an observed external message delivery.
+author: detection-engineering
+date: 2026/11/25
+logsource:
+  product: m365
+  service: audit
+detection:
+  selection:
+    Operation:
+      - New-InboxRule
+      - Set-InboxRule
+      - UpdateInboxRules
+    ResultStatus: Success
+    Parameters:
+      - Name: ForwardTo
+  condition: selection
+falsepositives:
+  - Approved external forwarding
+  - Journaling or migration processes
+level: high
+tags:
+  - attack.t1114.003

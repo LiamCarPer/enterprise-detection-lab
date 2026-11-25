@@ -1,6 +1,6 @@
 # Telemetry Ingestion
 
-`edl ingest` loads the sampled Entra ID, Windows endpoint, AWS CloudTrail, Microsoft 365, and GitHub contracts into OpenSearch. The pipeline is deliberately small, but it treats ingestion as production software: validate first, normalize to a stable shape, classify each event, deduplicate deterministically, and make replay idempotent.
+`edl ingest` loads the sampled Entra ID, Windows endpoint, AWS CloudTrail, Microsoft 365, GitHub, Exchange Online message trace, Zeek, Suricata, and Kubernetes contracts into OpenSearch. The pipeline is deliberately small, but it treats ingestion as production software: validate first, normalize to a stable shape, classify each event, deduplicate deterministically, and make replay idempotent.
 
 ```text
 telemetry/sources/*.yaml
@@ -44,6 +44,7 @@ edl ingest endpoint --dry-run
 edl ingest cloud
 edl ingest cloud --dry-run
 edl ingest saas
+edl ingest saas --source exchange-message-trace
 edl ingest saas --dry-run
 edl ingest network
 edl ingest network --dry-run
@@ -122,8 +123,11 @@ SaaS additions:
 
 - Microsoft 365: `workload`, `record_type`, `object_id`, `rule_name`, `forward_to`, `forward_domain`, `forward_domains`, and `forward_external`
 - GitHub: `organization`, `repository`, `target_user`, `role` (from `permission`), `user_agent`, and `service=github`
+- Exchange Online message trace: `message_trace_id`, `message_id`, `sender`, `recipient`, `recipients`, `recipient_domain`, `recipient_domains`, `external_recipient`, `subject`, `related_recipient`, `related_external`, `mailbox`, `trace_event`, `trace_action`, `trace_detail`, `delivery_status`, `directionality`, `size_bytes`, `from_ip`, `to_ip`, `client_ip`, `tenant_id`, `source_component`, `trace_reference`, `trace_index`, and `service=exchange`
 
-Microsoft 365 event classes follow the operation and workload: mailbox permission grants map to `mailbox_permission`, `MailItemsAccessed` maps to `mail_access`, Exchange maps to `mailbox`, SharePoint/OneDrive to `sharepoint`, Teams to `teams`, and other workloads to `audit`. GitHub maps `git.*` actions to `git`, login actions to `authentication`, and other audit actions to `audit_log`.
+Microsoft 365 event classes follow the operation and workload: mailbox permission grants map to `mailbox_permission`, `MailItemsAccessed` maps to `mail_access`, Exchange maps to `mailbox`, SharePoint/OneDrive to `sharepoint`, Teams to `teams`, and other workloads to `audit`. GitHub maps `git.*` actions to `git`, login actions to `authentication`, and other audit actions to `audit_log`. Exchange Online message trace maps the detail `Event` to `deliver`, `forward`, `redirect`, `send`, `receive`, `fail`, `defer`, `expand`, `transfer`, or `resolve`, with unknown events mapped to `other`; `result` is `success` for delivery-style events, `failure` for `FAIL`, and `pending` for `DEFER`.
+
+Exchange Online detail events describe per-recipient transport actions. They are not summary reports: summary data aggregates delivery outcomes over a window and must not share the detail dedup key. Detail retention is shorter than summary retention, and event latency varies by transport component. Message trace `RecipientAddress` and `RelatedRecipientAddress` values are split on semicolons or commas when the export returns multiple addresses. Accepted domains in [`config/tenant.yaml`](../config/tenant.yaml) control `external_recipient`, `related_external`, and internal `mailbox` selection; those flags describe tenant policy context rather than internet reachability.
 
 Network additions:
 
@@ -140,6 +144,8 @@ Kubernetes additions:
 Kubernetes audit normalizes the API verb, object reference, response status, and privileged-container flag. Falco normalizes runtime alert fields and container context from `output_fields`.
 
 Microsoft 365 forwarding recipients are read from both `Parameters` and `OperationProperties`, including `New-InboxRule`, `Set-InboxRule`, and `UpdateInboxRules`. Domains listed in [`config/tenant.yaml`](../config/tenant.yaml) are treated as internal; `forward_external` is true when any recipient domain is outside that list. The tenant configuration is schema-validated before ingestion and during `edl validate`.
+
+Exchange Online message trace supports detail events only. Summary reports aggregate delivery outcomes with different fields and retention windows, so they are not normalized as detail events.
 
 The canonical fields are mapped in [`lab/bootstrap/opensearch/events-template.json`](../lab/bootstrap/opensearch/events-template.json). Unknown fields remain dynamically mapped; update the template when a field becomes part of the query contract.
 
@@ -176,6 +182,7 @@ edl-events-windows-security-2026.11.01
 edl-events-aws-cloudtrail-2026.11.01
 edl-events-m365-audit-2026.11.25
 edl-events-github-audit-2026.11.25
+edl-events-exchange-message-trace-2026.11.01
 ```
 
 The `edl-events-*` index template applies one shard, zero replicas, UTC date fields, keyword fields for identity, endpoint, cloud, and SaaS pivots, and disabled indexing for `raw`.
@@ -201,7 +208,7 @@ The `edl-events-*` index template applies one shard, zero replicas, UTC date fie
 
 ## Status
 
-All eleven sampled sources move from `sampled` to `ingested` after a successful lab run. They move to `validated` only after detection replay and regression tests pass. The generated [telemetry matrix](telemetry-matrix.md) records the current status.
+All twelve sampled sources move from `sampled` to `ingested` after a successful lab run. They move to `validated` only after detection replay and regression tests pass. The generated [telemetry matrix](telemetry-matrix.md) records the current status.
 
 ## Known gaps
 
