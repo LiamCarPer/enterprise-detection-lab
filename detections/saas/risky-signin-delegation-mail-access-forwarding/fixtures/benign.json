@@ -1,0 +1,166 @@
+[
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000290101",
+      "createdDateTime": "2026-11-03T09:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.11",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "none"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "benign-1"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-03T09:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000290102",
+      "Operation": "Add-MailboxPermission",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.11",
+      "ObjectId": "executive@example.test",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "Identity",
+          "Value": "executive@example.test"
+        },
+        {
+          "Name": "User",
+          "Value": "analyst@example.test"
+        },
+        {
+          "Name": "AccessRights",
+          "Value": "FullAccess"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "benign-1"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-03T09:20:00Z",
+      "Id": "00000000-0000-4000-8000-000000290103",
+      "Operation": "MailItemsAccessed",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.11",
+      "ObjectId": "executive@example.test\\Inbox",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "MailAccessType",
+          "Value": "Bind"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "benign-1"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-03T09:30:00Z",
+      "Id": "00000000-0000-4000-8000-000000290104",
+      "Operation": "New-InboxRule",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.11",
+      "ObjectId": "executive@example.test\\Inbox\\Forward invoices",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "Name",
+          "Value": "Forward invoices"
+        },
+        {
+          "Name": "ForwardTo",
+          "Value": "external@example.net"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "benign-1"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000290105",
+      "createdDateTime": "2026-11-03T10:00:00Z",
+      "userPrincipalName": "finance@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.11",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "benign-2"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-03T10:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000290106",
+      "Operation": "Add-MailboxPermission",
+      "UserId": "finance@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.11",
+      "ObjectId": "finance-archive@example.test",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "Identity",
+          "Value": "finance-archive@example.test"
+        },
+        {
+          "Name": "User",
+          "Value": "finance@example.test"
+        },
+        {
+          "Name": "AccessRights",
+          "Value": "FullAccess"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "benign-2"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-03T10:20:00Z",
+      "Id": "00000000-0000-4000-8000-000000290107",
+      "Operation": "MailItemsAccessed",
+      "UserId": "finance@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.11",
+      "ObjectId": "finance-archive@example.test\\Inbox",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "MailAccessType",
+          "Value": "Bind"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "benign-2"
+  }
+]

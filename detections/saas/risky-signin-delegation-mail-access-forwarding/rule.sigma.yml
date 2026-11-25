@@ -1,0 +1,26 @@
+title: Risky Sign-In, Self-Delegation, Mail Access, and External Forwarding
+id: 00000000-0000-4000-8000-000000000406
+status: test
+description: Detects the risky sign-in component of a full mailbox takeover and external forwarding chain.
+author: detection-engineering
+date: 2026/11/25
+logsource:
+  product: azure
+  service: signinlogs
+detection:
+  selection:
+    status: success
+    authenticationRequirement: singleFactorAuthentication
+    isInteractive: true
+    riskLevelDuringSignIn:
+      - medium
+      - high
+  condition: selection
+falsepositives:
+  - Legitimate travel or a new device
+level: high
+tags:
+  - attack.t1078
+  - attack.t1098
+  - attack.t1114.002
+  - attack.t1114.003

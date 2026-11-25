@@ -589,7 +589,12 @@ def normalize_m365_audit(raw: Mapping[str, Any]) -> dict[str, Any]:
         mailbox = mailbox_part.strip() or identity
         if folder is None:
             folder = folder_part.strip().lstrip("\\/") or None
-    if operation == "MailItemsAccessed" and not mailbox:
+    if not mailbox and operation in {
+        "MailItemsAccessed",
+        "New-InboxRule",
+        "Set-InboxRule",
+        "UpdateInboxRules",
+    }:
         object_id = _meaningful(raw.get("ObjectId"))
         if isinstance(object_id, str):
             mailbox_part, _, folder_part = object_id.partition("\\")

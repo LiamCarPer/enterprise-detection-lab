@@ -1,0 +1,97 @@
+id: DET-SAA-006
+title: Risky Sign-In, Self-Delegation, Mail Access, and External Forwarding
+version: 1.0.0
+status: tested
+domain: saas
+severity: high
+hypothesis: A risky sign-in followed by self-delegation, mailbox access, and an external forwarding rule represents a high-fidelity business email compromise chain.
+description: Correlates an elevated-risk single-factor sign-in, a self-delegation permission grant, a mailbox access, and an external forwarding rule for the same user and mailbox within 60 minutes per step.
+owner: detection-engineering
+created: "2026-11-25"
+updated: "2026-11-25"
+attack:
+  - T1078
+  - T1098
+  - T1114.002
+  - T1114.003
+tags:
+  - saas
+  - microsoft-365
+  - identity
+  - correlation
+telemetry:
+  - source: entra-signin
+    event_class: sign_in
+    required_fields:
+      - id
+      - createdDateTime
+      - userPrincipalName
+      - status
+      - authenticationRequirement
+      - isInteractive
+      - riskLevelDuringSignIn
+  - source: m365-audit
+    event_class: mailbox_permission
+    required_fields:
+      - CreationTime
+      - Id
+      - Operation
+      - UserId
+      - Workload
+      - RecordType
+      - ResultStatus
+      - Parameters
+  - source: m365-audit
+    event_class: mail_access
+    required_fields:
+      - CreationTime
+      - Id
+      - Operation
+      - UserId
+      - Workload
+      - RecordType
+      - ResultStatus
+      - ObjectId
+  - source: m365-audit
+    event_class: mailbox
+    required_fields:
+      - CreationTime
+      - Id
+      - Operation
+      - UserId
+      - Workload
+      - RecordType
+      - ResultStatus
+      - Parameters
+queries:
+  opensearch: queries/opensearch.json
+correlation:
+  window_seconds: 3600
+  group_by:
+    - user
+  steps:
+    - source: entra-signin
+      event_class: sign_in
+    - source: m365-audit
+      event_class: mailbox_permission
+      match_fields:
+        - mailbox
+    - source: m365-audit
+      event_class: mail_access
+      match_fields:
+        - mailbox
+    - source: m365-audit
+      event_class: mailbox
+      match_fields:
+        - mailbox
+tests:
+  positive: 8
+  negative: 8
+  benign: 7
+false_positives:
+  - An approved mailbox migration that includes delegation, access, and forwarding.
+  - A legitimate user configures forwarding after receiving delegated access.
+  - Break-glass administration during an incident.
+runbook: runbook.md
+metrics: metrics.json
+notes: notes.md

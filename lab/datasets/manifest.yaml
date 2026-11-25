@@ -182,3 +182,10 @@ datasets:
     license: synthetic
     provenance: Generated for this repository. No real users, tenants, or IPs.
     sha256: 63d994a9ab06c7c82bf6abbea99021cad7d8dfe710933dc246786c50509a191a
+  - id: synthetic-identity-saas-forwarding-chain-benign-baseline
+    source: entra-signin+m365-audit
+    path: lab/datasets/synthetic/benign-baseline/identity-saas-forwarding-chain.json
+    synthetic: true
+    license: synthetic
+    provenance: Generated for this repository. No real users, tenants, or IPs.
+    sha256: 97d7c329f3f02b989e5200026601abac48963b6f523b0e0623d85fbc224c5003

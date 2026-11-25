@@ -2032,3 +2032,15 @@ def test_classify_m365_operation_overrides_workload() -> None:
         == "mail_access"
     )
     assert classify_m365_audit({"Workload": "Exchange", "Operation": "New-InboxRule"}) == "mailbox"
+
+
+def test_normalize_m365_audit_maps_inbox_rule_mailbox() -> None:
+    document = normalize_m365_audit(
+        {
+            **M365_RAW,
+            "Operation": "New-InboxRule",
+            "ObjectId": "executive@example.test\\Inbox\\Forward invoices",
+        }
+    )
+    assert document["mailbox"] == "executive@example.test"
+    assert document["folder"] == "Inbox\\Forward invoices"

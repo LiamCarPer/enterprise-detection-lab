@@ -1,0 +1,330 @@
+[
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000300101",
+      "createdDateTime": "2026-11-18T09:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.11",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "sign-in-only"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T09:00:00Z",
+      "Id": "00000000-0000-4000-8000-000000300102",
+      "Operation": "Add-MailboxPermission",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.11",
+      "ObjectId": "executive@example.test",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "Identity",
+          "Value": "executive@example.test"
+        },
+        {
+          "Name": "User",
+          "Value": "analyst@example.test"
+        },
+        {
+          "Name": "AccessRights",
+          "Value": "FullAccess"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "self-delegation-only"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T09:00:00Z",
+      "Id": "00000000-0000-4000-8000-000000300103",
+      "Operation": "MailItemsAccessed",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.11",
+      "ObjectId": "executive@example.test\\Inbox",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "MailAccessType",
+          "Value": "Bind"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "mail-access-only"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000300104",
+      "createdDateTime": "2026-11-18T09:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.11",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "sign-in-delegation-access"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T09:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000300105",
+      "Operation": "Add-MailboxPermission",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.11",
+      "ObjectId": "executive@example.test",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "Identity",
+          "Value": "executive@example.test"
+        },
+        {
+          "Name": "User",
+          "Value": "analyst@example.test"
+        },
+        {
+          "Name": "AccessRights",
+          "Value": "FullAccess"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "sign-in-delegation-access"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T09:20:00Z",
+      "Id": "00000000-0000-4000-8000-000000300106",
+      "Operation": "MailItemsAccessed",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.11",
+      "ObjectId": "executive@example.test\\Inbox",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "MailAccessType",
+          "Value": "Bind"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "sign-in-delegation-access"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000300107",
+      "createdDateTime": "2026-11-18T09:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.11",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "internal-forwarding"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T09:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000300108",
+      "Operation": "Add-MailboxPermission",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.11",
+      "ObjectId": "executive@example.test",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "Identity",
+          "Value": "executive@example.test"
+        },
+        {
+          "Name": "User",
+          "Value": "analyst@example.test"
+        },
+        {
+          "Name": "AccessRights",
+          "Value": "FullAccess"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "internal-forwarding"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T09:20:00Z",
+      "Id": "00000000-0000-4000-8000-000000300109",
+      "Operation": "MailItemsAccessed",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.11",
+      "ObjectId": "executive@example.test\\Inbox",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "MailAccessType",
+          "Value": "Bind"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "internal-forwarding"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T09:30:00Z",
+      "Id": "00000000-0000-4000-8000-000000300110",
+      "Operation": "New-InboxRule",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.11",
+      "ObjectId": "executive@example.test\\Inbox\\Forward invoices",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "Name",
+          "Value": "Forward invoices"
+        },
+        {
+          "Name": "ForwardTo",
+          "Value": "shared@example.test"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "internal-forwarding"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000300111",
+      "createdDateTime": "2026-11-18T09:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.11",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "none"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "normal-sign-in-chain"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T09:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000300112",
+      "Operation": "Add-MailboxPermission",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.11",
+      "ObjectId": "executive@example.test",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "Identity",
+          "Value": "executive@example.test"
+        },
+        {
+          "Name": "User",
+          "Value": "analyst@example.test"
+        },
+        {
+          "Name": "AccessRights",
+          "Value": "FullAccess"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "normal-sign-in-chain"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T09:20:00Z",
+      "Id": "00000000-0000-4000-8000-000000300113",
+      "Operation": "MailItemsAccessed",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.11",
+      "ObjectId": "executive@example.test\\Inbox",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "MailAccessType",
+          "Value": "Bind"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "normal-sign-in-chain"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-18T09:30:00Z",
+      "Id": "00000000-0000-4000-8000-000000300114",
+      "Operation": "New-InboxRule",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.11",
+      "ObjectId": "executive@example.test\\Inbox\\Forward invoices",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "Name",
+          "Value": "Forward invoices"
+        },
+        {
+          "Name": "ForwardTo",
+          "Value": "external@example.net"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "normal-sign-in-chain"
+  }
+]
