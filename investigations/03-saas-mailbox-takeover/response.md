@@ -5,12 +5,12 @@
 - Revoke the analyst's sessions and refresh tokens.
 - Remove the self-delegation and the external forwarding rule.
 - Remove any additional mailbox permissions granted by the same identity.
-- Preserve the message-trace REDIRECT and external DELIVER records before changing transport controls.
+- Preserve the message-trace REDIRECT and external DELIVER records and the DLP alert before changing transport controls.
 
 ## Eradication
 
 - Review the executive mailbox for forwarding, deletion, and export activity.
-- Review the message delivered to `collector@example.org` and identify the exposed content.
+- Review the message delivered to `collector@example.org` and the DLP alert to identify the exposed content.
 - Reset the analyst's password and require MFA re-registration.
 - Review mailbox audit settings and forwarding controls on the affected mailbox.
 - Remove any other rules or delegate changes created by the same identity.
@@ -32,4 +32,4 @@
 
 ## Evidence preservation
 
-Preserve the sign-in, permission, access, and forwarding events, the message-trace REDIRECT and DELIVER records, the investigation query output, and the evidence hashes before deleting permissions, rules, or transport records.
+Preserve the sign-in, permission, access, and forwarding events, the message-trace REDIRECT and DELIVER records, the DLP alert, the investigation query output, and the evidence hashes before deleting permissions, rules, or transport records.

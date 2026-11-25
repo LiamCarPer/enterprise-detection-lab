@@ -1,0 +1,21 @@
+title: High-Severity DLP Alert on Exchange Mail
+id: 00000000-0000-4000-8000-000000000408
+status: test
+description: Detects an active high-severity Microsoft Purview DLP alert for Exchange mail.
+author: detection-engineering
+date: 2026/11/25
+logsource:
+  product: m365
+  service: dlp
+detection:
+  selection:
+    Severity: High
+    Status: Active
+    Workload: Exchange
+  condition: selection
+falsepositives:
+  - Approved handling of regulated data
+  - Broad policy patterns awaiting tuning
+level: high
+tags:
+  - attack.t1048.003

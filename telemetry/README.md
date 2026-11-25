@@ -31,7 +31,7 @@ The machine-readable schema is [`schemas/telemetry-source.schema.json`](../schem
 | `ingested` | The sample has been loaded into the lab. |
 | `validated` | Replay and query tests pass. |
 
-The repository currently has all twelve sources with samples: Entra sign-in, Entra audit, Sysmon, Windows Security, AWS CloudTrail, Microsoft 365 audit, GitHub audit, Exchange Online message trace, Zeek, Suricata, Kubernetes audit, and Falco.
+The repository currently has all thirteen sources with samples: Entra sign-in, Entra audit, Sysmon, Windows Security, AWS CloudTrail, Microsoft 365 audit, GitHub audit, Exchange Online message trace, Microsoft Purview DLP, Zeek, Suricata, Kubernetes audit, and Falco.
 
 ## Ingest
 

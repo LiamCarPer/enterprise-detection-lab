@@ -1,0 +1,49 @@
+id: m365-dlp
+name: Microsoft Purview DLP alerts
+provider: Microsoft
+product: Microsoft Purview
+event_classes:
+  - dlp_alert
+schema_version: "1.0"
+status: ingested
+owner: detection-engineering
+event_time_field: CreationTime
+ingest_time_field: ingest_time
+timezone: UTC
+ordering: unordered
+dedup_key:
+  - AlertId
+required_fields:
+  - AlertId
+  - CreationTime
+  - PolicyName
+  - Status
+  - User
+  - MessageId
+sensitive_fields:
+  - User
+  - Recipient
+  - Subject
+  - MessageId
+  - AlertId
+  - PolicyName
+  - DetectionMethod
+expected_volume: Tenant-dependent; the committed sample is synthetic and small.
+expected_latency: Minutes; DLP alert generation can lag the message event.
+retention: Purview retention is plan-dependent; the lab retains normalized alerts until reset.
+cost: DLP alert access and retention depend on the Microsoft 365 licensing tier.
+late_arrival: Expected; alerts can arrive after the delivered message.
+duplicates: Possible across alert updates; deduplicate by AlertId.
+known_gaps:
+  - The committed sample is synthetic and models common Purview alert fields, not every export format.
+  - MessageId is not guaranteed to be present for every DLP policy or workload.
+  - Alert status changes can update an existing alert over time.
+  - The alert confirms a policy match, not the sensitivity of the content or the intent of the sender.
+  - DLP policy coverage and severity are tenant-specific.
+notes: Microsoft Purview DLP alert records for message-identity correlation with external delivery.
+sample_data:
+  path: lab/datasets/synthetic/m365-dlp/reference.json
+  synthetic: true
+  license: synthetic
+  provenance: Generated for this repository. No real users, tenants, or messages.
+  sha256: 36058e9881379f11aed60fcedb41ed75d81f337f79b067f344020b232b15bd92

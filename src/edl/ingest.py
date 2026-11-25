@@ -24,7 +24,12 @@ Classifier = Callable[[Mapping[str, Any]], str]
 IDENTITY_SOURCES: tuple[str, ...] = ("entra-signin", "entra-audit")
 ENDPOINT_SOURCES: tuple[str, ...] = ("sysmon", "windows-security")
 CLOUD_SOURCES: tuple[str, ...] = ("aws-cloudtrail",)
-SAAS_SOURCES: tuple[str, ...] = ("m365-audit", "github-audit", "exchange-message-trace")
+SAAS_SOURCES: tuple[str, ...] = (
+    "m365-audit",
+    "github-audit",
+    "exchange-message-trace",
+    "m365-dlp",
+)
 NETWORK_SOURCES: tuple[str, ...] = ("zeek", "suricata")
 KUBERNETES_SOURCES: tuple[str, ...] = ("kubernetes-audit", "falco")
 DOMAIN_SOURCES: dict[str, tuple[str, ...]] = {
@@ -691,6 +696,29 @@ def normalize_github_audit(raw: Mapping[str, Any]) -> dict[str, Any]:
     return _compact(document)
 
 
+def normalize_m365_dlp(raw: Mapping[str, Any]) -> dict[str, Any]:
+    """Map a Purview DLP alert to the canonical SaaS shape."""
+    status = raw.get("Status")
+    severity = raw.get("Severity")
+    message_id = raw.get("MessageId")
+    document: dict[str, Any] = {
+        "event_id": raw.get("AlertId"),
+        "user": raw.get("User"),
+        "action": raw.get("PolicyName"),
+        "status": str(status).lower() if status is not None else None,
+        "severity": str(severity).lower() if severity is not None else None,
+        "policy_name": raw.get("PolicyName"),
+        "recipient": raw.get("Recipient"),
+        "subject": raw.get("Subject"),
+        "message_id": message_id.lower() if isinstance(message_id, str) else message_id,
+        "workload": raw.get("Workload"),
+        "detection_method": raw.get("DetectionMethod"),
+        "dlp_action": raw.get("Action"),
+        "service": "purview-dlp",
+    }
+    return _compact(document)
+
+
 def normalize_exchange_message_trace(raw: Mapping[str, Any]) -> dict[str, Any]:
     """Map Exchange Online message trace detail fields to the canonical SaaS shape."""
     accepted = accepted_mail_domains()
@@ -751,11 +779,12 @@ def normalize_exchange_message_trace(raw: Mapping[str, Any]) -> dict[str, Any]:
         directionality.strip().lower() if isinstance(directionality, str) else directionality
     )
     client_ip = raw.get("ClientIP") or raw.get("OriginalClientIP")
+    message_id = raw.get("MessageId")
 
     document: dict[str, Any] = {
         "event_id": raw.get("MessageTraceId"),
         "message_trace_id": raw.get("MessageTraceId"),
-        "message_id": raw.get("MessageId"),
+        "message_id": message_id.lower() if isinstance(message_id, str) else message_id,
         "sender": raw.get("SenderAddress"),
         "recipient": recipients[0] if recipients else None,
         "recipients": recipients,
@@ -1019,6 +1048,7 @@ NORMALIZERS.update(
         "m365-audit": normalize_m365_audit,
         "github-audit": normalize_github_audit,
         "exchange-message-trace": normalize_exchange_message_trace,
+        "m365-dlp": normalize_m365_dlp,
         "zeek": normalize_zeek,
         "suricata": normalize_suricata,
         "kubernetes-audit": normalize_kubernetes_audit,

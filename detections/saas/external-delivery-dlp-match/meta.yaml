@@ -1,0 +1,82 @@
+id: DET-SAA-008
+title: External Delivery Confirmed by DLP Alert
+version: 1.0.0
+status: tested
+domain: saas
+severity: high
+hypothesis: A high-severity data-loss-prevention alert on the same message as an external delivery confirms that a sensitive-content policy matched a message that left the tenant.
+description: Correlates a successful external Exchange Online message-trace delivery with an active high-severity Microsoft Purview DLP alert for the same message within 30 minutes.
+owner: detection-engineering
+created: "2026-11-25"
+updated: "2026-11-25"
+attack:
+  - T1048.003
+tags:
+  - saas
+  - microsoft-365
+  - exchange-online
+  - purview
+  - dlp
+  - exfiltration
+  - correlation
+telemetry:
+  - source: exchange-message-trace
+    event_class: deliver
+    required_fields:
+      - MessageTraceId
+      - MessageId
+      - SenderAddress
+      - RecipientAddress
+      - Date
+      - Event
+      - Status
+      - RelatedRecipientAddress
+      - TenantId
+  - source: m365-dlp
+    event_class: dlp_alert
+    required_fields:
+      - AlertId
+      - CreationTime
+      - PolicyName
+      - Status
+      - User
+      - MessageId
+      - Severity
+      - Workload
+      - Recipient
+      - Action
+queries:
+  opensearch: queries/opensearch.json
+correlation:
+  window_seconds: 1800
+  group_by:
+    - message_id
+  steps:
+    - source: exchange-message-trace
+      event_class: deliver
+      filters:
+        all:
+          result: success
+          external_recipient: true
+      match_fields:
+        - message_id
+    - source: m365-dlp
+      event_class: dlp_alert
+      filters:
+        all:
+          status: active
+          severity: high
+          workload: Exchange
+      match_fields:
+        - message_id
+tests:
+  positive: 4
+  negative: 6
+  benign: 3
+false_positives:
+  - An approved external transfer of regulated data that a DLP policy is designed to monitor.
+  - A DLP policy that alerts on a broad content pattern and is tuned with an approved exception.
+  - A user sends data to an external recipient under a documented business process.
+runbook: runbook.md
+metrics: metrics.json
+notes: notes.md

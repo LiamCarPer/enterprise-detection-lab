@@ -2,20 +2,20 @@
 
 ## Scenario
 
-A medium-risk single-factor sign-in precedes FullAccess self-delegation to an executive mailbox, mailbox access, two external forwarding-rule changes, and an observed external message delivery in the local lab.
+A medium-risk single-factor sign-in precedes FullAccess self-delegation to an executive mailbox, mailbox access, two external forwarding-rule changes, an observed external message delivery, and a high-severity DLP alert on the delivered message in the local lab.
 
 ## Scope
 
 - Identity: Entra sign-in telemetry
 - SaaS: Microsoft 365 Exchange mailbox audit
 - SaaS: Exchange Online message trace
-- Investigation window: 2026-11-01 08:45–10:00 UTC for mailbox events and 2026-11-01 09:45–09:46 UTC for message-trace evidence
+- Investigation window: 2026-11-01 08:45–10:00 UTC for mailbox events and 2026-11-01 09:45–09:47 UTC for message-trace and DLP evidence
 - Mailbox: `executive@example.test`
 - Actor: `analyst@example.test`
 
 ## Hypothesis
 
-An identity compromise may have been used to grant mailbox access, collect email, and establish durable external forwarding; message trace confirms that mail left the tenant.
+An identity compromise may have been used to grant mailbox access, collect email, and establish durable external forwarding; message trace confirms that mail left the tenant, and a DLP alert confirms that the delivered message matched a sensitive-content policy.
 
 ## Observed events
 
@@ -28,10 +28,11 @@ An identity compromise may have been used to grant mailbox access, collect email
 | 2026-11-01 09:40 | m365-audit | e5 | Forwarding rule updated to a second external recipient |
 | 2026-11-01 09:45 | exchange-message-trace | e6 | Message redirected from the executive mailbox to `collector@example.org` |
 | 2026-11-01 09:46 | exchange-message-trace | e7 | Message delivered to the external recipient `collector@example.org` |
+| 2026-11-01 09:47 | m365-dlp | e8 | High-severity DLP alert matched the delivered message |
 
 ## Inference boundary
 
-The observed events are synthetic lab records. The mailbox chain is linked by the analyst identity, source IP, target mailbox, and timing. Exchange message trace now observes the redirect and confirms external delivery, so delivery is no longer inferred. The updated rule’s forwarding recipient matches the message-trace delivery recipient. The trace does not prove that a single actor performed every action, and data-loss-prevention or content confirmation remains out of scope.
+The observed events are synthetic lab records. The mailbox chain is linked by the analyst identity, source IP, target mailbox, and timing. Exchange message trace now observes the redirect and confirms external delivery, so delivery is no longer inferred. The updated rule’s forwarding recipient matches the message-trace delivery recipient. The DLP alert shares the message identity and confirms a sensitive-content policy match, but it does not prove intent or that the recipient was approved. The trace does not prove that a single actor performed every action.
 
 ## Detections linked
 
@@ -40,6 +41,7 @@ The observed events are synthetic lab records. The mailbox chain is linked by th
 - `DET-SAA-005` — risky sign-in, self-delegation, and mail access
 - `DET-SAA-006` — risky sign-in, self-delegation, mail access, and external forwarding
 - `DET-SAA-007` — forwarding rule followed by external delivery
+- `DET-SAA-008` — external delivery confirmed by DLP alert
 
 ## Query
 

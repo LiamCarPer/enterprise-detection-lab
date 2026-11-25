@@ -5,14 +5,15 @@ status: tested
 domains:
   - identity
   - saas
-scenario: A medium-risk single-factor sign-in is followed by self-delegation, mailbox access, an external forwarding rule, a forwarding-rule update, and observed external message delivery for the same analyst on an executive mailbox.
-hypothesis: An identity compromise may have been used to grant mailbox access, collect email, and establish durable external forwarding; message trace confirms that mail left the tenant.
+scenario: A medium-risk single-factor sign-in is followed by self-delegation, mailbox access, an external forwarding rule, a forwarding-rule update, observed external message delivery, and a high-severity DLP alert for the delivered message for the same analyst on an executive mailbox.
+hypothesis: An identity compromise may have been used to grant mailbox access, collect email, and establish durable external forwarding; message trace confirms that mail left the tenant, and a DLP alert confirms that the delivered message matched a sensitive-content policy.
 detections:
   - DET-SAA-001
   - DET-SAA-003
   - DET-SAA-005
   - DET-SAA-006
   - DET-SAA-007
+  - DET-SAA-008
 owner: detection-engineering
 created: "2026-11-25"
 updated: "2026-11-25"
@@ -66,6 +67,13 @@ evidence:
     provenance: Synthetic event from lab/datasets/synthetic/exchange-message-trace/reference.json
     description: External message DELIVER to collector@example.org at 09:46 UTC, related to the executive mailbox.
     sha256: 6e4f50c5063ec466b8e0378d26a666883b06044adc0dd53a6e893be5aa4b1799
+  - id: e8
+    type: event
+    source: m365-dlp
+    path: evidence/e8.json
+    provenance: Synthetic event from lab/datasets/synthetic/m365-dlp/reference.json
+    description: High-severity DLP alert for the delivered message at 09:47 UTC.
+    sha256: 6d49d27862b5e5c8d1152a780496b28dfbd34ac6a075a9f9f87281dbcaaf480c
 timeline:
   - timestamp: "2026-11-01T08:55:00Z"
     event: Medium-risk single-factor sign-in for analyst@example.test
@@ -95,24 +103,29 @@ timeline:
     event: Message delivered to the external recipient collector@example.org
     source: exchange-message-trace
     evidence_id: e7
+  - timestamp: "2026-11-01T09:47:00Z"
+    event: High-severity DLP alert matched the delivered message
+    source: m365-dlp
+    evidence_id: e8
 lessons:
   - The sign-in, delegation, access, and forwarding events share the analyst identity and source IP, but no token identifier proves a single session.
   - Exchange message trace is now in scope and confirms that the redirected message was delivered to an external recipient.
   - Self-delegation is a high-signal step and should be reviewed against approved mailbox administration.
   - The forwarding-rule update shows that a single rule-creation check is insufficient; updates need the same scrutiny.
-  - The remaining gap is content-level confirmation because the lab still lacks data-loss-prevention verdicts and mailbox-owner confirmation for the executive mailbox.
+  - A high-severity DLP alert on the same message confirms that a sensitive-content policy matched, but it does not prove the sender intent or whether the data was approved for external sharing.
+  - The remaining gap is mailbox-owner confirmation and an approval decision for the external recipient.
 response:
   - Revoke the analyst sessions and refresh tokens.
   - Remove the self-delegation and the external forwarding rule after preserving evidence.
   - Review the executive mailbox for message access, deletion, and forwarding activity.
   - Reset the analyst credentials and require MFA re-registration.
   - Review mailbox audit settings and forwarding controls for the affected mailbox.
-  - Preserve the message-trace REDIRECT and DELIVER records for the external recipient.
+  - Preserve the message-trace REDIRECT and DELIVER records and the DLP alert for the external recipient.
   - Confirm no other mailboxes were delegated or forwarded by the same identity.
 references:
   - https://attack.mitre.org/techniques/T1078/
   - https://attack.mitre.org/techniques/T1098/
   - https://attack.mitre.org/techniques/T1114/002/
   - https://attack.mitre.org/techniques/T1114/003/
-executive_summary: A synthetic SaaS chain shows a medium-risk sign-in, FullAccess self-delegation, mailbox access, two external forwarding-rule changes, and an observed external delivery from an executive mailbox. The events are linked by analyst identity, source IP, mailbox, and timing; message trace confirms that mail left the tenant.
+executive_summary: A synthetic SaaS chain shows a medium-risk sign-in, FullAccess self-delegation, mailbox access, two external forwarding-rule changes, an observed external delivery from an executive mailbox, and a high-severity DLP alert on the delivered message. The events are linked by analyst identity, source IP, mailbox, timing, and message identity; message trace confirms that mail left the tenant, and the DLP alert confirms a sensitive-content policy match.
 notes: Synthetic investigation built from the local lab datasets. No production or customer data.

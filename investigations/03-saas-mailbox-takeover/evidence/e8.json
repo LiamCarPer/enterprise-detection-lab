@@ -1,0 +1,14 @@
+{
+  "AlertId": "00000000-0000-4000-8000-000000040101",
+  "CreationTime": "2026-11-01T09:47:00Z",
+  "PolicyName": "External financial data",
+  "Severity": "High",
+  "Status": "Active",
+  "User": "analyst@example.test",
+  "Workload": "Exchange",
+  "Recipient": "collector@example.org",
+  "Subject": "Quarterly invoice redirect",
+  "MessageId": "<20261101094600.102@example.org>",
+  "DetectionMethod": "DLP",
+  "Action": "Notify"
+}

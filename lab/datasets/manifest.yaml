@@ -203,3 +203,17 @@ datasets:
     license: synthetic
     provenance: Generated for this repository. No real users, tenants, or IPs.
     sha256: 1231ef776820031917d25d604023f4174a4dddc9720cae92c27b08ab3547e2d7
+  - id: synthetic-m365-dlp-reference
+    source: m365-dlp
+    path: lab/datasets/synthetic/m365-dlp/reference.json
+    synthetic: true
+    license: synthetic
+    provenance: Generated for this repository. No real users, tenants, or messages.
+    sha256: 36058e9881379f11aed60fcedb41ed75d81f337f79b067f344020b232b15bd92
+  - id: synthetic-external-delivery-dlp-benign-baseline
+    source: exchange-message-trace+m365-dlp
+    path: lab/datasets/synthetic/benign-baseline/external-delivery-dlp.json
+    synthetic: true
+    license: synthetic
+    provenance: Generated for this repository. No real users, tenants, or messages.
+    sha256: 6bbea43964bbfeb7dd72fb91f549c1d31eae0f1c8dc552a9fa6ef8848638012a

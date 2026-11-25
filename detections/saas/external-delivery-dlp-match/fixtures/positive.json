@@ -1,0 +1,98 @@
+[
+  {
+    "event": {
+      "Organization": "example.onmicrosoft.test",
+      "MessageTraceId": "00000000-0000-4000-8000-000000050101",
+      "MessageId": "<20261125095500.501@example.org>",
+      "Date": "2026-11-25T09:55:00Z",
+      "Event": "DELIVER",
+      "Source": "SMTP",
+      "SenderAddress": "vendor@example.net",
+      "RecipientAddress": "collector@example.org",
+      "Subject": "Quarterly forecast",
+      "Status": "Delivered",
+      "Directionality": "Outbound",
+      "Action": "Deliver",
+      "Detail": "Message delivered to external recipient collector@example.org",
+      "Size": 24576,
+      "FromIP": "203.0.113.31",
+      "ToIP": "203.0.113.82",
+      "RelatedRecipientAddress": "executive@example.test",
+      "TenantId": "00000000-0000-4000-8000-000000009001",
+      "Reference": "ref-dlp-deliver-1",
+      "Index": 1
+    },
+    "source": "exchange-message-trace",
+    "synthetic": true,
+    "scenario": "pos-1",
+    "note": "External delivery of a message later matched by DLP"
+  },
+  {
+    "event": {
+      "AlertId": "00000000-0000-4000-8000-000000050102",
+      "CreationTime": "2026-11-25T09:57:00Z",
+      "PolicyName": "External financial data",
+      "Severity": "High",
+      "Status": "Active",
+      "User": "analyst@example.test",
+      "Workload": "Exchange",
+      "Recipient": "collector@example.org",
+      "Subject": "Quarterly forecast",
+      "MessageId": "<20261125095500.501@Example.ORG>",
+      "DetectionMethod": "DLP",
+      "Action": "Notify"
+    },
+    "source": "m365-dlp",
+    "synthetic": true,
+    "scenario": "pos-1",
+    "note": "High-severity DLP alert for the same message, with different case"
+  },
+  {
+    "event": {
+      "Organization": "example.onmicrosoft.test",
+      "MessageTraceId": "00000000-0000-4000-8000-000000050103",
+      "MessageId": "<20261125101500.502@example.net>",
+      "Date": "2026-11-25T10:15:00Z",
+      "Event": "DELIVER",
+      "Source": "SMTP",
+      "SenderAddress": "vendor@example.net",
+      "RecipientAddress": "archive@example.net",
+      "Subject": "Vendor statement",
+      "Status": "Delivered",
+      "Directionality": "Outbound",
+      "Action": "Deliver",
+      "Detail": "Message delivered to external recipient archive@example.net",
+      "Size": 24576,
+      "FromIP": "203.0.113.31",
+      "ToIP": "203.0.113.82",
+      "RelatedRecipientAddress": "finance@example.test",
+      "TenantId": "00000000-0000-4000-8000-000000009001",
+      "Reference": "ref-dlp-deliver-2",
+      "Index": 2
+    },
+    "source": "exchange-message-trace",
+    "synthetic": true,
+    "scenario": "pos-2",
+    "note": "External delivery to an archive recipient"
+  },
+  {
+    "event": {
+      "AlertId": "00000000-0000-4000-8000-000000050104",
+      "CreationTime": "2026-11-25T10:18:00Z",
+      "PolicyName": "External customer identifiers",
+      "Severity": "High",
+      "Status": "Active",
+      "User": "finance@example.test",
+      "Workload": "Exchange",
+      "Recipient": "archive@example.net",
+      "Subject": "Vendor statement",
+      "MessageId": "<20261125101500.502@example.net>",
+      "DetectionMethod": "DLP",
+      "Action": "Notify"
+    },
+    "source": "m365-dlp",
+    "synthetic": true,
+    "scenario": "pos-2",
+    "note": "High-severity DLP alert for the archive delivery"
+  }
+]

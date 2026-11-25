@@ -124,6 +124,7 @@ SaaS additions:
 - Microsoft 365: `workload`, `record_type`, `object_id`, `rule_name`, `forward_to`, `forward_domain`, `forward_domains`, and `forward_external`
 - GitHub: `organization`, `repository`, `target_user`, `role` (from `permission`), `user_agent`, and `service=github`
 - Exchange Online message trace: `message_trace_id`, `message_id`, `sender`, `recipient`, `recipients`, `recipient_domain`, `recipient_domains`, `external_recipient`, `subject`, `related_recipient`, `related_external`, `mailbox`, `trace_event`, `trace_action`, `trace_detail`, `delivery_status`, `directionality`, `size_bytes`, `from_ip`, `to_ip`, `client_ip`, `tenant_id`, `source_component`, `trace_reference`, `trace_index`, and `service=exchange`
+- Microsoft Purview DLP: `policy_name`, `severity`, `status`, `recipient`, `subject`, `message_id`, `workload`, `detection_method`, `dlp_action`, and `service=purview-dlp`
 
 Microsoft 365 event classes follow the operation and workload: mailbox permission grants map to `mailbox_permission`, `MailItemsAccessed` maps to `mail_access`, Exchange maps to `mailbox`, SharePoint/OneDrive to `sharepoint`, Teams to `teams`, and other workloads to `audit`. GitHub maps `git.*` actions to `git`, login actions to `authentication`, and other audit actions to `audit_log`. Exchange Online message trace maps the detail `Event` to `deliver`, `forward`, `redirect`, `send`, `receive`, `fail`, `defer`, `expand`, `transfer`, or `resolve`, with unknown events mapped to `other`; `result` is `success` for delivery-style events, `failure` for `FAIL`, and `pending` for `DEFER`.
 
@@ -183,6 +184,7 @@ edl-events-aws-cloudtrail-2026.11.01
 edl-events-m365-audit-2026.11.25
 edl-events-github-audit-2026.11.25
 edl-events-exchange-message-trace-2026.11.01
+edl-events-m365-dlp-2026.11.01
 ```
 
 The `edl-events-*` index template applies one shard, zero replicas, UTC date fields, keyword fields for identity, endpoint, cloud, and SaaS pivots, and disabled indexing for `raw`.
@@ -208,7 +210,7 @@ The `edl-events-*` index template applies one shard, zero replicas, UTC date fie
 
 ## Status
 
-All twelve sampled sources move from `sampled` to `ingested` after a successful lab run. They move to `validated` only after detection replay and regression tests pass. The generated [telemetry matrix](telemetry-matrix.md) records the current status.
+All thirteen sampled sources move from `sampled` to `ingested` after a successful lab run. They move to `validated` only after detection replay and regression tests pass. The generated [telemetry matrix](telemetry-matrix.md) records the current status.
 
 ## Known gaps
 

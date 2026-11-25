@@ -720,6 +720,7 @@ def test_ingest_saas_json() -> None:
         "m365-audit",
         "github-audit",
         "exchange-message-trace",
+        "m365-dlp",
     ]
     assert payload[0]["indices"] == [
         "edl-events-m365-audit-2026.11.01",
@@ -727,6 +728,14 @@ def test_ingest_saas_json() -> None:
     ]
     assert payload[1]["indices"] == ["edl-events-github-audit-2026.11.25"]
     assert payload[2]["indices"] == ["edl-events-exchange-message-trace-2026.11.01"]
+    assert payload[3]["indices"] == [
+        "edl-events-m365-dlp-2026.11.01",
+        "edl-events-m365-dlp-2026.11.02",
+        "edl-events-m365-dlp-2026.11.03",
+        "edl-events-m365-dlp-2026.11.04",
+        "edl-events-m365-dlp-2026.11.05",
+        "edl-events-m365-dlp-2026.11.06",
+    ]
 
 
 def test_ingest_network_dry_run() -> None:

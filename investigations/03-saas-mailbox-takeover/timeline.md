@@ -9,6 +9,7 @@
 | 2026-11-01T09:40:00Z | Forwarding rule updated to a second external recipient | m365-audit | e5 |
 | 2026-11-01T09:45:00Z | Message redirected from the executive mailbox to collector@example.org | exchange-message-trace | e6 |
 | 2026-11-01T09:46:00Z | Message delivered to the external recipient collector@example.org | exchange-message-trace | e7 |
+| 2026-11-01T09:47:00Z | High-severity DLP alert matched the delivered message | m365-dlp | e8 |
 
 ## Correlation notes
 
@@ -17,4 +18,5 @@
 - The delegation, access, forwarding, and message-trace events target `executive@example.test`.
 - The forwarding rule is created and then updated, showing persistent intent across multiple operations.
 - Message trace observes the redirect to `collector@example.org` and confirms external delivery.
-- Actor attribution remains inferred, and data-loss-prevention or content confirmation remains out of scope.
+- The DLP alert shares the message identity with the delivery and confirms a sensitive-content policy match.
+- Actor attribution and the recipient approval decision remain inferred.

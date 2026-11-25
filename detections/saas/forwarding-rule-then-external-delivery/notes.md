@@ -11,7 +11,7 @@ The native query returns candidate events from two sources:
 - successful Microsoft 365 inbox rule creation or updates that forward to a domain outside the tenant accepted domains (`forward_external: true`)
 - successful Exchange Online message-trace `DELIVER` events with an external recipient (`external_recipient: true`)
 
-`correlation.group_by: [mailbox]` requires both steps to resolve to the same mailbox, and `match_fields: [mailbox, delivery_recipient]` requires the rule’s first forwarding recipient and the message-trace delivery recipient to match. Step 1 accepts `New-InboxRule`, `Set-InboxRule`, or `UpdateInboxRules` and requires `result: success` plus `forward_external: true`. Step 2 requires `event_class: deliver`, `result: success`, and `external_recipient: true`. `correlation.window_seconds: 3600` requires delivery at or after the rule and within 60 minutes. The window allows for message-rule propagation and normal transport latency.
+`correlation.group_by: [mailbox]` requires both steps to resolve to the same mailbox, and `match_any_fields: [delivery_recipients]` requires a non-empty intersection between the rule’s forwarding recipients and the message-trace delivery recipients. Step 1 accepts `New-InboxRule`, `Set-InboxRule`, or `UpdateInboxRules` and requires `result: success` plus `forward_external: true`. Step 2 requires `event_class: deliver`, `result: success`, and `external_recipient: true`. `correlation.window_seconds: 3600` requires delivery at or after the rule and within 60 minutes. The window allows for message-rule propagation and normal transport latency.
 
 Message trace resolves `mailbox` to an internal related recipient when present, otherwise to an internal recipient. A REDIRECT event therefore maps to the original internal mailbox, and a later external DELIVER maps back to the same mailbox through `RelatedRecipientAddress`.
 
@@ -36,12 +36,12 @@ Metrics are scenario-level: 3 positive scenarios, 3 negative scenarios, and 2 be
 ## Known gaps
 
 - Grouping by `mailbox` assumes the message trace resolves the original mailbox through `RelatedRecipientAddress`; some transport paths may omit it.
-- The correlation compares the first forwarding recipient only; a rule with multiple recipients may deliver to another listed recipient without matching.
+- The correlation requires a recipient-list intersection but does not prove which rule action produced the message.
 - Message trace detail retention is often shorter than audit retention, so late rule events may lack matching delivery detail.
 - The detection correlates timing, not message identity. It does not confirm that the delivered message was the one selected by the rule.
-- Content-level confirmation and data-loss-prevention verdicts remain out of scope.
+- Recipient matching does not confirm message identity or content sensitivity; `DET-SAA-008` adds DLP context for the delivered message.
 - The Sigma representation covers only the forwarding-rule component.
 
 ## Next tuning step
 
-Add a message-identity or rule-execution link, then add mailbox-owner confirmation and DLP verdicts for content-level confidence.
+Add mailbox-owner confirmation and an approval decision for external recipients.

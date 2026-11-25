@@ -201,16 +201,18 @@ def test_saas_ingest_is_idempotent_and_queryable() -> None:
             "m365-audit",
             "github-audit",
             "exchange-message-trace",
+            "m365-dlp",
         ]
-        assert [result.read for result in first] == [6, 2, 9]
-        assert [result.unique for result in first] == [6, 2, 9]
-        assert [result.written for result in first] == [6, 2, 9]
+        assert [result.read for result in first] == [6, 2, 9, 6]
+        assert [result.unique for result in first] == [6, 2, 9, 6]
+        assert [result.written for result in first] == [6, 2, 9, 6]
         assert first[0].counts == {
             first[0].indices[0]: 4,
             first[0].indices[1]: 2,
         }
         assert first[1].counts == {first[1].indices[0]: 2}
         assert first[2].counts == {first[2].indices[0]: 9}
+        assert first[3].counts == {index: 1 for index in first[3].indices}
 
         m365_hits = _search("m365-audit")
         assert len(m365_hits) == 6
@@ -266,6 +268,25 @@ def test_saas_ingest_is_idempotent_and_queryable() -> None:
         assert exchange_event["trace_index"] == 1
         assert exchange_event["dedup_origin"] == "declared"
 
+        dlp_hits = _search("m365-dlp")
+        assert len(dlp_hits) == 6
+        dlp_ids = sorted(str(hit["_id"]) for hit in dlp_hits)
+        dlp_event = next(
+            hit["_source"]
+            for hit in dlp_hits
+            if hit["_source"]["event_time"] == "2026-11-01T09:47:00Z"
+        )
+        assert dlp_event["event_class"] == "dlp_alert"
+        assert dlp_event["user"] == "analyst@example.test"
+        assert dlp_event["action"] == "External financial data"
+        assert dlp_event["policy_name"] == "External financial data"
+        assert dlp_event["severity"] == "high"
+        assert dlp_event["status"] == "active"
+        assert dlp_event["recipient"] == "collector@example.org"
+        assert dlp_event["message_id"] == "<20261101094600.102@example.org>"
+        assert dlp_event["service"] == "purview-dlp"
+        assert dlp_event["dedup_origin"] == "declared"
+
         second = ingest_saas(
             config.ROOT,
             client=client,
@@ -275,9 +296,11 @@ def test_saas_ingest_is_idempotent_and_queryable() -> None:
         assert second[0].counts == first[0].counts
         assert second[1].counts == first[1].counts
         assert second[2].counts == first[2].counts
+        assert second[3].counts == first[3].counts
         assert sorted(str(hit["_id"]) for hit in _search("m365-audit")) == m365_ids
         assert sorted(str(hit["_id"]) for hit in _search("github-audit")) == github_ids
         assert sorted(str(hit["_id"]) for hit in _search("exchange-message-trace")) == exchange_ids
+        assert sorted(str(hit["_id"]) for hit in _search("m365-dlp")) == dlp_ids
     finally:
         client.delete_matching(f"{TEST_PREFIX}-*")
         client.close()

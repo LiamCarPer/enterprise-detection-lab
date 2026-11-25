@@ -47,6 +47,7 @@ from edl.ingest import (
     normalize_github_audit,
     normalize_kubernetes_audit,
     normalize_m365_audit,
+    normalize_m365_dlp,
     normalize_suricata,
     normalize_sysmon,
     normalize_windows_security,
@@ -1385,6 +1386,7 @@ def test_load_saas_sources_defaults_and_filters() -> None:
         "m365-audit",
         "github-audit",
         "exchange-message-trace",
+        "m365-dlp",
     ]
     assert [source.id for source in load_saas_sources(requested=("github-audit",))] == [
         "github-audit"
@@ -1406,14 +1408,23 @@ def test_ingest_saas_dry_run_uses_repository_samples() -> None:
         "m365-audit",
         "github-audit",
         "exchange-message-trace",
+        "m365-dlp",
     ]
-    assert [result.read for result in results] == [6, 2, 9]
+    assert [result.read for result in results] == [6, 2, 9, 6]
     assert results[0].indices == (
         "edl-events-m365-audit-2026.11.01",
         "edl-events-m365-audit-2026.11.25",
     )
     assert results[1].indices == ("edl-events-github-audit-2026.11.25",)
     assert results[2].indices == ("edl-events-exchange-message-trace-2026.11.01",)
+    assert results[3].indices == (
+        "edl-events-m365-dlp-2026.11.01",
+        "edl-events-m365-dlp-2026.11.02",
+        "edl-events-m365-dlp-2026.11.03",
+        "edl-events-m365-dlp-2026.11.04",
+        "edl-events-m365-dlp-2026.11.05",
+        "edl-events-m365-dlp-2026.11.06",
+    )
 
 
 def test_ingest_saas_opens_client_when_missing(
@@ -1433,7 +1444,7 @@ def test_ingest_saas_opens_client_when_missing(
         ingest_time=datetime(2026, 11, 25, tzinfo=UTC),
         index_prefix="edl-events-test",
     )
-    assert len(results) == 3
+    assert len(results) == 4
     assert all(result.mode == "ingested" for result in results)
     assert all(result.counts for result in results)
 
@@ -2326,3 +2337,54 @@ def test_normalize_exchange_message_trace_sets_all_external_delivery_recipients(
     )
     assert document["delivery_recipient"] == "collector@example.org"
     assert document["delivery_recipients"] == ["collector@example.org", "second@example.net"]
+
+
+M365_DLP_RAW = {
+    "AlertId": "00000000-0000-4000-8000-000000040101",
+    "CreationTime": "2026-11-01T09:47:00Z",
+    "PolicyName": "External financial data",
+    "Severity": "High",
+    "Status": "Active",
+    "User": "analyst@example.test",
+    "Workload": "Exchange",
+    "Recipient": "collector@example.org",
+    "Subject": "Quarterly invoice redirect",
+    "MessageId": "<20261101094600.102@example.org>",
+    "DetectionMethod": "DLP",
+    "Action": "Block",
+}
+
+
+def test_normalize_m365_dlp_maps_alert_fields() -> None:
+    document = normalize_m365_dlp(M365_DLP_RAW)
+    assert document["event_id"] == M365_DLP_RAW["AlertId"]
+    assert document["user"] == "analyst@example.test"
+    assert document["action"] == "External financial data"
+    assert document["status"] == "active"
+    assert document["severity"] == "high"
+    assert document["policy_name"] == "External financial data"
+    assert document["recipient"] == "collector@example.org"
+    assert document["subject"] == "Quarterly invoice redirect"
+    assert document["message_id"] == "<20261101094600.102@example.org>"
+    assert document["workload"] == "Exchange"
+    assert document["detection_method"] == "DLP"
+    assert document["dlp_action"] == "Block"
+    assert document["service"] == "purview-dlp"
+
+
+def test_normalize_m365_dlp_handles_missing_status_and_severity() -> None:
+    document = normalize_m365_dlp({**M365_DLP_RAW, "Status": None, "Severity": None})
+    assert "status" not in document
+    assert "severity" not in document
+
+
+def test_normalize_m365_dlp_lowercases_message_id() -> None:
+    document = normalize_m365_dlp({**M365_DLP_RAW, "MessageId": "<20261101094600.102@Example.ORG>"})
+    assert document["message_id"] == "<20261101094600.102@example.org>"
+
+
+def test_normalize_exchange_message_trace_lowercases_message_id() -> None:
+    document = normalize_exchange_message_trace(
+        {**EXCHANGE_MESSAGE_TRACE_RAW, "MessageId": "<20261101094500.101@Example.NET>"}
+    )
+    assert document["message_id"] == "<20261101094500.101@example.net>"
