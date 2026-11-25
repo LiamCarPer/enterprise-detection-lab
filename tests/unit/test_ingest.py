@@ -2362,6 +2362,7 @@ M365_DLP_RAW = {
     "Recipient": "collector@example.org",
     "Subject": "Quarterly invoice redirect",
     "MessageId": "<20261101094600.102@example.org>",
+    "ContentScope": "Quarterly-Invoice.PDF",
     "DetectionMethod": "DLP",
     "Action": "Block",
 }
@@ -2379,6 +2380,7 @@ def test_normalize_m365_dlp_maps_alert_fields() -> None:
     assert document["delivery_recipient"] == "collector@example.org"
     assert document["subject"] == "Quarterly invoice redirect"
     assert document["message_id"] == "<20261101094600.102@example.org>"
+    assert document["content_scope"] == "quarterly-invoice.pdf"
     assert document["workload"] == "Exchange"
     assert document["detection_method"] == "DLP"
     assert document["dlp_action"] == "Block"
@@ -2414,6 +2416,7 @@ SERVICENOW_APPROVAL_RAW = {
     "approver": "data-owner@example.test",
     "recipient": "Partner@Example.ORG",
     "message_id": "<20261120144000.701@Example.ORG>",
+    "content_scope": "Customer-Dataset.CSV",
     "short_description": "Customer dataset export",
 }
 
@@ -2430,6 +2433,7 @@ def test_normalize_servicenow_approval_maps_decision_fields() -> None:
     assert document["recipient"] == "Partner@Example.ORG"
     assert document["delivery_recipient"] == "partner@example.org"
     assert document["message_id"] == "<20261120144000.701@example.org>"
+    assert document["content_scope"] == "customer-dataset.csv"
     assert document["subject"] == "Customer dataset export"
     assert document["service"] == "servicenow-approval"
 

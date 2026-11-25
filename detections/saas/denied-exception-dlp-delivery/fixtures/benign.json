@@ -3,7 +3,7 @@
     "event": {
       "sys_id": "00000000-0000-4000-8000-000000080301",
       "number": "REQ0008301",
-      "sys_updated_on": "2026-11-23T15:00:00Z",
+      "sys_updated_on": "2026-11-23T16:00:00Z",
       "state": "Closed",
       "approval": "Denied",
       "requested_for": "analyst@example.test",
@@ -11,7 +11,8 @@
       "approver": "data-owner@example.test",
       "recipient": "partner@example.org",
       "message_id": "<20261123150000.821@example.org>",
-      "short_description": "Draft campaign"
+      "short_description": "Draft campaign",
+      "content_scope": "draft-campaign.pdf"
     },
     "source": "servicenow-approval",
     "synthetic": true,
@@ -22,8 +23,8 @@
     "event": {
       "Organization": "example.onmicrosoft.test",
       "MessageTraceId": "00000000-0000-4000-8000-000000080302",
-      "MessageId": "<20261123160000.822@example.org>",
-      "Date": "2026-11-23T16:00:00Z",
+      "MessageId": "<20261123170000.822@example.org>",
+      "Date": "2026-11-23T17:00:00Z",
       "Event": "DELIVER",
       "Source": "SMTP",
       "SenderAddress": "analyst@example.test",
@@ -49,7 +50,7 @@
   {
     "event": {
       "AlertId": "00000000-0000-4000-8000-000000080303",
-      "CreationTime": "2026-11-23T16:02:00Z",
+      "CreationTime": "2026-11-23T17:02:00Z",
       "PolicyName": "External marketing content",
       "Severity": "High",
       "Status": "Active",
@@ -57,9 +58,10 @@
       "Workload": "Exchange",
       "Recipient": "partner@example.org",
       "Subject": "Public announcement",
-      "MessageId": "<20261123160000.822@example.org>",
+      "MessageId": "<20261123170000.822@example.org>",
       "DetectionMethod": "DLP",
-      "Action": "Notify"
+      "Action": "Notify",
+      "ContentScope": "public-announcement.pdf"
     },
     "source": "m365-dlp",
     "synthetic": true,

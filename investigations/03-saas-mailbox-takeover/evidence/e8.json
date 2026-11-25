@@ -10,5 +10,6 @@
   "Subject": "Quarterly invoice redirect",
   "MessageId": "<20261101094600.102@example.org>",
   "DetectionMethod": "DLP",
-  "Action": "Notify"
+  "Action": "Notify",
+  "ContentScope": "quarterly-invoice.pdf"
 }

@@ -73,7 +73,7 @@ evidence:
     path: evidence/e8.json
     provenance: Synthetic event from lab/datasets/synthetic/m365-dlp/reference.json
     description: High-severity DLP alert for the delivered message at 09:47 UTC.
-    sha256: 6d49d27862b5e5c8d1152a780496b28dfbd34ac6a075a9f9f87281dbcaaf480c
+    sha256: 36e72486614640b6586d5eeb965968a78b476218f67aaf57591b120029a5da0e
 timeline:
   - timestamp: "2026-11-01T08:55:00Z"
     event: Medium-risk single-factor sign-in for analyst@example.test

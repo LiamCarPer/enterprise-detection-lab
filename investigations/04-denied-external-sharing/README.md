@@ -13,6 +13,7 @@ A user requests approval to send a customer dataset to an external partner. The 
 - Mailbox: `analyst@example.test`
 - External recipient: `partner@example.org`
 - Approval request: `REQ0007001`
+- Content scope: `customer-dataset.csv`
 
 ## Hypothesis
 
@@ -22,13 +23,13 @@ A denied external-sharing decision followed by delivery to the same recipient an
 
 | Time (UTC) | Source | Evidence | Observation |
 |---|---|---|---|
-| 2026-11-20 14:05 | servicenow-approval | e1 | External-sharing request `REQ0007001` denied by the data owner |
+| 2026-11-20 14:05 | servicenow-approval | e1 | External-sharing request `REQ0007001` for `customer-dataset.csv` denied by the data owner |
 | 2026-11-20 14:40 | exchange-message-trace | e2 | Customer dataset delivered to `partner@example.org` |
-| 2026-11-20 14:42 | m365-dlp | e3 | High-severity DLP alert for the delivered message |
+| 2026-11-20 14:42 | m365-dlp | e3 | High-severity DLP alert for the delivered message and `customer-dataset.csv` scope |
 
 ## Inference boundary
 
-The observed events are synthetic lab records. The approval record shows a denial for the same mailbox, recipient, and message identifier that appear in the delivery. The DLP alert confirms a sensitive-content policy match on that message. The evidence does not show whether the requester read the denial or whether a later approval covered the same content; those questions require the approval workflow and the data owner.
+The observed events are synthetic lab records. The approval record shows a denial for the same mailbox, recipient, message identifier, and content scope that appear in the delivery and DLP alert. The DLP alert confirms a sensitive-content policy match on that message and scope. The evidence does not show whether the requester read the denial or whether a later approval covered the same content; those questions require the approval workflow and the data owner.
 
 ## Detections linked
 

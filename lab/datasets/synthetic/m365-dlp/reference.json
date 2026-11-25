@@ -11,7 +11,8 @@
     "Subject": "Quarterly invoice redirect",
     "MessageId": "<20261101094600.102@example.org>",
     "DetectionMethod": "DLP",
-    "Action": "Notify"
+    "Action": "Notify",
+    "ContentScope": "quarterly-invoice.pdf"
   },
   {
     "AlertId": "00000000-0000-4000-8000-000000040102",
@@ -25,7 +26,8 @@
     "Subject": "Internal forecast",
     "MessageId": "<20261102101500.401@example.test>",
     "DetectionMethod": "DLP",
-    "Action": "Notify"
+    "Action": "Notify",
+    "ContentScope": "internal-forecast.xlsx"
   },
   {
     "AlertId": "00000000-0000-4000-8000-000000040103",
@@ -39,7 +41,8 @@
     "Subject": "Architecture review",
     "MessageId": "<20261103110000.402@example.org>",
     "DetectionMethod": "DLP",
-    "Action": "Block"
+    "Action": "Block",
+    "ContentScope": "architecture-review.pdf"
   },
   {
     "AlertId": "00000000-0000-4000-8000-000000040104",
@@ -53,7 +56,8 @@
     "Subject": "Vendor statement",
     "MessageId": "<20261104123000.403@example.org>",
     "DetectionMethod": "DLP",
-    "Action": "Notify"
+    "Action": "Notify",
+    "ContentScope": "vendor-statement.pdf"
   },
   {
     "AlertId": "00000000-0000-4000-8000-000000040105",
@@ -67,7 +71,8 @@
     "Subject": "Case export",
     "MessageId": "<20261105131000.404@example.net>",
     "DetectionMethod": "DLP",
-    "Action": "Quarantine"
+    "Action": "Quarantine",
+    "ContentScope": "case-export.csv"
   },
   {
     "AlertId": "00000000-0000-4000-8000-000000040106",
@@ -81,7 +86,8 @@
     "Subject": "Design draft",
     "MessageId": "<20261106140000.405@example.org>",
     "DetectionMethod": "DLP",
-    "Action": "Notify"
+    "Action": "Notify",
+    "ContentScope": "design-draft.pdf"
   },
   {
     "AlertId": "00000000-0000-4000-8000-000000040107",
@@ -95,6 +101,7 @@
     "Subject": "Customer dataset export",
     "MessageId": "<20261120144000.701@example.org>",
     "DetectionMethod": "DLP",
-    "Action": "Notify"
+    "Action": "Notify",
+    "ContentScope": "customer-dataset.csv"
   }
 ]

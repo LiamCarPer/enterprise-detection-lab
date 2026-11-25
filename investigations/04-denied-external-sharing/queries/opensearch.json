@@ -13,10 +13,31 @@
         }
       ],
       "should": [
-        { "term": { "message_id": "<20261120144000.701@example.org>" } },
-        { "term": { "mailbox": "analyst@example.test" } },
-        { "term": { "delivery_recipient": "partner@example.org" } },
-        { "term": { "user": "analyst@example.test" } }
+        {
+          "term": {
+            "message_id": "<20261120144000.701@example.org>"
+          }
+        },
+        {
+          "term": {
+            "mailbox": "analyst@example.test"
+          }
+        },
+        {
+          "term": {
+            "delivery_recipient": "partner@example.org"
+          }
+        },
+        {
+          "term": {
+            "user": "analyst@example.test"
+          }
+        },
+        {
+          "term": {
+            "content_scope": "customer-dataset.csv"
+          }
+        }
       ],
       "minimum_should_match": 1
     }

@@ -116,7 +116,9 @@ declare `mailbox`, so the accessed mailbox must match the delegated mailbox. In
 `message_id`, so the alert must describe the delivered message. In
 `DET-SAA-009`, the approval, delivery, and DLP steps all declare `message_id`,
 so a three-step sequence can carry the message identity from the approval
-record through transport and into the DLP alert.
+record through transport and into the DLP alert. The approval and DLP steps
+also declare `content_scope`, so a denial for one dataset does not match an
+alert for a different dataset sent to the same recipient.
 
 Steps may also declare `match_any_fields` to require a non-empty intersection
 between list-valued fields across steps. `DET-SAA-007` uses this for

@@ -9,5 +9,6 @@
   "approver": "data-owner@example.test",
   "recipient": "partner@example.org",
   "message_id": "<20261120144000.701@example.org>",
-  "short_description": "Customer dataset export"
+  "short_description": "Customer dataset export",
+  "content_scope": "customer-dataset.csv"
 }

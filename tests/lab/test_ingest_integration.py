@@ -293,6 +293,7 @@ def test_saas_ingest_is_idempotent_and_queryable() -> None:
         assert dlp_event["status"] == "active"
         assert dlp_event["recipient"] == "collector@example.org"
         assert dlp_event["message_id"] == "<20261101094600.102@example.org>"
+        assert dlp_event["content_scope"] == "quarterly-invoice.pdf"
         assert dlp_event["service"] == "purview-dlp"
         assert dlp_event["dedup_origin"] == "declared"
 
@@ -313,6 +314,7 @@ def test_saas_ingest_is_idempotent_and_queryable() -> None:
         assert approval_event["approver"] == "data-owner@example.test"
         assert approval_event["delivery_recipient"] == "partner@example.org"
         assert approval_event["message_id"] == "<20261120144000.701@example.org>"
+        assert approval_event["content_scope"] == "customer-dataset.csv"
         assert approval_event["service"] == "servicenow-approval"
         assert approval_event["dedup_origin"] == "declared"
 

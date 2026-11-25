@@ -25,13 +25,13 @@ Nineteen synthetic benign corpora are used to measure false-positive behavior ac
 | `DET-SAA-006` | `identity-saas-forwarding-chain.json` | scenario | 6 | 0 | 0.00 |
 | `DET-SAA-007` | `forwarding-delivery.json` | scenario | 8 | 0 | 0.00 |
 | `DET-SAA-008` | `external-delivery-dlp.json` | scenario | 6 | 0 | 0.00 |
-| `DET-SAA-009` | `denied-exception-delivery.json` | scenario | 6 | 0 | 0.00 |
+| `DET-SAA-009` | `denied-exception-delivery.json` | scenario | 7 | 0 | 0.00 |
 
 The endpoint baseline also has a before/after tuning result: the initial query matched 8/20 approved management-agent events, and the tuned query matches 0/20. See [`false-positive-tuning.md`](false-positive-tuning.md).
 
 The SaaS forwarding baseline has the same measurement: the initial query matched 8/20 internal forwarding rules, and the tuned query matches 0/20. See [`saas-forwarding-tuning.md`](saas-forwarding-tuning.md).
 
-The identity correlation baseline contains six scenarios with only one step, mismatched users, or activity outside the 30-minute window. The identity-to-SaaS correlation baseline contains six scenarios, the delegation baseline contains ten, and the mail-access baseline contains seven. The forwarding-chain baseline contains six, the forwarding-delivery baseline contains eight, the external-delivery/DLP baseline contains six, and the denied-exception baseline contains six. All eight are evaluated at scenario level.
+The identity correlation baseline contains six scenarios with only one step, mismatched users, or activity outside the 30-minute window. The identity-to-SaaS correlation baseline contains six scenarios, the delegation baseline contains ten, and the mail-access baseline contains seven. The forwarding-chain baseline contains six, the forwarding-delivery baseline contains eight, the external-delivery/DLP baseline contains six, and the denied-exception baseline contains seven. All eight are evaluated at scenario level.
 
 ## Baseline contents
 
@@ -53,7 +53,7 @@ The identity correlation baseline contains six scenarios with only one step, mis
 - **Identity-to-SaaS forwarding chain:** sign-in-only, delegation-only, access-only, partial chains, internal forwarding, and normal-sign-in scenarios.
 - **Forwarding rule to external delivery:** rule-only, external-delivery-only, internal delivery, failed external delivery, delivery for a different mailbox, delivery outside the 60-minute window, mismatched-recipient, and multi-recipient-no-overlap scenarios.
 - **External delivery to DLP alert:** delivery-only, alert-only, internal delivery, medium-severity alert, resolved alert, and mismatched-message scenarios.
-- **Denied exception to external delivery:** approval-only, delivery-only, delivery-and-alert, approved-request, internal-delivery, and mismatched-message scenarios.
+- **Denied exception to external delivery:** approval-only, delivery-only, delivery-and-alert, approved-request, internal-delivery, mismatched-message, and scope-mismatch scenarios.
 
 ## Approved exceptions
 

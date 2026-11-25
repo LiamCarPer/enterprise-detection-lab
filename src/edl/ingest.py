@@ -703,6 +703,7 @@ def normalize_m365_dlp(raw: Mapping[str, Any]) -> dict[str, Any]:
     severity = raw.get("Severity")
     message_id = raw.get("MessageId")
     recipient = raw.get("Recipient")
+    content_scope = raw.get("ContentScope")
     document: dict[str, Any] = {
         "event_id": raw.get("AlertId"),
         "user": raw.get("User"),
@@ -717,6 +718,9 @@ def normalize_m365_dlp(raw: Mapping[str, Any]) -> dict[str, Any]:
         "detection_method": raw.get("DetectionMethod"),
         "dlp_action": raw.get("Action"),
         "delivery_recipient": recipient.lower() if isinstance(recipient, str) else recipient,
+        "content_scope": (
+            content_scope.lower() if isinstance(content_scope, str) else content_scope
+        ),
         "service": "purview-dlp",
     }
     return _compact(document)
@@ -729,6 +733,7 @@ def normalize_servicenow_approval(raw: Mapping[str, Any]) -> dict[str, Any]:
     message_id = raw.get("message_id")
     state = raw.get("state")
     approval = raw.get("approval")
+    content_scope = raw.get("content_scope")
     document: dict[str, Any] = {
         "event_id": raw.get("sys_id"),
         "request_number": raw.get("number"),
@@ -740,6 +745,9 @@ def normalize_servicenow_approval(raw: Mapping[str, Any]) -> dict[str, Any]:
         "recipient": recipient,
         "delivery_recipient": recipient.lower() if isinstance(recipient, str) else recipient,
         "message_id": message_id.lower() if isinstance(message_id, str) else message_id,
+        "content_scope": (
+            content_scope.lower() if isinstance(content_scope, str) else content_scope
+        ),
         "subject": raw.get("short_description"),
         "service": "servicenow-approval",
     }

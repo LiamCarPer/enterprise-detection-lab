@@ -11,7 +11,8 @@
       "approver": "data-owner@example.test",
       "recipient": "partner@example.org",
       "message_id": "<20261123100000.801@example.org>",
-      "short_description": "Customer dataset export"
+      "short_description": "Customer dataset export",
+      "content_scope": "customer-dataset.csv"
     },
     "source": "servicenow-approval",
     "synthetic": true,
@@ -59,7 +60,8 @@
       "Subject": "Customer dataset export",
       "MessageId": "<20261123100000.801@example.org>",
       "DetectionMethod": "DLP",
-      "Action": "Notify"
+      "Action": "Notify",
+      "ContentScope": "customer-dataset.csv"
     },
     "source": "m365-dlp",
     "synthetic": true,
@@ -78,7 +80,8 @@
       "approver": "data-owner@example.test",
       "recipient": "archive@example.net",
       "message_id": "<20261123111500.802@example.net>",
-      "short_description": "Quarterly archive transfer"
+      "short_description": "Quarterly archive transfer",
+      "content_scope": "quarterly-archive.zip"
     },
     "source": "servicenow-approval",
     "synthetic": true,
@@ -126,7 +129,8 @@
       "Subject": "Quarterly archive transfer",
       "MessageId": "<20261123111500.802@example.net>",
       "DetectionMethod": "DLP",
-      "Action": "Notify"
+      "Action": "Notify",
+      "ContentScope": "quarterly-archive.zip"
     },
     "source": "m365-dlp",
     "synthetic": true,

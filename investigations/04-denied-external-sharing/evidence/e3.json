@@ -10,5 +10,6 @@
   "Subject": "Customer dataset export",
   "MessageId": "<20261120144000.701@example.org>",
   "DetectionMethod": "DLP",
-  "Action": "Notify"
+  "Action": "Notify",
+  "ContentScope": "customer-dataset.csv"
 }

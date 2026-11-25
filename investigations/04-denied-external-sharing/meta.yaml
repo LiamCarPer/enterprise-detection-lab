@@ -4,8 +4,8 @@ version: 1.0.0
 status: tested
 domains:
   - saas
-scenario: A user requests approval to send a customer dataset to an external partner, is denied by the data owner, then delivers the dataset to that partner and triggers a high-severity DLP alert on the delivered message.
-hypothesis: A denied external-sharing decision followed by delivery to the same recipient and a DLP match indicates that the data-handling decision was bypassed.
+scenario: A user requests approval to send a customer dataset to an external partner, is denied by the data owner, then delivers the same dataset to that partner and triggers a high-severity DLP alert on the delivered message and content scope.
+hypothesis: A denied external-sharing decision followed by delivery to the same recipient, message, and content scope, with a DLP match, indicates that the data-handling decision was bypassed.
 detections:
   - DET-SAA-008
   - DET-SAA-009
@@ -18,8 +18,8 @@ evidence:
     source: servicenow-approval
     path: evidence/e1.json
     provenance: Synthetic event from lab/datasets/synthetic/servicenow-approval/reference.json
-    description: ServiceNow approval REQ0007001 denied the external sharing request at 14:05 UTC.
-    sha256: 7fd95bc9d0b585da9468fbad2fcb4fbcb0eca52d1884a880005f3c395f012110
+    description: ServiceNow approval REQ0007001 denied the external sharing request for customer-dataset.csv at 14:05 UTC.
+    sha256: 4e338c82562f54b42ded28354c44dd8dfb8fb4f068bdf6b09f9794814560e048
   - id: e2
     type: event
     source: exchange-message-trace
@@ -32,8 +32,8 @@ evidence:
     source: m365-dlp
     path: evidence/e3.json
     provenance: Synthetic event from lab/datasets/synthetic/m365-dlp/reference.json
-    description: High-severity DLP alert for the delivered message at 14:42 UTC.
-    sha256: 43ccb90dcc2f226fab3c641f1db896c7a664bd222c807762485e03cb12c2926a
+    description: High-severity DLP alert for the delivered message and customer-dataset.csv scope at 14:42 UTC.
+    sha256: 4d5dd302dd58e9fe0cba69dc568cd024f29e591e522be2c4a0251daa94e43688
 timeline:
   - timestamp: "2026-11-20T14:05:00Z"
     event: External-sharing request REQ0007001 denied by the data owner
@@ -51,6 +51,7 @@ lessons:
   - A denied approval is a decision record, not proof that data left the tenant; the delivery event is required.
   - The approval, delivery, and DLP alert share a message identity, which links the decision to the exact delivered message.
   - The DLP alert confirms a sensitive-content policy match but does not by itself show that the recipient was unapproved.
+  - The approval and DLP records share a content scope, so the denial is tied to the dataset that was delivered rather than to a different item.
   - Approval records do not always carry a message identifier, so the three-step join depends on integration design.
   - The remaining gap is request-scope matching, such as dataset or attachment identity, and a later-approval check.
 response:
@@ -61,5 +62,5 @@ response:
   - Confirm whether a later approval covers the same content and recipient.
 references:
   - https://attack.mitre.org/techniques/T1048/003/
-executive_summary: A synthetic data-handling chain shows an external-sharing request denied by the data owner, a delivery of the same customer dataset to the denied recipient, and a high-severity DLP alert on the delivered message. The approval decision, delivery, and alert share a message identity, so the investigation can show that the denial was bypassed rather than infer it from timing alone.
+executive_summary: A synthetic data-handling chain shows an external-sharing request denied by the data owner, a delivery of the same customer dataset to the denied recipient, and a high-severity DLP alert on the delivered message and content scope. The approval decision, delivery, and alert share a message identity and scope, so the investigation can show that the denial was bypassed rather than infer it from timing alone.
 notes: Synthetic investigation built from the local lab datasets. No production or customer data.

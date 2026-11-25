@@ -9,8 +9,8 @@ from edl.telemetry import load_sources
 
 PACKAGE = Path(__file__).resolve().parents[1]
 FIXTURE_KINDS = ("positive", "negative", "benign")
-EXPECTED_FIXTURE_COUNTS = {"positive": 6, "negative": 8, "benign": 3}
-EXPECTED_SCENARIO_COUNTS = {"positive": 2, "negative": 3, "benign": 2}
+EXPECTED_FIXTURE_COUNTS = {"positive": 6, "negative": 11, "benign": 3}
+EXPECTED_SCENARIO_COUNTS = {"positive": 2, "negative": 4, "benign": 2}
 
 
 def test_query_returns_all_correlation_steps() -> None:
@@ -35,6 +35,7 @@ def test_correlation_metadata_uses_three_steps_and_carries_message_identity() ->
     assert meta.count("        - mailbox") == 2
     assert meta.count("        - delivery_recipient") == 2
     assert meta.count("        - message_id") == 3
+    assert meta.count("        - content_scope") == 2
 
 
 def test_fixtures_use_paired_scenarios() -> None:
@@ -69,6 +70,9 @@ def test_positive_chain_links_denial_delivery_and_alert() -> None:
         assert delivery["Event"] == "DELIVER"
         assert delivery["Status"] == "Delivered"
         assert str(alert["MessageId"]).lower() == str(delivery["MessageId"]).lower(), scenario
+        assert str(alert["ContentScope"]).lower() == str(approval["content_scope"]).lower(), (
+            scenario
+        )
 
 
 def _load_package():
@@ -90,10 +94,21 @@ def test_denied_chain_matches_and_approved_or_mismatched_chain_does_not() -> Non
     mismatched = [case for case in package.cases if case.scenario == "neg-2"]
     assert not _correlation_hit(mismatched, package.correlation)  # type: ignore[arg-type]
 
+    scope_mismatch = [case for case in package.cases if case.scenario == "neg-4"]
+    assert not _correlation_hit(scope_mismatch, package.correlation)  # type: ignore[arg-type]
+
 
 def test_missing_alert_message_identity_blocks_the_chain() -> None:
     package = _load_package()
     cases = [case for case in package.cases if case.scenario == "pos-2"]
     alert = next(case for case in cases if case.source == "m365-dlp")
     alert.event.document.pop("message_id")
+    assert not _correlation_hit(cases, package.correlation)  # type: ignore[arg-type]
+
+
+def test_scope_mismatch_blocks_the_chain() -> None:
+    package = _load_package()
+    cases = [case for case in package.cases if case.scenario == "pos-1"]
+    alert = next(case for case in cases if case.source == "m365-dlp")
+    alert.event.document["content_scope"] = "different-dataset.csv"
     assert not _correlation_hit(cases, package.correlation)  # type: ignore[arg-type]

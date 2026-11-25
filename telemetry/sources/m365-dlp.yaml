@@ -39,6 +39,7 @@ known_gaps:
   - MessageId is not guaranteed to be present for every DLP policy or workload.
   - Alert status changes can update an existing alert over time.
   - The alert confirms a policy match, not the sensitivity of the content or the intent of the sender.
+  - Content scope is policy- and tenant-dependent; not every alert includes a stable item name.
   - DLP policy coverage and severity are tenant-specific.
 notes: Microsoft Purview DLP alert records for message-identity correlation with external delivery.
 sample_data:
@@ -46,4 +47,4 @@ sample_data:
   synthetic: true
   license: synthetic
   provenance: Generated for this repository. No real users, tenants, or messages.
-  sha256: 04292b69f646a174a190302da522e2440985ee01f87d0ef2ba1b312cf7e02ec7
+  sha256: 4c092b0547953a368ab06958fc8718b828b55f9a1db6ceb5caccec3bb8e60133

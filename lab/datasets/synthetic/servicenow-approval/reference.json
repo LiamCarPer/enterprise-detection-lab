@@ -10,7 +10,8 @@
     "approver": "data-owner@example.test",
     "recipient": "partner@example.org",
     "message_id": "<20261120144000.701@example.org>",
-    "short_description": "Customer dataset export"
+    "short_description": "Customer dataset export",
+    "content_scope": "customer-dataset.csv"
   },
   {
     "sys_id": "00000000-0000-4000-8000-000000070102",
@@ -23,7 +24,8 @@
     "approver": "data-owner@example.test",
     "recipient": "archive@example.net",
     "message_id": "<20261121093000.702@example.net>",
-    "short_description": "Quarterly archive transfer"
+    "short_description": "Quarterly archive transfer",
+    "content_scope": "quarterly-archive.zip"
   },
   {
     "sys_id": "00000000-0000-4000-8000-000000070103",
@@ -36,7 +38,8 @@
     "approver": "security@example.test",
     "recipient": "contractor@example.org",
     "message_id": "<20261121110000.703@example.org>",
-    "short_description": "Design review package"
+    "short_description": "Design review package",
+    "content_scope": "design-review.pdf"
   },
   {
     "sys_id": "00000000-0000-4000-8000-000000070104",
@@ -49,7 +52,8 @@
     "approver": "data-owner@example.test",
     "recipient": "customer@example.net",
     "message_id": "<20261121133000.704@example.net>",
-    "short_description": "Case export"
+    "short_description": "Case export",
+    "content_scope": "case-export.csv"
   },
   {
     "sys_id": "00000000-0000-4000-8000-000000070105",
@@ -62,7 +66,8 @@
     "approver": "legal@example.test",
     "recipient": "partner@example.org",
     "message_id": "<20261122090000.705@example.org>",
-    "short_description": "Contract review"
+    "short_description": "Contract review",
+    "content_scope": "contract-review.pdf"
   },
   {
     "sys_id": "00000000-0000-4000-8000-000000070106",
@@ -75,6 +80,7 @@
     "approver": "data-owner@example.test",
     "recipient": "vendor@example.org",
     "message_id": "<20261122102000.706@example.org>",
-    "short_description": "Campaign assets"
+    "short_description": "Campaign assets",
+    "content_scope": "campaign-assets.zip"
   }
 ]

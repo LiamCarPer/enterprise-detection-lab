@@ -4,7 +4,8 @@
 
 - A denial alone is not an exfiltration signal; the delivery and DLP alert provide the evidence that data left the tenant.
 - The three-step sequence requires a shared message identifier across the approval, transport, and DLP systems.
-- The detection does not compare request scope, so an approval for different content to the same recipient could be mistaken for coverage.
+- The approval and DLP records share a content scope, so a denial for one dataset is not applied to a different dataset sent to the same recipient.
+- The detection does not yet suppress on a later approval for the same content and recipient.
 - A retrospective denial is not matched by the ordered sequence.
 
 ## Telemetry gaps
@@ -17,7 +18,7 @@
 
 ## Improvements
 
-- Add request-scope fields such as dataset name or attachment hash to the approval record.
+- Replace the synthetic `content_scope` value with a stable dataset or attachment identifier where the systems expose one.
 - Add a later-approval check so a superseding decision can be distinguished from the original denial.
 - Add mailbox-owner confirmation to close the intent gap.
 - Model approval revocations and retroactive decisions as explicit event types.
