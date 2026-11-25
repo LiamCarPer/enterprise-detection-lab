@@ -1,0 +1,29 @@
+{
+  "id": "e5",
+  "synthetic": true,
+  "source": "m365-audit",
+  "observed_at": "2026-11-01T09:40:00Z",
+  "query": "queries/opensearch.json",
+  "event": {
+    "CreationTime": "2026-11-01T09:40:00Z",
+    "Id": "00000000-0000-4000-8000-000000010204",
+    "Operation": "Set-InboxRule",
+    "UserId": "analyst@example.test",
+    "Workload": "Exchange",
+    "RecordType": 2,
+    "ClientIP": "203.0.113.11",
+    "ObjectId": "executive@example.test\\Inbox\\Forward invoices",
+    "ResultStatus": "Success",
+    "Parameters": [
+      {
+        "Name": "Name",
+        "Value": "Forward invoices"
+      },
+      {
+        "Name": "RedirectTo",
+        "Value": "collector@example.org"
+      }
+    ]
+  },
+  "note": "Observed forwarding rule update to a second external recipient."
+}

@@ -17,7 +17,7 @@ It is a directional engineering synthesis, not a formal standard or compliance c
 | **Enterprise telemetry breadth** | Identity, endpoint, cloud, SaaS, network, and Kubernetes sources | `telemetry/sources/`, `docs/telemetry-matrix.md`, `lab/` | 11 contracts across six domains; 11 ingested | In progress |
 | **Identity, cloud, SaaS, network, and Kubernetes depth** | Entra/AD/Okta, AWS/Azure/GCP audit, IAM, token and session abuse, SaaS audit, DNS and IDS alerts, Kubernetes audit and runtime alerts | `detections/identity/`, `detections/cloud/`, `detections/saas/`, `detections/network/`, `detections/kubernetes/`, `investigations/` | All telemetry domains ingested; seventeen detections and two investigations tested; broader coverage planned | In progress |
 | **Threat modeling and ATT&CK mapping** | Attacker TTPs, attack paths, evasion, and telemetry implications | `docs/threat-model.md`, detection metadata, `investigations/` | ATT&CK field in detection schema; threat model planned | Planned |
-| **Incident investigation** | Timeline, evidence, scope, containment, recovery, and lessons learned | `investigations/`, runbooks | Two tested investigations with hashed evidence, timelines, response, and linked detection checks | Complete |
+| **Incident investigation** | Timeline, evidence, scope, containment, recovery, and lessons learned | `investigations/`, runbooks | Three tested investigations with hashed evidence, timelines, response, and linked detection checks | Complete |
 | **Automation and response safety** | Enrichment, triage, evidence capture, containment proposals, approval gates, and effect verification | `automation/` | Not implemented | Planned |
 | **Software engineering quality** | Typed Python, focused modules, error handling, tests, deterministic outputs, coverage gate | `src/edl/`, `tests/`, `Makefile`, `pyproject.toml` | Typed package, unit/integration/lab tests, 90% coverage gate | Complete |
 | **Backend portability** | Sigma plus native queries, backend-specific translation, and query validation | `detections/*/queries/`, `schemas/detection.schema.json` | OpenSearch query contract; Sigma rule present in template; KQL/Spl planned | In progress |
@@ -33,11 +33,11 @@ It is a directional engineering synthesis, not a formal standard or compliance c
 | Identity, endpoint, cloud, SaaS, network, and Kubernetes ingestion | Complete |
 | Detection packages implemented | 17 tested detections; 0 production detections |
 | Detection testing | Fixture replay, pass/fail evaluation, metrics generation, and baseline tuning complete |
-| Investigations implemented | 2 tested investigations; 0 published |
+| Investigations implemented | 3 tested investigations; 0 published |
 | CI and aggregate reporting | Complete |
 | Automation | Planned |
 
-The mapping is complete. The implementation is not. All eleven contracted telemetry sources are ingested; seventeen detections and two investigations pass in CI, and aggregate fixture metrics are committed. Broader benign coverage is next.
+The mapping is complete. The implementation is not. All eleven contracted telemetry sources are ingested; seventeen detections and three investigations pass in CI, and aggregate fixture metrics are committed. Broader benign coverage is next.
 
 ## How to use this document
 

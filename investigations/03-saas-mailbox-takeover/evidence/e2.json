@@ -1,0 +1,33 @@
+{
+  "id": "e2",
+  "synthetic": true,
+  "source": "m365-audit",
+  "observed_at": "2026-11-01T09:10:00Z",
+  "query": "queries/opensearch.json",
+  "event": {
+    "CreationTime": "2026-11-01T09:10:00Z",
+    "Id": "00000000-0000-4000-8000-000000010201",
+    "Operation": "Add-MailboxPermission",
+    "UserId": "analyst@example.test",
+    "Workload": "Exchange",
+    "RecordType": 2,
+    "ClientIP": "203.0.113.11",
+    "ObjectId": "executive@example.test",
+    "ResultStatus": "Success",
+    "Parameters": [
+      {
+        "Name": "Identity",
+        "Value": "executive@example.test"
+      },
+      {
+        "Name": "User",
+        "Value": "analyst@example.test"
+      },
+      {
+        "Name": "AccessRights",
+        "Value": "FullAccess"
+      }
+    ]
+  },
+  "note": "Observed self-delegation of FullAccess to the executive mailbox."
+}

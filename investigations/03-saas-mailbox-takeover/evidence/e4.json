@@ -1,0 +1,33 @@
+{
+  "id": "e4",
+  "synthetic": true,
+  "source": "m365-audit",
+  "observed_at": "2026-11-01T09:30:00Z",
+  "query": "queries/opensearch.json",
+  "event": {
+    "CreationTime": "2026-11-01T09:30:00Z",
+    "Id": "00000000-0000-4000-8000-000000010203",
+    "Operation": "New-InboxRule",
+    "UserId": "analyst@example.test",
+    "Workload": "Exchange",
+    "RecordType": 2,
+    "ClientIP": "203.0.113.11",
+    "ObjectId": "executive@example.test\\Inbox\\Forward invoices",
+    "ResultStatus": "Success",
+    "Parameters": [
+      {
+        "Name": "Name",
+        "Value": "Forward invoices"
+      },
+      {
+        "Name": "SubjectContainsWords",
+        "Value": "invoice"
+      },
+      {
+        "Name": "ForwardTo",
+        "Value": "external@example.net"
+      }
+    ]
+  },
+  "note": "Observed external forwarding rule on the executive mailbox."
+}

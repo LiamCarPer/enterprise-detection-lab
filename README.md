@@ -4,7 +4,7 @@
 
 A reproducible local lab for developing and testing enterprise detection content across identity, endpoint, cloud, SaaS, network, and Kubernetes telemetry.
 
-**Status:** Alpha. Identity, endpoint, cloud, SaaS, network, and Kubernetes telemetry ingestion, seventeen core detections, two investigations, CI, and aggregated fixture metrics are complete. The next focus is broader detection coverage and automation.
+**Status:** Alpha. Identity, endpoint, cloud, SaaS, network, and Kubernetes telemetry ingestion, seventeen core detections, three investigations, CI, and aggregated fixture metrics are complete. The next focus is broader detection coverage and automation.
 
 [Quick start](#quick-start) · [Architecture](#architecture) · [Project status](#project-status) · [Documentation](#documentation)
 
@@ -195,6 +195,7 @@ A detection is **Tested** when its positive, negative, and benign fixtures pass 
 |---|---|---|---|
 | [`INV-001`](investigations/01-identity-to-cloud/) | Identity, cloud | Identity persistence to cloud credential access | Tested |
 | [`INV-002`](investigations/02-endpoint-to-cloud/) | Endpoint, cloud | Endpoint execution to cloud persistence | Tested |
+| [`INV-003`](investigations/03-saas-mailbox-takeover/) | Identity, SaaS | SaaS mailbox takeover to external forwarding | Tested |
 
 Investigations are **Tested** when the timeline, evidence, queries, response, and linked detections are complete and the lab query returns the observed evidence.
 
@@ -229,8 +230,8 @@ Investigations are **Tested** when the timeline, evidence, queries, response, an
 | Detection packages | In progress | Seventeen tested detections; production validation pending |
 | Detection testing | Complete | Normalized fixture replay, temporary-index isolation, pass/fail gate, and metrics generation |
 | Tested detections | 17 of 17 | All core detections pass fixture replay |
-| Investigations | Complete | Two tested investigation packages with hashed evidence |
-| Tested investigations | 2 of 2 | `INV-001` and `INV-002` pass evidence and detection-link checks |
+| Investigations | Complete | Three tested investigation packages with hashed evidence |
+| Tested investigations | 3 of 3 | `INV-001`, `INV-002`, and `INV-003` pass evidence and detection-link checks |
 | CI | Complete | GitHub Actions quality and OpenSearch-backed test jobs |
 | Metrics reporting | Complete | Aggregated fixture metrics for seventeen detections in `reports/detection-metrics.md` |
 | Benign baseline | Complete | Sixteen corpora, including two tuning studies and five scenario-level correlation baselines |

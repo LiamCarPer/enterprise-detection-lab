@@ -198,15 +198,23 @@ def test_saas_ingest_is_idempotent_and_queryable() -> None:
             index_prefix=TEST_PREFIX,
         )
         assert [result.source for result in first] == ["m365-audit", "github-audit"]
-        assert all(result.read == 2 for result in first)
-        assert all(result.unique == 2 for result in first)
-        assert all(result.written == 2 for result in first)
-        assert all(result.counts == {result.indices[0]: 2} for result in first)
+        assert [result.read for result in first] == [6, 2]
+        assert [result.unique for result in first] == [6, 2]
+        assert [result.written for result in first] == [6, 2]
+        assert first[0].counts == {
+            first[0].indices[0]: 4,
+            first[0].indices[1]: 2,
+        }
+        assert first[1].counts == {first[1].indices[0]: 2}
 
         m365_hits = _search("m365-audit")
-        assert len(m365_hits) == 2
+        assert len(m365_hits) == 6
         m365_ids = sorted(str(hit["_id"]) for hit in m365_hits)
-        m365_event = m365_hits[0]["_source"]
+        m365_event = next(
+            hit["_source"]
+            for hit in m365_hits
+            if hit["_source"]["event_time"] == "2026-11-25T09:00:00Z"
+        )
         assert m365_event["event_class"] == "mailbox"
         assert m365_event["action"] == "New-InboxRule"
         assert m365_event["user"] == "analyst@example.test"
@@ -231,7 +239,8 @@ def test_saas_ingest_is_idempotent_and_queryable() -> None:
             ingest_time=datetime(2026, 11, 26, 12, 0, tzinfo=UTC),
             index_prefix=TEST_PREFIX,
         )
-        assert all(result.counts == {result.indices[0]: 2} for result in second)
+        assert second[0].counts == first[0].counts
+        assert second[1].counts == first[1].counts
         assert sorted(str(hit["_id"]) for hit in _search("m365-audit")) == m365_ids
         assert sorted(str(hit["_id"]) for hit in _search("github-audit")) == github_ids
     finally:

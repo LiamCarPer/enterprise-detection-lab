@@ -716,7 +716,10 @@ def test_ingest_saas_json() -> None:
     assert result.exit_code == 0
     payload = json.loads(result.stdout)
     assert [item["source"] for item in payload] == ["m365-audit", "github-audit"]
-    assert payload[0]["indices"] == ["edl-events-m365-audit-2026.11.25"]
+    assert payload[0]["indices"] == [
+        "edl-events-m365-audit-2026.11.01",
+        "edl-events-m365-audit-2026.11.25",
+    ]
     assert payload[1]["indices"] == ["edl-events-github-audit-2026.11.25"]
 
 

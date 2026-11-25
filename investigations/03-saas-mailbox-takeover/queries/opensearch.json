@@ -1,0 +1,23 @@
+{
+  "size": 50,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "range": {
+            "event_time": {
+              "gte": "2026-11-01T08:45:00Z",
+              "lte": "2026-11-01T10:00:00Z"
+            }
+          }
+        }
+      ],
+      "should": [
+        { "term": { "user": "analyst@example.test" } },
+        { "term": { "mailbox": "executive@example.test" } },
+        { "term": { "src_ip": "203.0.113.11" } }
+      ],
+      "minimum_should_match": 1
+    }
+  }
+}

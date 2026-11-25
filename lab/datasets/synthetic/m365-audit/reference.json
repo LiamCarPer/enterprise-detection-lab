@@ -10,9 +10,18 @@
     "ObjectId": "analyst@example.test\\Inbox\\ForwardExternal",
     "ResultStatus": "Success",
     "Parameters": [
-      {"Name": "Name", "Value": "Forward external invoices"},
-      {"Name": "ForwardTo", "Value": "external@example.net"},
-      {"Name": "SubjectContainsWords", "Value": "invoice"}
+      {
+        "Name": "Name",
+        "Value": "Forward external invoices"
+      },
+      {
+        "Name": "ForwardTo",
+        "Value": "external@example.net"
+      },
+      {
+        "Name": "SubjectContainsWords",
+        "Value": "invoice"
+      }
     ]
   },
   {
@@ -25,5 +34,93 @@
     "ClientIP": "198.51.100.23",
     "ObjectId": "https://example.sharepoint.com/sites/lab/Shared Documents/report.xlsx",
     "ResultStatus": "Success"
+  },
+  {
+    "CreationTime": "2026-11-01T09:10:00Z",
+    "Id": "00000000-0000-4000-8000-000000010201",
+    "Operation": "Add-MailboxPermission",
+    "UserId": "analyst@example.test",
+    "Workload": "Exchange",
+    "RecordType": 2,
+    "ClientIP": "203.0.113.11",
+    "ObjectId": "executive@example.test",
+    "ResultStatus": "Success",
+    "Parameters": [
+      {
+        "Name": "Identity",
+        "Value": "executive@example.test"
+      },
+      {
+        "Name": "User",
+        "Value": "analyst@example.test"
+      },
+      {
+        "Name": "AccessRights",
+        "Value": "FullAccess"
+      }
+    ]
+  },
+  {
+    "CreationTime": "2026-11-01T09:20:00Z",
+    "Id": "00000000-0000-4000-8000-000000010202",
+    "Operation": "MailItemsAccessed",
+    "UserId": "analyst@example.test",
+    "Workload": "Exchange",
+    "RecordType": 2,
+    "ClientIP": "203.0.113.11",
+    "ObjectId": "executive@example.test\\Inbox",
+    "ResultStatus": "Success",
+    "Parameters": [
+      {
+        "Name": "MailAccessType",
+        "Value": "Bind"
+      }
+    ]
+  },
+  {
+    "CreationTime": "2026-11-01T09:30:00Z",
+    "Id": "00000000-0000-4000-8000-000000010203",
+    "Operation": "New-InboxRule",
+    "UserId": "analyst@example.test",
+    "Workload": "Exchange",
+    "RecordType": 2,
+    "ClientIP": "203.0.113.11",
+    "ObjectId": "executive@example.test\\Inbox\\Forward invoices",
+    "ResultStatus": "Success",
+    "Parameters": [
+      {
+        "Name": "Name",
+        "Value": "Forward invoices"
+      },
+      {
+        "Name": "SubjectContainsWords",
+        "Value": "invoice"
+      },
+      {
+        "Name": "ForwardTo",
+        "Value": "external@example.net"
+      }
+    ]
+  },
+  {
+    "CreationTime": "2026-11-01T09:40:00Z",
+    "Id": "00000000-0000-4000-8000-000000010204",
+    "Operation": "Set-InboxRule",
+    "UserId": "analyst@example.test",
+    "Workload": "Exchange",
+    "RecordType": 2,
+    "ClientIP": "203.0.113.11",
+    "ObjectId": "executive@example.test\\Inbox\\Forward invoices",
+    "ResultStatus": "Success",
+    "Parameters": [
+      {
+        "Name": "Name",
+        "Value": "Forward invoices"
+      },
+      {
+        "Name": "RedirectTo",
+        "Value": "collector@example.org"
+      }
+    ]
   }
 ]

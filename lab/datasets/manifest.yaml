@@ -41,7 +41,7 @@ datasets:
     synthetic: true
     license: synthetic
     provenance: Generated for this repository. No real users, tenants, or IPs.
-    sha256: 58d6ad6fd6ca42c9de3cae1e7896e150fccf1205d3b2758dfe13abefc30f1b3e
+    sha256: e19662d00ad6a3a3b475cac7ab2c96a9285bb6fde1e435f2cb61ecfc7a60817c
   - id: synthetic-github-audit-reference
     source: github-audit
     path: lab/datasets/synthetic/github-audit/reference.json

@@ -15,6 +15,7 @@ pytestmark = pytest.mark.lab
 INVESTIGATIONS = (
     config.ROOT / "investigations" / "01-identity-to-cloud",
     config.ROOT / "investigations" / "02-endpoint-to-cloud",
+    config.ROOT / "investigations" / "03-saas-mailbox-takeover",
 )
 EXPECTED_DETECTIONS = {
     "INV-001": {
@@ -27,6 +28,12 @@ EXPECTED_DETECTIONS = {
         "DET-END-001",
         "DET-CLD-001",
         "DET-CLD-002",
+    },
+    "INV-003": {
+        "DET-SAA-001",
+        "DET-SAA-003",
+        "DET-SAA-005",
+        "DET-SAA-006",
     },
 }
 

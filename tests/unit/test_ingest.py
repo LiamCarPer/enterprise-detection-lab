@@ -1194,8 +1194,11 @@ def test_load_saas_sources_rejects_non_saas() -> None:
 def test_ingest_saas_dry_run_uses_repository_samples() -> None:
     results = ingest_saas(dry_run=True)
     assert [result.source for result in results] == ["m365-audit", "github-audit"]
-    assert all(result.read == 2 for result in results)
-    assert results[0].indices == ("edl-events-m365-audit-2026.11.25",)
+    assert [result.read for result in results] == [6, 2]
+    assert results[0].indices == (
+        "edl-events-m365-audit-2026.11.01",
+        "edl-events-m365-audit-2026.11.25",
+    )
     assert results[1].indices == ("edl-events-github-audit-2026.11.25",)
 
 

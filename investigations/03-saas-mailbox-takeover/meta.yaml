@@ -1,0 +1,94 @@
+id: INV-003
+title: SaaS Mailbox Takeover to External Forwarding
+version: 1.0.0
+status: tested
+domains:
+  - identity
+  - saas
+scenario: A medium-risk single-factor sign-in is followed by self-delegation, mailbox access, an external forwarding rule, and a forwarding-rule update for the same analyst on an executive mailbox.
+hypothesis: An identity compromise may have been used to grant mailbox access, collect email, and establish durable external forwarding while hiding messages from the mailbox owner.
+detections:
+  - DET-SAA-001
+  - DET-SAA-003
+  - DET-SAA-005
+  - DET-SAA-006
+owner: detection-engineering
+created: "2026-11-25"
+updated: "2026-11-25"
+evidence:
+  - id: e1
+    type: event
+    source: entra-signin
+    path: evidence/e1.json
+    provenance: Synthetic event from lab/datasets/synthetic/entra-signin/reference.json
+    description: Medium-risk single-factor sign-in for analyst@example.test at 08:55 UTC.
+    sha256: 9fcdb8728bdd5286408441645d3d47d6c5d05b153fd2ef96a8efdf1e449af477
+  - id: e2
+    type: event
+    source: m365-audit
+    path: evidence/e2.json
+    provenance: Synthetic event from lab/datasets/synthetic/m365-audit/reference.json
+    description: FullAccess self-delegation to the executive mailbox at 09:10 UTC.
+    sha256: 0642e22f6a9eaa9c1d9d5e10dd37eba1a3b8511b7265b6b26682f869c3b95146
+  - id: e3
+    type: event
+    source: m365-audit
+    path: evidence/e3.json
+    provenance: Synthetic event from lab/datasets/synthetic/m365-audit/reference.json
+    description: Mailbox access to the executive inbox at 09:20 UTC.
+    sha256: 3c1333137f2307aaedb859189f9427bca4d63c84274847e4326b7880ee57cd1e
+  - id: e4
+    type: event
+    source: m365-audit
+    path: evidence/e4.json
+    provenance: Synthetic event from lab/datasets/synthetic/m365-audit/reference.json
+    description: External forwarding rule created on the executive mailbox at 09:30 UTC.
+    sha256: 129fef000e204a35525c13d622917a6ef59e2e87a0705d45dc4b6b50b28a7cba
+  - id: e5
+    type: event
+    source: m365-audit
+    path: evidence/e5.json
+    provenance: Synthetic event from lab/datasets/synthetic/m365-audit/reference.json
+    description: Forwarding rule updated to a second external recipient at 09:40 UTC.
+    sha256: 948b6dc1395663b8020713c9e390649f40a66405fd6fd80154e1eeae3299690d
+timeline:
+  - timestamp: "2026-11-01T08:55:00Z"
+    event: Medium-risk single-factor sign-in for analyst@example.test
+    source: entra-signin
+    evidence_id: e1
+  - timestamp: "2026-11-01T09:10:00Z"
+    event: FullAccess self-delegation to executive@example.test
+    source: m365-audit
+    evidence_id: e2
+  - timestamp: "2026-11-01T09:20:00Z"
+    event: Mailbox access to executive@example.test\Inbox
+    source: m365-audit
+    evidence_id: e3
+  - timestamp: "2026-11-01T09:30:00Z"
+    event: External forwarding rule created on the executive mailbox
+    source: m365-audit
+    evidence_id: e4
+  - timestamp: "2026-11-01T09:40:00Z"
+    event: Forwarding rule updated to a second external recipient
+    source: m365-audit
+    evidence_id: e5
+lessons:
+  - The sign-in, delegation, access, and forwarding events share the analyst identity and source IP, but no token identifier proves a single session.
+  - The investigation does not observe outbound message delivery because message-trace telemetry is not yet in scope.
+  - Self-delegation is a high-signal step and should be reviewed against approved mailbox administration.
+  - The forwarding-rule update shows that a single rule-creation check is insufficient; updates need the same scrutiny.
+  - The lab lacks mailbox-owner confirmation and data-loss-prevention context for the executive mailbox.
+response:
+  - Revoke the analyst sessions and refresh tokens.
+  - Remove the self-delegation and the external forwarding rule after preserving evidence.
+  - Review the executive mailbox for message access, deletion, and forwarding activity.
+  - Reset the analyst credentials and require MFA re-registration.
+  - Review mailbox audit settings and forwarding controls for the affected mailbox.
+  - Confirm no other mailboxes were delegated or forwarded by the same identity.
+references:
+  - https://attack.mitre.org/techniques/T1078/
+  - https://attack.mitre.org/techniques/T1098/
+  - https://attack.mitre.org/techniques/T1114/002/
+  - https://attack.mitre.org/techniques/T1114/003/
+executive_summary: A synthetic SaaS chain shows a medium-risk sign-in, FullAccess self-delegation, mailbox access, and two external forwarding-rule changes on an executive mailbox. The events are linked by analyst identity, source IP, mailbox, and timing; outbound delivery is not observed in the lab.
+notes: Synthetic investigation built from the local lab datasets. No production or customer data.
