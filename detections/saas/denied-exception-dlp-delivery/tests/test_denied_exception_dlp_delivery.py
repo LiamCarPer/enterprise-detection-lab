@@ -9,8 +9,8 @@ from edl.telemetry import load_sources
 
 PACKAGE = Path(__file__).resolve().parents[1]
 FIXTURE_KINDS = ("positive", "negative", "benign")
-EXPECTED_FIXTURE_COUNTS = {"positive": 6, "negative": 11, "benign": 3}
-EXPECTED_SCENARIO_COUNTS = {"positive": 2, "negative": 4, "benign": 2}
+EXPECTED_FIXTURE_COUNTS = {"positive": 6, "negative": 15, "benign": 3}
+EXPECTED_SCENARIO_COUNTS = {"positive": 2, "negative": 5, "benign": 2}
 
 
 def test_query_returns_all_correlation_steps() -> None:
@@ -21,21 +21,24 @@ def test_query_returns_all_correlation_steps() -> None:
     assert '"event_class": "approval"' in query
     assert '"event_class": "deliver"' in query
     assert '"event_class": "dlp_alert"' in query
-    assert '"decision": "denied"' in query
+    assert '"decision": [' in query
+    assert '"denied"' in query
+    assert '"approved"' in query
     assert "external_recipient" in query
 
 
-def test_correlation_metadata_uses_three_steps_and_carries_message_identity() -> None:
+def test_correlation_metadata_uses_required_and_exclusion_steps() -> None:
     meta = (PACKAGE / "meta.yaml").read_text()
     assert "window_seconds: 86400" in meta
     assert "group_by:\n    - delivery_recipient" in meta
     assert "source: servicenow-approval" in meta
     assert "source: exchange-message-trace" in meta
     assert "source: m365-dlp" in meta
-    assert meta.count("        - mailbox") == 2
-    assert meta.count("        - delivery_recipient") == 2
+    assert meta.count("        - mailbox") == 3
+    assert meta.count("        - delivery_recipient") == 3
     assert meta.count("        - message_id") == 3
-    assert meta.count("        - content_scope") == 2
+    assert meta.count("        - content_scope") == 3
+    assert meta.count("exclude: true") == 1
 
 
 def test_fixtures_use_paired_scenarios() -> None:
@@ -96,6 +99,9 @@ def test_denied_chain_matches_and_approved_or_mismatched_chain_does_not() -> Non
 
     scope_mismatch = [case for case in package.cases if case.scenario == "neg-4"]
     assert not _correlation_hit(scope_mismatch, package.correlation)  # type: ignore[arg-type]
+
+    superseded = [case for case in package.cases if case.scenario == "neg-5"]
+    assert not _correlation_hit(superseded, package.correlation)  # type: ignore[arg-type]
 
 
 def test_missing_alert_message_identity_blocks_the_chain() -> None:

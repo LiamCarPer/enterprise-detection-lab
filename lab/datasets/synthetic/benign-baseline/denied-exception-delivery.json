@@ -355,5 +355,90 @@
     "source": "m365-dlp",
     "synthetic": true,
     "scenario": "scope-mismatch"
+  },
+  {
+    "event": {
+      "sys_id": "00000000-0000-4000-8000-000000090117",
+      "number": "REQ0009117",
+      "sys_updated_on": "2026-11-18T14:00:00Z",
+      "state": "Closed",
+      "approval": "Denied",
+      "requested_for": "analyst@example.test",
+      "requested_by": "analyst@example.test",
+      "approver": "data-owner@example.test",
+      "recipient": "partner@example.org",
+      "message_id": "<20261118143000.917@example.org>",
+      "content_scope": "customer-dataset.csv",
+      "short_description": "Customer dataset export"
+    },
+    "source": "servicenow-approval",
+    "synthetic": true,
+    "scenario": "superseded-approval"
+  },
+  {
+    "event": {
+      "Organization": "example.onmicrosoft.test",
+      "MessageTraceId": "00000000-0000-4000-8000-000000090118",
+      "MessageId": "<20261118143000.917@example.org>",
+      "Date": "2026-11-18T14:30:00Z",
+      "Event": "DELIVER",
+      "Source": "SMTP",
+      "SenderAddress": "analyst@example.test",
+      "RecipientAddress": "partner@example.org",
+      "Subject": "Customer dataset export",
+      "Status": "Delivered",
+      "Directionality": "Outbound",
+      "Action": "Deliver",
+      "Detail": "Message delivered to external recipient partner@example.org",
+      "Size": 51200,
+      "FromIP": "203.0.113.10",
+      "ToIP": "198.51.100.44",
+      "RelatedRecipientAddress": "analyst@example.test",
+      "TenantId": "00000000-0000-4000-8000-000000009001",
+      "Reference": "ref-baseline-denied-918",
+      "Index": 7
+    },
+    "source": "exchange-message-trace",
+    "synthetic": true,
+    "scenario": "superseded-approval"
+  },
+  {
+    "event": {
+      "AlertId": "00000000-0000-4000-8000-000000090119",
+      "CreationTime": "2026-11-18T14:32:00Z",
+      "PolicyName": "External customer identifiers",
+      "Severity": "High",
+      "Status": "Active",
+      "User": "analyst@example.test",
+      "Workload": "Exchange",
+      "Recipient": "partner@example.org",
+      "Subject": "Customer dataset export",
+      "MessageId": "<20261118143000.917@example.org>",
+      "ContentScope": "customer-dataset.csv",
+      "DetectionMethod": "DLP",
+      "Action": "Notify"
+    },
+    "source": "m365-dlp",
+    "synthetic": true,
+    "scenario": "superseded-approval"
+  },
+  {
+    "event": {
+      "sys_id": "00000000-0000-4000-8000-000000090120",
+      "number": "REQ0009120",
+      "sys_updated_on": "2026-11-18T15:00:00Z",
+      "state": "Closed",
+      "approval": "Approved",
+      "requested_for": "analyst@example.test",
+      "requested_by": "analyst@example.test",
+      "approver": "data-owner@example.test",
+      "recipient": "partner@example.org",
+      "message_id": "<20261118150000.920@example.org>",
+      "content_scope": "customer-dataset.csv",
+      "short_description": "Customer dataset export"
+    },
+    "source": "servicenow-approval",
+    "synthetic": true,
+    "scenario": "superseded-approval"
   }
 ]

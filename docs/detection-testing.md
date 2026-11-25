@@ -125,6 +125,14 @@ between list-valued fields across steps. `DET-SAA-007` uses this for
 `delivery_recipients`, so a rule that forwards to several external addresses
 matches a delivery to any one of them.
 
+Steps may set `exclude: true` after the required steps. An exclusion event
+suppresses a sequence when it occurs after the first required event and within
+the window, and when its declared fields match values established by the
+required steps. `DET-SAA-009` uses this for a later approved request with the
+same mailbox, recipient, and content scope. Exclusion steps must follow the
+required steps, and every field they declare must be established by an earlier
+step.
+
 Steps may also declare optional `filters` to narrow the events that can satisfy
 that step. Filters are evaluated after the native query and before grouping and
 `match_fields`. They only remove candidate events; they never add events that

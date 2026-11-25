@@ -5,7 +5,7 @@ status: tested
 domain: saas
 severity: critical
 hypothesis: An explicit denial of an external-sharing exception followed by delivery to the same recipient and a DLP match indicates that the data-handling decision was bypassed.
-description: Correlates a denied ServiceNow approval, a successful external Exchange Online delivery to the same mailbox and recipient, and an active high-severity Purview DLP alert for the same message and content scope within 24 hours.
+description: Correlates a denied ServiceNow approval, a successful external Exchange Online delivery to the same mailbox and recipient, and an active high-severity Purview DLP alert for the same message and content scope within 24 hours. A later approved request for the same mailbox, recipient, and content scope suppresses the sequence.
 owner: detection-engineering
 created: "2026-11-25"
 updated: "2026-11-25"
@@ -97,9 +97,19 @@ correlation:
       match_fields:
         - message_id
         - content_scope
+    - source: servicenow-approval
+      event_class: approval
+      exclude: true
+      filters:
+        all:
+          decision: approved
+      match_fields:
+        - mailbox
+        - delivery_recipient
+        - content_scope
 tests:
   positive: 6
-  negative: 11
+  negative: 15
   benign: 3
 false_positives:
   - An approval was denied for one dataset but a later request for the same content was approved.

@@ -2,7 +2,7 @@
 
 ## Alert meaning
 
-A ServiceNow approval denied an external-sharing request, then the same mailbox delivered a message to the same recipient, and an active high-severity Purview DLP alert matched that message and content scope within 24 hours. The sequence indicates that a denied data-handling decision was bypassed.
+A ServiceNow approval denied an external-sharing request, then the same mailbox delivered a message to the same recipient, and an active high-severity Purview DLP alert matched that message and content scope within 24 hours. The sequence indicates that a denied data-handling decision was bypassed. A later approved request for the same mailbox, recipient, and content scope suppresses the alert.
 
 ## Triage
 

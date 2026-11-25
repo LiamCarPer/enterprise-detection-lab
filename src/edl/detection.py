@@ -69,6 +69,7 @@ class CorrelationStep:
     match_fields: tuple[str, ...] = ()
     match_any_fields: tuple[str, ...] = ()
     filters: StepFilters = StepFilters()
+    exclude: bool = False
 
 
 @dataclass(frozen=True)
@@ -423,6 +424,9 @@ def _load_correlation(
     if not isinstance(raw_steps, list) or len(raw_steps) < 2:
         raise DetectionError(f"{path}: correlation.steps must contain at least two steps")
     steps: list[CorrelationStep] = []
+    required_match_fields: set[str] = set()
+    required_any_fields: set[str] = set()
+    saw_exclude = False
     for position, item in enumerate(raw_steps, start=1):
         if not isinstance(item, Mapping):
             raise DetectionError(f"{path}: correlation step {position} must be an object")
@@ -449,6 +453,15 @@ def _load_correlation(
             raise DetectionError(
                 f"{path}: correlation step {position} match_fields must be a unique string array"
             )
+        exclude = item.get("exclude", False)
+        if not isinstance(exclude, bool):
+            raise DetectionError(f"{path}: correlation step {position} exclude must be a boolean")
+        if exclude:
+            saw_exclude = True
+        elif saw_exclude:
+            raise DetectionError(
+                f"{path}: correlation non-exclude steps must precede exclude steps"
+            )
         raw_match_any = item.get("match_any_fields", [])
         if (
             not isinstance(raw_match_any, list)
@@ -465,15 +478,36 @@ def _load_correlation(
             if raw_filters is not None
             else StepFilters()
         )
-        steps.append(
-            CorrelationStep(
-                source=source,
-                event_class=event_class,
-                match_fields=tuple(raw_match),
-                match_any_fields=tuple(raw_match_any),
-                filters=filters,
-            )
+        step = CorrelationStep(
+            source=source,
+            event_class=event_class,
+            match_fields=tuple(raw_match),
+            match_any_fields=tuple(raw_match_any),
+            filters=filters,
+            exclude=exclude,
         )
+        if not exclude:
+            required_match_fields.update(step.match_fields)
+            required_any_fields.update(step.match_any_fields)
+        steps.append(step)
+
+    if not any(not step.exclude for step in steps):
+        raise DetectionError(f"{path}: correlation must contain at least one non-exclude step")
+    for position, step in enumerate(steps, start=1):
+        if not step.exclude:
+            continue
+        unknown = set(step.match_fields) - required_match_fields
+        if unknown:
+            raise DetectionError(
+                f"{path}: correlation exclusion step {position} match_fields must be "
+                f"established by earlier steps: {', '.join(sorted(unknown))}"
+            )
+        unknown_any = set(step.match_any_fields) - required_any_fields
+        if unknown_any:
+            raise DetectionError(
+                f"{path}: correlation exclusion step {position} match_any_fields must be "
+                f"established by earlier steps: {', '.join(sorted(unknown_any))}"
+            )
 
     return CorrelationSpec(
         window_seconds=window,
@@ -675,18 +709,78 @@ def _match_values(value: Any) -> set[Any]:
     return {value}
 
 
+def _values_match_targets(
+    values: Mapping[str, Any],
+    any_values: Mapping[str, set[Any]],
+    targets: Mapping[str, Any],
+    any_targets: Mapping[str, set[Any]],
+) -> bool:
+    if any(field in targets and targets[field] != value for field, value in values.items()):
+        return False
+    return not any(
+        field in any_targets and not (any_targets[field] & candidates)
+        for field, candidates in any_values.items()
+    )
+
+
+def _excluded(
+    ordered: Sequence[Sequence[DetectionCase]],
+    spec: CorrelationSpec,
+    exclude_indices: Sequence[int],
+    anchor_time: datetime | None,
+    targets: Mapping[str, Any],
+    any_targets: Mapping[str, set[Any]],
+) -> bool:
+    for step_index in exclude_indices:
+        step = spec.steps[step_index]
+        for case in ordered[step_index]:
+            event_time = case.event.event_time
+            if anchor_time is not None and (
+                event_time < anchor_time
+                or event_time > anchor_time + timedelta(seconds=spec.window_seconds)
+            ):
+                continue
+            values = {
+                field: _lookup_document(case.event.document, field) for field in step.match_fields
+            }
+            if any(value is None or value == "" for value in values.values()):
+                continue
+            any_values = {
+                field: _match_values(_lookup_document(case.event.document, field))
+                for field in step.match_any_fields
+            }
+            if any(not candidates for candidates in any_values.values()):
+                continue
+            if not _values_match_targets(values, any_values, targets, any_targets):
+                continue
+            return True
+    return False
+
+
 def _match_steps(
     ordered: Sequence[Sequence[DetectionCase]],
     spec: CorrelationSpec,
 ) -> bool:
+    required_indices = tuple(index for index, step in enumerate(spec.steps) if not step.exclude)
+    exclude_indices = tuple(index for index, step in enumerate(spec.steps) if step.exclude)
+
     def extend(
-        step_index: int,
+        position: int,
         current_time: datetime | None,
+        anchor_time: datetime | None,
         targets: dict[str, Any],
         any_targets: dict[str, set[Any]],
     ) -> bool:
-        if step_index == len(ordered):
-            return True
+        if position == len(required_indices):
+            return not _excluded(
+                ordered,
+                spec,
+                exclude_indices,
+                anchor_time,
+                targets,
+                any_targets,
+            )
+        step_index = required_indices[position]
         step = spec.steps[step_index]
         for case in ordered[step_index]:
             event_time = case.event.event_time
@@ -700,31 +794,27 @@ def _match_steps(
             }
             if any(value is None or value == "" for value in values.values()):
                 continue
-            if any(field in targets and targets[field] != value for field, value in values.items()):
-                continue
             any_values = {
                 field: _match_values(_lookup_document(case.event.document, field))
                 for field in step.match_any_fields
             }
-            if any(not values for values in any_values.values()):
+            if any(not candidates for candidates in any_values.values()):
                 continue
-            if any(
-                field in any_targets and not (any_targets[field] & values)
-                for field, values in any_values.items()
-            ):
+            if not _values_match_targets(values, any_values, targets, any_targets):
                 continue
             next_targets = dict(targets)
             next_targets.update(values)
             next_any_targets: dict[str, set[Any]] = {
-                field: set(values) for field, values in any_targets.items()
+                field: set(candidates) for field, candidates in any_targets.items()
             }
-            for field, candidate_values in any_values.items():
-                next_any_targets[field] = next_any_targets.get(field, set()) | candidate_values
-            if extend(step_index + 1, event_time, next_targets, next_any_targets):
+            for field, candidates in any_values.items():
+                next_any_targets[field] = next_any_targets.get(field, set()) | candidates
+            next_anchor = anchor_time if anchor_time is not None else event_time
+            if extend(position + 1, event_time, next_anchor, next_targets, next_any_targets):
                 return True
         return False
 
-    return extend(0, None, {}, {})
+    return extend(0, None, None, {}, {})
 
 
 def _correlation_hit(cases: Sequence[DetectionCase], spec: CorrelationSpec) -> bool:

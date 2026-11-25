@@ -300,6 +300,10 @@
                   "type": "string",
                   "minLength": 1
                 }
+              },
+              "exclude": {
+                "type": "boolean",
+                "description": "When true, a matching event suppresses the sequence."
               }
             }
           }

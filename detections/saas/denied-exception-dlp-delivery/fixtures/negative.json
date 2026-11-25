@@ -253,5 +253,94 @@
     "synthetic": true,
     "scenario": "neg-4",
     "note": "Alert content scope does not match the denied request"
+  },
+  {
+    "event": {
+      "sys_id": "00000000-0000-4000-8000-000000080212",
+      "number": "REQ0008212",
+      "sys_updated_on": "2026-11-23T18:00:00Z",
+      "state": "Closed",
+      "approval": "Denied",
+      "requested_for": "analyst@example.test",
+      "requested_by": "analyst@example.test",
+      "approver": "data-owner@example.test",
+      "recipient": "partner@example.org",
+      "message_id": "<20261123180000.815@example.org>",
+      "content_scope": "customer-dataset.csv",
+      "short_description": "Customer dataset export"
+    },
+    "source": "servicenow-approval",
+    "synthetic": true,
+    "scenario": "neg-5",
+    "note": "Initial request denied"
+  },
+  {
+    "event": {
+      "Organization": "example.onmicrosoft.test",
+      "MessageTraceId": "00000000-0000-4000-8000-000000080213",
+      "MessageId": "<20261123180000.815@example.org>",
+      "Date": "2026-11-23T18:30:00Z",
+      "Event": "DELIVER",
+      "Source": "SMTP",
+      "SenderAddress": "analyst@example.test",
+      "RecipientAddress": "partner@example.org",
+      "Subject": "Customer dataset export",
+      "Status": "Delivered",
+      "Directionality": "Outbound",
+      "Action": "Deliver",
+      "Detail": "Message delivered to external recipient partner@example.org",
+      "Size": 98304,
+      "FromIP": "203.0.113.10",
+      "ToIP": "198.51.100.44",
+      "RelatedRecipientAddress": "analyst@example.test",
+      "TenantId": "00000000-0000-4000-8000-000000009001",
+      "Reference": "ref-denied-exception-815",
+      "Index": 5
+    },
+    "source": "exchange-message-trace",
+    "synthetic": true,
+    "scenario": "neg-5",
+    "note": "Delivery after the denial"
+  },
+  {
+    "event": {
+      "AlertId": "00000000-0000-4000-8000-000000080214",
+      "CreationTime": "2026-11-23T18:32:00Z",
+      "PolicyName": "External customer identifiers",
+      "Severity": "High",
+      "Status": "Active",
+      "User": "analyst@example.test",
+      "Workload": "Exchange",
+      "Recipient": "partner@example.org",
+      "Subject": "Customer dataset export",
+      "MessageId": "<20261123180000.815@example.org>",
+      "ContentScope": "customer-dataset.csv",
+      "DetectionMethod": "DLP",
+      "Action": "Notify"
+    },
+    "source": "m365-dlp",
+    "synthetic": true,
+    "scenario": "neg-5",
+    "note": "DLP alert for the denied delivery"
+  },
+  {
+    "event": {
+      "sys_id": "00000000-0000-4000-8000-000000080215",
+      "number": "REQ0008215",
+      "sys_updated_on": "2026-11-23T19:00:00Z",
+      "state": "Closed",
+      "approval": "Approved",
+      "requested_for": "analyst@example.test",
+      "requested_by": "analyst@example.test",
+      "approver": "data-owner@example.test",
+      "recipient": "partner@example.org",
+      "message_id": "<20261123190000.816@example.org>",
+      "content_scope": "customer-dataset.csv",
+      "short_description": "Customer dataset export"
+    },
+    "source": "servicenow-approval",
+    "synthetic": true,
+    "scenario": "neg-5",
+    "note": "Later approval for the same content and recipient"
   }
 ]

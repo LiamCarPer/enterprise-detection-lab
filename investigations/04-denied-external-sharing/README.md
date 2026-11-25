@@ -29,7 +29,7 @@ A denied external-sharing decision followed by delivery to the same recipient an
 
 ## Inference boundary
 
-The observed events are synthetic lab records. The approval record shows a denial for the same mailbox, recipient, message identifier, and content scope that appear in the delivery and DLP alert. The DLP alert confirms a sensitive-content policy match on that message and scope. The evidence does not show whether the requester read the denial or whether a later approval covered the same content; those questions require the approval workflow and the data owner.
+The observed events are synthetic lab records. The approval record shows a denial for the same mailbox, recipient, message identifier, and content scope that appear in the delivery and DLP alert. The DLP alert confirms a sensitive-content policy match on that message and scope. The evidence does not show whether the requester read the denial. No later approval for the same content and recipient is present; a later approval would suppress the linked detection.
 
 ## Detections linked
 

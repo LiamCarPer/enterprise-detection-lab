@@ -7,7 +7,7 @@
             "filter": [
               { "term": { "source": "servicenow-approval" } },
               { "term": { "event_class": "approval" } },
-              { "term": { "decision": "denied" } }
+              { "terms": { "decision": ["denied", "approved"] } }
             ]
           }
         },

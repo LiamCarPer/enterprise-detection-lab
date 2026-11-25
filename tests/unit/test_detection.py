@@ -686,6 +686,86 @@ def test_correlation_metrics_use_scenario_unit(tmp_path: Path) -> None:
             "      event_class: audit\n",
             "match_any_fields",
         ),
+        (
+            "correlation:\n"
+            "  window_seconds: 1800\n"
+            "  group_by:\n"
+            "    - user\n"
+            "  steps:\n"
+            "    - source: entra-signin\n"
+            "      event_class: sign_in\n"
+            "      exclude: maybe\n"
+            "    - source: entra-audit\n"
+            "      event_class: audit\n",
+            "exclude",
+        ),
+        (
+            "correlation:\n"
+            "  window_seconds: 1800\n"
+            "  group_by:\n"
+            "    - user\n"
+            "  steps:\n"
+            "    - source: entra-signin\n"
+            "      event_class: sign_in\n"
+            "      exclude: true\n"
+            "    - source: entra-audit\n"
+            "      event_class: audit\n"
+            "    - source: entra-signin\n"
+            "      event_class: sign_in\n",
+            "precede",
+        ),
+        (
+            "correlation:\n"
+            "  window_seconds: 1800\n"
+            "  group_by:\n"
+            "    - user\n"
+            "  steps:\n"
+            "    - source: entra-signin\n"
+            "      event_class: sign_in\n"
+            "      match_fields:\n"
+            "        - user\n"
+            "    - source: entra-audit\n"
+            "      event_class: audit\n"
+            "    - source: entra-audit\n"
+            "      event_class: audit\n"
+            "      exclude: true\n"
+            "      match_fields:\n"
+            "        - mailbox\n",
+            "established",
+        ),
+        (
+            "correlation:\n"
+            "  window_seconds: 1800\n"
+            "  group_by:\n"
+            "    - user\n"
+            "  steps:\n"
+            "    - source: entra-signin\n"
+            "      event_class: sign_in\n"
+            "      match_any_fields:\n"
+            "        - user\n"
+            "    - source: entra-audit\n"
+            "      event_class: audit\n"
+            "    - source: entra-audit\n"
+            "      event_class: audit\n"
+            "      exclude: true\n"
+            "      match_any_fields:\n"
+            "        - mailbox\n",
+            "established",
+        ),
+        (
+            "correlation:\n"
+            "  window_seconds: 1800\n"
+            "  group_by:\n"
+            "    - user\n"
+            "  steps:\n"
+            "    - source: entra-signin\n"
+            "      event_class: sign_in\n"
+            "      exclude: true\n"
+            "    - source: entra-audit\n"
+            "      event_class: audit\n"
+            "      exclude: true\n",
+            "at least one non-exclude",
+        ),
     ],
 )
 def test_correlation_spec_validation(tmp_path: Path, replacement: str, message: str) -> None:
@@ -745,12 +825,16 @@ def _step(
     *,
     filters: StepFilters | None = None,
     match_fields: tuple[str, ...] = (),
+    match_any_fields: tuple[str, ...] = (),
+    exclude: bool = False,
 ) -> CorrelationStep:
     return CorrelationStep(
         source=source,
         event_class=event_class,
         match_fields=match_fields,
+        match_any_fields=match_any_fields,
         filters=filters or StepFilters(),
+        exclude=exclude,
     )
 
 
@@ -1069,6 +1153,176 @@ def test_correlation_window_rejects_step_beyond_previous_boundary() -> None:
     third = _make_case("third", "src", "third", base + timedelta(seconds=121), {"user": "u"})
 
     assert not _correlation_hit([first, second, third], spec)
+
+
+def test_correlation_exclusion_suppresses_sequence() -> None:
+    base = datetime(2026, 11, 1, tzinfo=UTC)
+    spec = _spec(
+        _step("src", "denied", match_fields=("mailbox", "scope")),
+        _step("src", "delivery", match_fields=("mailbox", "scope")),
+        _step(
+            "src",
+            "approval",
+            filters=_filters({"decision": "approved"}),
+            match_fields=("mailbox", "scope"),
+            exclude=True,
+        ),
+    )
+    denied = _make_case(
+        "denied",
+        "src",
+        "denied",
+        base,
+        {"user": "u", "mailbox": "target", "scope": "dataset"},
+    )
+    delivery = _make_case(
+        "delivery",
+        "src",
+        "delivery",
+        base + timedelta(seconds=10),
+        {"user": "u", "mailbox": "target", "scope": "dataset"},
+    )
+    approved = _make_case(
+        "approved",
+        "src",
+        "approval",
+        base + timedelta(seconds=20),
+        {"user": "u", "mailbox": "target", "scope": "dataset", "decision": "approved"},
+    )
+
+    assert _correlation_hit([denied, delivery], spec)
+    assert not _correlation_hit([denied, delivery, approved], spec)
+
+
+def test_correlation_exclusion_ignores_earlier_mismatched_and_late_events() -> None:
+    base = datetime(2026, 11, 1, tzinfo=UTC)
+    spec = _spec(
+        _step("src", "denied", match_fields=("mailbox", "scope")),
+        _step("src", "delivery", match_fields=("mailbox", "scope")),
+        _step(
+            "src",
+            "approval",
+            filters=_filters({"decision": "approved"}),
+            match_fields=("mailbox", "scope"),
+            exclude=True,
+        ),
+    )
+    denied = _make_case(
+        "denied",
+        "src",
+        "denied",
+        base,
+        {"user": "u", "mailbox": "target", "scope": "dataset"},
+    )
+    delivery = _make_case(
+        "delivery",
+        "src",
+        "delivery",
+        base + timedelta(seconds=10),
+        {"user": "u", "mailbox": "target", "scope": "dataset"},
+    )
+    earlier = _make_case(
+        "earlier",
+        "src",
+        "approval",
+        base - timedelta(seconds=1),
+        {"user": "u", "mailbox": "target", "scope": "dataset", "decision": "approved"},
+    )
+    other_scope = _make_case(
+        "other-scope",
+        "src",
+        "approval",
+        base + timedelta(seconds=20),
+        {"user": "u", "mailbox": "target", "scope": "other", "decision": "approved"},
+    )
+    late = _make_case(
+        "late",
+        "src",
+        "approval",
+        base + timedelta(seconds=61),
+        {"user": "u", "mailbox": "target", "scope": "dataset", "decision": "approved"},
+    )
+
+    assert _correlation_hit([denied, delivery, earlier], spec)
+    assert _correlation_hit([denied, delivery, other_scope], spec)
+    assert _correlation_hit([denied, delivery, late], spec)
+
+
+def test_correlation_exclusion_skips_events_missing_declared_fields() -> None:
+    base = datetime(2026, 11, 1, tzinfo=UTC)
+    spec = _spec(
+        _step("src", "denied", match_fields=("mailbox", "scope")),
+        _step("src", "delivery", match_fields=("mailbox", "scope")),
+        _step(
+            "src",
+            "approval",
+            match_fields=("mailbox", "scope"),
+            exclude=True,
+        ),
+    )
+    denied = _make_case(
+        "denied",
+        "src",
+        "denied",
+        base,
+        {"user": "u", "mailbox": "target", "scope": "dataset"},
+    )
+    delivery = _make_case(
+        "delivery",
+        "src",
+        "delivery",
+        base + timedelta(seconds=10),
+        {"user": "u", "mailbox": "target", "scope": "dataset"},
+    )
+    missing_scope = _make_case(
+        "missing-scope",
+        "src",
+        "approval",
+        base + timedelta(seconds=20),
+        {"user": "u", "mailbox": "target"},
+    )
+    missing_mailbox = _make_case(
+        "missing-mailbox",
+        "src",
+        "approval",
+        base + timedelta(seconds=20),
+        {"user": "u", "scope": "dataset"},
+    )
+
+    assert _correlation_hit([denied, delivery, missing_scope], spec)
+    assert _correlation_hit([denied, delivery, missing_mailbox], spec)
+
+
+def test_correlation_exclusion_skips_events_without_any_values() -> None:
+    base = datetime(2026, 11, 1, tzinfo=UTC)
+    spec = _spec(
+        _step("src", "denied", match_any_fields=("labels",)),
+        _step("src", "delivery"),
+        _step("src", "approval", match_any_fields=("labels",), exclude=True),
+    )
+    denied = _make_case(
+        "denied",
+        "src",
+        "denied",
+        base,
+        {"user": "u", "labels": ["external"]},
+    )
+    delivery = _make_case(
+        "delivery",
+        "src",
+        "delivery",
+        base + timedelta(seconds=10),
+        {"user": "u"},
+    )
+    missing_labels = _make_case(
+        "missing-labels",
+        "src",
+        "approval",
+        base + timedelta(seconds=20),
+        {"user": "u"},
+    )
+
+    assert _correlation_hit([denied, delivery, missing_labels], spec)
 
 
 def test_correlation_filters_parse_all_supported_shapes(tmp_path: Path) -> None:
