@@ -658,6 +658,7 @@ def normalize_m365_audit(raw: Mapping[str, Any]) -> dict[str, Any]:
         "forward_domain": _recipient_domain(recipients[0]) if recipients else None,
         "forward_domains": domains,
         "forward_external": forward_external,
+        "delivery_recipient": recipients[0].lower() if recipients else None,
         "mailbox": mailbox,
         "folder": folder,
         "group": group,
@@ -726,6 +727,14 @@ def normalize_exchange_message_trace(raw: Mapping[str, Any]) -> dict[str, Any]:
         ),
         None,
     )
+    external_targets = [
+        recipient
+        for recipient in [*recipients, *related_recipients]
+        if (domain := _recipient_domain(recipient)) is not None and domain not in accepted
+    ]
+    delivery_candidates = [*external_targets, *recipients, *related_recipients]
+    delivery_recipient = delivery_candidates[0] if delivery_candidates else None
+    delivery_recipient = delivery_recipient.lower() if isinstance(delivery_recipient, str) else None
     event = raw.get("Event")
     normalized_event = event.strip().lower() if isinstance(event, str) else ""
     result: str | None = None
@@ -761,6 +770,7 @@ def normalize_exchange_message_trace(raw: Mapping[str, Any]) -> dict[str, Any]:
         "trace_action": raw.get("Action"),
         "trace_detail": raw.get("Detail"),
         "delivery_status": raw.get("Status"),
+        "delivery_recipient": delivery_recipient,
         "directionality": directionality,
         "result": result,
         "size_bytes": raw.get("Size"),

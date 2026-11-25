@@ -17,7 +17,7 @@
 
 ## Improvements
 
-- Join the rule's forwarding recipient to the message-trace `RecipientAddress`.
+- Add multi-recipient forwarding support and a message-identity link; the updated rule’s recipient now matches the message-trace delivery recipient.
 - Add data-loss-prevention and content-confirmation telemetry to measure what left the tenant.
 - Add a rule-update event to the forwarding detection corpus.
 - Correlate the chain with mailbox audit settings and external-recipient allow-lists.

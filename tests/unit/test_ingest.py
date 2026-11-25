@@ -2261,3 +2261,38 @@ def test_normalize_m365_audit_maps_inbox_rule_mailbox() -> None:
     )
     assert document["mailbox"] == "executive@example.test"
     assert document["folder"] == "Inbox\\Forward invoices"
+
+
+def test_normalize_m365_audit_sets_delivery_recipient() -> None:
+    document = normalize_m365_audit(
+        {
+            **M365_RAW,
+            "Parameters": [
+                {"Name": "Name", "Value": "Forward invoices"},
+                {"Name": "ForwardTo", "Value": "Collector@Example.ORG"},
+            ],
+        }
+    )
+    assert document["delivery_recipient"] == "collector@example.org"
+
+
+def test_normalize_exchange_message_trace_sets_delivery_recipient() -> None:
+    delivered = normalize_exchange_message_trace(
+        {
+            **EXCHANGE_MESSAGE_TRACE_RAW,
+            "Event": "DELIVER",
+            "RecipientAddress": "Collector@Example.ORG",
+            "RelatedRecipientAddress": "executive@example.test",
+        }
+    )
+    assert delivered["delivery_recipient"] == "collector@example.org"
+
+    redirected = normalize_exchange_message_trace(
+        {
+            **EXCHANGE_MESSAGE_TRACE_RAW,
+            "Event": "REDIRECT",
+            "RecipientAddress": "executive@example.test",
+            "RelatedRecipientAddress": "Collector@Example.ORG",
+        }
+    )
+    assert redirected["delivery_recipient"] == "collector@example.org"

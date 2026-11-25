@@ -261,5 +261,58 @@
     "source": "exchange-message-trace",
     "synthetic": true,
     "scenario": "rule-plus-out-of-window-delivery"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-19T14:00:00Z",
+      "Id": "00000000-0000-4000-8000-000000030111",
+      "Operation": "New-InboxRule",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.10",
+      "ObjectId": "executive@example.test\\Inbox\\Forward invoices",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "Name",
+          "Value": "Forward invoices"
+        },
+        {
+          "Name": "ForwardTo",
+          "Value": "collector@example.org"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "rule-plus-mismatched-recipient"
+  },
+  {
+    "event": {
+      "Organization": "example.onmicrosoft.test",
+      "MessageTraceId": "00000000-0000-4000-8000-000000030112",
+      "MessageId": "<20261119140500.307@example.org>",
+      "Date": "2026-11-19T14:05:00Z",
+      "Event": "DELIVER",
+      "Source": "SMTP",
+      "SenderAddress": "vendor@example.net",
+      "RecipientAddress": "other@example.org",
+      "Subject": "Quarterly invoice redirect",
+      "Status": "Delivered",
+      "Directionality": "Outbound",
+      "Action": "Deliver",
+      "Detail": "Message delivered to a different external recipient",
+      "Size": 18342,
+      "FromIP": "203.0.113.10",
+      "ToIP": "203.0.113.82",
+      "RelatedRecipientAddress": "executive@example.test",
+      "TenantId": "00000000-0000-4000-8000-000000009001",
+      "Reference": "ref-baseline-mismatch-307",
+      "Index": 6
+    },
+    "source": "exchange-message-trace",
+    "synthetic": true,
+    "scenario": "rule-plus-mismatched-recipient"
   }
 ]

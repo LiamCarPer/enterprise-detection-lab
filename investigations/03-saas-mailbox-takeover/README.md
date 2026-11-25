@@ -9,7 +9,7 @@ A medium-risk single-factor sign-in precedes FullAccess self-delegation to an ex
 - Identity: Entra sign-in telemetry
 - SaaS: Microsoft 365 Exchange mailbox audit
 - SaaS: Exchange Online message trace
-- Investigation window: 2026-11-01 08:45–10:00 UTC for mailbox events and 2026-11-25 09:45–09:46 UTC for message-trace evidence
+- Investigation window: 2026-11-01 08:45–10:00 UTC for mailbox events and 2026-11-01 09:45–09:46 UTC for message-trace evidence
 - Mailbox: `executive@example.test`
 - Actor: `analyst@example.test`
 
@@ -26,12 +26,12 @@ An identity compromise may have been used to grant mailbox access, collect email
 | 2026-11-01 09:20 | m365-audit | e3 | Mailbox access to the executive inbox |
 | 2026-11-01 09:30 | m365-audit | e4 | External forwarding rule created |
 | 2026-11-01 09:40 | m365-audit | e5 | Forwarding rule updated to a second external recipient |
-| 2026-11-25 09:45 | exchange-message-trace | e6 | Message redirected from the executive mailbox to `collector@example.org` |
-| 2026-11-25 09:46 | exchange-message-trace | e7 | Message delivered to the external recipient `collector@example.org` |
+| 2026-11-01 09:45 | exchange-message-trace | e6 | Message redirected from the executive mailbox to `collector@example.org` |
+| 2026-11-01 09:46 | exchange-message-trace | e7 | Message delivered to the external recipient `collector@example.org` |
 
 ## Inference boundary
 
-The observed events are synthetic lab records. The mailbox chain is linked by the analyst identity, source IP, target mailbox, and timing. Exchange message trace now observes the redirect and confirms external delivery, so delivery is no longer inferred. The trace does not prove that a single actor performed every action, and data-loss-prevention or content confirmation remains out of scope.
+The observed events are synthetic lab records. The mailbox chain is linked by the analyst identity, source IP, target mailbox, and timing. Exchange message trace now observes the redirect and confirms external delivery, so delivery is no longer inferred. The updated rule’s forwarding recipient matches the message-trace delivery recipient. The trace does not prove that a single actor performed every action, and data-loss-prevention or content confirmation remains out of scope.
 
 ## Detections linked
 
@@ -43,7 +43,7 @@ The observed events are synthetic lab records. The mailbox chain is linked by th
 
 ## Query
 
-`queries/opensearch.json` searches `edl-events-*` across both evidence windows and pivots on the analyst user, the executive mailbox, the related recipient, and the source IP.
+`queries/opensearch.json` searches `edl-events-*` across the investigation window and pivots on the analyst user, the executive mailbox, the related recipient, and the source IP.
 
 ## Evidence handling
 

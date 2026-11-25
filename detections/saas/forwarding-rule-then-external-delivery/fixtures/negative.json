@@ -106,5 +106,60 @@
     "synthetic": true,
     "scenario": "neg-2",
     "note": "External transport failed instead of delivering"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-25T13:00:00Z",
+      "Id": "00000000-0000-4000-8000-000000020305",
+      "Operation": "New-InboxRule",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.31",
+      "ObjectId": "executive@example.test\\Inbox\\Forward invoices",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "Name",
+          "Value": "Forward invoices"
+        },
+        {
+          "Name": "ForwardTo",
+          "Value": "collector@example.org"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "neg-3",
+    "note": "Rule forwards to collector@example.org"
+  },
+  {
+    "event": {
+      "Organization": "example.onmicrosoft.test",
+      "MessageTraceId": "00000000-0000-4000-8000-000000020306",
+      "MessageId": "<20261125130500.206@example.org>",
+      "Date": "2026-11-25T13:05:00Z",
+      "Event": "DELIVER",
+      "Source": "SMTP",
+      "SenderAddress": "vendor@example.net",
+      "RecipientAddress": "other@example.org",
+      "Subject": "Quarterly invoice redirect",
+      "Status": "Delivered",
+      "Directionality": "Outbound",
+      "Action": "Deliver",
+      "Detail": "Message delivered to a different external recipient",
+      "Size": 18342,
+      "FromIP": "203.0.113.31",
+      "ToIP": "203.0.113.82",
+      "RelatedRecipientAddress": "executive@example.test",
+      "TenantId": "00000000-0000-4000-8000-000000009001",
+      "Reference": "ref-fixture-deliver-mismatch-206",
+      "Index": 3
+    },
+    "source": "exchange-message-trace",
+    "synthetic": true,
+    "scenario": "neg-3",
+    "note": "Delivery recipient differs from the rule's forwarding recipient"
   }
 ]

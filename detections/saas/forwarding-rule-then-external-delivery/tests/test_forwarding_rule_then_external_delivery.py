@@ -5,7 +5,7 @@ from pathlib import Path
 
 PACKAGE = Path(__file__).resolve().parents[1]
 FIXTURE_KINDS = ("positive", "negative", "benign")
-EXPECTED_FIXTURE_COUNTS = {"positive": 4, "negative": 4, "benign": 2}
+EXPECTED_FIXTURE_COUNTS = {"positive": 4, "negative": 6, "benign": 2}
 
 
 def test_query_returns_both_correlation_steps() -> None:
@@ -27,6 +27,7 @@ def test_correlation_metadata_defines_window_and_steps() -> None:
     assert "source: m365-audit" in meta
     assert "source: exchange-message-trace" in meta
     assert meta.count("match_fields:\n        - mailbox") == 2
+    assert meta.count("- delivery_recipient") == 2
 
 
 def test_fixtures_use_paired_scenarios() -> None:
@@ -35,7 +36,8 @@ def test_fixtures_use_paired_scenarios() -> None:
         assert len(fixtures) == EXPECTED_FIXTURE_COUNTS[kind]
         assert all(item["synthetic"] is True for item in fixtures)
         assert all("scenario" in item for item in fixtures)
-        assert len({item["scenario"] for item in fixtures}) == 2
+        expected_scenarios = 3 if kind == "negative" else 2
+        assert len({item["scenario"] for item in fixtures}) == expected_scenarios
 
 
 def test_metadata_declares_detection_identity() -> None:

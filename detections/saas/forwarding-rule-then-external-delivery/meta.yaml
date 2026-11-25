@@ -62,17 +62,20 @@ correlation:
           - action: UpdateInboxRules
       match_fields:
         - mailbox
+        - delivery_recipient
     - source: exchange-message-trace
       event_class: deliver
       filters:
         all:
           result: success
           external_recipient: true
+          delivery_recipient: {exists: true}
       match_fields:
         - mailbox
+        - delivery_recipient
 tests:
   positive: 4
-  negative: 4
+  negative: 6
   benign: 2
 false_positives:
   - An approved external forwarding rule that the tenant intentionally uses to route mail.

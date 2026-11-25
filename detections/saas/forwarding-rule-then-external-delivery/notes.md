@@ -11,7 +11,7 @@ The native query returns candidate events from two sources:
 - successful Microsoft 365 inbox rule creation or updates that forward to a domain outside the tenant accepted domains (`forward_external: true`)
 - successful Exchange Online message-trace `DELIVER` events with an external recipient (`external_recipient: true`)
 
-`correlation.group_by: [mailbox]` requires both steps to resolve to the same mailbox. Step 1 accepts `New-InboxRule`, `Set-InboxRule`, or `UpdateInboxRules` and requires `result: success` plus `forward_external: true`. Step 2 requires `event_class: deliver`, `result: success`, and `external_recipient: true`. `correlation.window_seconds: 3600` requires delivery at or after the rule and within 60 minutes. The window allows for message-rule propagation and normal transport latency.
+`correlation.group_by: [mailbox]` requires both steps to resolve to the same mailbox, and `match_fields: [mailbox, delivery_recipient]` requires the rule’s first forwarding recipient and the message-trace delivery recipient to match. Step 1 accepts `New-InboxRule`, `Set-InboxRule`, or `UpdateInboxRules` and requires `result: success` plus `forward_external: true`. Step 2 requires `event_class: deliver`, `result: success`, and `external_recipient: true`. `correlation.window_seconds: 3600` requires delivery at or after the rule and within 60 minutes. The window allows for message-rule propagation and normal transport latency.
 
 Message trace resolves `mailbox` to an internal related recipient when present, otherwise to an internal recipient. A REDIRECT event therefore maps to the original internal mailbox, and a later external DELIVER maps back to the same mailbox through `RelatedRecipientAddress`.
 
@@ -25,18 +25,18 @@ The Sigma rule represents the forwarding-rule component. The temporal correlatio
 
 ## Test corpus
 
-The package contains 10 synthetic events across six scenarios:
+The package contains 12 synthetic events across seven scenarios:
 
-- 2 positive scenarios with an external forwarding rule followed by an external delivery for the same mailbox within five minutes.
-- 2 negative scenarios: delivery to an internal recipient; a failed external transport event instead of a delivery.
+- 2 positive scenarios with an external forwarding rule followed by an external delivery to the same recipient and mailbox within five minutes.
+- 3 negative scenarios: delivery to an internal recipient; a failed external transport event; delivery to a different external recipient.
 - 2 benign scenarios: an external delivery without a rule; a rule without a delivery.
 
-Metrics are scenario-level: 2 positive scenarios, 2 negative scenarios, and 2 benign scenarios.
+Metrics are scenario-level: 2 positive scenarios, 3 negative scenarios, and 2 benign scenarios.
 
 ## Known gaps
 
 - Grouping by `mailbox` assumes the message trace resolves the original mailbox through `RelatedRecipientAddress`; some transport paths may omit it.
-- The query does not compare the delivery recipient with the rule's forwarding recipient. An external delivery to any recipient within the window counts.
+- The correlation compares the first forwarding recipient only; a rule with multiple recipients may deliver to another listed recipient without matching.
 - Message trace detail retention is often shorter than audit retention, so late rule events may lack matching delivery detail.
 - The detection correlates timing, not message identity. It does not confirm that the delivered message was the one selected by the rule.
 - Content-level confirmation and data-loss-prevention verdicts remain out of scope.
@@ -44,4 +44,4 @@ Metrics are scenario-level: 2 positive scenarios, 2 negative scenarios, and 2 be
 
 ## Next tuning step
 
-Join the rule's `forward_to` recipient to the message-trace `RecipientAddress`, then add mailbox-owner confirmation and DLP verdicts for content-level confidence.
+Add multi-recipient forwarding support and a message-identity link, then add mailbox-owner confirmation and DLP verdicts for content-level confidence.
