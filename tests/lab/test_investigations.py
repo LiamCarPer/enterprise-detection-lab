@@ -34,6 +34,7 @@ EXPECTED_DETECTIONS = {
         "DET-SAA-003",
         "DET-SAA-005",
         "DET-SAA-006",
+        "DET-SAA-007",
     },
 }
 

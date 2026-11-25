@@ -5,13 +5,14 @@ status: tested
 domains:
   - identity
   - saas
-scenario: A medium-risk single-factor sign-in is followed by self-delegation, mailbox access, an external forwarding rule, and a forwarding-rule update for the same analyst on an executive mailbox.
-hypothesis: An identity compromise may have been used to grant mailbox access, collect email, and establish durable external forwarding while hiding messages from the mailbox owner.
+scenario: A medium-risk single-factor sign-in is followed by self-delegation, mailbox access, an external forwarding rule, a forwarding-rule update, and observed external message delivery for the same analyst on an executive mailbox.
+hypothesis: An identity compromise may have been used to grant mailbox access, collect email, and establish durable external forwarding; message trace confirms that mail left the tenant.
 detections:
   - DET-SAA-001
   - DET-SAA-003
   - DET-SAA-005
   - DET-SAA-006
+  - DET-SAA-007
 owner: detection-engineering
 created: "2026-11-25"
 updated: "2026-11-25"
@@ -51,6 +52,20 @@ evidence:
     provenance: Synthetic event from lab/datasets/synthetic/m365-audit/reference.json
     description: Forwarding rule updated to a second external recipient at 09:40 UTC.
     sha256: 948b6dc1395663b8020713c9e390649f40a66405fd6fd80154e1eeae3299690d
+  - id: e6
+    type: event
+    source: exchange-message-trace
+    path: evidence/e6.json
+    provenance: Synthetic event from lab/datasets/synthetic/exchange-message-trace/reference.json
+    description: Message REDIRECT from the executive mailbox to collector@example.org at 09:45 UTC.
+    sha256: f9791866c67ce2ef130ee27375861af24b2989c9d584e40932ee16e0416c1458
+  - id: e7
+    type: event
+    source: exchange-message-trace
+    path: evidence/e7.json
+    provenance: Synthetic event from lab/datasets/synthetic/exchange-message-trace/reference.json
+    description: External message DELIVER to collector@example.org at 09:46 UTC, related to the executive mailbox.
+    sha256: 6e4f50c5063ec466b8e0378d26a666883b06044adc0dd53a6e893be5aa4b1799
 timeline:
   - timestamp: "2026-11-01T08:55:00Z"
     event: Medium-risk single-factor sign-in for analyst@example.test
@@ -72,23 +87,32 @@ timeline:
     event: Forwarding rule updated to a second external recipient
     source: m365-audit
     evidence_id: e5
+  - timestamp: "2026-11-01T09:45:00Z"
+    event: Message redirected from the executive mailbox to collector@example.org
+    source: exchange-message-trace
+    evidence_id: e6
+  - timestamp: "2026-11-01T09:46:00Z"
+    event: Message delivered to the external recipient collector@example.org
+    source: exchange-message-trace
+    evidence_id: e7
 lessons:
   - The sign-in, delegation, access, and forwarding events share the analyst identity and source IP, but no token identifier proves a single session.
-  - The investigation does not observe outbound message delivery because message-trace telemetry is not yet in scope.
+  - Exchange message trace is now in scope and confirms that the redirected message was delivered to an external recipient.
   - Self-delegation is a high-signal step and should be reviewed against approved mailbox administration.
   - The forwarding-rule update shows that a single rule-creation check is insufficient; updates need the same scrutiny.
-  - The lab lacks mailbox-owner confirmation and data-loss-prevention context for the executive mailbox.
+  - The remaining gap is content-level confirmation because the lab still lacks data-loss-prevention verdicts and mailbox-owner confirmation for the executive mailbox.
 response:
   - Revoke the analyst sessions and refresh tokens.
   - Remove the self-delegation and the external forwarding rule after preserving evidence.
   - Review the executive mailbox for message access, deletion, and forwarding activity.
   - Reset the analyst credentials and require MFA re-registration.
   - Review mailbox audit settings and forwarding controls for the affected mailbox.
+  - Preserve the message-trace REDIRECT and DELIVER records for the external recipient.
   - Confirm no other mailboxes were delegated or forwarded by the same identity.
 references:
   - https://attack.mitre.org/techniques/T1078/
   - https://attack.mitre.org/techniques/T1098/
   - https://attack.mitre.org/techniques/T1114/002/
   - https://attack.mitre.org/techniques/T1114/003/
-executive_summary: A synthetic SaaS chain shows a medium-risk sign-in, FullAccess self-delegation, mailbox access, and two external forwarding-rule changes on an executive mailbox. The events are linked by analyst identity, source IP, mailbox, and timing; outbound delivery is not observed in the lab.
+executive_summary: A synthetic SaaS chain shows a medium-risk sign-in, FullAccess self-delegation, mailbox access, two external forwarding-rule changes, and an observed external delivery from an executive mailbox. The events are linked by analyst identity, source IP, mailbox, and timing; message trace confirms that mail left the tenant.
 notes: Synthetic investigation built from the local lab datasets. No production or customer data.

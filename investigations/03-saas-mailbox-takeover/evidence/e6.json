@@ -1,0 +1,30 @@
+{
+  "id": "e6",
+  "synthetic": true,
+  "source": "exchange-message-trace",
+  "observed_at": "2026-11-01T09:45:00Z",
+  "query": "queries/opensearch.json",
+  "event": {
+    "Organization": "example.onmicrosoft.test",
+    "MessageTraceId": "00000000-0000-4000-8000-000000030101",
+    "MessageId": "<20261101094500.101@example.net>",
+    "Date": "2026-11-01T09:45:00Z",
+    "Event": "REDIRECT",
+    "Source": "SMTP",
+    "SenderAddress": "vendor@example.net",
+    "RecipientAddress": "executive@example.test",
+    "Subject": "Quarterly invoice redirect",
+    "Status": "Delivered",
+    "Directionality": "Outbound",
+    "Action": "Redirect",
+    "Detail": "Message redirected to external recipient collector@example.org",
+    "Size": 48213,
+    "FromIP": "203.0.113.31",
+    "ToIP": "203.0.113.10",
+    "RelatedRecipientAddress": "collector@example.org",
+    "TenantId": "00000000-0000-4000-8000-000000009001",
+    "Reference": "ref-redirect-external-101",
+    "Index": 1
+  },
+  "note": "Observed external redirect of a message addressed to the executive mailbox."
+}

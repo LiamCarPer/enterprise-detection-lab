@@ -1,0 +1,30 @@
+{
+  "id": "e7",
+  "synthetic": true,
+  "source": "exchange-message-trace",
+  "observed_at": "2026-11-01T09:46:00Z",
+  "query": "queries/opensearch.json",
+  "event": {
+    "Organization": "example.onmicrosoft.test",
+    "MessageTraceId": "00000000-0000-4000-8000-000000030102",
+    "MessageId": "<20261101094600.102@example.org>",
+    "Date": "2026-11-01T09:46:00Z",
+    "Event": "DELIVER",
+    "Source": "SMTP",
+    "SenderAddress": "vendor@example.net",
+    "RecipientAddress": "collector@example.org",
+    "Subject": "Quarterly invoice redirect",
+    "Status": "Delivered",
+    "Directionality": "Outbound",
+    "Action": "Deliver",
+    "Detail": "Message delivered to external recipient",
+    "Size": 18342,
+    "FromIP": "203.0.113.31",
+    "ToIP": "203.0.113.80",
+    "TenantId": "00000000-0000-4000-8000-000000009001",
+    "Reference": "ref-deliver-external-102",
+    "Index": 2,
+    "RelatedRecipientAddress": "executive@example.test"
+  },
+  "note": "Observed external delivery of the redirected message from the executive mailbox."
+}

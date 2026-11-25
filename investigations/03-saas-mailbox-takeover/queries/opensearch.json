@@ -15,6 +15,7 @@
       "should": [
         { "term": { "user": "analyst@example.test" } },
         { "term": { "mailbox": "executive@example.test" } },
+        { "term": { "related_recipient": "executive@example.test" } },
         { "term": { "src_ip": "203.0.113.11" } }
       ],
       "minimum_should_match": 1
