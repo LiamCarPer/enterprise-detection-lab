@@ -74,6 +74,7 @@
         },
         "delivery_status": { "type": "keyword" },
         "delivery_recipient": { "type": "keyword" },
+        "delivery_recipients": { "type": "keyword" },
         "directionality": { "type": "keyword" },
         "from_ip": { "type": "keyword" },
         "to_ip": { "type": "keyword" },

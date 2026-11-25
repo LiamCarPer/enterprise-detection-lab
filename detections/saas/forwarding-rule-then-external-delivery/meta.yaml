@@ -62,19 +62,20 @@ correlation:
           - action: UpdateInboxRules
       match_fields:
         - mailbox
-        - delivery_recipient
+      match_any_fields:
+        - delivery_recipients
     - source: exchange-message-trace
       event_class: deliver
       filters:
         all:
           result: success
           external_recipient: true
-          delivery_recipient: {exists: true}
       match_fields:
         - mailbox
-        - delivery_recipient
+      match_any_fields:
+        - delivery_recipients
 tests:
-  positive: 4
+  positive: 6
   negative: 6
   benign: 2
 false_positives:

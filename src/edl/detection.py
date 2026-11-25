@@ -67,6 +67,7 @@ class CorrelationStep:
     source: str
     event_class: str
     match_fields: tuple[str, ...] = ()
+    match_any_fields: tuple[str, ...] = ()
     filters: StepFilters = StepFilters()
 
 
@@ -448,6 +449,16 @@ def _load_correlation(
             raise DetectionError(
                 f"{path}: correlation step {position} match_fields must be a unique string array"
             )
+        raw_match_any = item.get("match_any_fields", [])
+        if (
+            not isinstance(raw_match_any, list)
+            or not all(isinstance(field, str) and field for field in raw_match_any)
+            or len(set(raw_match_any)) != len(raw_match_any)
+        ):
+            raise DetectionError(
+                f"{path}: correlation step {position} match_any_fields must be a unique "
+                "string array"
+            )
         raw_filters = item.get("filters")
         filters = (
             _parse_filters(path, position, raw_filters)
@@ -459,6 +470,7 @@ def _load_correlation(
                 source=source,
                 event_class=event_class,
                 match_fields=tuple(raw_match),
+                match_any_fields=tuple(raw_match_any),
                 filters=filters,
             )
         )
@@ -655,6 +667,14 @@ def _filters_match(document: Mapping[str, Any], filters: StepFilters) -> bool:
     )
 
 
+def _match_values(value: Any) -> set[Any]:
+    if isinstance(value, (list, tuple)):
+        return {item for item in value if item is not None and item != ""}
+    if value is None or value == "" or value == [] or value == {}:
+        return set()
+    return {value}
+
+
 def _match_steps(
     ordered: Sequence[Sequence[DetectionCase]],
     spec: CorrelationSpec,
@@ -663,6 +683,7 @@ def _match_steps(
         step_index: int,
         current_time: datetime | None,
         targets: dict[str, Any],
+        any_targets: dict[str, set[Any]],
     ) -> bool:
         if step_index == len(ordered):
             return True
@@ -681,13 +702,29 @@ def _match_steps(
                 continue
             if any(field in targets and targets[field] != value for field, value in values.items()):
                 continue
+            any_values = {
+                field: _match_values(_lookup_document(case.event.document, field))
+                for field in step.match_any_fields
+            }
+            if any(not values for values in any_values.values()):
+                continue
+            if any(
+                field in any_targets and not (any_targets[field] & values)
+                for field, values in any_values.items()
+            ):
+                continue
             next_targets = dict(targets)
             next_targets.update(values)
-            if extend(step_index + 1, event_time, next_targets):
+            next_any_targets: dict[str, set[Any]] = {
+                field: set(values) for field, values in any_targets.items()
+            }
+            for field, candidate_values in any_values.items():
+                next_any_targets[field] = next_any_targets.get(field, set()) | candidate_values
+            if extend(step_index + 1, event_time, next_targets, next_any_targets):
                 return True
         return False
 
-    return extend(0, None, {})
+    return extend(0, None, {}, {})
 
 
 def _correlation_hit(cases: Sequence[DetectionCase], spec: CorrelationSpec) -> bool:

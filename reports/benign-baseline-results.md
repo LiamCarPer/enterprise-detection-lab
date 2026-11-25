@@ -23,7 +23,7 @@ Seventeen synthetic benign corpora are used to measure false-positive behavior a
 | `DET-SAA-004` | `identity-saas-delegation.json` | scenario | 10 | 0 | 0.00 |
 | `DET-SAA-005` | `identity-saas-mail-access.json` | scenario | 7 | 0 | 0.00 |
 | `DET-SAA-006` | `identity-saas-forwarding-chain.json` | scenario | 6 | 0 | 0.00 |
-| `DET-SAA-007` | `forwarding-delivery.json` | scenario | 7 | 0 | 0.00 |
+| `DET-SAA-007` | `forwarding-delivery.json` | scenario | 8 | 0 | 0.00 |
 
 The endpoint baseline also has a before/after tuning result: the initial query matched 8/20 approved management-agent events, and the tuned query matches 0/20. See [`false-positive-tuning.md`](false-positive-tuning.md).
 

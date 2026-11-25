@@ -2296,3 +2296,33 @@ def test_normalize_exchange_message_trace_sets_delivery_recipient() -> None:
         }
     )
     assert redirected["delivery_recipient"] == "collector@example.org"
+
+
+def test_normalize_m365_audit_sets_all_delivery_recipients() -> None:
+    document = normalize_m365_audit(
+        {
+            **M365_RAW,
+            "Parameters": [
+                {"Name": "Name", "Value": "Forward invoices"},
+                {
+                    "Name": "ForwardTo",
+                    "Value": "Collector@Example.ORG; second@example.net",
+                },
+            ],
+        }
+    )
+    assert document["delivery_recipient"] == "collector@example.org"
+    assert document["delivery_recipients"] == ["collector@example.org", "second@example.net"]
+
+
+def test_normalize_exchange_message_trace_sets_all_external_delivery_recipients() -> None:
+    document = normalize_exchange_message_trace(
+        {
+            **EXCHANGE_MESSAGE_TRACE_RAW,
+            "Event": "DELIVER",
+            "RecipientAddress": "Collector@Example.ORG; second@example.net",
+            "RelatedRecipientAddress": "executive@example.test",
+        }
+    )
+    assert document["delivery_recipient"] == "collector@example.org"
+    assert document["delivery_recipients"] == ["collector@example.org", "second@example.net"]

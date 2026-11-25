@@ -116,5 +116,60 @@
     "synthetic": true,
     "scenario": "pos-2",
     "note": "External delivery for the finance archive mailbox four minutes after the rule"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-25T14:00:00Z",
+      "Id": "00000000-0000-4000-8000-000000020307",
+      "Operation": "New-InboxRule",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "203.0.113.31",
+      "ObjectId": "executive@example.test\\Inbox\\Forward invoices",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "Name",
+          "Value": "Forward invoices"
+        },
+        {
+          "Name": "ForwardTo",
+          "Value": "collector@example.org; second@example.net"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "pos-3",
+    "note": "Rule forwards to two external recipients"
+  },
+  {
+    "event": {
+      "Organization": "example.onmicrosoft.test",
+      "MessageTraceId": "00000000-0000-4000-8000-000000020308",
+      "MessageId": "<20261125140500.208@example.net>",
+      "Date": "2026-11-25T14:05:00Z",
+      "Event": "DELIVER",
+      "Source": "SMTP",
+      "SenderAddress": "vendor@example.net",
+      "RecipientAddress": "second@example.net",
+      "Subject": "Quarterly invoice redirect",
+      "Status": "Delivered",
+      "Directionality": "Outbound",
+      "Action": "Deliver",
+      "Detail": "Message delivered to the second external recipient",
+      "Size": 18342,
+      "FromIP": "203.0.113.31",
+      "ToIP": "203.0.113.83",
+      "RelatedRecipientAddress": "executive@example.test",
+      "TenantId": "00000000-0000-4000-8000-000000009001",
+      "Reference": "ref-fixture-deliver-second-208",
+      "Index": 4
+    },
+    "source": "exchange-message-trace",
+    "synthetic": true,
+    "scenario": "pos-3",
+    "note": "Delivery matches the second recipient in the rule"
   }
 ]

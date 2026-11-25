@@ -17,6 +17,7 @@ from edl.detection import (
     FilterGroup,
     StepFilters,
     _correlation_hit,
+    _match_values,
     build_search_body,
     extract_hit_ids,
     load_detection_package,
@@ -670,6 +671,19 @@ def test_correlation_metrics_use_scenario_unit(tmp_path: Path) -> None:
             "      event_class: audit\n",
             "match_fields",
         ),
+        (
+            "correlation:\n"
+            "  window_seconds: 1800\n"
+            "  group_by:\n"
+            "    - user\n"
+            "  steps:\n"
+            "    - source: entra-signin\n"
+            "      event_class: sign_in\n"
+            "      match_any_fields: mailbox\n"
+            "    - source: entra-audit\n"
+            "      event_class: audit\n",
+            "match_any_fields",
+        ),
     ],
 )
 def test_correlation_spec_validation(tmp_path: Path, replacement: str, message: str) -> None:
@@ -1199,3 +1213,12 @@ def test_correlation_requires_event_class_declared_for_source(tmp_path: Path) ->
     )
     with pytest.raises(DetectionError, match="not declared for source"):
         load_detection_package(path, _sources())  # type: ignore[arg-type]
+
+
+def test_match_values_handles_scalars_lists_and_empty_values() -> None:
+    assert _match_values("a") == {"a"}
+    assert _match_values(["a", "b"]) == {"a", "b"}
+    assert _match_values(None) == set()
+    assert _match_values("") == set()
+    assert _match_values([]) == set()
+    assert _match_values({}) == set()

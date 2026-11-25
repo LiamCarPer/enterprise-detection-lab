@@ -25,13 +25,13 @@ The Sigma rule represents the forwarding-rule component. The temporal correlatio
 
 ## Test corpus
 
-The package contains 12 synthetic events across seven scenarios:
+The package contains 14 synthetic events across eight scenarios:
 
-- 2 positive scenarios with an external forwarding rule followed by an external delivery to the same recipient and mailbox within five minutes.
+- 3 positive scenarios with an external forwarding rule followed by an external delivery to the same recipient and mailbox within five minutes, including a rule with two recipients where the second recipient receives the message.
 - 3 negative scenarios: delivery to an internal recipient; a failed external transport event; delivery to a different external recipient.
 - 2 benign scenarios: an external delivery without a rule; a rule without a delivery.
 
-Metrics are scenario-level: 2 positive scenarios, 3 negative scenarios, and 2 benign scenarios.
+Metrics are scenario-level: 3 positive scenarios, 3 negative scenarios, and 2 benign scenarios.
 
 ## Known gaps
 
@@ -44,4 +44,4 @@ Metrics are scenario-level: 2 positive scenarios, 3 negative scenarios, and 2 be
 
 ## Next tuning step
 
-Add multi-recipient forwarding support and a message-identity link, then add mailbox-owner confirmation and DLP verdicts for content-level confidence.
+Add a message-identity or rule-execution link, then add mailbox-owner confirmation and DLP verdicts for content-level confidence.

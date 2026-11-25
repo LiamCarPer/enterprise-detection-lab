@@ -113,6 +113,11 @@ Steps may declare `match_fields` to require the same field values across
 successive steps. In `DET-SAA-005`, the delegation and mail-access steps both
 declare `mailbox`, so the accessed mailbox must match the delegated mailbox.
 
+Steps may also declare `match_any_fields` to require a non-empty intersection
+between list-valued fields across steps. `DET-SAA-007` uses this for
+`delivery_recipients`, so a rule that forwards to several external addresses
+matches a delivery to any one of them.
+
 Steps may also declare optional `filters` to narrow the events that can satisfy
 that step. Filters are evaluated after the native query and before grouping and
 `match_fields`. They only remove candidate events; they never add events that
