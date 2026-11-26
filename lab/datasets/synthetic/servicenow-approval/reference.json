@@ -11,7 +11,9 @@
     "recipient": "partner@example.org",
     "message_id": "<20261120144000.701@example.org>",
     "short_description": "Customer dataset export",
-    "content_scope": "customer-dataset.csv"
+    "content_scope": "customer-dataset.csv",
+    "approval_group": "GRP-7001",
+    "authority": "Primary"
   },
   {
     "sys_id": "00000000-0000-4000-8000-000000070102",
@@ -27,7 +29,9 @@
     "short_description": "Quarterly archive transfer",
     "content_scope": "quarterly-archive.zip",
     "expires_on": "2026-12-31T00:00:00Z",
-    "approver_role": "Primary"
+    "approver_role": "Primary",
+    "approval_group": "GRP-7002",
+    "authority": "Primary"
   },
   {
     "sys_id": "00000000-0000-4000-8000-000000070103",
@@ -41,7 +45,9 @@
     "recipient": "contractor@example.org",
     "message_id": "<20261121110000.703@example.org>",
     "short_description": "Design review package",
-    "content_scope": "design-review.pdf"
+    "content_scope": "design-review.pdf",
+    "approval_group": "GRP-7003",
+    "authority": "Primary"
   },
   {
     "sys_id": "00000000-0000-4000-8000-000000070104",
@@ -55,7 +61,9 @@
     "recipient": "customer@example.net",
     "message_id": "<20261121133000.704@example.net>",
     "short_description": "Case export",
-    "content_scope": "case-export.csv"
+    "content_scope": "case-export.csv",
+    "approval_group": "GRP-7004",
+    "authority": "Primary"
   },
   {
     "sys_id": "00000000-0000-4000-8000-000000070105",
@@ -71,7 +79,9 @@
     "short_description": "Contract review",
     "content_scope": "contract-review.pdf",
     "expires_on": "2026-12-15T00:00:00Z",
-    "approver_role": "Primary"
+    "approver_role": "Primary",
+    "approval_group": "GRP-7005",
+    "authority": "Primary"
   },
   {
     "sys_id": "00000000-0000-4000-8000-000000070106",
@@ -85,6 +95,8 @@
     "recipient": "vendor@example.org",
     "message_id": "<20261122102000.706@example.org>",
     "short_description": "Campaign assets",
-    "content_scope": "campaign-assets.zip"
+    "content_scope": "campaign-assets.zip",
+    "approval_group": "GRP-7006",
+    "authority": "Primary"
   }
 ]

@@ -5,7 +5,7 @@ status: tested
 domain: saas
 severity: critical
 hypothesis: An explicit denial or revocation of an external-sharing exception followed by delivery to the same recipient and a DLP match indicates that the data-handling decision was bypassed.
-description: Correlates a denied or revoked ServiceNow approval, a successful external Exchange Online delivery to the same mailbox and recipient, and an active high-severity Purview DLP alert for the same message and content scope within 24 hours. An active, unexpired later approval by a primary approver for the same mailbox, recipient, and content scope suppresses the sequence for up to seven days, including a renewal recorded under a new request number.
+description: Correlates a denied or revoked ServiceNow approval, a successful external Exchange Online delivery to the same mailbox and recipient, and an active high-severity Purview DLP alert for the same message and content scope within 24 hours. Two active, unexpired approvals by distinct primary-authority approvers for the same approval group, mailbox, recipient, and content scope suppress the sequence for up to seven days, including a renewal recorded under a new request number.
 owner: detection-engineering
 created: "2026-11-25"
 updated: "2026-11-26"
@@ -78,6 +78,7 @@ correlation:
         - delivery_recipient
         - message_id
         - content_scope
+        - approval_group
     - source: exchange-message-trace
       event_class: deliver
       filters:
@@ -103,18 +104,21 @@ correlation:
       exclude: true
       window_seconds: 604800
       valid_until_field: expires_on
+      min_count: 2
+      distinct_by: approver
       filters:
         all:
           decision: approved
           status: active
-          approver_role: primary
+          authority: primary
       match_fields:
         - mailbox
         - delivery_recipient
         - content_scope
+        - approval_group
 tests:
-  positive: 21
-  negative: 23
+  positive: 24
+  negative: 27
   benign: 3
 false_positives:
   - An approval was denied or revoked for one dataset but a later primary approver approved the same content.

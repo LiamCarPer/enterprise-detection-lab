@@ -5,7 +5,7 @@
 - A denial alone is not an exfiltration signal; the delivery and DLP alert provide the evidence that data left the tenant.
 - The three-step sequence requires a shared message identifier across the approval, transport, and DLP systems.
 - The approval and DLP records share a content scope, so a denial for one dataset is not applied to a different dataset sent to the same recipient.
-- The detection suppresses the sequence when a later primary approval shares the mailbox, recipient, and content scope, is active, and has an expiry at or after the delivery; no such approval is present in this evidence.
+- The detection suppresses the sequence only when two distinct primary-authority approvals share the approval group, mailbox, recipient, and content scope, are active, and expire at or after the delivery; none are present in this evidence.
 - A retrospective denial is not matched by the ordered sequence.
 
 ## Telemetry gaps

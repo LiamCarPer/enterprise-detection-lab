@@ -14,7 +14,9 @@
       "short_description": "Contract review",
       "content_scope": "contract-review.pdf",
       "expires_on": "2026-12-31T00:00:00Z",
-      "approver_role": "Primary"
+      "approver_role": "Primary",
+      "approval_group": "GRP-NEG-1",
+      "authority": "Primary"
     },
     "source": "servicenow-approval",
     "synthetic": true,
@@ -83,7 +85,9 @@
       "recipient": "vendor@example.org",
       "message_id": "<20261123133000.812@example.org>",
       "short_description": "Vendor forecast",
-      "content_scope": "vendor-forecast.csv"
+      "content_scope": "vendor-forecast.csv",
+      "approval_group": "GRP-NEG-2",
+      "authority": "Primary"
     },
     "source": "servicenow-approval",
     "synthetic": true,
@@ -152,7 +156,9 @@
       "recipient": "customer@example.net",
       "message_id": "<20261123143000.813@example.net>",
       "short_description": "Case export",
-      "content_scope": "case-export.csv"
+      "content_scope": "case-export.csv",
+      "approval_group": "GRP-NEG-3",
+      "authority": "Primary"
     },
     "source": "servicenow-approval",
     "synthetic": true,
@@ -200,7 +206,9 @@
       "recipient": "partner@example.org",
       "message_id": "<20261123153000.814@example.org>",
       "content_scope": "customer-dataset.csv",
-      "short_description": "Customer dataset export"
+      "short_description": "Customer dataset export",
+      "approval_group": "GRP-NEG-4",
+      "authority": "Primary"
     },
     "source": "servicenow-approval",
     "synthetic": true,
@@ -269,7 +277,9 @@
       "recipient": "partner@example.org",
       "message_id": "<20261123180000.815@example.org>",
       "content_scope": "customer-dataset.csv",
-      "short_description": "Customer dataset export"
+      "short_description": "Customer dataset export",
+      "approval_group": "GRP-NEG-5",
+      "authority": "Primary"
     },
     "source": "servicenow-approval",
     "synthetic": true,
@@ -340,7 +350,9 @@
       "content_scope": "customer-dataset.csv",
       "short_description": "Customer dataset export",
       "expires_on": "2026-12-31T00:00:00Z",
-      "approver_role": "Primary"
+      "approver_role": "Primary",
+      "approval_group": "GRP-NEG-5",
+      "authority": "Primary"
     },
     "source": "servicenow-approval",
     "synthetic": true,
@@ -360,7 +372,9 @@
       "recipient": "partner@example.org",
       "message_id": "<20261124110000.841@example.org>",
       "content_scope": "customer-dataset.csv",
-      "short_description": "Customer dataset export"
+      "short_description": "Customer dataset export",
+      "approval_group": "GRP-NEG-6",
+      "authority": "Primary"
     },
     "source": "servicenow-approval",
     "synthetic": true,
@@ -431,7 +445,9 @@
       "content_scope": "customer-dataset.csv",
       "short_description": "Customer dataset export",
       "expires_on": "2026-12-31T00:00:00Z",
-      "approver_role": "Primary"
+      "approver_role": "Primary",
+      "approval_group": "GRP-NEG-6",
+      "authority": "Primary"
     },
     "source": "servicenow-approval",
     "synthetic": true,
@@ -451,7 +467,9 @@
       "recipient": "partner@example.org",
       "message_id": "<20261125170000.857@example.org>",
       "content_scope": "renewed-dataset.csv",
-      "short_description": "Renewed dataset export"
+      "short_description": "Renewed dataset export",
+      "approval_group": "GRP-NEG-7",
+      "authority": "Primary"
     },
     "source": "servicenow-approval",
     "synthetic": true,
@@ -523,11 +541,110 @@
       "message_id": "<20261125180000.858@example.org>",
       "content_scope": "renewed-dataset.csv",
       "expires_on": "2026-12-31T00:00:00Z",
-      "short_description": "Renewed dataset export"
+      "short_description": "Renewed dataset export",
+      "approval_group": "GRP-NEG-7",
+      "authority": "Primary"
     },
     "source": "servicenow-approval",
     "synthetic": true,
     "scenario": "neg-7",
     "note": "Primary approval renews and supersedes the denied request"
+  },
+  {
+    "event": {
+      "sys_id": "00000000-0000-4000-8000-000000080904",
+      "number": "REQ0008904",
+      "sys_updated_on": "2026-11-23T12:10:00Z",
+      "state": "Active",
+      "approval": "Approved",
+      "requested_for": "legal@example.test",
+      "requested_by": "legal@example.test",
+      "approver": "risk-owner@example.test",
+      "recipient": "partner@example.org",
+      "message_id": "<20261123122000.811@example.org>",
+      "short_description": "Contract review",
+      "content_scope": "contract-review.pdf",
+      "expires_on": "2026-12-31T00:00:00Z",
+      "approver_role": "Primary",
+      "approval_group": "GRP-NEG-1",
+      "authority": "Primary"
+    },
+    "source": "servicenow-approval",
+    "synthetic": true,
+    "scenario": "neg-1",
+    "note": "Additional approval for quorum evaluation"
+  },
+  {
+    "event": {
+      "sys_id": "00000000-0000-4000-8000-000000080905",
+      "number": "REQ0008905",
+      "sys_updated_on": "2026-11-23T19:05:00Z",
+      "state": "Active",
+      "approval": "Approved",
+      "requested_for": "analyst@example.test",
+      "requested_by": "analyst@example.test",
+      "approver": "security-owner@example.test",
+      "recipient": "partner@example.org",
+      "message_id": "<20261123190000.816@example.org>",
+      "content_scope": "customer-dataset.csv",
+      "short_description": "Customer dataset export",
+      "expires_on": "2026-12-31T00:00:00Z",
+      "approver_role": "Primary",
+      "approval_group": "GRP-NEG-5",
+      "authority": "Primary"
+    },
+    "source": "servicenow-approval",
+    "synthetic": true,
+    "scenario": "neg-5",
+    "note": "Additional approval for quorum evaluation"
+  },
+  {
+    "event": {
+      "sys_id": "00000000-0000-4000-8000-000000080906",
+      "number": "REQ0008906",
+      "sys_updated_on": "2026-11-26T10:05:00Z",
+      "state": "Active",
+      "approval": "Approved",
+      "requested_for": "analyst@example.test",
+      "requested_by": "analyst@example.test",
+      "approver": "security-owner@example.test",
+      "recipient": "partner@example.org",
+      "message_id": "<20261126100000.842@example.org>",
+      "content_scope": "customer-dataset.csv",
+      "short_description": "Customer dataset export",
+      "expires_on": "2026-12-31T00:00:00Z",
+      "approver_role": "Primary",
+      "approval_group": "GRP-NEG-6",
+      "authority": "Primary"
+    },
+    "source": "servicenow-approval",
+    "synthetic": true,
+    "scenario": "neg-6",
+    "note": "Additional approval for quorum evaluation"
+  },
+  {
+    "event": {
+      "sys_id": "00000000-0000-4000-8000-000000080907",
+      "number": "REQ0008907",
+      "sys_updated_on": "2026-11-25T18:05:00Z",
+      "state": "Active",
+      "approval": "Approved",
+      "requested_for": "analyst@example.test",
+      "requested_by": "analyst@example.test",
+      "approver": "legal-owner@example.test",
+      "approver_role": "Primary",
+      "renewal_of": "REQ0008220",
+      "recipient": "partner@example.org",
+      "message_id": "<20261125180000.858@example.org>",
+      "content_scope": "renewed-dataset.csv",
+      "expires_on": "2026-12-31T00:00:00Z",
+      "short_description": "Renewed dataset export",
+      "approval_group": "GRP-NEG-7",
+      "authority": "Primary"
+    },
+    "source": "servicenow-approval",
+    "synthetic": true,
+    "scenario": "neg-7",
+    "note": "Additional approval for quorum evaluation"
   }
 ]

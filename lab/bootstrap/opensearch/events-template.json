@@ -83,6 +83,8 @@
         "expires_on": { "type": "keyword" },
         "approver_role": { "type": "keyword" },
         "renewal_of": { "type": "keyword" },
+        "authority": { "type": "keyword" },
+        "approval_group": { "type": "keyword" },
         "request_number": { "type": "keyword" },
         "decision": { "type": "keyword" },
         "requested_by": { "type": "keyword" },

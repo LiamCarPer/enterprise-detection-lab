@@ -43,6 +43,7 @@ known_gaps:
   - Content scope is a normalized field and may not correspond to a stable dataset or attachment identifier.
   - Expiry and cancellation are represented by normalized state and expiry fields; not every workflow exports them.
   - Approver role and renewal lineage are normalized fields; not every workflow distinguishes primary from delegate approvals.
+  - Approval group and authority are normalized fields; the lab does not reconstruct delegation chains or quorum from individual approval events.
   - Approval state can change after the decision, so a later export may supersede an earlier record.
 notes: ServiceNow approval records for distinguishing approved external sharing from a denied request that was bypassed.
 sample_data:
@@ -50,4 +51,4 @@ sample_data:
   synthetic: true
   license: synthetic
   provenance: Generated for this repository. No real users, tenants, or requests.
-  sha256: 068bd1b9398c26fe891614b22367fc2501a556ac60729ac0c1c5fb0c2668c11d
+  sha256: 7e1e4949aa2dd654fc665aced186561aac46c848389e82c9538488f4e703eb2f

@@ -9,7 +9,7 @@ from edl.telemetry import load_sources
 
 PACKAGE = Path(__file__).resolve().parents[1]
 FIXTURE_KINDS = ("positive", "negative", "benign")
-EXPECTED_FIXTURE_COUNTS = {"positive": 21, "negative": 23, "benign": 3}
+EXPECTED_FIXTURE_COUNTS = {"positive": 24, "negative": 27, "benign": 3}
 EXPECTED_SCENARIO_COUNTS = {"positive": 6, "negative": 7, "benign": 2}
 
 
@@ -43,7 +43,10 @@ def test_correlation_metadata_uses_required_and_exclusion_steps() -> None:
     assert "window_seconds: 604800" in meta
     assert "valid_until_field: expires_on" in meta
     assert meta.count("          status: active") == 2
-    assert "          approver_role: primary" in meta
+    assert "          authority: primary" in meta
+    assert meta.count("        - approval_group") == 2
+    assert "min_count: 2" in meta
+    assert "distinct_by: approver" in meta
 
 
 def test_fixtures_use_paired_scenarios() -> None:

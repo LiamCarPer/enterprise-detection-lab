@@ -12,7 +12,9 @@
       "recipient": "partner@example.org",
       "message_id": "<20261123100000.801@example.org>",
       "short_description": "Customer dataset export",
-      "content_scope": "customer-dataset.csv"
+      "content_scope": "customer-dataset.csv",
+      "approval_group": "GRP-POS-1",
+      "authority": "Primary"
     },
     "source": "servicenow-approval",
     "synthetic": true,
@@ -81,7 +83,9 @@
       "recipient": "archive@example.net",
       "message_id": "<20261123111500.802@example.net>",
       "short_description": "Quarterly archive transfer",
-      "content_scope": "quarterly-archive.zip"
+      "content_scope": "quarterly-archive.zip",
+      "approval_group": "GRP-POS-2",
+      "authority": "Primary"
     },
     "source": "servicenow-approval",
     "synthetic": true,
@@ -150,7 +154,9 @@
       "recipient": "partner@example.org",
       "message_id": "<20261124090000.831@example.org>",
       "content_scope": "partner-dataset.csv",
-      "short_description": "Partner dataset export"
+      "short_description": "Partner dataset export",
+      "approval_group": "GRP-POS-3",
+      "authority": "Primary"
     },
     "source": "servicenow-approval",
     "synthetic": true,
@@ -219,7 +225,9 @@
       "recipient": "partner@example.org",
       "message_id": "<20261125090000.851@example.org>",
       "content_scope": "expired-dataset.csv",
-      "short_description": "Expired dataset export"
+      "short_description": "Expired dataset export",
+      "approval_group": "GRP-POS-4",
+      "authority": "Primary"
     },
     "source": "servicenow-approval",
     "synthetic": true,
@@ -289,7 +297,9 @@
       "message_id": "<20261125100000.852@example.org>",
       "content_scope": "expired-dataset.csv",
       "expires_on": "2026-11-25T09:01:00Z",
-      "short_description": "Expired dataset export"
+      "short_description": "Expired dataset export",
+      "approval_group": "GRP-POS-4",
+      "authority": "Primary"
     },
     "source": "servicenow-approval",
     "synthetic": true,
@@ -309,7 +319,9 @@
       "recipient": "partner@example.org",
       "message_id": "<20261125110000.853@example.org>",
       "content_scope": "cancelled-dataset.csv",
-      "short_description": "Cancelled dataset export"
+      "short_description": "Cancelled dataset export",
+      "approval_group": "GRP-POS-5",
+      "authority": "Primary"
     },
     "source": "servicenow-approval",
     "synthetic": true,
@@ -379,7 +391,9 @@
       "message_id": "<20261125120000.854@example.org>",
       "content_scope": "cancelled-dataset.csv",
       "expires_on": "2026-12-31T00:00:00Z",
-      "short_description": "Cancelled dataset export"
+      "short_description": "Cancelled dataset export",
+      "approval_group": "GRP-POS-5",
+      "authority": "Primary"
     },
     "source": "servicenow-approval",
     "synthetic": true,
@@ -399,7 +413,9 @@
       "recipient": "partner@example.org",
       "message_id": "<20261125140000.855@example.org>",
       "content_scope": "delegated-dataset.csv",
-      "short_description": "Delegated dataset export"
+      "short_description": "Delegated dataset export",
+      "approval_group": "GRP-POS-6",
+      "authority": "Primary"
     },
     "source": "servicenow-approval",
     "synthetic": true,
@@ -470,11 +486,85 @@
       "message_id": "<20261125150000.856@example.org>",
       "content_scope": "delegated-dataset.csv",
       "expires_on": "2026-12-31T00:00:00Z",
-      "short_description": "Delegated dataset export"
+      "short_description": "Delegated dataset export",
+      "approval_group": "GRP-POS-6",
+      "authority": "Delegate"
     },
     "source": "servicenow-approval",
     "synthetic": true,
     "scenario": "pos-6",
     "note": "Delegate approval does not override the primary denial"
+  },
+  {
+    "event": {
+      "sys_id": "00000000-0000-4000-8000-000000080901",
+      "number": "REQ0008901",
+      "sys_updated_on": "2026-11-25T10:05:00Z",
+      "state": "Active",
+      "approval": "Approved",
+      "requested_for": "analyst@example.test",
+      "requested_by": "analyst@example.test",
+      "approver": "risk-owner@example.test",
+      "recipient": "partner@example.org",
+      "message_id": "<20261125100000.852@example.org>",
+      "content_scope": "expired-dataset.csv",
+      "expires_on": "2026-12-31T00:00:00Z",
+      "short_description": "Expired dataset export",
+      "approval_group": "GRP-POS-4",
+      "authority": "Primary",
+      "approver_role": "Primary"
+    },
+    "source": "servicenow-approval",
+    "synthetic": true,
+    "scenario": "pos-4",
+    "note": "Additional approval for quorum evaluation"
+  },
+  {
+    "event": {
+      "sys_id": "00000000-0000-4000-8000-000000080902",
+      "number": "REQ0008902",
+      "sys_updated_on": "2026-11-25T12:05:00Z",
+      "state": "Active",
+      "approval": "Approved",
+      "requested_for": "analyst@example.test",
+      "requested_by": "analyst@example.test",
+      "approver": "risk-owner@example.test",
+      "recipient": "partner@example.org",
+      "message_id": "<20261125120000.854@example.org>",
+      "content_scope": "cancelled-dataset.csv",
+      "expires_on": "2026-12-31T00:00:00Z",
+      "short_description": "Cancelled dataset export",
+      "approval_group": "GRP-POS-5",
+      "authority": "Primary",
+      "approver_role": "Primary"
+    },
+    "source": "servicenow-approval",
+    "synthetic": true,
+    "scenario": "pos-5",
+    "note": "Additional approval for quorum evaluation"
+  },
+  {
+    "event": {
+      "sys_id": "00000000-0000-4000-8000-000000080903",
+      "number": "REQ0008903",
+      "sys_updated_on": "2026-11-25T15:05:00Z",
+      "state": "Active",
+      "approval": "Approved",
+      "requested_for": "analyst@example.test",
+      "requested_by": "analyst@example.test",
+      "approver": "data-owner@example.test",
+      "approver_role": "Primary",
+      "recipient": "partner@example.org",
+      "message_id": "<20261125150000.856@example.org>",
+      "content_scope": "delegated-dataset.csv",
+      "expires_on": "2026-12-31T00:00:00Z",
+      "short_description": "Delegated dataset export",
+      "approval_group": "GRP-POS-6",
+      "authority": "Primary"
+    },
+    "source": "servicenow-approval",
+    "synthetic": true,
+    "scenario": "pos-6",
+    "note": "Additional approval for quorum evaluation"
   }
 ]

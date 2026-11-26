@@ -139,7 +139,9 @@ the transition into that step. An exclusion step may declare its own
 seven-day exclusion window so a superseding approval can suppress a sequence
 after the main 24-hour window has elapsed. An exclusion step may also declare
 `valid_until_field`; that timestamp must be at or after the last required
-event, so an expired approval does not suppress the sequence.
+event, so an expired approval does not suppress the sequence. Exclusion steps may
+set `min_count` and `distinct_by` to require a quorum of distinct events, such as
+two different approvers in the same approval group.
 
 Steps may also declare optional `filters` to narrow the events that can satisfy
 that step. Filters are evaluated after the native query and before grouping and

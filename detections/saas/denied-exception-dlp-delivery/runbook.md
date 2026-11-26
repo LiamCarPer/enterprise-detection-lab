@@ -2,7 +2,7 @@
 
 ## Alert meaning
 
-A ServiceNow approval denied or revoked an external-sharing request, then the same mailbox delivered a message to the same recipient, and an active high-severity Purview DLP alert matched that message and content scope within 24 hours. The sequence indicates that a denied or revoked data-handling decision was bypassed. A later active, unexpired approval by a primary approver for the same mailbox, recipient, and content scope suppresses the alert for up to seven days, including a renewal recorded under a new request number. Delegate approvals, cancelled approvals, and expired approvals do not suppress it.
+A ServiceNow approval denied or revoked an external-sharing request, then the same mailbox delivered a message to the same recipient, and an active high-severity Purview DLP alert matched that message and content scope within 24 hours. The sequence indicates that a denied or revoked data-handling decision was bypassed. Two later active, unexpired approvals by distinct primary-authority approvers in the same approval group for the same mailbox, recipient, and content scope suppress the alert for up to seven days, including a renewal recorded under a new request number. Delegate approvals, cancelled approvals, expired approvals, and a single approval do not meet the quorum.
 
 ## Triage
 
@@ -10,7 +10,7 @@ A ServiceNow approval denied or revoked an external-sharing request, then the sa
 2. Review the approval request number, requested-for mailbox, approver, decision time, and denial reason.
 3. Review the message-trace `MessageId`, `SenderAddress`, `Subject`, `Status`, and `RelatedRecipientAddress`.
 4. Open the DLP alert and inspect the matched sensitive information types, content scope, and policy action.
-5. Check whether a later active primary approval covers the same content, recipient, and seven-day window, and whether it expires before the delivery or DLP alert. Treat delegate approvals as non-authoritative.
+5. Check whether two distinct primary-authority approvals in the same approval group cover the same content, recipient, and seven-day window, and whether they expire before the delivery or DLP alert. Treat unauthorized delegate approvals and a single approval as non-authoritative.
 6. Review the sender's recent sign-ins, mailbox rules, delegation, and mail access.
 7. Pivot to endpoint and network telemetry for the sender and message time.
 

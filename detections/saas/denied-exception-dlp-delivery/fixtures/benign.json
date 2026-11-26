@@ -12,7 +12,9 @@
       "recipient": "partner@example.org",
       "message_id": "<20261123150000.821@example.org>",
       "short_description": "Draft campaign",
-      "content_scope": "draft-campaign.pdf"
+      "content_scope": "draft-campaign.pdf",
+      "approval_group": "GRP-BENIGN-1",
+      "authority": "Primary"
     },
     "source": "servicenow-approval",
     "synthetic": true,

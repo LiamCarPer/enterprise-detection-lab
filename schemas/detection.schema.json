@@ -314,6 +314,16 @@
                 "type": "string",
                 "minLength": 1,
                 "description": "Timestamp field on an exclusion event that must be at or after the last required event."
+              },
+              "min_count": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "Minimum number of matching exclusion events required to suppress a sequence."
+              },
+              "distinct_by": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Field used to count distinct exclusion events, such as an approver."
               }
             }
           }

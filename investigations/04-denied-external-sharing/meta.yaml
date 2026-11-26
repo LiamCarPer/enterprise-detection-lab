@@ -19,7 +19,7 @@ evidence:
     path: evidence/e1.json
     provenance: Synthetic event from lab/datasets/synthetic/servicenow-approval/reference.json
     description: ServiceNow approval REQ0007001 denied the external sharing request for customer-dataset.csv at 14:05 UTC.
-    sha256: 4e338c82562f54b42ded28354c44dd8dfb8fb4f068bdf6b09f9794814560e048
+    sha256: c8b2548bc877b80f9475fd08d5ee43c9830c0410ebfbfa2f1c18a4b06efc5a51
   - id: e2
     type: event
     source: exchange-message-trace

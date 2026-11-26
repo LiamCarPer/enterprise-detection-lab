@@ -78,6 +78,8 @@ class CorrelationStep:
     exclude: bool = False
     window_seconds: int | None = None
     valid_until_field: str | None = None
+    min_count: int = 1
+    distinct_by: str | None = None
 
 
 @dataclass(frozen=True)
@@ -479,6 +481,32 @@ def _load_correlation(
             )
         if position == 1 and not exclude and raw_window is not None:
             raise DetectionError(f"{path}: correlation step 1 must not declare window_seconds")
+        raw_min_count = item.get("min_count")
+        if raw_min_count is not None:
+            if (
+                not isinstance(raw_min_count, int)
+                or isinstance(raw_min_count, bool)
+                or raw_min_count < 1
+            ):
+                raise DetectionError(
+                    f"{path}: correlation step {position} min_count must be a positive integer"
+                )
+            if not exclude:
+                raise DetectionError(
+                    f"{path}: correlation step {position} min_count is only supported "
+                    "on exclusion steps"
+                )
+        raw_distinct_by = item.get("distinct_by")
+        if raw_distinct_by is not None:
+            if not isinstance(raw_distinct_by, str) or not raw_distinct_by:
+                raise DetectionError(
+                    f"{path}: correlation step {position} distinct_by must be a non-empty string"
+                )
+            if not exclude:
+                raise DetectionError(
+                    f"{path}: correlation step {position} distinct_by is only supported "
+                    "on exclusion steps"
+                )
         raw_valid_until = item.get("valid_until_field")
         if raw_valid_until is not None:
             if not isinstance(raw_valid_until, str) or not raw_valid_until:
@@ -516,6 +544,8 @@ def _load_correlation(
             exclude=exclude,
             window_seconds=raw_window,
             valid_until_field=raw_valid_until,
+            min_count=raw_min_count if raw_min_count is not None else 1,
+            distinct_by=raw_distinct_by,
         )
         if not exclude:
             required_match_fields.update(step.match_fields)
@@ -765,6 +795,8 @@ def _excluded(
 ) -> bool:
     for step_index in exclude_indices:
         step = spec.steps[step_index]
+        matched = 0
+        seen: set[Any] = set()
         for case in ordered[step_index]:
             event_time = case.event.event_time
             window = step.window_seconds or spec.window_seconds
@@ -801,7 +833,16 @@ def _excluded(
                     ) from exc
                 if sequence_time is not None and valid_until < sequence_time:
                     continue
-            return True
+            if step.distinct_by is not None:
+                distinct_value = _lookup_document(case.event.document, step.distinct_by)
+                if distinct_value is None or distinct_value == "":
+                    continue
+                if distinct_value in seen:
+                    continue
+                seen.add(distinct_value)
+            matched += 1
+            if matched >= step.min_count:
+                return True
     return False
 
 
