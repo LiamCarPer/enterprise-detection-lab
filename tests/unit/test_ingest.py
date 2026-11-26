@@ -159,6 +159,22 @@ def test_normalize_entra_signin_maps_identity_fields() -> None:
     assert document["device"] == {"os": "Windows 11", "browser": "Edge"}
 
 
+def test_normalize_entra_signin_maps_session_and_device_id() -> None:
+    document = normalize_entra_signin(
+        {
+            **SIGNIN_RAW,
+            "sessionId": "session-1",
+            "deviceDetail": {
+                "operatingSystem": "Windows 11",
+                "browser": "Edge",
+                "deviceId": "device-1",
+            },
+        }
+    )
+    assert document["session_id"] == "session-1"
+    assert document["device"]["id"] == "device-1"
+
+
 def test_normalize_entra_signin_omits_empty_device() -> None:
     document = normalize_entra_signin({**SIGNIN_RAW, "deviceDetail": {}})
     assert "device" not in document
@@ -652,11 +668,11 @@ def test_ingest_identity_dry_run_uses_repository_samples() -> None:
     results = ingest_identity(dry_run=True)
     assert [result.source for result in results] == ["entra-signin", "entra-audit"]
     assert {result.source: result.read for result in results} == {
-        "entra-signin": 3,
+        "entra-signin": 4,
         "entra-audit": 5,
     }
     assert {result.source: result.unique for result in results} == {
-        "entra-signin": 3,
+        "entra-signin": 4,
         "entra-audit": 5,
     }
     assert all(result.written == 0 for result in results)

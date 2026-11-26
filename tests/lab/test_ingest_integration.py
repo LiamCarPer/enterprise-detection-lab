@@ -47,14 +47,14 @@ def test_identity_ingest_is_idempotent_and_queryable() -> None:
             index_prefix=TEST_PREFIX,
         )
         assert [result.source for result in first] == ["entra-signin", "entra-audit"]
-        expected = {"entra-signin": 3, "entra-audit": 5}
+        expected = {"entra-signin": 4, "entra-audit": 5}
         assert {result.source: result.read for result in first} == expected
         assert {result.source: result.unique for result in first} == expected
         assert {result.source: result.written for result in first} == expected
         assert {result.source: sum(result.counts.values()) for result in first} == expected
 
         hits_before = _search("entra-signin")
-        assert len(hits_before) == 3
+        assert len(hits_before) == 4
         ids_before = sorted(str(hit["_id"]) for hit in hits_before)
 
         sources = [hit["_source"] for hit in hits_before]
@@ -76,7 +76,7 @@ def test_identity_ingest_is_idempotent_and_queryable() -> None:
 
         hits_after = _search("entra-signin")
         assert sorted(str(hit["_id"]) for hit in hits_after) == ids_before
-        assert len(hits_after) == 3
+        assert len(hits_after) == 4
 
         audit_hits = _search("entra-audit")
         assert len(audit_hits) == 5

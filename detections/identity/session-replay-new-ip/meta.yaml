@@ -1,0 +1,75 @@
+id: DET-IDN-006
+title: Interactive Session Reused From a New IP
+version: 1.0.0
+status: tested
+domain: identity
+severity: high
+hypothesis: A session established by an interactive MFA sign-in that is later used non-interactively from a different IP can indicate token or session replay.
+description: Correlates a successful interactive MFA sign-in with a later non-interactive high-risk sign-in that shares the session ID and uses a different source IP within 60 minutes.
+owner: detection-engineering
+created: "2026-11-26"
+updated: "2026-11-26"
+attack:
+  - T1078
+  - T1550.001
+tags:
+  - identity
+  - entra-id
+  - session
+  - token
+  - correlation
+telemetry:
+  - source: entra-signin
+    event_class: sign_in
+    required_fields:
+      - id
+      - createdDateTime
+      - userPrincipalName
+      - appDisplayName
+      - ipAddress
+      - status
+      - authenticationRequirement
+      - isInteractive
+      - riskLevelDuringSignIn
+      - sessionId
+queries:
+  opensearch: queries/opensearch.json
+correlation:
+  window_seconds: 3600
+  group_by:
+    - user
+  steps:
+    - source: entra-signin
+      event_class: sign_in
+      filters:
+        all:
+          result: success
+          auth_requirement: multiFactorAuthentication
+          is_interactive: true
+      match_fields:
+        - session_id
+        - src_ip
+    - source: entra-signin
+      event_class: sign_in
+      filters:
+        all:
+          result: success
+          is_interactive: false
+          risk_level:
+            - medium
+            - high
+      match_fields:
+        - session_id
+      match_changed_fields:
+        - src_ip
+tests:
+  positive: 4
+  negative: 6
+  benign: 4
+false_positives:
+  - A user changes networks during a long-lived session and the new session is independently risky.
+  - A mobile or VPN transition that changes the source IP.
+  - A risk false positive on a legitimate token refresh.
+runbook: runbook.md
+metrics: metrics.json
+notes: notes.md

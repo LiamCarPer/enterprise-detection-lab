@@ -432,6 +432,7 @@ def normalize_entra_signin(raw: Mapping[str, Any]) -> dict[str, Any]:
         "is_interactive": raw.get("isInteractive"),
         "conditional_access_status": raw.get("conditionalAccessStatus"),
         "risk_level": raw.get("riskLevelDuringSignIn"),
+        "session_id": raw.get("sessionId"),
     }
 
     device = raw.get("deviceDetail")
@@ -440,6 +441,7 @@ def normalize_entra_signin(raw: Mapping[str, Any]) -> dict[str, Any]:
             {
                 "os": device.get("operatingSystem"),
                 "browser": device.get("browser"),
+                "id": device.get("deviceId"),
             }
         )
         if detail:

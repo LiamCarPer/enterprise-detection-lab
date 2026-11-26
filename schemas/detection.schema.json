@@ -324,6 +324,15 @@
                 "type": "string",
                 "minLength": 1,
                 "description": "Field used to count distinct exclusion events, such as an approver."
+              },
+              "match_changed_fields": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Fields established by earlier steps that must have different values in this step."
               }
             }
           }

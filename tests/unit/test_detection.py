@@ -495,6 +495,7 @@ def test_run_detections_includes_templates_when_requested() -> None:
         "DET-IDN-003",
         "DET-IDN-004",
         "DET-IDN-005",
+        "DET-IDN-006",
         "DET-END-001",
         "DET-END-002",
         "DET-CLD-001",
@@ -860,6 +861,71 @@ def test_correlation_metrics_use_scenario_unit(tmp_path: Path) -> None:
             "  steps:\n"
             "    - source: entra-signin\n"
             "      event_class: sign_in\n"
+            "      match_changed_fields:\n"
+            "        - user\n"
+            "    - source: entra-audit\n"
+            "      event_class: audit\n",
+            "only supported on non-exclude",
+        ),
+        (
+            "correlation:\n"
+            "  window_seconds: 1800\n"
+            "  group_by:\n"
+            "    - user\n"
+            "  steps:\n"
+            "    - source: entra-signin\n"
+            "      event_class: sign_in\n"
+            "      match_fields:\n"
+            "        - user\n"
+            "    - source: entra-audit\n"
+            "      event_class: audit\n"
+            "      match_changed_fields: src_ip\n",
+            "match_changed_fields",
+        ),
+        (
+            "correlation:\n"
+            "  window_seconds: 1800\n"
+            "  group_by:\n"
+            "    - user\n"
+            "  steps:\n"
+            "    - source: entra-signin\n"
+            "      event_class: sign_in\n"
+            "      match_fields:\n"
+            "        - user\n"
+            "    - source: entra-audit\n"
+            "      event_class: audit\n"
+            "      match_changed_fields:\n"
+            "        - src_ip\n",
+            "established",
+        ),
+        (
+            "correlation:\n"
+            "  window_seconds: 1800\n"
+            "  group_by:\n"
+            "    - user\n"
+            "  steps:\n"
+            "    - source: entra-signin\n"
+            "      event_class: sign_in\n"
+            "      match_fields:\n"
+            "        - user\n"
+            "        - src_ip\n"
+            "    - source: entra-audit\n"
+            "      event_class: audit\n"
+            "      match_fields:\n"
+            "        - user\n"
+            "        - src_ip\n"
+            "      match_changed_fields:\n"
+            "        - src_ip\n",
+            "overlap",
+        ),
+        (
+            "correlation:\n"
+            "  window_seconds: 1800\n"
+            "  group_by:\n"
+            "    - user\n"
+            "  steps:\n"
+            "    - source: entra-signin\n"
+            "      event_class: sign_in\n"
             "      match_any_fields:\n"
             "        - user\n"
             "    - source: entra-audit\n"
@@ -950,6 +1016,7 @@ def _step(
     valid_until_field: str | None = None,
     min_count: int = 1,
     distinct_by: str | None = None,
+    match_changed_fields: tuple[str, ...] = (),
 ) -> CorrelationStep:
     return CorrelationStep(
         source=source,
@@ -962,6 +1029,7 @@ def _step(
         valid_until_field=valid_until_field,
         min_count=min_count,
         distinct_by=distinct_by,
+        match_changed_fields=match_changed_fields,
     )
 
 
@@ -1556,6 +1624,59 @@ def test_correlation_exclusion_requires_unexpired_approval() -> None:
     assert not _correlation_hit([denied, delivery, valid], spec)
     assert _correlation_hit([denied, delivery, expired], spec)
     assert _correlation_hit([denied, delivery, missing], spec)
+
+
+def test_correlation_changed_fields_require_a_different_value() -> None:
+    base = datetime(2026, 11, 1, tzinfo=UTC)
+    spec = _spec(
+        _step("src", "interactive", match_fields=("session_id", "src_ip")),
+        _step(
+            "src",
+            "replay",
+            match_fields=("session_id",),
+            match_changed_fields=("src_ip",),
+        ),
+    )
+    first = _make_case(
+        "first",
+        "src",
+        "interactive",
+        base,
+        {"user": "u", "session_id": "s1", "src_ip": "203.0.113.10"},
+    )
+    new_ip = _make_case(
+        "new-ip",
+        "src",
+        "replay",
+        base + timedelta(seconds=10),
+        {"user": "u", "session_id": "s1", "src_ip": "198.51.100.20"},
+    )
+    same_ip = _make_case(
+        "same-ip",
+        "src",
+        "replay",
+        base + timedelta(seconds=10),
+        {"user": "u", "session_id": "s1", "src_ip": "203.0.113.10"},
+    )
+    missing_ip = _make_case(
+        "missing-ip",
+        "src",
+        "replay",
+        base + timedelta(seconds=10),
+        {"user": "u", "session_id": "s1"},
+    )
+    other_session = _make_case(
+        "other-session",
+        "src",
+        "replay",
+        base + timedelta(seconds=10),
+        {"user": "u", "session_id": "s2", "src_ip": "198.51.100.20"},
+    )
+
+    assert _correlation_hit([first, new_ip], spec)
+    assert not _correlation_hit([first, same_ip], spec)
+    assert not _correlation_hit([first, missing_ip], spec)
+    assert not _correlation_hit([first, other_session], spec)
 
 
 def test_correlation_exclusion_quorum_requires_distinct_approvers() -> None:

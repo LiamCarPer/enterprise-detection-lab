@@ -27,6 +27,7 @@
         "is_interactive": { "type": "boolean" },
         "conditional_access_status": { "type": "keyword" },
         "risk_level": { "type": "keyword" },
+        "session_id": { "type": "keyword" },
         "consent_type": { "type": "keyword" },
         "scopes": { "type": "keyword" },
         "offline_access": { "type": "boolean" },
@@ -222,7 +223,8 @@
           "type": "object",
           "properties": {
             "os": { "type": "keyword" },
-            "browser": { "type": "keyword" }
+            "browser": { "type": "keyword" },
+            "id": { "type": "keyword" }
           }
         },
         "resource": {

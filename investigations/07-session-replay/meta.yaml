@@ -1,0 +1,55 @@
+id: INV-007
+title: Interactive Session Reused From a New IP
+version: 1.0.0
+status: tested
+domains:
+  - identity
+scenario: A successful interactive MFA sign-in is followed by a non-interactive high-risk sign-in that reuses the same session ID from a different source IP.
+hypothesis: A session established by MFA may have been replayed from a different network context.
+detections:
+  - DET-IDN-001
+  - DET-IDN-006
+owner: detection-engineering
+created: "2026-11-26"
+updated: "2026-11-26"
+evidence:
+  - id: e1
+    type: event
+    source: entra-signin
+    path: evidence/e1.json
+    provenance: Synthetic event from lab/datasets/synthetic/entra-signin/reference.json
+    description: Successful interactive MFA sign-in at 09:05 UTC from 198.51.100.23.
+    sha256: 49086ac4c3c8b901943b7111929a7b1aa2e2ac3be42f79f96f5cba807bcf24b5
+  - id: e2
+    type: event
+    source: entra-signin
+    path: evidence/e2.json
+    provenance: Synthetic event from lab/datasets/synthetic/entra-signin/reference.json
+    description: Non-interactive high-risk sign-in with the same session ID from 198.51.100.99 at 09:20 UTC.
+    sha256: 6b942607d6c6ba04a0948e0c748720557de8c5973195944b0ed2add008fd0263
+timeline:
+  - timestamp: "2026-11-01T09:05:00Z"
+    event: Interactive MFA sign-in for analyst@example.test from 198.51.100.23
+    source: entra-signin
+    evidence_id: e1
+  - timestamp: "2026-11-01T09:20:00Z"
+    event: Non-interactive high-risk sign-in with the same session from 198.51.100.99
+    source: entra-signin
+    evidence_id: e2
+lessons:
+  - The session ID is the only direct link between the interactive and non-interactive events.
+  - The source IP changed, but a VPN or mobile transition could explain it.
+  - The non-interactive sign-in has elevated risk, which raises confidence beyond the IP change alone.
+  - No downstream mail, file, or cloud action is observed in this evidence.
+  - Device and token-protection signals would strengthen the conclusion.
+response:
+  - Revoke the user's sessions and refresh tokens.
+  - Require credential reset and MFA re-registration if compromise is suspected.
+  - Review mail, file, and cloud activity from the second IP and session.
+  - Check for additional sessions or users from the second IP.
+  - Review conditional access and token-protection policy coverage.
+references:
+  - https://attack.mitre.org/techniques/T1078/
+  - https://attack.mitre.org/techniques/T1550/001/
+executive_summary: A synthetic identity chain shows an interactive MFA sign-in followed by a non-interactive high-risk sign-in that reuses the session ID from a different source IP. The replay is observed; token theft and downstream access remain inferred.
+notes: Synthetic investigation built from the local lab datasets. No production or customer data.

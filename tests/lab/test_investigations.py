@@ -19,6 +19,7 @@ INVESTIGATIONS = (
     config.ROOT / "investigations" / "04-denied-external-sharing",
     config.ROOT / "investigations" / "05-oauth-consent-grant",
     config.ROOT / "investigations" / "06-admin-oauth-grant",
+    config.ROOT / "investigations" / "07-session-replay",
 )
 EXPECTED_DETECTIONS = {
     "INV-001": {
@@ -50,6 +51,10 @@ EXPECTED_DETECTIONS = {
     },
     "INV-006": {
         "DET-IDN-005",
+    },
+    "INV-007": {
+        "DET-IDN-001",
+        "DET-IDN-006",
     },
 }
 

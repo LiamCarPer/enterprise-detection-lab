@@ -1,0 +1,98 @@
+[
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001901",
+      "createdDateTime": "2026-11-09T10:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.40",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "none",
+      "sessionId": "session-a",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge",
+        "deviceId": "device-a"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "pos-1",
+    "note": "Interactive MFA sign-in"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001902",
+      "createdDateTime": "2026-11-09T10:20:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "198.51.100.40",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": false,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "high",
+      "sessionId": "session-a",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge",
+        "deviceId": "device-b"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "pos-1",
+    "note": "Replayed session from a new IP"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001903",
+      "createdDateTime": "2026-11-09T11:00:00Z",
+      "userPrincipalName": "finance@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.41",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "low",
+      "sessionId": "session-b",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge",
+        "deviceId": "device-c"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "pos-2",
+    "note": "Interactive MFA sign-in"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001904",
+      "createdDateTime": "2026-11-09T11:15:00Z",
+      "userPrincipalName": "finance@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "198.51.100.41",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": false,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium",
+      "sessionId": "session-b",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge",
+        "deviceId": "device-d"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "pos-2",
+    "note": "Replayed session with medium risk"
+  }
+]

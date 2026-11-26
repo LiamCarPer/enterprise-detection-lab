@@ -81,7 +81,7 @@ The source contracts, event classes, and known gaps are listed in [`docs/telemet
 | Profile | Starting access | Objective | Likely techniques | Current coverage |
 |---|---|---|---|---|
 | Opportunistic external attacker | Internet-facing service or phishing | Initial access, execution, and credential theft | Phishing, malicious files, scripting, valid accounts | Partial |
-| Credential and session attacker | Valid password, phished session, or stolen token | Identity persistence and cloud/SaaS access | Valid accounts, token theft, MFA abuse, account manipulation | Partial; OAuth user and admin consent paths are covered, token replay remains a gap |
+| Credential and session attacker | Valid password, phished session, or stolen token | Identity persistence and cloud/SaaS access | Valid accounts, token theft, MFA abuse, account manipulation | Partial; OAuth consent and session replay are covered, token theft remains a gap |
 | SaaS data thief | Compromised mailbox or delegated access | Mail collection and external exfiltration | Mailbox delegation, mail access, forwarding rules, external delivery | Covered for the modeled mailbox path |
 | Data-handling insider or careless user | Authorized mailbox and external recipient | Send data outside an approved boundary | External delivery, DLP policy match, approval bypass | Covered for the modeled email and DLP path |
 | Cloud control-plane attacker | Cloud credentials or role assumption | Persistence, credential creation, and logging evasion | Access-key creation, account creation, logging tamper | Covered for selected paths; role and resource abuse are gaps |
@@ -98,6 +98,7 @@ The source contracts, event classes, and known gaps are listed in [`docs/telemet
 | Denied data-sharing exception bypass | Denied or revoked approval → external delivery → DLP → quorum and authority checks | T1048.003 | `DET-SAA-008`, `DET-SAA-009` | [`INV-004`](../investigations/04-denied-external-sharing/) | Covered for the modeled path |
 | OAuth consent to application access | Risky sign-in → user consent with offline access → application mail access | T1078, T1528, T1114.002 | `DET-IDN-001`, `DET-IDN-004` | [`INV-005`](../investigations/05-oauth-consent-grant/) | Covered for the modeled path |
 | Admin consent and tenant-wide grant | Admin consent → tenant-wide OAuth permission grant | T1528, T1098 | `DET-IDN-005` | [`INV-006`](../investigations/06-admin-oauth-grant/) | Covered for the modeled path |
+| Session replay | Interactive MFA sign-in → non-interactive risky use from a new IP with the same session | T1078, T1550.001 | `DET-IDN-006` | [`INV-007`](../investigations/07-session-replay/) | Covered for the modeled path |
 | Network tunneling and malware | DNS tunneling or high-severity network alert | T1071.004, T1071, T1105 | `DET-NET-001`, `DET-NET-002` | None | Partial |
 | Kubernetes execution and privilege | Privileged pod or shell in container | T1610, T1611, T1059, T1609 | `DET-K8S-001`, `DET-K8S-002` | None | Partial |
 | GitHub organization takeover | Organization owner added | T1098 | `DET-SAA-002` | None | Partial |
@@ -135,7 +136,7 @@ The matrix records the technique mappings used by tested detections, plus the ga
 | Command and Control | T1071.004 DNS | Zeek | `DET-NET-001` | Partial | Long TXT queries only |
 | Exfiltration | T1048.003 Exfiltration Over Unencrypted Non-C2 Protocol | Exchange message trace, Purview DLP, ServiceNow approvals | `DET-SAA-007`, `DET-SAA-008`, `DET-SAA-009` | Covered for external email | Other exfiltration channels remain gaps |
 | Lateral Movement | T1021 Remote Services | Sysmon, Windows Security | None | Gap | No tested lateral-movement detection |
-| Lateral Movement | T1550.001 Application Access Token | Entra, CloudTrail | None | Gap | No token-replay detection |
+| Lateral Movement | T1550.001 Application Access Token | Entra sign-in/audit, CloudTrail | `DET-IDN-006` | Partial | Session reuse from a new IP only; token theft and other replay variants remain |
 | Impact | T1486 Data Encrypted for Impact | Endpoint telemetry | None | Gap | Ransomware behavior is not modeled |
 
 ## Coverage assessment
@@ -148,6 +149,7 @@ The matrix records the technique mappings used by tested detections, plus the ga
 - **Data-handling exception bypass.** The repository distinguishes an approved transfer from a denied or revoked request that was bypassed, including a DLP match.
 - **OAuth consent to application access.** The modeled chain connects a risky sign-in, user consent with offline access, and application mail access.
 - **Admin and tenant-wide OAuth grants.** The modeled chain connects admin consent with failed publisher and redirect trust to a tenant-wide permission grant.
+- **Session replay.** The modeled chain connects an interactive MFA sign-in to non-interactive risky use of the same session from a different IP.
 
 ### Thin areas
 
@@ -161,7 +163,7 @@ The matrix records the technique mappings used by tested detections, plus the ga
 | Gap | Why it matters | Telemetry available | Missing | Priority |
 |---|---|---|---|---|
 | Token and session theft | Bypasses password and MFA controls and enables replay | Entra sign-in/audit, CloudTrail, SaaS audit | Token-specific detection and session correlation | High |
-| OAuth token replay and application governance | Consent and grant records are covered, but stolen tokens and unmanaged application inventory remain | Entra sign-in/audit, CloudTrail, SaaS audit | Token-replay detection, approved-application inventory, and publisher reputation | High |
+| Token theft and application governance | Session replay is covered, but stolen tokens before first use and unmanaged application inventory remain | Entra sign-in/audit, CloudTrail, SaaS audit | Token-theft detection, approved-application inventory, and publisher reputation | High |
 | Cloud role and resource persistence | Persistence beyond access keys and logging changes | CloudTrail | Role trust, function, and resource-change detections | High |
 | Endpoint credential access and lateral movement | Common path to ransomware and domain compromise | Sysmon, Windows Security | Credential-dumping and remote-service detections | High |
 | Kubernetes RBAC and host escape | Cluster compromise and container escape | Kubernetes audit, Falco | RBAC-abuse detection and host-escape investigation | High |
@@ -212,7 +214,7 @@ The matrix records the technique mappings used by tested detections, plus the ga
 
 ### Next detection candidates
 
-1. Token and session replay detection across Entra sign-in and cloud/SaaS activity.
+1. Token-theft and impossible-travel detection across Entra sign-in and cloud/SaaS activity.
 2. Approved-application inventory and publisher-reputation enrichment.
 3. Cloud role trust and resource-persistence detection.
 4. Endpoint credential access and remote-service detection.

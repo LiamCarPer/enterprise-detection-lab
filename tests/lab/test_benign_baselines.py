@@ -43,6 +43,23 @@ def test_detection_has_no_benign_baseline_matches(detection_id: str, dataset: Pa
         client.close()
 
 
+def test_identity_session_replay_has_no_benign_sequence_matches() -> None:
+    client = OpenSearchClient()
+    try:
+        result = run_baseline(
+            "DET-IDN-006",
+            BASELINE_DIR / "identity-session-replay.json",
+            client=client,
+            latency_runs=1,
+        )
+        assert result.evaluation_unit == "scenario"
+        assert result.sample_size == 6
+        assert result.matched_count == 0
+        assert result.false_positive_rate == 0.0
+    finally:
+        client.close()
+
+
 def test_identity_oauth_admin_consent_has_no_benign_matches() -> None:
     client = OpenSearchClient()
     try:

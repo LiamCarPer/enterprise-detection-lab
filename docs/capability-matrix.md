@@ -44,13 +44,13 @@ This matrix tracks the engineering capabilities implemented in the lab and the a
 | `telemetry/sources/` + `docs/telemetry-matrix.md` | Complete | 14 contracts (14 ingested) with generated matrix and freshness check |
 | `src/edl/ingest.py` + `docs/ingestion.md` | Complete | Identity, endpoint, cloud, SaaS, network, and Kubernetes normalization, classification, deduplication, and idempotent bulk ingest |
 | `detections/endpoint/_template` + `investigations/_template` | Complete | Working reference packages and `edl new` scaffolding |
-| `detections/identity`, `detections/endpoint`, `detections/cloud`, `detections/saas`, `detections/network`, `detections/kubernetes` | Tested | Twenty-two core detections, including nine sequence correlations, with runbooks and committed metrics |
-| `investigations/` | Tested | Six investigation packages with evidence hashes, timelines, queries, response, lessons, and linked detection checks |
+| `detections/identity`, `detections/endpoint`, `detections/cloud`, `detections/saas`, `detections/network`, `detections/kubernetes` | Tested | Twenty-three core detections, including ten sequence correlations, with runbooks and committed metrics |
+| `investigations/` | Tested | Seven investigation packages with evidence hashes, timelines, queries, response, lessons, and linked detection checks |
 | `src/edl/detection.py` + `docs/detection-testing.md` | Complete | Fixture normalization, temporary-index replay, pass/fail scoring, and metrics generation |
 | `tests/` + `Makefile` | Complete | Unit, integration, and lab tests; 90% statement-coverage gate |
 | `.github/workflows/ci.yml` | Complete | Quality job plus OpenSearch-backed ingestion, detection, and investigation tests |
-| `reports/detection-metrics.md` | Complete | Aggregated fixture metrics for twenty-two detections with explicit limitations |
-| `lab/datasets/synthetic/benign-baseline/` + `reports/` | Complete | Twenty-one benign corpora, including SaaS, network, Kubernetes, and nine scenario baselines, plus endpoint and SaaS tuning results |
+| `reports/detection-metrics.md` | Complete | Aggregated fixture metrics for twenty-three detections with explicit limitations |
+| `lab/datasets/synthetic/benign-baseline/` + `reports/` | Complete | Twenty-two benign corpora, including SaaS, network, Kubernetes, and ten scenario baselines, plus endpoint and SaaS tuning results |
 | `detections/exceptions.yaml` + `docs/exception-policy.md` | Complete | Reviewed exceptions with owner, scope, expiry, change ticket, and compensating controls |
 | `config/tenant.yaml` + `schemas/tenant.schema.json` | Complete | Versioned accepted mail domains with schema validation during ingestion and repository checks |
 | `docs/capability-matrix.md` + `docs/requirements-traceability.md` | Complete | Capability and engineering-requirement traceability |

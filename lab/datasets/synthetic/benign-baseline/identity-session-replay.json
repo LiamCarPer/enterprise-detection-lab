@@ -1,0 +1,232 @@
+[
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002001",
+      "createdDateTime": "2026-11-10T09:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.50",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "none",
+      "sessionId": "session-a",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge",
+        "deviceId": "device-a"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "interactive-only"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002002",
+      "createdDateTime": "2026-11-10T09:10:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "198.51.100.50",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": false,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "high",
+      "sessionId": "session-b",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge",
+        "deviceId": "device-b"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "noninteractive-only"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002003",
+      "createdDateTime": "2026-11-10T10:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.51",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "none",
+      "sessionId": "session-c",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge",
+        "deviceId": "device-c"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "same-ip"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002004",
+      "createdDateTime": "2026-11-10T10:20:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.51",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": false,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "high",
+      "sessionId": "session-c",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge",
+        "deviceId": "device-c"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "same-ip"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002005",
+      "createdDateTime": "2026-11-10T11:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.52",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "none",
+      "sessionId": "session-d",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge",
+        "deviceId": "device-d"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "different-session"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002006",
+      "createdDateTime": "2026-11-10T11:20:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "198.51.100.52",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": false,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "high",
+      "sessionId": "session-e",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge",
+        "deviceId": "device-e"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "different-session"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002007",
+      "createdDateTime": "2026-11-10T12:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.53",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "none",
+      "sessionId": "session-f",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge",
+        "deviceId": "device-f"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "low-risk-new-ip"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002008",
+      "createdDateTime": "2026-11-10T12:20:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "198.51.100.53",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": false,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "none",
+      "sessionId": "session-f",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge",
+        "deviceId": "device-g"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "low-risk-new-ip"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002009",
+      "createdDateTime": "2026-11-10T13:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.54",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "none",
+      "sessionId": "session-g",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge",
+        "deviceId": "device-h"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "mismatched-user"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002010",
+      "createdDateTime": "2026-11-10T13:20:00Z",
+      "userPrincipalName": "finance@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "198.51.100.54",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": false,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "high",
+      "sessionId": "session-g",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge",
+        "deviceId": "device-i"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "mismatched-user"
+  }
+]

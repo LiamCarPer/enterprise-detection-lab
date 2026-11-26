@@ -1,0 +1,18 @@
+{
+  "id": "00000000-0000-4000-8000-000000000002",
+  "createdDateTime": "2026-11-01T09:05:00Z",
+  "userPrincipalName": "analyst@example.test",
+  "appDisplayName": "Azure Portal",
+  "ipAddress": "198.51.100.23",
+  "status": "success",
+  "authenticationRequirement": "multiFactorAuthentication",
+  "isInteractive": true,
+  "conditionalAccessStatus": "success",
+  "riskLevelDuringSignIn": "medium",
+  "deviceDetail": {
+    "operatingSystem": "Linux",
+    "browser": "Firefox",
+    "deviceId": "device-laptop-01"
+  },
+  "sessionId": "session-20261101-09"
+}

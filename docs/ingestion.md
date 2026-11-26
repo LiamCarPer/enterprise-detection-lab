@@ -91,7 +91,7 @@ Common fields:
 | `dedup_origin` | `declared` when the contract key was complete; `hash` for the fallback. |
 | `raw` | Original event. Mapped but not indexed. Synthetic data only in this lab. |
 
-Entra sign-in additions: `app`, `auth_requirement`, `is_interactive`, `conditional_access_status`, `risk_level`, and `device.os` / `device.browser`.
+Entra sign-in additions: `app`, `auth_requirement`, `is_interactive`, `conditional_access_status`, `risk_level`, `session_id`, and `device.os` / `device.browser` / `device.id`.
 
 Entra audit additions: `app`, `resource.name` / `resource.type` / `resource.count`, `consent_type`, `scopes`, `offline_access`, `app_owner_organization_id`, `publisher_verified`, `redirect_uri_trusted`, `redirect_uri`, and `tenant_wide`.
 

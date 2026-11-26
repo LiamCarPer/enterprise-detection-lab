@@ -80,6 +80,7 @@ class CorrelationStep:
     valid_until_field: str | None = None
     min_count: int = 1
     distinct_by: str | None = None
+    match_changed_fields: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -434,6 +435,7 @@ def _load_correlation(
     if not isinstance(raw_steps, list) or len(raw_steps) < 2:
         raise DetectionError(f"{path}: correlation.steps must contain at least two steps")
     steps: list[CorrelationStep] = []
+    established_match_fields: set[str] = set()
     required_match_fields: set[str] = set()
     required_any_fields: set[str] = set()
     saw_exclude = False
@@ -519,6 +521,34 @@ def _load_correlation(
                     f"{path}: correlation step {position} valid_until_field is only "
                     "supported on exclusion steps"
                 )
+        raw_match_changed = item.get("match_changed_fields", [])
+        if (
+            not isinstance(raw_match_changed, list)
+            or not all(isinstance(field, str) and field for field in raw_match_changed)
+            or len(set(raw_match_changed)) != len(raw_match_changed)
+        ):
+            raise DetectionError(
+                f"{path}: correlation step {position} match_changed_fields must be a "
+                "unique string array"
+            )
+        if raw_match_changed:
+            if position == 1 or exclude:
+                raise DetectionError(
+                    f"{path}: correlation step {position} match_changed_fields is only "
+                    "supported on non-exclude steps after the first step"
+                )
+            unknown_changed = set(raw_match_changed) - established_match_fields
+            if unknown_changed:
+                raise DetectionError(
+                    f"{path}: correlation step {position} match_changed_fields must be "
+                    f"established by earlier steps: {', '.join(sorted(unknown_changed))}"
+                )
+            overlap_changed = set(raw_match_changed) & set(raw_match)
+            if overlap_changed:
+                raise DetectionError(
+                    f"{path}: correlation step {position} match_changed_fields must not "
+                    f"overlap match_fields: {', '.join(sorted(overlap_changed))}"
+                )
         raw_match_any = item.get("match_any_fields", [])
         if (
             not isinstance(raw_match_any, list)
@@ -546,10 +576,13 @@ def _load_correlation(
             valid_until_field=raw_valid_until,
             min_count=raw_min_count if raw_min_count is not None else 1,
             distinct_by=raw_distinct_by,
+            match_changed_fields=tuple(raw_match_changed),
         )
         if not exclude:
             required_match_fields.update(step.match_fields)
             required_any_fields.update(step.match_any_fields)
+            established_match_fields.update(step.match_fields)
+            established_match_fields.update(step.match_any_fields)
         steps.append(step)
 
     if not any(not step.exclude for step in steps):
@@ -891,6 +924,19 @@ def _match_steps(
             if any(not candidates for candidates in any_values.values()):
                 continue
             if not _values_match_targets(values, any_values, targets, any_targets):
+                continue
+            changed = True
+            for field in step.match_changed_fields:
+                changed_value = _lookup_document(case.event.document, field)
+                if (
+                    changed_value is None
+                    or changed_value == ""
+                    or field not in targets
+                    or targets[field] == changed_value
+                ):
+                    changed = False
+                    break
+            if not changed:
                 continue
             next_targets = dict(targets)
             next_targets.update(values)

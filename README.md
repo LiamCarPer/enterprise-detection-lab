@@ -4,7 +4,7 @@
 
 A reproducible local lab for developing and testing enterprise detection content across identity, endpoint, cloud, SaaS, network, and Kubernetes telemetry.
 
-**Status:** Alpha. Identity, endpoint, cloud, SaaS, network, and Kubernetes telemetry ingestion, twenty-two core detections, six investigations, CI, and aggregated fixture metrics are complete. The next focus is broader detection coverage and automation.
+**Status:** Alpha. Identity, endpoint, cloud, SaaS, network, and Kubernetes telemetry ingestion, twenty-three core detections, seven investigations, CI, and aggregated fixture metrics are complete. The next focus is broader detection coverage and automation.
 
 [Quick start](#quick-start) · [Architecture](#architecture) · [Project status](#project-status) · [Documentation](#documentation)
 
@@ -176,6 +176,7 @@ Each contract records event time and ingest time fields, deduplication keys, req
 | [`DET-IDN-003`](detections/identity/risky-signin-then-service-principal-owner/) | Identity | Risky sign-in followed by service principal ownership change | Tested |
 | [`DET-IDN-004`](detections/identity/risky-signin-then-oauth-consent/) | Identity | Risky sign-in followed by OAuth consent grant | Tested |
 | [`DET-IDN-005`](detections/identity/admin-oauth-grant-untrusted-app/) | Identity | Admin or tenant OAuth grant to untrusted application | Tested |
+| [`DET-IDN-006`](detections/identity/session-replay-new-ip/) | Identity | Interactive session reused from a new IP | Tested |
 | [`DET-CLD-001`](detections/cloud/iam-access-key-created/) | Cloud | IAM access key created | Tested |
 | [`DET-CLD-002`](detections/cloud/cloudtrail-logging-stopped/) | Cloud | CloudTrail logging stopped | Tested |
 | [`DET-SAA-001`](detections/saas/inbox-rule-mail-forwarding/) | SaaS | External inbox rule mail forwarding | Tested |
@@ -204,6 +205,7 @@ A detection is **Tested** when its positive, negative, and benign fixtures pass 
 | [`INV-004`](investigations/04-denied-external-sharing/) | SaaS | Denied data-sharing exception to external delivery | Tested |
 | [`INV-005`](investigations/05-oauth-consent-grant/) | Identity, SaaS | OAuth consent grant to external application | Tested |
 | [`INV-006`](investigations/06-admin-oauth-grant/) | Identity, SaaS | Admin consent and tenant-wide OAuth grant | Tested |
+| [`INV-007`](investigations/07-session-replay/) | Identity | Interactive session reused from a new IP | Tested |
 
 Investigations are **Tested** when the timeline, evidence, queries, response, and linked detections are complete and the lab query returns the observed evidence.
 
@@ -235,16 +237,16 @@ Investigations are **Tested** when the timeline, evidence, queries, response, an
 | SaaS ingestion | Complete | Microsoft 365 audit, GitHub audit, Exchange Online message trace, Purview DLP, and ServiceNow approvals, normalized and replay-safe |
 | Network ingestion | Complete | Zeek and Suricata, normalized and replay-safe |
 | Kubernetes ingestion | Complete | Kubernetes audit and Falco, normalized and replay-safe |
-| Detection packages | In progress | Twenty-two tested detections; production validation pending |
+| Detection packages | In progress | Twenty-three tested detections; production validation pending |
 | Detection testing | Complete | Normalized fixture replay, temporary-index isolation, pass/fail gate, and metrics generation |
-| Tested detections | 22 of 22 | All core detections pass fixture replay |
-| Investigations | Complete | Six tested investigation packages with hashed evidence |
-| Tested investigations | 6 of 6 | `INV-001` through `INV-006` pass evidence and detection-link checks |
+| Tested detections | 23 of 23 | All core detections pass fixture replay |
+| Investigations | Complete | Seven tested investigation packages with hashed evidence |
+| Tested investigations | 7 of 7 | `INV-001` through `INV-007` pass evidence and detection-link checks |
 | CI | Complete | GitHub Actions quality and OpenSearch-backed test jobs |
-| Metrics reporting | Complete | Aggregated fixture metrics for twenty-two detections in `reports/detection-metrics.md` |
-| Benign baseline | Complete | Twenty-one corpora, including two tuning studies and nine scenario-level correlation baselines |
+| Metrics reporting | Complete | Aggregated fixture metrics for twenty-three detections in `reports/detection-metrics.md` |
+| Benign baseline | Complete | Twenty-two corpora, including two tuning studies and ten scenario-level correlation baselines |
 | Exception catalog | Complete | Reviewed exceptions with owner, scope, expiry, and compensating controls |
-| Correlation detections | Complete | `DET-IDN-003`, `DET-IDN-004`, `DET-SAA-003`, `DET-SAA-004`, `DET-SAA-005`, `DET-SAA-006`, `DET-SAA-007`, `DET-SAA-008`, and `DET-SAA-009` evaluate ordered identity and SaaS sequences |
+| Correlation detections | Complete | `DET-IDN-003`, `DET-IDN-004`, `DET-IDN-006`, `DET-SAA-003`, `DET-SAA-004`, `DET-SAA-005`, `DET-SAA-006`, `DET-SAA-007`, `DET-SAA-008`, and `DET-SAA-009` evaluate ordered identity and SaaS sequences |
 | Detection depth | In progress | Broader coverage, tuning, and automation across the ingested sources |
 | Automation | Planned | Enrichment, triage, evidence, and approval-gated response |
 

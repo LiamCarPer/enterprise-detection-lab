@@ -1,0 +1,31 @@
+{
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "bool": {
+            "filter": [
+              { "term": { "source": "entra-signin" } },
+              { "term": { "result": "success" } },
+              { "term": { "auth_requirement": "multiFactorAuthentication" } },
+              { "term": { "is_interactive": true } },
+              { "exists": { "field": "session_id" } }
+            ]
+          }
+        },
+        {
+          "bool": {
+            "filter": [
+              { "term": { "source": "entra-signin" } },
+              { "term": { "result": "success" } },
+              { "term": { "is_interactive": false } },
+              { "terms": { "risk_level": ["medium", "high"] } },
+              { "exists": { "field": "session_id" } }
+            ]
+          }
+        }
+      ],
+      "minimum_should_match": 1
+    }
+  }
+}

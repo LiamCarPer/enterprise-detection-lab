@@ -1,0 +1,146 @@
+[
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001905",
+      "createdDateTime": "2026-11-09T12:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.42",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "none",
+      "sessionId": "session-c",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge",
+        "deviceId": "device-e"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "neg-1",
+    "note": "Interactive sign-in"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001906",
+      "createdDateTime": "2026-11-09T12:20:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.42",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": false,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "high",
+      "sessionId": "session-c",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge",
+        "deviceId": "device-e"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "neg-1",
+    "note": "Same IP does not indicate replay"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001907",
+      "createdDateTime": "2026-11-09T13:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.43",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "none",
+      "sessionId": "session-d",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge",
+        "deviceId": "device-f"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "neg-2",
+    "note": "Interactive sign-in"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001908",
+      "createdDateTime": "2026-11-09T13:20:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "198.51.100.43",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": false,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "high",
+      "sessionId": "session-e",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge",
+        "deviceId": "device-g"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "neg-2",
+    "note": "Different session does not match"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001909",
+      "createdDateTime": "2026-11-09T14:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.44",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "none",
+      "sessionId": "session-f",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge",
+        "deviceId": "device-h"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "neg-3",
+    "note": "Interactive sign-in"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001910",
+      "createdDateTime": "2026-11-09T14:20:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "198.51.100.44",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": false,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "none",
+      "sessionId": "session-f",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge",
+        "deviceId": "device-i"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "neg-3",
+    "note": "Low-risk non-interactive use is not modeled as replay"
+  }
+]
