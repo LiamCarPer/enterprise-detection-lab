@@ -1,0 +1,106 @@
+[
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001501",
+      "createdDateTime": "2026-11-05T10:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.60",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Chrome"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "pos-1",
+    "note": "Risky sign-in before consent"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001502",
+      "activityDateTime": "2026-11-05T10:05:00Z",
+      "operationName": "Consent to application",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "analyst@example.test",
+          "ipAddress": "203.0.113.60"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Contoso Analytics",
+          "type": "ServicePrincipal",
+          "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
+          "consentType": "User",
+          "scopes": [
+            "Mail.Read",
+            "offline_access"
+          ]
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "pos-1",
+    "note": "User consent with offline access"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001503",
+      "createdDateTime": "2026-11-05T11:00:00Z",
+      "userPrincipalName": "finance@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "198.51.100.60",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "high",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Chrome"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "pos-2",
+    "note": "High-risk sign-in before consent"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001504",
+      "activityDateTime": "2026-11-05T11:10:00Z",
+      "operationName": "Consent to application",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "finance@example.test",
+          "ipAddress": "198.51.100.60"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Expense Helper",
+          "type": "ServicePrincipal",
+          "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
+          "consentType": "User",
+          "scopes": [
+            "Files.ReadWrite",
+            "offline_access"
+          ]
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "pos-2",
+    "note": "User consent to a file-access application"
+  }
+]

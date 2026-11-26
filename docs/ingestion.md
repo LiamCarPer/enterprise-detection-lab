@@ -93,7 +93,7 @@ Common fields:
 
 Entra sign-in additions: `app`, `auth_requirement`, `is_interactive`, `conditional_access_status`, `risk_level`, and `device.os` / `device.browser`.
 
-Entra audit additions: `app` and `resource.name` / `resource.type` / `resource.count`.
+Entra audit additions: `app`, `resource.name` / `resource.type` / `resource.count`, `consent_type`, `scopes`, `offline_access`, and `app_owner_organization_id`.
 
 Sysmon additions:
 

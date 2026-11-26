@@ -1,0 +1,24 @@
+{
+  "size": 50,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "range": {
+            "event_time": {
+              "gte": "2026-11-01T08:45:00Z",
+              "lte": "2026-11-01T09:30:00Z"
+            }
+          }
+        }
+      ],
+      "should": [
+        { "term": { "user": "analyst@example.test" } },
+        { "term": { "user": "Contoso Analytics" } },
+        { "term": { "resource.name": "Contoso Analytics" } },
+        { "term": { "mailbox": "executive@example.test" } }
+      ],
+      "minimum_should_match": 1
+    }
+  }
+}

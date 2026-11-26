@@ -493,6 +493,7 @@ def test_run_detections_includes_templates_when_requested() -> None:
         "DET-IDN-001",
         "DET-IDN-002",
         "DET-IDN-003",
+        "DET-IDN-004",
         "DET-END-001",
         "DET-END-002",
         "DET-CLD-001",

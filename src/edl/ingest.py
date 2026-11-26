@@ -486,6 +486,25 @@ def normalize_entra_audit(raw: Mapping[str, Any]) -> dict[str, Any]:
             )
             resource["count"] = len(targets)
             document["resource"] = resource
+
+            consent_type = first.get("consentType")
+            document["consent_type"] = (
+                consent_type.lower() if isinstance(consent_type, str) else consent_type
+            )
+            raw_scopes = first.get("scopes")
+            scopes: list[str] = []
+            if isinstance(raw_scopes, list):
+                scopes = sorted(
+                    {scope.lower() for scope in raw_scopes if isinstance(scope, str) and scope}
+                )
+            elif isinstance(raw_scopes, str):
+                scopes = sorted(
+                    {scope.lower() for scope in raw_scopes.replace(",", " ").split() if scope}
+                )
+            if scopes:
+                document["scopes"] = scopes
+                document["offline_access"] = "offline_access" in scopes
+            document["app_owner_organization_id"] = first.get("appOwnerOrganizationId")
     return _compact(document)
 
 

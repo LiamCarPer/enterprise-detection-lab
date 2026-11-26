@@ -176,6 +176,51 @@ def test_normalize_entra_audit_maps_initiator_and_resource() -> None:
     }
 
 
+def test_normalize_entra_audit_maps_consent_fields() -> None:
+    document = normalize_entra_audit(
+        {
+            "id": "00000000-0000-4000-8000-000000000103",
+            "activityDateTime": "2026-11-01T09:05:00Z",
+            "operationName": "Consent to application",
+            "initiatedBy": {"user": {"userPrincipalName": "analyst@example.test"}},
+            "targetResources": [
+                {
+                    "displayName": "Contoso Analytics",
+                    "type": "ServicePrincipal",
+                    "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
+                    "consentType": "User",
+                    "scopes": ["Mail.Read", "offline_access"],
+                }
+            ],
+            "result": "success",
+        }
+    )
+    assert document["consent_type"] == "user"
+    assert document["scopes"] == ["mail.read", "offline_access"]
+    assert document["offline_access"] is True
+    assert document["app_owner_organization_id"] == "11111111-1111-4111-8111-111111111111"
+
+
+def test_normalize_entra_audit_parses_string_scopes() -> None:
+    document = normalize_entra_audit(
+        {
+            "operationName": "Consent to application",
+            "initiatedBy": {"user": {"userPrincipalName": "analyst@example.test"}},
+            "targetResources": [
+                {
+                    "displayName": "Contoso Analytics",
+                    "type": "ServicePrincipal",
+                    "consentType": "User",
+                    "scopes": "Mail.Read, offline_access",
+                }
+            ],
+            "result": "success",
+        }
+    )
+    assert document["scopes"] == ["mail.read", "offline_access"]
+    assert document["offline_access"] is True
+
+
 def test_normalize_entra_audit_falls_back_to_app_identity() -> None:
     raw = {
         "operationName": "Consent to application",
@@ -600,11 +645,11 @@ def test_ingest_identity_dry_run_uses_repository_samples() -> None:
     assert [result.source for result in results] == ["entra-signin", "entra-audit"]
     assert {result.source: result.read for result in results} == {
         "entra-signin": 3,
-        "entra-audit": 2,
+        "entra-audit": 3,
     }
     assert {result.source: result.unique for result in results} == {
         "entra-signin": 3,
-        "entra-audit": 2,
+        "entra-audit": 3,
     }
     assert all(result.written == 0 for result in results)
 
@@ -1413,7 +1458,7 @@ def test_ingest_saas_dry_run_uses_repository_samples() -> None:
         "m365-dlp",
         "servicenow-approval",
     ]
-    assert [result.read for result in results] == [6, 2, 10, 7, 6]
+    assert [result.read for result in results] == [7, 2, 10, 7, 6]
     assert results[0].indices == (
         "edl-events-m365-audit-2026.11.01",
         "edl-events-m365-audit-2026.11.25",

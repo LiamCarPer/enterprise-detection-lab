@@ -1,0 +1,17 @@
+{
+  "CreationTime": "2026-11-01T09:22:00Z",
+  "Id": "00000000-0000-4000-8000-000000010205",
+  "Operation": "MailItemsAccessed",
+  "UserId": "Contoso Analytics",
+  "Workload": "Exchange",
+  "RecordType": 2,
+  "ClientIP": "198.51.100.44",
+  "ObjectId": "executive@example.test\\Inbox",
+  "ResultStatus": "Success",
+  "Parameters": [
+    {
+      "Name": "MailAccessType",
+      "Value": "Bind"
+    }
+  ]
+}

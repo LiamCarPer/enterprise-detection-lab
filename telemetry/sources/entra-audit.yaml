@@ -33,10 +33,11 @@ known_gaps:
   - No real tenant in the lab; synthetic events only.
   - Free-tier retention is too short for long historical replay.
   - Export licensing and throttling are not replicated.
+  - Consent scopes and application owner fields are modeled from target resources; real export shapes vary.
 sample_data:
   path: lab/datasets/synthetic/entra-audit/reference.json
   synthetic: true
   license: synthetic
   provenance: Generated for this repository. No real users, tenants, or IPs.
-  sha256: 8d8fd62e2fa9c45f1834e58cf23ce05315bb2a0dc0b1eb995236e66fd1d3268a
+  sha256: 854833161b818871433eb49fae1a3193b8ffc4332f88788caeab1bd39242350f
 notes: Entra identity source contract.

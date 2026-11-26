@@ -1,0 +1,251 @@
+[
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001601",
+      "createdDateTime": "2026-11-06T09:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.70",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Chrome"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "risky-signin-only"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001602",
+      "activityDateTime": "2026-11-06T09:10:00Z",
+      "operationName": "Consent to application",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "analyst@example.test",
+          "ipAddress": "203.0.113.70"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Contoso Analytics",
+          "type": "ServicePrincipal",
+          "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
+          "consentType": "User",
+          "scopes": [
+            "Mail.Read",
+            "offline_access"
+          ]
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "consent-only"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001603",
+      "createdDateTime": "2026-11-06T10:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.70",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Chrome"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "admin-consent"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001604",
+      "activityDateTime": "2026-11-06T10:05:00Z",
+      "operationName": "Consent to application",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "analyst@example.test",
+          "ipAddress": "203.0.113.70"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Contoso Admin App",
+          "type": "ServicePrincipal",
+          "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
+          "consentType": "Admin",
+          "scopes": [
+            "Mail.Read",
+            "offline_access"
+          ]
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "admin-consent"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001605",
+      "createdDateTime": "2026-11-06T11:00:00Z",
+      "userPrincipalName": "finance@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.70",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "none",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Chrome"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "low-risk-consent"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001606",
+      "activityDateTime": "2026-11-06T11:05:00Z",
+      "operationName": "Consent to application",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "finance@example.test",
+          "ipAddress": "203.0.113.70"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Expense Helper",
+          "type": "ServicePrincipal",
+          "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
+          "consentType": "User",
+          "scopes": [
+            "Mail.Read",
+            "offline_access"
+          ]
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "low-risk-consent"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001607",
+      "createdDateTime": "2026-11-06T12:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.70",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Chrome"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "no-offline-consent"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001608",
+      "activityDateTime": "2026-11-06T12:05:00Z",
+      "operationName": "Consent to application",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "analyst@example.test",
+          "ipAddress": "203.0.113.70"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Contoso Analytics",
+          "type": "ServicePrincipal",
+          "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
+          "consentType": "User",
+          "scopes": [
+            "Mail.Read"
+          ]
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "no-offline-consent"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001609",
+      "createdDateTime": "2026-11-06T13:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.70",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Chrome"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "mismatched-user"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001610",
+      "activityDateTime": "2026-11-06T13:05:00Z",
+      "operationName": "Consent to application",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "finance@example.test",
+          "ipAddress": "203.0.113.70"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Contoso Analytics",
+          "type": "ServicePrincipal",
+          "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
+          "consentType": "User",
+          "scopes": [
+            "Mail.Read",
+            "offline_access"
+          ]
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "mismatched-user"
+  }
+]

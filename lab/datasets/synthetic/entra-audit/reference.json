@@ -32,5 +32,29 @@
       }
     ],
     "result": "success"
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000103",
+    "activityDateTime": "2026-11-01T09:05:00Z",
+    "operationName": "Consent to application",
+    "initiatedBy": {
+      "user": {
+        "userPrincipalName": "analyst@example.test",
+        "ipAddress": "203.0.113.11"
+      }
+    },
+    "targetResources": [
+      {
+        "displayName": "Contoso Analytics",
+        "type": "ServicePrincipal",
+        "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
+        "consentType": "User",
+        "scopes": [
+          "Mail.Read",
+          "offline_access"
+        ]
+      }
+    ],
+    "result": "success"
   }
 ]

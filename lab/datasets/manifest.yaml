@@ -13,7 +13,7 @@ datasets:
     synthetic: true
     license: synthetic
     provenance: Generated for this repository. No real users, tenants, or IPs.
-    sha256: 8d8fd62e2fa9c45f1834e58cf23ce05315bb2a0dc0b1eb995236e66fd1d3268a
+    sha256: 854833161b818871433eb49fae1a3193b8ffc4332f88788caeab1bd39242350f
   - id: synthetic-sysmon-reference
     source: sysmon
     path: lab/datasets/synthetic/sysmon/reference.json
@@ -41,7 +41,7 @@ datasets:
     synthetic: true
     license: synthetic
     provenance: Generated for this repository. No real users, tenants, or IPs.
-    sha256: e19662d00ad6a3a3b475cac7ab2c96a9285bb6fde1e435f2cb61ecfc7a60817c
+    sha256: 1efb6107d98ecc323657a894983dadcfdd4883143d09908c227efd0b49b04486
   - id: synthetic-exchange-message-trace-reference
     source: exchange-message-trace
     path: lab/datasets/synthetic/exchange-message-trace/reference.json
@@ -231,3 +231,10 @@ datasets:
     license: synthetic
     provenance: Generated for this repository. No real users, tenants, or messages.
     sha256: 4f9e268e0ca16d4af826bbdeda832ddc90fc1daf009cbcdb50b539e6246acca1
+  - id: synthetic-identity-oauth-consent-benign-baseline
+    source: entra-signin+entra-audit
+    path: lab/datasets/synthetic/benign-baseline/identity-oauth-consent.json
+    synthetic: true
+    license: synthetic
+    provenance: Generated for this repository. No real users, tenants, or IPs.
+    sha256: 2be9175d5976038705e84737536644e31a8fc47f79408e166f12c30ab33241eb

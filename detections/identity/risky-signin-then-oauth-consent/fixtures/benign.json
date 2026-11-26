@@ -1,0 +1,106 @@
+[
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001511",
+      "createdDateTime": "2026-11-05T15:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.60",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "none",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Chrome"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "benign-1",
+    "note": "Normal sign-in"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001512",
+      "activityDateTime": "2026-11-05T15:05:00Z",
+      "operationName": "Consent to application",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "analyst@example.test",
+          "ipAddress": "203.0.113.60"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Approved Reporting",
+          "type": "ServicePrincipal",
+          "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
+          "consentType": "Admin",
+          "scopes": [
+            "Mail.Read",
+            "offline_access"
+          ]
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "benign-1",
+    "note": "Approved admin consent"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001513",
+      "createdDateTime": "2026-11-05T16:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.60",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Chrome"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "benign-2",
+    "note": "Risky sign-in without consent"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001514",
+      "activityDateTime": "2026-11-05T17:00:00Z",
+      "operationName": "Consent to application",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "analyst@example.test",
+          "ipAddress": "203.0.113.60"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Personal Notes",
+          "type": "ServicePrincipal",
+          "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
+          "consentType": "User",
+          "scopes": [
+            "Mail.Read",
+            "offline_access"
+          ]
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "benign-3",
+    "note": "Consent without a preceding sign-in"
+  }
+]
