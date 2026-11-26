@@ -295,6 +295,7 @@ Out of scope for this repository:
 |---|---|
 | [`docs/ingestion.md`](docs/ingestion.md) | Canonical events, classification, deduplication, and ingest behavior |
 | [`docs/artifact-model.md`](docs/artifact-model.md) | Detection and investigation package contracts |
+| [`docs/threat-model.md`](docs/threat-model.md) | Threats, trust boundaries, attack paths, ATT&CK coverage, and gaps |
 | [`docs/detection-testing.md`](docs/detection-testing.md) | Fixture replay, pass criteria, and metric definitions |
 | [`reports/detection-metrics.md`](reports/detection-metrics.md) | Generated aggregate detection metrics and limitations |
 | [`reports/false-positive-tuning.md`](reports/false-positive-tuning.md) | Endpoint baseline measurement and before/after tuning analysis |

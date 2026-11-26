@@ -26,6 +26,7 @@ This matrix tracks the engineering capabilities implemented in the lab and the a
 | **Detection validation** | Positive, negative, and benign fixtures; schema checks; backend query checks; regression tests | `src/edl/validation.py`, `detections/*/tests/`, `tests/` | In progress |
 | **Investigation** | Timeline, queries, evidence, response, lessons, and an executive summary for a complete attack chain | `investigations/`, `schemas/investigation.schema.json` | Complete |
 | **Detection quality** | Precision, recall, false-positive rate, latency, sample size, method, and limitations | `schemas/metrics.schema.json`, `detections/*/metrics.json`, `reports/` | In progress |
+| **Threat modeling** | Asset and trust-boundary model, adversary profiles, attack paths, ATT&CK coverage, and prioritized gaps | `docs/threat-model.md`, `detections/*/meta.yaml`, `investigations/` | Complete |
 | **Automation** | Enrichment, triage, evidence capture, and approval-gated containment proposals | `automation/` | Planned |
 | **Software engineering** | Typed Python, focused modules, schema validation, unit and integration tests, deterministic outputs, coverage gate | `src/edl/`, `tests/`, `Makefile`, `pyproject.toml` | Complete |
 | **Documentation** | Architecture, contracts, operating instructions, limitations, and generated matrices | `README.md`, `docs/`, `lab/README.md` | Complete |
@@ -37,6 +38,7 @@ This matrix tracks the engineering capabilities implemented in the lab and the a
 |---|---|---|
 | `README.md` | Complete | Project overview, architecture, quick start, scope, and limitations |
 | `docs/artifact-model.md` | Complete | Detection and investigation package contracts |
+| `docs/threat-model.md` | Complete | Scope, trust boundaries, adversary profiles, attack paths, ATT&CK coverage, gaps, and maintenance |
 | `compose.yaml` + `lab/` | Complete | Local OpenSearch, Dashboards, Kusto, and DuckDB stack with pinned images and bootstrap |
 | `src/edl/` | Complete | Validation, reporting, ingestion, scaffolding, and lab lifecycle |
 | `telemetry/sources/` + `docs/telemetry-matrix.md` | Complete | 14 contracts (14 ingested) with generated matrix and freshness check |
