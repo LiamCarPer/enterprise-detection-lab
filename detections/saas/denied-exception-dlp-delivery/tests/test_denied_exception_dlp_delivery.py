@@ -9,8 +9,8 @@ from edl.telemetry import load_sources
 
 PACKAGE = Path(__file__).resolve().parents[1]
 FIXTURE_KINDS = ("positive", "negative", "benign")
-EXPECTED_FIXTURE_COUNTS = {"positive": 9, "negative": 19, "benign": 3}
-EXPECTED_SCENARIO_COUNTS = {"positive": 3, "negative": 6, "benign": 2}
+EXPECTED_FIXTURE_COUNTS = {"positive": 17, "negative": 19, "benign": 3}
+EXPECTED_SCENARIO_COUNTS = {"positive": 5, "negative": 6, "benign": 2}
 
 
 def test_query_returns_all_correlation_steps() -> None:
@@ -41,6 +41,8 @@ def test_correlation_metadata_uses_required_and_exclusion_steps() -> None:
     assert meta.count("        - content_scope") == 3
     assert meta.count("exclude: true") == 1
     assert "window_seconds: 604800" in meta
+    assert "valid_until_field: expires_on" in meta
+    assert meta.count("          status: active") == 2
 
 
 def test_fixtures_use_paired_scenarios() -> None:
@@ -61,15 +63,20 @@ def test_metadata_declares_detection_identity() -> None:
 
 def test_positive_chain_links_denial_delivery_and_alert() -> None:
     fixtures = json.loads((PACKAGE / "fixtures" / "positive.json").read_text())
-    by_scenario: dict[str, dict[str, dict[str, object]]] = {}
-    for item in fixtures:
-        by_scenario.setdefault(item["scenario"], {})[item["source"]] = item["event"]
+    scenarios = sorted({item["scenario"] for item in fixtures})
 
-    for scenario, events in by_scenario.items():
-        approval = events["servicenow-approval"]
-        delivery = events["exchange-message-trace"]
-        alert = events["m365-dlp"]
-        assert approval["approval"] in {"Denied", "Revoked"}
+    for scenario in scenarios:
+        items = [item for item in fixtures if item["scenario"] == scenario]
+        approval = next(
+            item["event"]
+            for item in items
+            if item["source"] == "servicenow-approval"
+            and item["event"]["approval"] in {"Denied", "Revoked"}
+        )
+        delivery = next(
+            item["event"] for item in items if item["source"] == "exchange-message-trace"
+        )
+        alert = next(item["event"] for item in items if item["source"] == "m365-dlp")
         assert approval["requested_for"] == delivery["RelatedRecipientAddress"]
         assert str(approval["recipient"]).lower() == str(delivery["RecipientAddress"]).lower()
         assert delivery["Event"] == "DELIVER"
@@ -110,6 +117,12 @@ def test_denied_chain_matches_and_approved_or_mismatched_chain_does_not() -> Non
 
     late_superseded = [case for case in package.cases if case.scenario == "neg-6"]
     assert not _correlation_hit(late_superseded, package.correlation)  # type: ignore[arg-type]
+
+    expired = [case for case in package.cases if case.scenario == "pos-4"]
+    assert _correlation_hit(expired, package.correlation)  # type: ignore[arg-type]
+
+    cancelled = [case for case in package.cases if case.scenario == "pos-5"]
+    assert _correlation_hit(cancelled, package.correlation)  # type: ignore[arg-type]
 
 
 def test_missing_alert_message_identity_blocks_the_chain() -> None:

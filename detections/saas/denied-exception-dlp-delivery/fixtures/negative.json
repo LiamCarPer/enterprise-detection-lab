@@ -4,7 +4,7 @@
       "sys_id": "00000000-0000-4000-8000-000000080201",
       "number": "REQ0008201",
       "sys_updated_on": "2026-11-23T12:00:00Z",
-      "state": "Closed",
+      "state": "Active",
       "approval": "Approved",
       "requested_for": "legal@example.test",
       "requested_by": "legal@example.test",
@@ -12,7 +12,8 @@
       "recipient": "partner@example.org",
       "message_id": "<20261123122000.811@example.org>",
       "short_description": "Contract review",
-      "content_scope": "contract-review.pdf"
+      "content_scope": "contract-review.pdf",
+      "expires_on": "2026-12-31T00:00:00Z"
     },
     "source": "servicenow-approval",
     "synthetic": true,
@@ -328,7 +329,7 @@
       "sys_id": "00000000-0000-4000-8000-000000080215",
       "number": "REQ0008215",
       "sys_updated_on": "2026-11-23T19:00:00Z",
-      "state": "Closed",
+      "state": "Active",
       "approval": "Approved",
       "requested_for": "analyst@example.test",
       "requested_by": "analyst@example.test",
@@ -336,7 +337,8 @@
       "recipient": "partner@example.org",
       "message_id": "<20261123190000.816@example.org>",
       "content_scope": "customer-dataset.csv",
-      "short_description": "Customer dataset export"
+      "short_description": "Customer dataset export",
+      "expires_on": "2026-12-31T00:00:00Z"
     },
     "source": "servicenow-approval",
     "synthetic": true,
@@ -417,7 +419,7 @@
       "sys_id": "00000000-0000-4000-8000-000000080219",
       "number": "REQ0008219",
       "sys_updated_on": "2026-11-26T10:00:00Z",
-      "state": "Closed",
+      "state": "Active",
       "approval": "Approved",
       "requested_for": "analyst@example.test",
       "requested_by": "analyst@example.test",
@@ -425,7 +427,8 @@
       "recipient": "partner@example.org",
       "message_id": "<20261126100000.842@example.org>",
       "content_scope": "customer-dataset.csv",
-      "short_description": "Customer dataset export"
+      "short_description": "Customer dataset export",
+      "expires_on": "2026-12-31T00:00:00Z"
     },
     "source": "servicenow-approval",
     "synthetic": true,

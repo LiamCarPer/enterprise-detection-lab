@@ -223,11 +223,11 @@ datasets:
     synthetic: true
     license: synthetic
     provenance: Generated for this repository. No real users, tenants, or requests.
-    sha256: 9ac1531c75fc55c792c674d23c33eb3e93e3443a9dd214ed5d0f5095eaea5328
+    sha256: 6f4f2bffa3a13b0172e1ca89359fa89a6254e016d18c7f3b7ec0883f4021faf4
   - id: synthetic-denied-exception-delivery-benign-baseline
     source: servicenow-approval+exchange-message-trace+m365-dlp
     path: lab/datasets/synthetic/benign-baseline/denied-exception-delivery.json
     synthetic: true
     license: synthetic
     provenance: Generated for this repository. No real users, tenants, or messages.
-    sha256: 3033cbaee9022876ae3dec032d255c6434d11ce26d27793cdece64397235bc3c
+    sha256: ca498aaa2aedf7661d292c5e4a0825afdb45d50e97afe7a2d3e1b4a4cd7bcb8f

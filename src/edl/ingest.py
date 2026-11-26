@@ -734,6 +734,7 @@ def normalize_servicenow_approval(raw: Mapping[str, Any]) -> dict[str, Any]:
     state = raw.get("state")
     approval = raw.get("approval")
     content_scope = raw.get("content_scope")
+    expires_on = raw.get("expires_on")
     document: dict[str, Any] = {
         "event_id": raw.get("sys_id"),
         "request_number": raw.get("number"),
@@ -748,6 +749,7 @@ def normalize_servicenow_approval(raw: Mapping[str, Any]) -> dict[str, Any]:
         "content_scope": (
             content_scope.lower() if isinstance(content_scope, str) else content_scope
         ),
+        "expires_on": expires_on,
         "subject": raw.get("short_description"),
         "service": "servicenow-approval",
     }

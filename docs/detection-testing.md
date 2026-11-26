@@ -137,7 +137,9 @@ Required steps may declare `window_seconds` to override the global window for
 the transition into that step. An exclusion step may declare its own
 `window_seconds`, measured from the first required event. `DET-SAA-009` uses a
 seven-day exclusion window so a superseding approval can suppress a sequence
-after the main 24-hour window has elapsed.
+after the main 24-hour window has elapsed. An exclusion step may also declare
+`valid_until_field`; that timestamp must be at or after the last required
+event, so an expired approval does not suppress the sequence.
 
 Steps may also declare optional `filters` to narrow the events that can satisfy
 that step. Filters are evaluated after the native query and before grouping and

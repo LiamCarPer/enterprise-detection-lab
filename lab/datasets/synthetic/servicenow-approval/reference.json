@@ -17,7 +17,7 @@
     "sys_id": "00000000-0000-4000-8000-000000070102",
     "number": "REQ0007002",
     "sys_updated_on": "2026-11-21T09:15:00Z",
-    "state": "Closed",
+    "state": "Active",
     "approval": "Approved",
     "requested_for": "finance@example.test",
     "requested_by": "finance@example.test",
@@ -25,7 +25,8 @@
     "recipient": "archive@example.net",
     "message_id": "<20261121093000.702@example.net>",
     "short_description": "Quarterly archive transfer",
-    "content_scope": "quarterly-archive.zip"
+    "content_scope": "quarterly-archive.zip",
+    "expires_on": "2026-12-31T00:00:00Z"
   },
   {
     "sys_id": "00000000-0000-4000-8000-000000070103",
@@ -59,7 +60,7 @@
     "sys_id": "00000000-0000-4000-8000-000000070105",
     "number": "REQ0007005",
     "sys_updated_on": "2026-11-22T08:45:00Z",
-    "state": "Closed",
+    "state": "Active",
     "approval": "Approved",
     "requested_for": "analyst@example.test",
     "requested_by": "analyst@example.test",
@@ -67,7 +68,8 @@
     "recipient": "partner@example.org",
     "message_id": "<20261122090000.705@example.org>",
     "short_description": "Contract review",
-    "content_scope": "contract-review.pdf"
+    "content_scope": "contract-review.pdf",
+    "expires_on": "2026-12-15T00:00:00Z"
   },
   {
     "sys_id": "00000000-0000-4000-8000-000000070106",

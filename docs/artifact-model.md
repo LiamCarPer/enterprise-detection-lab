@@ -165,7 +165,7 @@ Approved exceptions are recorded centrally under [`docs/exception-policy.md`](ex
 - Detection versions: semver (`1.0.0`).
 - Investigation versions: semver (`1.0.0`).
 - Query filenames: `opensearch.json`, `sentinel.kql`, `splunk.spl`, `sigma.yml`.
-- Correlated detections declare `correlation.window_seconds`, `group_by`, and ordered `steps` in `meta.yaml`. The global window applies to each consecutive step pair; a step may override it with `window_seconds`. Steps may declare `match_fields`, `match_any_fields`, and optional `filters` with `all` and `any_of` groups; filter values are scalars, scalar lists, or `{exists: boolean}`. Steps with `exclude: true` suppress a matched sequence when they share the established fields. Fixture envelopes may use `scenario` to group events into one evaluation case.
+- Correlated detections declare `correlation.window_seconds`, `group_by`, and ordered `steps` in `meta.yaml`. The global window applies to each consecutive step pair; a step may override it with `window_seconds`. Steps may declare `match_fields`, `match_any_fields`, and optional `filters` with `all` and `any_of` groups; filter values are scalars, scalar lists, or `{exists: boolean}`. Steps with `exclude: true` suppress a matched sequence when they share the established fields; they may also declare `valid_until_field` to require a timestamp at or after the last required event. Fixture envelopes may use `scenario` to group events into one evaluation case.
 - Fixture names: `positive.json`, `negative.json`, `benign.json`.
 - Do not rename an artifact ID after publication; create a new version or a retired note instead.
 

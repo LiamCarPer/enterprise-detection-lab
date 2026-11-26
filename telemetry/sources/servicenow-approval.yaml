@@ -41,6 +41,7 @@ known_gaps:
   - A denial record shows a decision, not whether the requester received or understood it.
   - Message identifiers are not present in every approval workflow; the sample includes them to support message-level correlation.
   - Content scope is a normalized field and may not correspond to a stable dataset or attachment identifier.
+  - Expiry and cancellation are represented by normalized state and expiry fields; not every workflow exports them.
   - Approval state can change after the decision, so a later export may supersede an earlier record.
 notes: ServiceNow approval records for distinguishing approved external sharing from a denied request that was bypassed.
 sample_data:
@@ -48,4 +49,4 @@ sample_data:
   synthetic: true
   license: synthetic
   provenance: Generated for this repository. No real users, tenants, or requests.
-  sha256: 9ac1531c75fc55c792c674d23c33eb3e93e3443a9dd214ed5d0f5095eaea5328
+  sha256: 6f4f2bffa3a13b0172e1ca89359fa89a6254e016d18c7f3b7ec0883f4021faf4

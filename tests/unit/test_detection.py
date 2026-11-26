@@ -707,6 +707,35 @@ def test_correlation_metrics_use_scenario_unit(tmp_path: Path) -> None:
             "  steps:\n"
             "    - source: entra-signin\n"
             "      event_class: sign_in\n"
+            "      valid_until_field: expires_on\n"
+            "    - source: entra-audit\n"
+            "      event_class: audit\n",
+            "only supported on exclusion",
+        ),
+        (
+            "correlation:\n"
+            "  window_seconds: 1800\n"
+            "  group_by:\n"
+            "    - user\n"
+            "  steps:\n"
+            "    - source: entra-signin\n"
+            "      event_class: sign_in\n"
+            "      match_fields:\n"
+            "        - user\n"
+            "    - source: entra-audit\n"
+            "      event_class: audit\n"
+            "      exclude: true\n"
+            "      valid_until_field: ''\n",
+            "non-empty string",
+        ),
+        (
+            "correlation:\n"
+            "  window_seconds: 1800\n"
+            "  group_by:\n"
+            "    - user\n"
+            "  steps:\n"
+            "    - source: entra-signin\n"
+            "      event_class: sign_in\n"
             "      match_any_fields: mailbox\n"
             "    - source: entra-audit\n"
             "      event_class: audit\n",
@@ -854,6 +883,7 @@ def _step(
     match_any_fields: tuple[str, ...] = (),
     exclude: bool = False,
     window_seconds: int | None = None,
+    valid_until_field: str | None = None,
 ) -> CorrelationStep:
     return CorrelationStep(
         source=source,
@@ -863,6 +893,7 @@ def _step(
         filters=filters or StepFilters(),
         exclude=exclude,
         window_seconds=window_seconds,
+        valid_until_field=valid_until_field,
     )
 
 
@@ -1398,6 +1429,99 @@ def test_correlation_exclusion_skips_events_without_any_values() -> None:
     )
 
     assert _correlation_hit([denied, delivery, missing_labels], spec)
+
+
+def test_correlation_exclusion_requires_unexpired_approval() -> None:
+    base = datetime(2026, 11, 1, tzinfo=UTC)
+    spec = _spec(
+        _step("src", "denied", match_fields=("mailbox",)),
+        _step("src", "delivery", match_fields=("mailbox",)),
+        _step(
+            "src",
+            "approval",
+            filters=_filters({"decision": "approved"}),
+            match_fields=("mailbox",),
+            exclude=True,
+            valid_until_field="expires_on",
+        ),
+    )
+    denied = _make_case("denied", "src", "denied", base, {"user": "u", "mailbox": "target"})
+    delivery = _make_case(
+        "delivery",
+        "src",
+        "delivery",
+        base + timedelta(seconds=10),
+        {"user": "u", "mailbox": "target"},
+    )
+    valid = _make_case(
+        "valid",
+        "src",
+        "approval",
+        base + timedelta(seconds=20),
+        {
+            "user": "u",
+            "mailbox": "target",
+            "decision": "approved",
+            "expires_on": "2026-11-01T01:00:00Z",
+        },
+    )
+    expired = _make_case(
+        "expired",
+        "src",
+        "approval",
+        base + timedelta(seconds=20),
+        {
+            "user": "u",
+            "mailbox": "target",
+            "decision": "approved",
+            "expires_on": "2026-11-01T00:00:05Z",
+        },
+    )
+    missing = _make_case(
+        "missing",
+        "src",
+        "approval",
+        base + timedelta(seconds=20),
+        {"user": "u", "mailbox": "target", "decision": "approved"},
+    )
+
+    assert not _correlation_hit([denied, delivery, valid], spec)
+    assert _correlation_hit([denied, delivery, expired], spec)
+    assert _correlation_hit([denied, delivery, missing], spec)
+
+
+def test_correlation_exclusion_rejects_invalid_expiry() -> None:
+    base = datetime(2026, 11, 1, tzinfo=UTC)
+    spec = _spec(
+        _step("src", "denied", match_fields=("mailbox",)),
+        _step("src", "delivery", match_fields=("mailbox",)),
+        _step(
+            "src",
+            "approval",
+            filters=_filters({"decision": "approved"}),
+            match_fields=("mailbox",),
+            exclude=True,
+            valid_until_field="expires_on",
+        ),
+    )
+    denied = _make_case("denied", "src", "denied", base, {"user": "u", "mailbox": "target"})
+    delivery = _make_case(
+        "delivery",
+        "src",
+        "delivery",
+        base + timedelta(seconds=10),
+        {"user": "u", "mailbox": "target"},
+    )
+    invalid = _make_case(
+        "invalid",
+        "src",
+        "approval",
+        base + timedelta(seconds=20),
+        {"user": "u", "mailbox": "target", "decision": "approved", "expires_on": "not-a-time"},
+    )
+
+    with pytest.raises(DetectionError, match="invalid expires_on"):
+        _correlation_hit([denied, delivery, invalid], spec)
 
 
 def test_correlation_filters_parse_all_supported_shapes(tmp_path: Path) -> None:

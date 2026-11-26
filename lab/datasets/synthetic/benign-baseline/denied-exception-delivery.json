@@ -97,7 +97,7 @@
       "sys_id": "00000000-0000-4000-8000-000000090105",
       "number": "REQ0009105",
       "sys_updated_on": "2026-11-18T10:00:00Z",
-      "state": "Closed",
+      "state": "Active",
       "approval": "Approved",
       "requested_for": "analyst@example.test",
       "requested_by": "analyst@example.test",
@@ -105,7 +105,8 @@
       "recipient": "partner@example.org",
       "message_id": "<20261118101500.905@example.org>",
       "short_description": "Approved transfer",
-      "content_scope": "contract-review.pdf"
+      "content_scope": "contract-review.pdf",
+      "expires_on": "2026-12-31T00:00:00Z"
     },
     "source": "servicenow-approval",
     "synthetic": true,
@@ -427,7 +428,7 @@
       "sys_id": "00000000-0000-4000-8000-000000090120",
       "number": "REQ0009120",
       "sys_updated_on": "2026-11-18T15:00:00Z",
-      "state": "Closed",
+      "state": "Active",
       "approval": "Approved",
       "requested_for": "analyst@example.test",
       "requested_by": "analyst@example.test",
@@ -435,7 +436,8 @@
       "recipient": "partner@example.org",
       "message_id": "<20261118150000.920@example.org>",
       "content_scope": "customer-dataset.csv",
-      "short_description": "Customer dataset export"
+      "short_description": "Customer dataset export",
+      "expires_on": "2026-12-31T00:00:00Z"
     },
     "source": "servicenow-approval",
     "synthetic": true,
@@ -512,7 +514,7 @@
       "sys_id": "00000000-0000-4000-8000-000000090124",
       "number": "REQ0009124",
       "sys_updated_on": "2026-11-20T16:00:00Z",
-      "state": "Closed",
+      "state": "Active",
       "approval": "Approved",
       "requested_for": "analyst@example.test",
       "requested_by": "analyst@example.test",
@@ -520,7 +522,8 @@
       "recipient": "partner@example.org",
       "message_id": "<20261120160000.924@example.org>",
       "content_scope": "customer-dataset.csv",
-      "short_description": "Customer dataset export"
+      "short_description": "Customer dataset export",
+      "expires_on": "2026-12-31T00:00:00Z"
     },
     "source": "servicenow-approval",
     "synthetic": true,

@@ -309,6 +309,11 @@
                 "type": "integer",
                 "minimum": 1,
                 "description": "Window from the previous required step, or from the first required step for an exclusion step."
+              },
+              "valid_until_field": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Timestamp field on an exclusion event that must be at or after the last required event."
               }
             }
           }

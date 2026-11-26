@@ -318,6 +318,15 @@ def test_saas_ingest_is_idempotent_and_queryable() -> None:
         assert approval_event["service"] == "servicenow-approval"
         assert approval_event["dedup_origin"] == "declared"
 
+        approved_event = next(
+            hit["_source"]
+            for hit in approval_hits
+            if hit["_source"]["event_time"] == "2026-11-21T09:15:00Z"
+        )
+        assert approved_event["decision"] == "approved"
+        assert approved_event["status"] == "active"
+        assert approved_event["expires_on"] == "2026-12-31T00:00:00Z"
+
         second = ingest_saas(
             config.ROOT,
             client=client,

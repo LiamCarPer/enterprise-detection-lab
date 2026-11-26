@@ -15,7 +15,13 @@ from uuid import uuid4
 from . import config
 from .artifacts import ArtifactRef, discover_artifacts
 from .errors import DetectionError, IngestError, ValidationError
-from .ingest import CanonicalEvent, OpenSearchClient, format_timestamp, normalize_event
+from .ingest import (
+    CanonicalEvent,
+    OpenSearchClient,
+    format_timestamp,
+    normalize_event,
+    parse_timestamp,
+)
 from .loader import load_json, load_mapping
 from .telemetry import TelemetrySource, load_sources
 
@@ -71,6 +77,7 @@ class CorrelationStep:
     filters: StepFilters = StepFilters()
     exclude: bool = False
     window_seconds: int | None = None
+    valid_until_field: str | None = None
 
 
 @dataclass(frozen=True)
@@ -472,6 +479,18 @@ def _load_correlation(
             )
         if position == 1 and not exclude and raw_window is not None:
             raise DetectionError(f"{path}: correlation step 1 must not declare window_seconds")
+        raw_valid_until = item.get("valid_until_field")
+        if raw_valid_until is not None:
+            if not isinstance(raw_valid_until, str) or not raw_valid_until:
+                raise DetectionError(
+                    f"{path}: correlation step {position} valid_until_field must be "
+                    "a non-empty string"
+                )
+            if not exclude:
+                raise DetectionError(
+                    f"{path}: correlation step {position} valid_until_field is only "
+                    "supported on exclusion steps"
+                )
         raw_match_any = item.get("match_any_fields", [])
         if (
             not isinstance(raw_match_any, list)
@@ -496,6 +515,7 @@ def _load_correlation(
             filters=filters,
             exclude=exclude,
             window_seconds=raw_window,
+            valid_until_field=raw_valid_until,
         )
         if not exclude:
             required_match_fields.update(step.match_fields)
@@ -739,6 +759,7 @@ def _excluded(
     spec: CorrelationSpec,
     exclude_indices: Sequence[int],
     anchor_time: datetime | None,
+    sequence_time: datetime | None,
     targets: Mapping[str, Any],
     any_targets: Mapping[str, set[Any]],
 ) -> bool:
@@ -764,6 +785,22 @@ def _excluded(
                 continue
             if not _values_match_targets(values, any_values, targets, any_targets):
                 continue
+            if step.valid_until_field is not None:
+                raw_valid_until = _lookup_document(case.event.document, step.valid_until_field)
+                if raw_valid_until is None or raw_valid_until == "":
+                    continue
+                try:
+                    valid_until = parse_timestamp(
+                        raw_valid_until,
+                        source=step.source,
+                        field=step.valid_until_field,
+                    )
+                except IngestError as exc:
+                    raise DetectionError(
+                        f"correlation exclusion step {step_index + 1}: {exc}"
+                    ) from exc
+                if sequence_time is not None and valid_until < sequence_time:
+                    continue
             return True
     return False
 
@@ -788,6 +825,7 @@ def _match_steps(
                 spec,
                 exclude_indices,
                 anchor_time,
+                current_time,
                 targets,
                 any_targets,
             )

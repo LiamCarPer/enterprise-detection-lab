@@ -2417,6 +2417,7 @@ SERVICENOW_APPROVAL_RAW = {
     "recipient": "Partner@Example.ORG",
     "message_id": "<20261120144000.701@Example.ORG>",
     "content_scope": "Customer-Dataset.CSV",
+    "expires_on": "2026-12-31T00:00:00Z",
     "short_description": "Customer dataset export",
 }
 
@@ -2434,6 +2435,7 @@ def test_normalize_servicenow_approval_maps_decision_fields() -> None:
     assert document["delivery_recipient"] == "partner@example.org"
     assert document["message_id"] == "<20261120144000.701@example.org>"
     assert document["content_scope"] == "customer-dataset.csv"
+    assert document["expires_on"] == "2026-12-31T00:00:00Z"
     assert document["subject"] == "Customer dataset export"
     assert document["service"] == "servicenow-approval"
 
