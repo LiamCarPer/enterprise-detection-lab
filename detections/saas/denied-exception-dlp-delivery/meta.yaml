@@ -5,7 +5,7 @@ status: tested
 domain: saas
 severity: critical
 hypothesis: An explicit denial or revocation of an external-sharing exception followed by delivery to the same recipient and a DLP match indicates that the data-handling decision was bypassed.
-description: Correlates a denied or revoked ServiceNow approval, a successful external Exchange Online delivery to the same mailbox and recipient, and an active high-severity Purview DLP alert for the same message and content scope within 24 hours. An active, unexpired later approved request for the same mailbox, recipient, and content scope suppresses the sequence for up to seven days.
+description: Correlates a denied or revoked ServiceNow approval, a successful external Exchange Online delivery to the same mailbox and recipient, and an active high-severity Purview DLP alert for the same message and content scope within 24 hours. An active, unexpired later approval by a primary approver for the same mailbox, recipient, and content scope suppresses the sequence for up to seven days, including a renewal recorded under a new request number.
 owner: detection-engineering
 created: "2026-11-25"
 updated: "2026-11-26"
@@ -107,16 +107,17 @@ correlation:
         all:
           decision: approved
           status: active
+          approver_role: primary
       match_fields:
         - mailbox
         - delivery_recipient
         - content_scope
 tests:
-  positive: 17
-  negative: 19
+  positive: 21
+  negative: 23
   benign: 3
 false_positives:
-  - An approval was denied or revoked for one dataset but a later request for the same content was approved.
+  - An approval was denied or revoked for one dataset but a later primary approver approved the same content.
   - A delivery used an approved exception that was recorded under a different request or message identifier.
   - A DLP policy matched a message that the data owner later approved retrospectively.
 runbook: runbook.md

@@ -26,7 +26,8 @@
     "message_id": "<20261121093000.702@example.net>",
     "short_description": "Quarterly archive transfer",
     "content_scope": "quarterly-archive.zip",
-    "expires_on": "2026-12-31T00:00:00Z"
+    "expires_on": "2026-12-31T00:00:00Z",
+    "approver_role": "Primary"
   },
   {
     "sys_id": "00000000-0000-4000-8000-000000070103",
@@ -69,7 +70,8 @@
     "message_id": "<20261122090000.705@example.org>",
     "short_description": "Contract review",
     "content_scope": "contract-review.pdf",
-    "expires_on": "2026-12-15T00:00:00Z"
+    "expires_on": "2026-12-15T00:00:00Z",
+    "approver_role": "Primary"
   },
   {
     "sys_id": "00000000-0000-4000-8000-000000070106",

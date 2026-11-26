@@ -9,8 +9,8 @@ from edl.telemetry import load_sources
 
 PACKAGE = Path(__file__).resolve().parents[1]
 FIXTURE_KINDS = ("positive", "negative", "benign")
-EXPECTED_FIXTURE_COUNTS = {"positive": 17, "negative": 19, "benign": 3}
-EXPECTED_SCENARIO_COUNTS = {"positive": 5, "negative": 6, "benign": 2}
+EXPECTED_FIXTURE_COUNTS = {"positive": 21, "negative": 23, "benign": 3}
+EXPECTED_SCENARIO_COUNTS = {"positive": 6, "negative": 7, "benign": 2}
 
 
 def test_query_returns_all_correlation_steps() -> None:
@@ -43,6 +43,7 @@ def test_correlation_metadata_uses_required_and_exclusion_steps() -> None:
     assert "window_seconds: 604800" in meta
     assert "valid_until_field: expires_on" in meta
     assert meta.count("          status: active") == 2
+    assert "          approver_role: primary" in meta
 
 
 def test_fixtures_use_paired_scenarios() -> None:
@@ -123,6 +124,12 @@ def test_denied_chain_matches_and_approved_or_mismatched_chain_does_not() -> Non
 
     cancelled = [case for case in package.cases if case.scenario == "pos-5"]
     assert _correlation_hit(cancelled, package.correlation)  # type: ignore[arg-type]
+
+    delegated = [case for case in package.cases if case.scenario == "pos-6"]
+    assert _correlation_hit(delegated, package.correlation)  # type: ignore[arg-type]
+
+    renewed = [case for case in package.cases if case.scenario == "neg-7"]
+    assert not _correlation_hit(renewed, package.correlation)  # type: ignore[arg-type]
 
 
 def test_missing_alert_message_identity_blocks_the_chain() -> None:

@@ -81,6 +81,8 @@
         "dlp_action": { "type": "keyword" },
         "content_scope": { "type": "keyword" },
         "expires_on": { "type": "keyword" },
+        "approver_role": { "type": "keyword" },
+        "renewal_of": { "type": "keyword" },
         "request_number": { "type": "keyword" },
         "decision": { "type": "keyword" },
         "requested_by": { "type": "keyword" },

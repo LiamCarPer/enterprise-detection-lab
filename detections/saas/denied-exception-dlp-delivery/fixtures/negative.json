@@ -13,7 +13,8 @@
       "message_id": "<20261123122000.811@example.org>",
       "short_description": "Contract review",
       "content_scope": "contract-review.pdf",
-      "expires_on": "2026-12-31T00:00:00Z"
+      "expires_on": "2026-12-31T00:00:00Z",
+      "approver_role": "Primary"
     },
     "source": "servicenow-approval",
     "synthetic": true,
@@ -338,7 +339,8 @@
       "message_id": "<20261123190000.816@example.org>",
       "content_scope": "customer-dataset.csv",
       "short_description": "Customer dataset export",
-      "expires_on": "2026-12-31T00:00:00Z"
+      "expires_on": "2026-12-31T00:00:00Z",
+      "approver_role": "Primary"
     },
     "source": "servicenow-approval",
     "synthetic": true,
@@ -428,11 +430,104 @@
       "message_id": "<20261126100000.842@example.org>",
       "content_scope": "customer-dataset.csv",
       "short_description": "Customer dataset export",
-      "expires_on": "2026-12-31T00:00:00Z"
+      "expires_on": "2026-12-31T00:00:00Z",
+      "approver_role": "Primary"
     },
     "source": "servicenow-approval",
     "synthetic": true,
     "scenario": "neg-6",
     "note": "Approval two days later, beyond the main 24-hour window"
+  },
+  {
+    "event": {
+      "sys_id": "00000000-0000-4000-8000-000000080220",
+      "number": "REQ0008220",
+      "sys_updated_on": "2026-11-25T16:00:00Z",
+      "state": "Closed",
+      "approval": "Denied",
+      "requested_for": "analyst@example.test",
+      "requested_by": "analyst@example.test",
+      "approver": "data-owner@example.test",
+      "recipient": "partner@example.org",
+      "message_id": "<20261125170000.857@example.org>",
+      "content_scope": "renewed-dataset.csv",
+      "short_description": "Renewed dataset export"
+    },
+    "source": "servicenow-approval",
+    "synthetic": true,
+    "scenario": "neg-7",
+    "note": "Initial denied request"
+  },
+  {
+    "event": {
+      "Organization": "example.onmicrosoft.test",
+      "MessageTraceId": "00000000-0000-4000-8000-000000080221",
+      "MessageId": "<20261125170000.857@example.org>",
+      "Date": "2026-11-25T17:00:00Z",
+      "Event": "DELIVER",
+      "Source": "SMTP",
+      "SenderAddress": "analyst@example.test",
+      "RecipientAddress": "partner@example.org",
+      "Subject": "Renewed dataset export",
+      "Status": "Delivered",
+      "Directionality": "Outbound",
+      "Action": "Deliver",
+      "Detail": "Message delivered to external recipient partner@example.org",
+      "Size": 98304,
+      "FromIP": "203.0.113.10",
+      "ToIP": "198.51.100.44",
+      "RelatedRecipientAddress": "analyst@example.test",
+      "TenantId": "00000000-0000-4000-8000-000000009001",
+      "Reference": "ref-denied-exception-857",
+      "Index": 7
+    },
+    "source": "exchange-message-trace",
+    "synthetic": true,
+    "scenario": "neg-7",
+    "note": "Delivery after the denial"
+  },
+  {
+    "event": {
+      "AlertId": "00000000-0000-4000-8000-000000080222",
+      "CreationTime": "2026-11-25T17:02:00Z",
+      "PolicyName": "External customer identifiers",
+      "Severity": "High",
+      "Status": "Active",
+      "User": "analyst@example.test",
+      "Workload": "Exchange",
+      "Recipient": "partner@example.org",
+      "Subject": "Renewed dataset export",
+      "MessageId": "<20261125170000.857@example.org>",
+      "ContentScope": "renewed-dataset.csv",
+      "DetectionMethod": "DLP",
+      "Action": "Notify"
+    },
+    "source": "m365-dlp",
+    "synthetic": true,
+    "scenario": "neg-7",
+    "note": "DLP alert for the delivery"
+  },
+  {
+    "event": {
+      "sys_id": "00000000-0000-4000-8000-000000080223",
+      "number": "REQ0008221",
+      "sys_updated_on": "2026-11-25T18:00:00Z",
+      "state": "Active",
+      "approval": "Approved",
+      "requested_for": "analyst@example.test",
+      "requested_by": "analyst@example.test",
+      "approver": "data-owner@example.test",
+      "approver_role": "Primary",
+      "renewal_of": "REQ0008220",
+      "recipient": "partner@example.org",
+      "message_id": "<20261125180000.858@example.org>",
+      "content_scope": "renewed-dataset.csv",
+      "expires_on": "2026-12-31T00:00:00Z",
+      "short_description": "Renewed dataset export"
+    },
+    "source": "servicenow-approval",
+    "synthetic": true,
+    "scenario": "neg-7",
+    "note": "Primary approval renews and supersedes the denied request"
   }
 ]

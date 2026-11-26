@@ -16,7 +16,7 @@ The native query returns candidate events from three sources:
 
 The approval step establishes the denied or revoked decision, recipient, and content scope. The delivery step narrows that decision to a specific message and mailbox. The DLP step adds content-level context and must match the same content scope, so a denial for one dataset does not cover a different dataset sent to the same recipient.
 
-A fourth correlation step with `exclude: true` matches an approved request for the same mailbox, recipient, and content scope. The exclusion declares `window_seconds: 604800`, so an approval that arrives after the main 24-hour sequence window can still suppress the sequence. It also requires `status: active` and declares `valid_until_field: expires_on`, so a cancelled approval or one that expired before the last required event does not suppress the sequence. The exclusion step does not require the approval to share the message identifier, because a superseding request may describe the same content under a different message.
+A fourth correlation step with `exclude: true` matches an approved request for the same mailbox, recipient, and content scope. The exclusion declares `window_seconds: 604800`, so an approval that arrives after the main 24-hour sequence window can still suppress the sequence. It also requires `status: active`, `approver_role: primary`, and declares `valid_until_field: expires_on`, so a cancelled approval, a delegate approval, or one that expired before the last required event does not suppress the sequence. The exclusion matches stable attributes rather than request number, so a primary renewal recorded under a new request still suppresses the chain. The exclusion step does not require the approval to share the message identifier, because a superseding request may describe the same content under a different message.
 
 The Sigma rule represents the denied or revoked approval component. The temporal correlation is defined in `meta.yaml` and executed by the detection runner.
 
@@ -28,20 +28,21 @@ The Sigma rule represents the denied or revoked approval component. The temporal
 
 ## Test corpus
 
-The package contains 39 synthetic events across thirteen scenarios:
+The package contains 47 synthetic events across fifteen scenarios:
 
-- 5 positive scenarios where a denied or revoked request is followed by delivery to the same mailbox and recipient and a high-severity DLP alert on the same message and content scope. Two of these include a later approval that expired before the DLP alert or was cancelled, so it does not suppress the sequence.
-- 6 negative scenarios: an approved request; a denied request where the DLP alert belongs to a different message; a denied request with delivery but no DLP alert; a denied request where the DLP alert names a different content scope; a denied request followed by a later active approval for the same content and recipient; a revoked request followed by an active approval more than 24 hours later but inside the seven-day exclusion window.
+- 6 positive scenarios where a denied or revoked request is followed by delivery to the same mailbox and recipient and a high-severity DLP alert on the same message and content scope. These include a later approval that expired before the DLP alert, one that was cancelled, and one granted by a delegate rather than the primary approver, so none of them suppress the sequence.
+- 7 negative scenarios: an approved request; a denied request where the DLP alert belongs to a different message; a denied request with delivery but no DLP alert; a denied request where the DLP alert names a different content scope; a denied request followed by a later active primary approval for the same content and recipient; a revoked request followed by an active primary approval more than 24 hours later but inside the seven-day exclusion window; a primary renewal recorded under a new request number.
 - 2 benign scenarios: a denied request without delivery; a delivery and DLP alert without an approval record.
 
-Metrics are scenario-level: 5 positive scenarios, 6 negative scenarios, and 2 benign scenarios.
+Metrics are scenario-level: 6 positive scenarios, 7 negative scenarios, and 2 benign scenarios.
 
 ## Known gaps
 
 - The approval record must carry the message identifier for the three-step join. Many approval workflows do not include it.
 - Grouping by `delivery_recipient` can mix requests and deliveries for a shared external recipient; the mailbox, message, and content-scope matches provide the specificity.
 - `content_scope` is only as reliable as the approval and DLP mappings. A tenant that does not populate a shared scope value will not get this narrowing.
-- A later approval suppresses the sequence when it occurs after the denial, within the seven-day exclusion window, shares the mailbox, recipient, and content scope, is active, and has an expiry at or after the last required event. A cancelled, expired, or differently scoped approval does not suppress it.
+- A later approval suppresses the sequence when it occurs after the denial, within the seven-day exclusion window, shares the mailbox, recipient, and content scope, is active, is granted by a primary approver, and has an expiry at or after the last required event. A cancelled, expired, delegate, or differently scoped approval does not suppress it.
+- Renewal lineage is recorded in `renewal_of` but is not used as a match field, so a replacement request with a new number still suppresses an older denial.
 - An approval record without an expiry cannot suppress the sequence because `valid_until_field` requires one. This is deliberate: an unverified validity period should not hide the alert.
 - The exclusion step does not use message identity, so a later approval for the same scope but a different message can suppress the sequence. This is intentional for superseding requests but should be tuned against the approval workflow.
 - A denial may be recorded after the delivery; the ordered sequence will not match a retrospective denial.
@@ -50,4 +51,4 @@ Metrics are scenario-level: 5 positive scenarios, 6 negative scenarios, and 2 be
 
 ## Next tuning step
 
-Add approval renewal and delegate-approver precedence so a replacement decision can be evaluated without reusing the original request.
+Add delegate chains and quorum rules so multi-approver decisions are evaluated by authority rather than a single primary role.

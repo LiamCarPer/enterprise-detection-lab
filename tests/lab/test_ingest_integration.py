@@ -326,6 +326,7 @@ def test_saas_ingest_is_idempotent_and_queryable() -> None:
         assert approved_event["decision"] == "approved"
         assert approved_event["status"] == "active"
         assert approved_event["expires_on"] == "2026-12-31T00:00:00Z"
+        assert approved_event["approver_role"] == "primary"
 
         second = ingest_saas(
             config.ROOT,

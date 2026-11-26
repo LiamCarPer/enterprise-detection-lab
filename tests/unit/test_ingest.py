@@ -2418,6 +2418,8 @@ SERVICENOW_APPROVAL_RAW = {
     "message_id": "<20261120144000.701@Example.ORG>",
     "content_scope": "Customer-Dataset.CSV",
     "expires_on": "2026-12-31T00:00:00Z",
+    "approver_role": "Primary",
+    "renewal_of": "REQ0007000",
     "short_description": "Customer dataset export",
 }
 
@@ -2436,6 +2438,8 @@ def test_normalize_servicenow_approval_maps_decision_fields() -> None:
     assert document["message_id"] == "<20261120144000.701@example.org>"
     assert document["content_scope"] == "customer-dataset.csv"
     assert document["expires_on"] == "2026-12-31T00:00:00Z"
+    assert document["approver_role"] == "primary"
+    assert document["renewal_of"] == "REQ0007000"
     assert document["subject"] == "Customer dataset export"
     assert document["service"] == "servicenow-approval"
 
