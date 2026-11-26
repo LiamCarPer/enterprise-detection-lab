@@ -1,0 +1,38 @@
+{
+  "query": {
+    "bool": {
+      "filter": [
+        { "term": { "source": "entra-audit" } },
+        { "term": { "result": "success" } },
+        {
+          "terms": {
+            "action": [
+              "Consent to application",
+              "Add OAuth2PermissionGrant",
+              "Add delegated permission grant"
+            ]
+          }
+        },
+        {
+          "bool": {
+            "should": [
+              { "term": { "consent_type": "admin" } },
+              { "term": { "consent_type": "tenant" } },
+              { "term": { "tenant_wide": true } }
+            ],
+            "minimum_should_match": 1
+          }
+        },
+        {
+          "bool": {
+            "should": [
+              { "term": { "publisher_verified": false } },
+              { "term": { "redirect_uri_trusted": false } }
+            ],
+            "minimum_should_match": 1
+          }
+        }
+      ]
+    }
+  }
+}

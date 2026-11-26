@@ -505,6 +505,10 @@ def normalize_entra_audit(raw: Mapping[str, Any]) -> dict[str, Any]:
                 document["scopes"] = scopes
                 document["offline_access"] = "offline_access" in scopes
             document["app_owner_organization_id"] = first.get("appOwnerOrganizationId")
+            document["publisher_verified"] = first.get("publisherVerified")
+            document["redirect_uri_trusted"] = first.get("redirectUriTrusted")
+            document["redirect_uri"] = first.get("redirectUri")
+            document["tenant_wide"] = first.get("tenantWide")
     return _compact(document)
 
 

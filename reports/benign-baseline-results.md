@@ -2,7 +2,7 @@
 
 ## Scope
 
-Twenty synthetic benign corpora are used to measure false-positive behavior across the detection set.
+Twenty-one synthetic benign corpora are used to measure false-positive behavior across the detection set.
 
 | Detection | Dataset | Unit | Cases | Matches | FPR |
 |---|---|---|---:|---:|---:|
@@ -13,6 +13,7 @@ Twenty synthetic benign corpora are used to measure false-positive behavior acro
 | `DET-CLD-002` | `cloudtrail.json` | event | 20 | 0 | 0.00 |
 | `DET-IDN-003` | `identity-correlation.json` | scenario | 6 | 0 | 0.00 |
 | `DET-IDN-004` | `identity-oauth-consent.json` | scenario | 6 | 0 | 0.00 |
+| `DET-IDN-005` | `identity-oauth-admin-consent.json` | event | 20 | 0 | 0.00 |
 | `DET-SAA-001` | `m365-audit.json` | event | 20 | 0 | 0.00 |
 | `DET-SAA-001` | `m365-forwarding.json` | event | 20 | 0 | 0.00 |
 | `DET-SAA-002` | `github-audit.json` | event | 20 | 0 | 0.00 |
@@ -42,6 +43,7 @@ The identity correlation baseline contains six scenarios with only one step, mis
 - **CloudTrail:** access-key inventory and status updates, trail inventory, and role assumptions.
 - **Identity correlation:** sign-in-only, audit-only, mismatched-user, and out-of-window scenarios.
 - **Identity OAuth consent:** sign-in-only, consent-only, admin consent, low-risk sign-in, missing offline access, and mismatched-user scenarios.
+- **Identity OAuth admin consent:** approved admin and tenant consents, tenant-wide grants to verified applications, and user consents outside the admin path.
 - **Microsoft 365 audit:** file and mail access, mailbox rules without forwarding, mailbox permission changes, Teams activity, and sign-ins.
 - **Microsoft 365 forwarding:** internal forwarding rules to the tenant accepted domain.
 - **GitHub audit:** pushes, pull requests, issues, member onboarding, team changes, repository changes, and sign-ins.
@@ -121,6 +123,10 @@ edl detection baseline \
 edl detection baseline \
   --id DET-IDN-004 \
   --dataset lab/datasets/synthetic/benign-baseline/identity-oauth-consent.json
+
+edl detection baseline \
+  --id DET-IDN-005 \
+  --dataset lab/datasets/synthetic/benign-baseline/identity-oauth-admin-consent.json
 
 edl detection baseline \
   --id DET-SAA-003 \

@@ -1,0 +1,170 @@
+[
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001701",
+      "activityDateTime": "2026-11-07T09:00:00Z",
+      "operationName": "Consent to application",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test",
+          "ipAddress": "203.0.113.20"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Contoso Analytics",
+          "type": "ServicePrincipal",
+          "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
+          "scopes": [
+            "Mail.Read",
+            "offline_access"
+          ],
+          "publisherVerified": false,
+          "redirectUriTrusted": true,
+          "redirectUri": "https://login.contoso-analytics.example/callback",
+          "tenantWide": false,
+          "consentType": "Admin"
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "pos-1",
+    "note": "Admin consent to an unverified publisher"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001702",
+      "activityDateTime": "2026-11-07T09:10:00Z",
+      "operationName": "Consent to application",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test",
+          "ipAddress": "203.0.113.20"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Contoso Reporting",
+          "type": "ServicePrincipal",
+          "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
+          "scopes": [
+            "Mail.Read",
+            "offline_access"
+          ],
+          "publisherVerified": true,
+          "redirectUriTrusted": false,
+          "redirectUri": "https://login.contoso-reporting.example/callback",
+          "tenantWide": false,
+          "consentType": "Admin"
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "pos-2",
+    "note": "Admin consent with an untrusted redirect URI"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001703",
+      "activityDateTime": "2026-11-07T09:20:00Z",
+      "operationName": "Consent to application",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test",
+          "ipAddress": "203.0.113.20"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Contoso Files",
+          "type": "ServicePrincipal",
+          "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
+          "scopes": [
+            "Mail.Read",
+            "offline_access"
+          ],
+          "publisherVerified": false,
+          "redirectUriTrusted": false,
+          "redirectUri": "https://login.contoso-files.example/callback",
+          "tenantWide": false,
+          "consentType": "Tenant"
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "pos-3",
+    "note": "Tenant consent with both trust checks failing"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001704",
+      "activityDateTime": "2026-11-07T09:30:00Z",
+      "operationName": "Add OAuth2PermissionGrant",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test",
+          "ipAddress": "203.0.113.20"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Contoso Mail",
+          "type": "ServicePrincipal",
+          "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
+          "scopes": [
+            "Mail.Read",
+            "offline_access"
+          ],
+          "publisherVerified": false,
+          "redirectUriTrusted": true,
+          "redirectUri": "https://login.contoso-mail.example/callback",
+          "tenantWide": true
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "pos-4",
+    "note": "Tenant-wide grant to an unverified publisher"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001705",
+      "activityDateTime": "2026-11-07T09:40:00Z",
+      "operationName": "Add delegated permission grant",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test",
+          "ipAddress": "203.0.113.20"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Contoso Directory",
+          "type": "ServicePrincipal",
+          "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
+          "scopes": [
+            "Mail.Read",
+            "offline_access"
+          ],
+          "publisherVerified": true,
+          "redirectUriTrusted": false,
+          "redirectUri": "https://login.contoso-directory.example/callback",
+          "tenantWide": true
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "pos-5",
+    "note": "Tenant-wide delegated grant with an untrusted redirect URI"
+  }
+]

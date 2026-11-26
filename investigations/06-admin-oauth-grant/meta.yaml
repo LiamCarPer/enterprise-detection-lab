@@ -1,0 +1,56 @@
+id: INV-006
+title: Admin Consent and Tenant-Wide OAuth Grant
+version: 1.0.0
+status: tested
+domains:
+  - identity
+  - saas
+scenario: An administrator grants admin consent to an external application with an unverified publisher and untrusted redirect URI, then creates a tenant-wide OAuth permission grant for the same application.
+hypothesis: An admin or tenant-wide OAuth grant to an untrusted application may provide durable access to tenant mail, files, or directory data.
+detections:
+  - DET-IDN-005
+owner: detection-engineering
+created: "2026-11-26"
+updated: "2026-11-26"
+evidence:
+  - id: e1
+    type: event
+    source: entra-audit
+    path: evidence/e1.json
+    provenance: Synthetic event from lab/datasets/synthetic/entra-audit/reference.json
+    description: Admin consent to Contoso Analytics with an unverified publisher and untrusted redirect URI at 10:00 UTC.
+    sha256: a72a908bed882874682d3e9e5074f12f9452cf2229f8b3cd772230fa90f7b7e4
+  - id: e2
+    type: event
+    source: entra-audit
+    path: evidence/e2.json
+    provenance: Synthetic event from lab/datasets/synthetic/entra-audit/reference.json
+    description: Tenant-wide OAuth2 permission grant to Contoso Analytics at 10:05 UTC.
+    sha256: 514a89533913e52e0db68a7a70cb4a1599fbde1b0b103b57aa5fe1a640d14f5b
+timeline:
+  - timestamp: "2026-11-02T10:00:00Z"
+    event: Admin consent to Contoso Analytics with failed publisher and redirect trust
+    source: entra-audit
+    evidence_id: e1
+  - timestamp: "2026-11-02T10:05:00Z"
+    event: Tenant-wide OAuth2 permission grant to Contoso Analytics
+    source: entra-audit
+    evidence_id: e2
+lessons:
+  - Admin consent bypasses individual user consent and can expose the whole tenant.
+  - Publisher verification and redirect-URI trust are explicit signals that should gate approval.
+  - The grant record identifies the application and scopes, but not the application's intent.
+  - A verified publisher can still be malicious or compromised.
+  - Application inventory and redirect-URI allowlists are still needed for stronger decisions.
+response:
+  - Revoke the tenant-wide grant and refresh tokens.
+  - Disable or remove the application service principal after preserving evidence.
+  - Revoke application credentials and review granted permissions.
+  - Review tenant-wide access to mail, files, and directory data.
+  - Add the application to a tenant deny or approval workflow.
+  - Reset administrator credentials if the grant is associated with a suspicious session.
+references:
+  - https://attack.mitre.org/techniques/T1528/
+  - https://attack.mitre.org/techniques/T1098/
+executive_summary: A synthetic identity chain shows an administrator granting consent to an external application with an unverified publisher and untrusted redirect URI, followed by a tenant-wide OAuth permission grant. The grants are observed; application intent and downstream access remain inferred.
+notes: Synthetic investigation built from the local lab datasets. No production or customer data.

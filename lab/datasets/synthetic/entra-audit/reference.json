@@ -56,5 +56,60 @@
       }
     ],
     "result": "success"
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000104",
+    "activityDateTime": "2026-11-02T10:00:00Z",
+    "operationName": "Consent to application",
+    "initiatedBy": {
+      "user": {
+        "userPrincipalName": "admin@example.test",
+        "ipAddress": "203.0.113.20"
+      }
+    },
+    "targetResources": [
+      {
+        "displayName": "Contoso Analytics",
+        "type": "ServicePrincipal",
+        "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
+        "consentType": "Admin",
+        "scopes": [
+          "Mail.Read",
+          "offline_access"
+        ],
+        "publisherVerified": false,
+        "redirectUriTrusted": false,
+        "redirectUri": "https://login.contoso.example/callback",
+        "tenantWide": false
+      }
+    ],
+    "result": "success"
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000105",
+    "activityDateTime": "2026-11-02T10:05:00Z",
+    "operationName": "Add OAuth2PermissionGrant",
+    "initiatedBy": {
+      "user": {
+        "userPrincipalName": "admin@example.test",
+        "ipAddress": "203.0.113.20"
+      }
+    },
+    "targetResources": [
+      {
+        "displayName": "Contoso Analytics",
+        "type": "ServicePrincipal",
+        "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
+        "consentType": "Tenant",
+        "scopes": [
+          "Mail.Read"
+        ],
+        "publisherVerified": false,
+        "redirectUriTrusted": false,
+        "redirectUri": "https://login.contoso.example/callback",
+        "tenantWide": true
+      }
+    ],
+    "result": "success"
   }
 ]

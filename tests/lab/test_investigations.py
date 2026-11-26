@@ -18,6 +18,7 @@ INVESTIGATIONS = (
     config.ROOT / "investigations" / "03-saas-mailbox-takeover",
     config.ROOT / "investigations" / "04-denied-external-sharing",
     config.ROOT / "investigations" / "05-oauth-consent-grant",
+    config.ROOT / "investigations" / "06-admin-oauth-grant",
 )
 EXPECTED_DETECTIONS = {
     "INV-001": {
@@ -46,6 +47,9 @@ EXPECTED_DETECTIONS = {
     "INV-005": {
         "DET-IDN-001",
         "DET-IDN-004",
+    },
+    "INV-006": {
+        "DET-IDN-005",
     },
 }
 

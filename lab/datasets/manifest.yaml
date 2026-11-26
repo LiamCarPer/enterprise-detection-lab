@@ -13,7 +13,7 @@ datasets:
     synthetic: true
     license: synthetic
     provenance: Generated for this repository. No real users, tenants, or IPs.
-    sha256: 854833161b818871433eb49fae1a3193b8ffc4332f88788caeab1bd39242350f
+    sha256: 64615c565ac85d293b92beba0e9b8254658e11f95103410330a823f2a6436b26
   - id: synthetic-sysmon-reference
     source: sysmon
     path: lab/datasets/synthetic/sysmon/reference.json
@@ -238,3 +238,10 @@ datasets:
     license: synthetic
     provenance: Generated for this repository. No real users, tenants, or IPs.
     sha256: 2be9175d5976038705e84737536644e31a8fc47f79408e166f12c30ab33241eb
+  - id: synthetic-identity-oauth-admin-consent-benign-baseline
+    source: entra-audit
+    path: lab/datasets/synthetic/benign-baseline/identity-oauth-admin-consent.json
+    synthetic: true
+    license: synthetic
+    provenance: Generated for this repository. No real users, tenants, or IPs.
+    sha256: e77ea3ee9b236caa392f71aa38811f905b7dbdb4b5d8b8b0b0983572ba48d606

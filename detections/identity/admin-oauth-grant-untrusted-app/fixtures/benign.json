@@ -1,0 +1,170 @@
+[
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001711",
+      "activityDateTime": "2026-11-07T11:00:00Z",
+      "operationName": "Consent to application",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test",
+          "ipAddress": "203.0.113.20"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Approved Analytics",
+          "type": "ServicePrincipal",
+          "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
+          "scopes": [
+            "Mail.Read",
+            "offline_access"
+          ],
+          "publisherVerified": true,
+          "redirectUriTrusted": true,
+          "redirectUri": "https://login.approved-analytics.example/callback",
+          "tenantWide": false,
+          "consentType": "Admin"
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "benign-1",
+    "note": "Approved admin consent"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001712",
+      "activityDateTime": "2026-11-07T11:10:00Z",
+      "operationName": "Consent to application",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test",
+          "ipAddress": "203.0.113.20"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Approved Reporting",
+          "type": "ServicePrincipal",
+          "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
+          "scopes": [
+            "Mail.Read",
+            "offline_access"
+          ],
+          "publisherVerified": true,
+          "redirectUriTrusted": true,
+          "redirectUri": "https://login.approved-reporting.example/callback",
+          "tenantWide": false,
+          "consentType": "Tenant"
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "benign-2",
+    "note": "Approved tenant consent"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001713",
+      "activityDateTime": "2026-11-07T11:20:00Z",
+      "operationName": "Add OAuth2PermissionGrant",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test",
+          "ipAddress": "203.0.113.20"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Approved Mail",
+          "type": "ServicePrincipal",
+          "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
+          "scopes": [
+            "Mail.Read",
+            "offline_access"
+          ],
+          "publisherVerified": true,
+          "redirectUriTrusted": true,
+          "redirectUri": "https://login.approved-mail.example/callback",
+          "tenantWide": true
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "benign-3",
+    "note": "Approved tenant-wide grant"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001714",
+      "activityDateTime": "2026-11-07T11:30:00Z",
+      "operationName": "Add delegated permission grant",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test",
+          "ipAddress": "203.0.113.20"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Approved Directory",
+          "type": "ServicePrincipal",
+          "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
+          "scopes": [
+            "Mail.Read",
+            "offline_access"
+          ],
+          "publisherVerified": true,
+          "redirectUriTrusted": true,
+          "redirectUri": "https://login.approved-directory.example/callback",
+          "tenantWide": true
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "benign-4",
+    "note": "Approved delegated grant"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001715",
+      "activityDateTime": "2026-11-07T11:40:00Z",
+      "operationName": "Consent to application",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test",
+          "ipAddress": "203.0.113.20"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Approved Internal App",
+          "type": "ServicePrincipal",
+          "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
+          "scopes": [
+            "Mail.Read",
+            "offline_access"
+          ],
+          "publisherVerified": true,
+          "redirectUriTrusted": true,
+          "redirectUri": "https://login.approved-internal-app.example/callback",
+          "tenantWide": false,
+          "consentType": "Admin"
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "benign-5",
+    "note": "Approved internal application"
+  }
+]

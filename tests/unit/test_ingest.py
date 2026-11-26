@@ -190,6 +190,10 @@ def test_normalize_entra_audit_maps_consent_fields() -> None:
                     "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
                     "consentType": "User",
                     "scopes": ["Mail.Read", "offline_access"],
+                    "publisherVerified": False,
+                    "redirectUriTrusted": True,
+                    "redirectUri": "https://login.contoso.example/callback",
+                    "tenantWide": False,
                 }
             ],
             "result": "success",
@@ -199,6 +203,10 @@ def test_normalize_entra_audit_maps_consent_fields() -> None:
     assert document["scopes"] == ["mail.read", "offline_access"]
     assert document["offline_access"] is True
     assert document["app_owner_organization_id"] == "11111111-1111-4111-8111-111111111111"
+    assert document["publisher_verified"] is False
+    assert document["redirect_uri_trusted"] is True
+    assert document["redirect_uri"] == "https://login.contoso.example/callback"
+    assert document["tenant_wide"] is False
 
 
 def test_normalize_entra_audit_parses_string_scopes() -> None:
@@ -645,11 +653,11 @@ def test_ingest_identity_dry_run_uses_repository_samples() -> None:
     assert [result.source for result in results] == ["entra-signin", "entra-audit"]
     assert {result.source: result.read for result in results} == {
         "entra-signin": 3,
-        "entra-audit": 3,
+        "entra-audit": 5,
     }
     assert {result.source: result.unique for result in results} == {
         "entra-signin": 3,
-        "entra-audit": 3,
+        "entra-audit": 5,
     }
     assert all(result.written == 0 for result in results)
 

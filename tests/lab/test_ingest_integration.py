@@ -47,11 +47,11 @@ def test_identity_ingest_is_idempotent_and_queryable() -> None:
             index_prefix=TEST_PREFIX,
         )
         assert [result.source for result in first] == ["entra-signin", "entra-audit"]
-        expected = {"entra-signin": 3, "entra-audit": 3}
+        expected = {"entra-signin": 3, "entra-audit": 5}
         assert {result.source: result.read for result in first} == expected
         assert {result.source: result.unique for result in first} == expected
         assert {result.source: result.written for result in first} == expected
-        assert {result.source: result.counts[result.indices[0]] for result in first} == expected
+        assert {result.source: sum(result.counts.values()) for result in first} == expected
 
         hits_before = _search("entra-signin")
         assert len(hits_before) == 3
@@ -72,14 +72,14 @@ def test_identity_ingest_is_idempotent_and_queryable() -> None:
             ingest_time=datetime(2026, 11, 23, 12, 0, tzinfo=UTC),
             index_prefix=TEST_PREFIX,
         )
-        assert {result.source: result.counts[result.indices[0]] for result in second} == expected
+        assert {result.source: sum(result.counts.values()) for result in second} == expected
 
         hits_after = _search("entra-signin")
         assert sorted(str(hit["_id"]) for hit in hits_after) == ids_before
         assert len(hits_after) == 3
 
         audit_hits = _search("entra-audit")
-        assert len(audit_hits) == 3
+        assert len(audit_hits) == 5
         service_principal = next(
             hit["_source"]
             for hit in audit_hits
@@ -95,6 +95,23 @@ def test_identity_ingest_is_idempotent_and_queryable() -> None:
         assert consent["scopes"] == ["mail.read", "offline_access"]
         assert consent["offline_access"] is True
         assert consent["resource"]["name"] == "Contoso Analytics"
+
+        admin_consent = next(
+            hit["_source"]
+            for hit in audit_hits
+            if hit["_source"]["action"] == "Consent to application"
+            and hit["_source"]["consent_type"] == "admin"
+        )
+        assert admin_consent["publisher_verified"] is False
+        assert admin_consent["redirect_uri_trusted"] is False
+
+        tenant_grant = next(
+            hit["_source"]
+            for hit in audit_hits
+            if hit["_source"]["action"] == "Add OAuth2PermissionGrant"
+        )
+        assert tenant_grant["tenant_wide"] is True
+        assert tenant_grant["consent_type"] == "tenant"
     finally:
         client.delete_matching(f"{TEST_PREFIX}-*")
         client.close()
