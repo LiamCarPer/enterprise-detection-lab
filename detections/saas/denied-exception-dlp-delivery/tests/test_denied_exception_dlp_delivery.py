@@ -9,8 +9,8 @@ from edl.telemetry import load_sources
 
 PACKAGE = Path(__file__).resolve().parents[1]
 FIXTURE_KINDS = ("positive", "negative", "benign")
-EXPECTED_FIXTURE_COUNTS = {"positive": 6, "negative": 15, "benign": 3}
-EXPECTED_SCENARIO_COUNTS = {"positive": 2, "negative": 5, "benign": 2}
+EXPECTED_FIXTURE_COUNTS = {"positive": 9, "negative": 19, "benign": 3}
+EXPECTED_SCENARIO_COUNTS = {"positive": 3, "negative": 6, "benign": 2}
 
 
 def test_query_returns_all_correlation_steps() -> None:
@@ -23,6 +23,7 @@ def test_query_returns_all_correlation_steps() -> None:
     assert '"event_class": "dlp_alert"' in query
     assert '"decision": [' in query
     assert '"denied"' in query
+    assert '"revoked"' in query
     assert '"approved"' in query
     assert "external_recipient" in query
 
@@ -39,6 +40,7 @@ def test_correlation_metadata_uses_required_and_exclusion_steps() -> None:
     assert meta.count("        - message_id") == 3
     assert meta.count("        - content_scope") == 3
     assert meta.count("exclude: true") == 1
+    assert "window_seconds: 604800" in meta
 
 
 def test_fixtures_use_paired_scenarios() -> None:
@@ -67,7 +69,7 @@ def test_positive_chain_links_denial_delivery_and_alert() -> None:
         approval = events["servicenow-approval"]
         delivery = events["exchange-message-trace"]
         alert = events["m365-dlp"]
-        assert approval["approval"] == "Denied"
+        assert approval["approval"] in {"Denied", "Revoked"}
         assert approval["requested_for"] == delivery["RelatedRecipientAddress"]
         assert str(approval["recipient"]).lower() == str(delivery["RecipientAddress"]).lower()
         assert delivery["Event"] == "DELIVER"
@@ -91,6 +93,9 @@ def test_denied_chain_matches_and_approved_or_mismatched_chain_does_not() -> Non
     positive = [case for case in package.cases if case.scenario == "pos-1"]
     assert _correlation_hit(positive, package.correlation)  # type: ignore[arg-type]
 
+    revoked = [case for case in package.cases if case.scenario == "pos-3"]
+    assert _correlation_hit(revoked, package.correlation)  # type: ignore[arg-type]
+
     approved = [case for case in package.cases if case.scenario == "neg-1"]
     assert not _correlation_hit(approved, package.correlation)  # type: ignore[arg-type]
 
@@ -102,6 +107,9 @@ def test_denied_chain_matches_and_approved_or_mismatched_chain_does_not() -> Non
 
     superseded = [case for case in package.cases if case.scenario == "neg-5"]
     assert not _correlation_hit(superseded, package.correlation)  # type: ignore[arg-type]
+
+    late_superseded = [case for case in package.cases if case.scenario == "neg-6"]
+    assert not _correlation_hit(late_superseded, package.correlation)  # type: ignore[arg-type]
 
 
 def test_missing_alert_message_identity_blocks_the_chain() -> None:

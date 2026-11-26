@@ -681,6 +681,32 @@ def test_correlation_metrics_use_scenario_unit(tmp_path: Path) -> None:
             "  steps:\n"
             "    - source: entra-signin\n"
             "      event_class: sign_in\n"
+            "    - source: entra-audit\n"
+            "      event_class: audit\n"
+            "      window_seconds: 0\n",
+            "window_seconds",
+        ),
+        (
+            "correlation:\n"
+            "  window_seconds: 1800\n"
+            "  group_by:\n"
+            "    - user\n"
+            "  steps:\n"
+            "    - source: entra-signin\n"
+            "      event_class: sign_in\n"
+            "      window_seconds: 60\n"
+            "    - source: entra-audit\n"
+            "      event_class: audit\n",
+            "step 1",
+        ),
+        (
+            "correlation:\n"
+            "  window_seconds: 1800\n"
+            "  group_by:\n"
+            "    - user\n"
+            "  steps:\n"
+            "    - source: entra-signin\n"
+            "      event_class: sign_in\n"
             "      match_any_fields: mailbox\n"
             "    - source: entra-audit\n"
             "      event_class: audit\n",
@@ -827,6 +853,7 @@ def _step(
     match_fields: tuple[str, ...] = (),
     match_any_fields: tuple[str, ...] = (),
     exclude: bool = False,
+    window_seconds: int | None = None,
 ) -> CorrelationStep:
     return CorrelationStep(
         source=source,
@@ -835,6 +862,7 @@ def _step(
         match_any_fields=match_any_fields,
         filters=filters or StepFilters(),
         exclude=exclude,
+        window_seconds=window_seconds,
     )
 
 
@@ -1246,6 +1274,53 @@ def test_correlation_exclusion_ignores_earlier_mismatched_and_late_events() -> N
     assert _correlation_hit([denied, delivery, earlier], spec)
     assert _correlation_hit([denied, delivery, other_scope], spec)
     assert _correlation_hit([denied, delivery, late], spec)
+
+
+def test_correlation_step_window_overrides_global() -> None:
+    base = datetime(2026, 11, 1, tzinfo=UTC)
+    spec = _spec(
+        _step("src", "first"),
+        _step("src", "second", window_seconds=120),
+        window_seconds=60,
+    )
+    first = _make_case("first", "src", "first", base, {"user": "u"})
+    second = _make_case("second", "src", "second", base + timedelta(seconds=100), {"user": "u"})
+
+    assert _correlation_hit([first, second], spec)
+
+
+def test_correlation_exclusion_window_overrides_global() -> None:
+    base = datetime(2026, 11, 1, tzinfo=UTC)
+    spec = _spec(
+        _step("src", "denied", match_fields=("mailbox",)),
+        _step("src", "delivery", match_fields=("mailbox",)),
+        _step(
+            "src",
+            "approval",
+            filters=_filters({"decision": "approved"}),
+            match_fields=("mailbox",),
+            exclude=True,
+            window_seconds=3600,
+        ),
+        window_seconds=60,
+    )
+    denied = _make_case("denied", "src", "denied", base, {"user": "u", "mailbox": "target"})
+    delivery = _make_case(
+        "delivery",
+        "src",
+        "delivery",
+        base + timedelta(seconds=10),
+        {"user": "u", "mailbox": "target"},
+    )
+    late_approval = _make_case(
+        "approval",
+        "src",
+        "approval",
+        base + timedelta(seconds=600),
+        {"user": "u", "mailbox": "target", "decision": "approved"},
+    )
+
+    assert not _correlation_hit([denied, delivery, late_approval], spec)
 
 
 def test_correlation_exclusion_skips_events_missing_declared_fields() -> None:

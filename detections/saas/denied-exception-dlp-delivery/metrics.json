@@ -1,16 +1,16 @@
 {
   "detection_id": "DET-SAA-009",
-  "measured_at": "2026-11-25T23:25:47.927739Z",
-  "sample_size": 9,
+  "measured_at": "2026-11-26T00:03:55.893787Z",
+  "sample_size": 11,
   "evaluation_unit": "scenario",
   "precision": 1.0,
   "recall": 1.0,
   "false_positive_rate": 0.0,
-  "latency_ms_p50": 5.753,
-  "latency_ms_p95": 8.869,
+  "latency_ms_p50": 4.296,
+  "latency_ms_p95": 4.735,
   "method": "Synthetic sequence replay against OpenSearch; native query plus correlation evaluation.",
   "limitations": [
-    "Curated synthetic scenarios; sample size 9.",
+    "Curated synthetic scenarios; sample size 11.",
     "Correlation metrics are scenario-level; each fixture scenario is one evaluation case.",
     "Window and grouping are evaluated by the runner; production scheduling is out of scope.",
     "Sigma rule is not executed; the native OpenSearch query is the tested path."

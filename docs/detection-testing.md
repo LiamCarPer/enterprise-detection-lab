@@ -133,6 +133,12 @@ same mailbox, recipient, and content scope. Exclusion steps must follow the
 required steps, and every field they declare must be established by an earlier
 step.
 
+Required steps may declare `window_seconds` to override the global window for
+the transition into that step. An exclusion step may declare its own
+`window_seconds`, measured from the first required event. `DET-SAA-009` uses a
+seven-day exclusion window so a superseding approval can suppress a sequence
+after the main 24-hour window has elapsed.
+
 Steps may also declare optional `filters` to narrow the events that can satisfy
 that step. Filters are evaluated after the native query and before grouping and
 `match_fields`. They only remove candidate events; they never add events that

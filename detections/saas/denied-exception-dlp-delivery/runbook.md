@@ -2,7 +2,7 @@
 
 ## Alert meaning
 
-A ServiceNow approval denied an external-sharing request, then the same mailbox delivered a message to the same recipient, and an active high-severity Purview DLP alert matched that message and content scope within 24 hours. The sequence indicates that a denied data-handling decision was bypassed. A later approved request for the same mailbox, recipient, and content scope suppresses the alert.
+A ServiceNow approval denied or revoked an external-sharing request, then the same mailbox delivered a message to the same recipient, and an active high-severity Purview DLP alert matched that message and content scope within 24 hours. The sequence indicates that a denied or revoked data-handling decision was bypassed. A later approved request for the same mailbox, recipient, and content scope suppresses the alert for up to seven days.
 
 ## Triage
 
@@ -10,7 +10,7 @@ A ServiceNow approval denied an external-sharing request, then the same mailbox 
 2. Review the approval request number, requested-for mailbox, approver, decision time, and denial reason.
 3. Review the message-trace `MessageId`, `SenderAddress`, `Subject`, `Status`, and `RelatedRecipientAddress`.
 4. Open the DLP alert and inspect the matched sensitive information types, content scope, and policy action.
-5. Check whether a later approval covers the same content, recipient, and time window.
+5. Check whether a later approval covers the same content, recipient, and seven-day window.
 6. Review the sender's recent sign-ins, mailbox rules, delegation, and mail access.
 7. Pivot to endpoint and network telemetry for the sender and message time.
 
@@ -30,7 +30,7 @@ Escalate when:
 - No later approval covers the same content and recipient.
 - The DLP policy covers regulated, financial, customer, or credential data.
 - The sender shows concurrent mailbox-rule, delegation, or access changes.
-- The same recipient appears across multiple denied or alerted requests.
+- The same recipient appears across multiple denied, revoked, or alerted requests.
 - The delivery is part of a larger sequence with forwarding or mailbox takeover indicators.
 
 ## Containment
@@ -43,7 +43,7 @@ Escalate when:
 
 ## False positives
 
-- An approval was denied for one dataset but a later request for different content was approved.
+- An approval was denied or revoked for one dataset but a later request for different content was approved.
 - A delivery used an approved exception recorded under a different request or message identifier.
 - A DLP policy matched a message that the data owner later approved retrospectively.
 

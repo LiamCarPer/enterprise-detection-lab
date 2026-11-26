@@ -11,7 +11,7 @@ detections:
   - DET-SAA-009
 owner: detection-engineering
 created: "2026-11-25"
-updated: "2026-11-25"
+updated: "2026-11-26"
 evidence:
   - id: e1
     type: event

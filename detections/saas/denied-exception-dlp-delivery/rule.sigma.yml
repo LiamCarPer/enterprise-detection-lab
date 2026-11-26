@@ -1,7 +1,7 @@
-title: Denied External-Sharing Approval
+title: Denied or Revoked External-Sharing Approval
 id: 00000000-0000-4000-8000-000000000409
 status: test
-description: Detects a denied approval for an external-sharing request.
+description: Detects a denied or revoked approval for an external-sharing request.
 author: detection-engineering
 date: 2026/11/25
 logsource:
@@ -9,7 +9,9 @@ logsource:
   service: approval
 detection:
   selection:
-    approval: Denied
+    approval:
+      - Denied
+      - Revoked
   condition: selection
 falsepositives:
   - A denied request that was replaced by a later approved request

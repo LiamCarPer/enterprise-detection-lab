@@ -1,14 +1,14 @@
 id: DET-SAA-009
-title: Denied Exception Followed by DLP-Confirmed External Delivery
+title: Denied or Revoked Exception Followed by DLP-Confirmed External Delivery
 version: 1.0.0
 status: tested
 domain: saas
 severity: critical
-hypothesis: An explicit denial of an external-sharing exception followed by delivery to the same recipient and a DLP match indicates that the data-handling decision was bypassed.
-description: Correlates a denied ServiceNow approval, a successful external Exchange Online delivery to the same mailbox and recipient, and an active high-severity Purview DLP alert for the same message and content scope within 24 hours. A later approved request for the same mailbox, recipient, and content scope suppresses the sequence.
+hypothesis: An explicit denial or revocation of an external-sharing exception followed by delivery to the same recipient and a DLP match indicates that the data-handling decision was bypassed.
+description: Correlates a denied or revoked ServiceNow approval, a successful external Exchange Online delivery to the same mailbox and recipient, and an active high-severity Purview DLP alert for the same message and content scope within 24 hours. A later approved request for the same mailbox, recipient, and content scope suppresses the sequence for up to seven days.
 owner: detection-engineering
 created: "2026-11-25"
-updated: "2026-11-25"
+updated: "2026-11-26"
 attack:
   - T1048.003
 tags:
@@ -70,8 +70,9 @@ correlation:
     - source: servicenow-approval
       event_class: approval
       filters:
-        all:
-          decision: denied
+        any_of:
+          - decision: denied
+          - decision: revoked
       match_fields:
         - mailbox
         - delivery_recipient
@@ -100,6 +101,7 @@ correlation:
     - source: servicenow-approval
       event_class: approval
       exclude: true
+      window_seconds: 604800
       filters:
         all:
           decision: approved
@@ -108,11 +110,11 @@ correlation:
         - delivery_recipient
         - content_scope
 tests:
-  positive: 6
-  negative: 15
+  positive: 9
+  negative: 19
   benign: 3
 false_positives:
-  - An approval was denied for one dataset but a later request for the same content was approved.
+  - An approval was denied or revoked for one dataset but a later request for the same content was approved.
   - A delivery used an approved exception that was recorded under a different request or message identifier.
   - A DLP policy matched a message that the data owner later approved retrospectively.
 runbook: runbook.md

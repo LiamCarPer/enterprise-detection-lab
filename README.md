@@ -184,7 +184,7 @@ Each contract records event time and ingest time fields, deduplication keys, req
 | [`DET-SAA-006`](detections/saas/risky-signin-delegation-mail-access-forwarding/) | SaaS | Risky sign-in, self-delegation, mail access, and external forwarding | Tested |
 | [`DET-SAA-007`](detections/saas/forwarding-rule-then-external-delivery/) | SaaS | Forwarding rule followed by external delivery | Tested |
 | [`DET-SAA-008`](detections/saas/external-delivery-dlp-match/) | SaaS | External delivery confirmed by DLP alert | Tested |
-| [`DET-SAA-009`](detections/saas/denied-exception-dlp-delivery/) | SaaS | Denied exception followed by DLP-confirmed external delivery | Tested |
+| [`DET-SAA-009`](detections/saas/denied-exception-dlp-delivery/) | SaaS | Denied or revoked exception followed by DLP-confirmed external delivery | Tested |
 | [`DET-NET-001`](detections/network/long-txt-dns-query/) | Network | Long TXT DNS query | Tested |
 | [`DET-NET-002`](detections/network/high-severity-malware-alert/) | Network | High-severity malware or trojan alert | Tested |
 | [`DET-K8S-001`](detections/kubernetes/privileged-pod-created/) | Kubernetes | Privileged pod created | Tested |

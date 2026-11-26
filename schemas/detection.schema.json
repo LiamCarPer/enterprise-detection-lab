@@ -304,6 +304,11 @@
               "exclude": {
                 "type": "boolean",
                 "description": "When true, a matching event suppresses the sequence."
+              },
+              "window_seconds": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "Window from the previous required step, or from the first required step for an exclusion step."
               }
             }
           }

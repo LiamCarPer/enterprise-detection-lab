@@ -70,6 +70,7 @@ class CorrelationStep:
     match_any_fields: tuple[str, ...] = ()
     filters: StepFilters = StepFilters()
     exclude: bool = False
+    window_seconds: int | None = None
 
 
 @dataclass(frozen=True)
@@ -462,6 +463,15 @@ def _load_correlation(
             raise DetectionError(
                 f"{path}: correlation non-exclude steps must precede exclude steps"
             )
+        raw_window = item.get("window_seconds")
+        if raw_window is not None and (
+            not isinstance(raw_window, int) or isinstance(raw_window, bool) or raw_window < 1
+        ):
+            raise DetectionError(
+                f"{path}: correlation step {position} window_seconds must be a positive integer"
+            )
+        if position == 1 and not exclude and raw_window is not None:
+            raise DetectionError(f"{path}: correlation step 1 must not declare window_seconds")
         raw_match_any = item.get("match_any_fields", [])
         if (
             not isinstance(raw_match_any, list)
@@ -485,6 +495,7 @@ def _load_correlation(
             match_any_fields=tuple(raw_match_any),
             filters=filters,
             exclude=exclude,
+            window_seconds=raw_window,
         )
         if not exclude:
             required_match_fields.update(step.match_fields)
@@ -735,9 +746,9 @@ def _excluded(
         step = spec.steps[step_index]
         for case in ordered[step_index]:
             event_time = case.event.event_time
+            window = step.window_seconds or spec.window_seconds
             if anchor_time is not None and (
-                event_time < anchor_time
-                or event_time > anchor_time + timedelta(seconds=spec.window_seconds)
+                event_time < anchor_time or event_time > anchor_time + timedelta(seconds=window)
             ):
                 continue
             values = {
@@ -782,11 +793,11 @@ def _match_steps(
             )
         step_index = required_indices[position]
         step = spec.steps[step_index]
+        window = step.window_seconds or spec.window_seconds
         for case in ordered[step_index]:
             event_time = case.event.event_time
             if current_time is not None and (
-                event_time < current_time
-                or event_time > current_time + timedelta(seconds=spec.window_seconds)
+                event_time < current_time or event_time > current_time + timedelta(seconds=window)
             ):
                 continue
             values = {

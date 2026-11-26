@@ -104,7 +104,7 @@ def test_denied_exception_delivery_has_no_benign_sequence_matches() -> None:
             latency_runs=1,
         )
         assert result.evaluation_unit == "scenario"
-        assert result.sample_size == 8
+        assert result.sample_size == 9
         assert result.matched_count == 0
         assert result.false_positive_rate == 0.0
     finally:

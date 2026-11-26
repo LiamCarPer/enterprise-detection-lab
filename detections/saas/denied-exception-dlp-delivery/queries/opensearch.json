@@ -5,30 +5,82 @@
         {
           "bool": {
             "filter": [
-              { "term": { "source": "servicenow-approval" } },
-              { "term": { "event_class": "approval" } },
-              { "terms": { "decision": ["denied", "approved"] } }
+              {
+                "term": {
+                  "source": "servicenow-approval"
+                }
+              },
+              {
+                "term": {
+                  "event_class": "approval"
+                }
+              },
+              {
+                "terms": {
+                  "decision": [
+                    "denied",
+                    "revoked",
+                    "approved"
+                  ]
+                }
+              }
             ]
           }
         },
         {
           "bool": {
             "filter": [
-              { "term": { "source": "exchange-message-trace" } },
-              { "term": { "event_class": "deliver" } },
-              { "term": { "external_recipient": true } },
-              { "term": { "result": "success" } }
+              {
+                "term": {
+                  "source": "exchange-message-trace"
+                }
+              },
+              {
+                "term": {
+                  "event_class": "deliver"
+                }
+              },
+              {
+                "term": {
+                  "external_recipient": true
+                }
+              },
+              {
+                "term": {
+                  "result": "success"
+                }
+              }
             ]
           }
         },
         {
           "bool": {
             "filter": [
-              { "term": { "source": "m365-dlp" } },
-              { "term": { "event_class": "dlp_alert" } },
-              { "term": { "status": "active" } },
-              { "term": { "severity": "high" } },
-              { "term": { "workload": "Exchange" } }
+              {
+                "term": {
+                  "source": "m365-dlp"
+                }
+              },
+              {
+                "term": {
+                  "event_class": "dlp_alert"
+                }
+              },
+              {
+                "term": {
+                  "status": "active"
+                }
+              },
+              {
+                "term": {
+                  "severity": "high"
+                }
+              },
+              {
+                "term": {
+                  "workload": "Exchange"
+                }
+              }
             ]
           }
         }
