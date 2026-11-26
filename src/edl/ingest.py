@@ -421,6 +421,19 @@ def classify_suricata(raw: Mapping[str, Any]) -> str:
 
 def normalize_entra_signin(raw: Mapping[str, Any]) -> dict[str, Any]:
     """Map Entra sign-in fields to the canonical identity shape."""
+    location = raw.get("location")
+    country: Any = None
+    city: Any = None
+    latitude: Any = None
+    longitude: Any = None
+    if isinstance(location, Mapping):
+        country = location.get("countryOrRegion")
+        city = location.get("city")
+        coordinates = location.get("geoCoordinates")
+        if isinstance(coordinates, Mapping):
+            latitude = coordinates.get("latitude")
+            longitude = coordinates.get("longitude")
+
     document: dict[str, Any] = {
         "action": "sign_in",
         "event_id": raw.get("id"),
@@ -433,6 +446,10 @@ def normalize_entra_signin(raw: Mapping[str, Any]) -> dict[str, Any]:
         "conditional_access_status": raw.get("conditionalAccessStatus"),
         "risk_level": raw.get("riskLevelDuringSignIn"),
         "session_id": raw.get("sessionId"),
+        "country": country,
+        "city": city,
+        "latitude": latitude,
+        "longitude": longitude,
     }
 
     device = raw.get("deviceDetail")

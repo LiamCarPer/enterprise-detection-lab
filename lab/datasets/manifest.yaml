@@ -6,7 +6,7 @@ datasets:
     synthetic: true
     license: synthetic
     provenance: Generated for this repository. No real users, tenants, or IPs.
-    sha256: 78d1fb304b38b35b65d6ec9a1a3b70f3ddfdc989e4b126f9d5bfd9e7ab7bbdb9
+    sha256: 28770cf6c689cda6d36b789ecc17f94120b294e5df2b63d91f26e2baab8e4b92
   - id: synthetic-entra-audit-reference
     source: entra-audit
     path: lab/datasets/synthetic/entra-audit/reference.json
@@ -252,3 +252,10 @@ datasets:
     license: synthetic
     provenance: Generated for this repository. No real users, tenants, or IPs.
     sha256: fe6ad7e6b21fd9d1bbca375ad8a82fb982dc0823f72843614682f558af5ea0d7
+  - id: synthetic-identity-impossible-travel-benign-baseline
+    source: entra-signin
+    path: lab/datasets/synthetic/benign-baseline/identity-impossible-travel.json
+    synthetic: true
+    license: synthetic
+    provenance: Generated for this repository. No real users, tenants, or IPs.
+    sha256: 0bd81606b7209bc4b1dab9ac26057e59a1cb1ac9b0ee2f5ad3ae76655d285daf

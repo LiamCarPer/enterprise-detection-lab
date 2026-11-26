@@ -1,0 +1,24 @@
+{
+  "size": 50,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "range": {
+            "event_time": {
+              "gte": "2026-11-01T09:45:00Z",
+              "lte": "2026-11-01T10:30:00Z"
+            }
+          }
+        }
+      ],
+      "should": [
+        { "term": { "user": "analyst@example.test" } },
+        { "term": { "country": "US" } },
+        { "term": { "country": "NL" } },
+        { "term": { "src_ip": "198.51.100.60" } }
+      ],
+      "minimum_should_match": 1
+    }
+  }
+}

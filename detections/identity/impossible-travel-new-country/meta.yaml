@@ -1,0 +1,71 @@
+id: DET-IDN-007
+title: Interactive Sign-In Followed by Risky Sign-In From a New Country
+version: 1.0.0
+status: tested
+domain: identity
+severity: high
+hypothesis: A successful interactive MFA sign-in from one country followed by a risky sign-in from a different country within 30 minutes can indicate impossible travel or token theft.
+description: Correlates a successful interactive MFA sign-in with a later medium/high-risk sign-in for the same user from a different country within 30 minutes.
+owner: detection-engineering
+created: "2026-11-26"
+updated: "2026-11-26"
+attack:
+  - T1078
+  - T1550.001
+tags:
+  - identity
+  - entra-id
+  - location
+  - impossible-travel
+  - correlation
+telemetry:
+  - source: entra-signin
+    event_class: sign_in
+    required_fields:
+      - id
+      - createdDateTime
+      - userPrincipalName
+      - appDisplayName
+      - ipAddress
+      - status
+      - authenticationRequirement
+      - isInteractive
+      - riskLevelDuringSignIn
+      - location
+queries:
+  opensearch: queries/opensearch.json
+correlation:
+  window_seconds: 1800
+  group_by:
+    - user
+  steps:
+    - source: entra-signin
+      event_class: sign_in
+      filters:
+        all:
+          result: success
+          auth_requirement: multiFactorAuthentication
+          is_interactive: true
+      match_fields:
+        - country
+    - source: entra-signin
+      event_class: sign_in
+      filters:
+        all:
+          result: success
+          risk_level:
+            - medium
+            - high
+      match_changed_fields:
+        - country
+tests:
+  positive: 4
+  negative: 6
+  benign: 4
+false_positives:
+  - A VPN or corporate proxy that changes the apparent country.
+  - A user who travels between nearby countries within the window.
+  - Risk false positives from stale location or IP enrichment.
+runbook: runbook.md
+metrics: metrics.json
+notes: notes.md

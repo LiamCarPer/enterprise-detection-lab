@@ -1,0 +1,55 @@
+id: INV-008
+title: Interactive Sign-In Followed by Risky Sign-In From a New Country
+version: 1.0.0
+status: tested
+domains:
+  - identity
+scenario: A successful interactive MFA sign-in from the United States is followed by a non-interactive high-risk sign-in from the Netherlands within 15 minutes.
+hypothesis: The user's session or credentials may have been used from an impossible location.
+detections:
+  - DET-IDN-001
+  - DET-IDN-007
+owner: detection-engineering
+created: "2026-11-26"
+updated: "2026-11-26"
+evidence:
+  - id: e1
+    type: event
+    source: entra-signin
+    path: evidence/e1.json
+    provenance: Synthetic event from lab/datasets/synthetic/entra-signin/reference.json
+    description: Interactive MFA sign-in from the United States at 10:00 UTC.
+    sha256: 1605ae430fef97c04f5ba1e95a34710a75e7b532068079702ce1b1566ce6e2b9
+  - id: e2
+    type: event
+    source: entra-signin
+    path: evidence/e2.json
+    provenance: Synthetic event from lab/datasets/synthetic/entra-signin/reference.json
+    description: Non-interactive high-risk sign-in from the Netherlands at 10:15 UTC.
+    sha256: 7dc32ab7d0c5ad23af01a64b84a10536e9015f87e61e1eca2bffa423335711f5
+timeline:
+  - timestamp: "2026-11-01T10:00:00Z"
+    event: Interactive MFA sign-in for analyst@example.test from the United States
+    source: entra-signin
+    evidence_id: e1
+  - timestamp: "2026-11-01T10:15:00Z"
+    event: Non-interactive high-risk sign-in from the Netherlands
+    source: entra-signin
+    evidence_id: e2
+lessons:
+  - The country change is the primary signal; the second sign-in's high risk raises confidence.
+  - VPN, corporate proxy, or mobile-network egress can change the apparent country.
+  - No travel or network-change context is present in the evidence.
+  - The detection does not calculate distance or travel speed.
+  - Device and token-protection signals would strengthen the conclusion.
+response:
+  - Revoke the user's sessions and refresh tokens.
+  - Require credential reset and MFA re-registration if compromise is suspected.
+  - Review mail, file, and cloud activity from the second country and IP.
+  - Check for additional sessions or users from the second location.
+  - Review conditional access and token-protection policy coverage.
+references:
+  - https://attack.mitre.org/techniques/T1078/
+  - https://attack.mitre.org/techniques/T1550/001/
+executive_summary: A synthetic identity chain shows an interactive MFA sign-in from the United States followed by a non-interactive high-risk sign-in from the Netherlands. The country change is observed; token theft and downstream access remain inferred.
+notes: Synthetic investigation built from the local lab datasets. No production or customer data.

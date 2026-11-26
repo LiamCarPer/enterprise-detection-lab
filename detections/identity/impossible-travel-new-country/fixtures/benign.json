@@ -1,0 +1,130 @@
+[
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002111",
+      "createdDateTime": "2026-11-11T15:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.65",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "none",
+      "sessionId": "session-k",
+      "location": {
+        "countryOrRegion": "US",
+        "city": "New York",
+        "geoCoordinates": {
+          "latitude": 0.0,
+          "longitude": 0.0
+        }
+      },
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge",
+        "deviceId": "device-1"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "benign-1",
+    "note": "Interactive sign-in only"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002112",
+      "createdDateTime": "2026-11-11T16:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "198.51.100.65",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": false,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "high",
+      "sessionId": "session-l",
+      "location": {
+        "countryOrRegion": "NL",
+        "city": "Amsterdam",
+        "geoCoordinates": {
+          "latitude": 0.0,
+          "longitude": 0.0
+        }
+      },
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge",
+        "deviceId": "device-1"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "benign-2",
+    "note": "Risky sign-in only"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002113",
+      "createdDateTime": "2026-11-11T17:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.66",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "none",
+      "sessionId": "session-m",
+      "location": {
+        "countryOrRegion": "US",
+        "city": "New York",
+        "geoCoordinates": {
+          "latitude": 0.0,
+          "longitude": 0.0
+        }
+      },
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge",
+        "deviceId": "device-1"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "benign-3",
+    "note": "Interactive sign-in from the US"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002114",
+      "createdDateTime": "2026-11-11T17:15:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.66",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": false,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "none",
+      "sessionId": "session-m",
+      "location": {
+        "countryOrRegion": "US",
+        "city": "Boston",
+        "geoCoordinates": {
+          "latitude": 0.0,
+          "longitude": 0.0
+        }
+      },
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Edge",
+        "deviceId": "device-1"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "benign-3",
+    "note": "Normal refresh in the same country"
+  }
+]

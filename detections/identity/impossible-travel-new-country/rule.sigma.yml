@@ -1,0 +1,22 @@
+title: Interactive MFA Sign-In From a New Country
+id: 00000000-0000-4000-8000-000000000107
+status: test
+description: Component rule for the interactive MFA sign-in; the country-change correlation is defined in detection metadata and the native query.
+author: detection-engineering
+date: 2026/11/26
+logsource:
+  product: azure
+  service: signinlogs
+detection:
+  selection:
+    status: success
+    authenticationRequirement: multiFactorAuthentication
+    isInteractive: true
+  condition: selection
+falsepositives:
+  - VPN or corporate proxy location changes
+  - Nearby-country travel
+level: high
+tags:
+  - attack.t1078
+  - attack.t1550.001

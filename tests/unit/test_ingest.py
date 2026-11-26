@@ -175,6 +175,23 @@ def test_normalize_entra_signin_maps_session_and_device_id() -> None:
     assert document["device"]["id"] == "device-1"
 
 
+def test_normalize_entra_signin_maps_location_fields() -> None:
+    document = normalize_entra_signin(
+        {
+            **SIGNIN_RAW,
+            "location": {
+                "countryOrRegion": "US",
+                "city": "New York",
+                "geoCoordinates": {"latitude": 40.71, "longitude": -74.01},
+            },
+        }
+    )
+    assert document["country"] == "US"
+    assert document["city"] == "New York"
+    assert document["latitude"] == 40.71
+    assert document["longitude"] == -74.01
+
+
 def test_normalize_entra_signin_omits_empty_device() -> None:
     document = normalize_entra_signin({**SIGNIN_RAW, "deviceDetail": {}})
     assert "device" not in document
@@ -668,11 +685,11 @@ def test_ingest_identity_dry_run_uses_repository_samples() -> None:
     results = ingest_identity(dry_run=True)
     assert [result.source for result in results] == ["entra-signin", "entra-audit"]
     assert {result.source: result.read for result in results} == {
-        "entra-signin": 4,
+        "entra-signin": 6,
         "entra-audit": 5,
     }
     assert {result.source: result.unique for result in results} == {
-        "entra-signin": 4,
+        "entra-signin": 6,
         "entra-audit": 5,
     }
     assert all(result.written == 0 for result in results)

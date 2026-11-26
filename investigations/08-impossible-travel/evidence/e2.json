@@ -1,0 +1,26 @@
+{
+  "id": "00000000-0000-4000-8000-000000000006",
+  "createdDateTime": "2026-11-01T10:15:00Z",
+  "userPrincipalName": "analyst@example.test",
+  "appDisplayName": "Azure Portal",
+  "ipAddress": "198.51.100.60",
+  "status": "success",
+  "authenticationRequirement": "multiFactorAuthentication",
+  "isInteractive": false,
+  "conditionalAccessStatus": "success",
+  "riskLevelDuringSignIn": "high",
+  "sessionId": "session-20261101-10b",
+  "location": {
+    "countryOrRegion": "NL",
+    "city": "Amsterdam",
+    "geoCoordinates": {
+      "latitude": 52.37,
+      "longitude": 4.9
+    }
+  },
+  "deviceDetail": {
+    "operatingSystem": "Linux",
+    "browser": "Firefox",
+    "deviceId": "device-laptop-02"
+  }
+}
