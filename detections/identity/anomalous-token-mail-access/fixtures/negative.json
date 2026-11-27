@@ -16,7 +16,8 @@
       ],
       "tokenProtectionStatus": "notProtected",
       "tokenIssuerType": "AzureAD",
-      "authenticationProtocol": "OAuth2"
+      "authenticationProtocol": "OAuth2",
+      "tokenBindingStatus": "Unbound"
     },
     "source": "entra-signin",
     "synthetic": true,
@@ -63,7 +64,8 @@
       ],
       "tokenProtectionStatus": "notProtected",
       "tokenIssuerType": "AzureAD",
-      "authenticationProtocol": "OAuth2"
+      "authenticationProtocol": "OAuth2",
+      "tokenBindingStatus": "Bound"
     },
     "source": "entra-signin",
     "synthetic": true,
@@ -110,7 +112,8 @@
       ],
       "tokenProtectionStatus": "notProtected",
       "tokenIssuerType": "AzureAD",
-      "authenticationProtocol": "OAuth2"
+      "authenticationProtocol": "OAuth2",
+      "tokenBindingStatus": "Unbound"
     },
     "source": "entra-signin",
     "synthetic": true,
@@ -139,5 +142,53 @@
     "synthetic": true,
     "scenario": "neg-3",
     "note": "Mail access by a different user"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002315",
+      "createdDateTime": "2026-11-13T15:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "198.51.100.81",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": false,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "high",
+      "riskEventTypes": [
+        "anomalousToken"
+      ],
+      "tokenProtectionStatus": "notProtected",
+      "tokenBindingStatus": "Bound",
+      "tokenIssuerType": "AzureAD",
+      "authenticationProtocol": "OAuth2"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "neg-4",
+    "note": "Anomalous token is protected by binding"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-13T15:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000002316",
+      "Operation": "MailItemsAccessed",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "198.51.100.81",
+      "ObjectId": "executive@example.test\\Inbox",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "MailAccessType",
+          "Value": "Bind"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "neg-4",
+    "note": "Mail access after a bound token"
   }
 ]

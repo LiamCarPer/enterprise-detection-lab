@@ -71,6 +71,7 @@ def test_identity_ingest_is_idempotent_and_queryable() -> None:
         )
         assert token_risk["risk_event_types"] == ["anomalousToken"]
         assert token_risk["token_protection_status"] == "notprotected"
+        assert token_risk["token_binding_status"] == "unbound"
         assert token_risk["token_issuer_type"] == "azuread"
 
         second = ingest_identity(

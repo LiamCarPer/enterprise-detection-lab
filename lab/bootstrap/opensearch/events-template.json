@@ -30,6 +30,7 @@
         "session_id": { "type": "keyword" },
         "risk_event_types": { "type": "keyword" },
         "token_protection_status": { "type": "keyword" },
+        "token_binding_status": { "type": "keyword" },
         "token_issuer_type": { "type": "keyword" },
         "authentication_protocol": { "type": "keyword" },
         "original_transfer_method": { "type": "keyword" },

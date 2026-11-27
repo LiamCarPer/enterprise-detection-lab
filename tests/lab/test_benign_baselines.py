@@ -53,7 +53,7 @@ def test_identity_anomalous_token_mail_has_no_benign_sequence_matches() -> None:
             latency_runs=1,
         )
         assert result.evaluation_unit == "scenario"
-        assert result.sample_size == 6
+        assert result.sample_size == 7
         assert result.matched_count == 0
         assert result.false_positive_rate == 0.0
     finally:

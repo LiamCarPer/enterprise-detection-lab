@@ -433,6 +433,7 @@ def normalize_entra_signin(raw: Mapping[str, Any]) -> dict[str, Any]:
         )
 
     token_protection_status = raw.get("tokenProtectionStatus")
+    token_binding_status = raw.get("tokenBindingStatus")
     token_issuer_type = raw.get("tokenIssuerType")
     authentication_protocol = raw.get("authenticationProtocol")
     original_transfer_method = raw.get("originalTransferMethod")
@@ -467,6 +468,11 @@ def normalize_entra_signin(raw: Mapping[str, Any]) -> dict[str, Any]:
             token_protection_status.lower()
             if isinstance(token_protection_status, str)
             else token_protection_status
+        ),
+        "token_binding_status": (
+            token_binding_status.lower()
+            if isinstance(token_binding_status, str)
+            else token_binding_status
         ),
         "token_issuer_type": (
             token_issuer_type.lower() if isinstance(token_issuer_type, str) else token_issuer_type

@@ -198,6 +198,7 @@ def test_normalize_entra_signin_maps_token_risk_fields() -> None:
             **SIGNIN_RAW,
             "riskEventTypes": ["anomalousToken", "passwordSpray"],
             "tokenProtectionStatus": "notProtected",
+            "tokenBindingStatus": "Unbound",
             "tokenIssuerType": "AzureAD",
             "authenticationProtocol": "OAuth2",
             "originalTransferMethod": "tokenProtection",
@@ -205,6 +206,7 @@ def test_normalize_entra_signin_maps_token_risk_fields() -> None:
     )
     assert document["risk_event_types"] == ["anomalousToken", "passwordSpray"]
     assert document["token_protection_status"] == "notprotected"
+    assert document["token_binding_status"] == "unbound"
     assert document["token_issuer_type"] == "azuread"
     assert document["authentication_protocol"] == "oauth2"
     assert document["original_transfer_method"] == "tokenprotection"

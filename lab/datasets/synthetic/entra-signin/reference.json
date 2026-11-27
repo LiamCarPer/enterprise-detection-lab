@@ -150,6 +150,7 @@
       "operatingSystem": "Linux",
       "browser": "Firefox",
       "deviceId": "device-laptop-03"
-    }
+    },
+    "tokenBindingStatus": "Unbound"
   }
 ]

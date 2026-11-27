@@ -8,7 +8,7 @@ An anomalous-token risk detection on an unprotected sign-in followed by mailbox 
 
 The native query returns candidate events from two sources:
 
-- successful Entra sign-ins with `risk_event_types: anomalousToken` and `token_protection_status: notprotected`
+- successful Entra sign-ins with `risk_event_types: anomalousToken`, `token_protection_status: notprotected`, and `token_binding_status: unbound`
 - successful Microsoft 365 `mail_access` events
 
 `correlation.group_by: [user]` requires both steps to share the identity. `correlation.window_seconds: 1800` requires the mail access at or after the sign-in and within 30 minutes. The mail step does not require a specific mailbox; the group is the user.
@@ -23,13 +23,13 @@ The Sigma rule represents the anomalous-token sign-in component. The mail-access
 
 ## Test corpus
 
-The package contains 14 synthetic events across eight scenarios:
+The package contains 16 synthetic events across nine scenarios:
 
-- 2 positive scenarios with an anomalous-token sign-in followed by mailbox access.
-- 3 negative scenarios: file access instead of mail; a different risk event type; mail access by a different user.
+- 2 positive scenarios with an unbound anomalous-token sign-in followed by mailbox access.
+- 4 negative scenarios: file access instead of mail; a different risk event type; mail access by a different user; a bound token with mail access.
 - 3 benign scenarios: sign-in only; mail access only; normal sign-in plus mail access.
 
-Metrics are scenario-level: 2 positive scenarios, 3 negative scenarios, and 3 benign scenarios.
+Metrics are scenario-level: 2 positive scenarios, 4 negative scenarios, and 3 benign scenarios.
 
 ## Known gaps
 

@@ -20,7 +20,7 @@ A stolen or replayed token may have been used to collect email.
 
 | Time (UTC) | Source | Evidence | Observation |
 |---|---|---|---|
-| 09:10 | entra-signin | e1 | Non-interactive high-risk sign-in with `anomalousToken` and `notProtected` |
+| 09:10 | entra-signin | e1 | Non-interactive high-risk sign-in with `anomalousToken`, `notProtected`, and `unbound` |
 | 09:20 | m365-audit | e2 | `MailItemsAccessed` on the executive mailbox |
 
 ## Inference boundary

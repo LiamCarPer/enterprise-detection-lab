@@ -6,7 +6,7 @@ datasets:
     synthetic: true
     license: synthetic
     provenance: Generated for this repository. No real users, tenants, or IPs.
-    sha256: e6c585ac75743fe9ddf2cff1c9ed652185a8e5a6d2b1c6c8b1f87207d164cb80
+    sha256: 38f6a2197744b02a89460e6323cd7f71e73268839e1f91f820c2240716f9b723
   - id: synthetic-entra-audit-reference
     source: entra-audit
     path: lab/datasets/synthetic/entra-audit/reference.json
@@ -265,4 +265,4 @@ datasets:
     synthetic: true
     license: synthetic
     provenance: Generated for this repository. No real users, tenants, or IPs.
-    sha256: 0fe987f8462a5e6fd649c8e45a60ebd9f10bedbe74cbf1363fe54f12db141721
+    sha256: cdcb974b892fad1688236d717533b56831c6e4607db5407e1532c9f425a153c2

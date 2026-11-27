@@ -9,8 +9,8 @@ from edl.telemetry import load_sources
 
 PACKAGE = Path(__file__).resolve().parents[1]
 FIXTURE_KINDS = ("positive", "negative", "benign")
-EXPECTED_FIXTURE_COUNTS = {"positive": 4, "negative": 6, "benign": 4}
-EXPECTED_SCENARIO_COUNTS = {"positive": 2, "negative": 3, "benign": 3}
+EXPECTED_FIXTURE_COUNTS = {"positive": 4, "negative": 8, "benign": 4}
+EXPECTED_SCENARIO_COUNTS = {"positive": 2, "negative": 4, "benign": 3}
 
 
 def test_query_uses_token_risk_and_mail_fields() -> None:
@@ -19,6 +19,8 @@ def test_query_uses_token_risk_and_mail_fields() -> None:
     assert "m365-audit" in query
     assert "anomalousToken" in query
     assert "notprotected" in query
+    assert "token_binding_status" in query
+    assert "unbound" in query
     assert "mail_access" in query
     assert "result" in query
 
@@ -30,6 +32,7 @@ def test_correlation_metadata_uses_token_protection_and_mail_access() -> None:
     assert "group_by:\n    - user" in meta
     assert "risk_event_types: anomalousToken" in meta
     assert "token_protection_status: notprotected" in meta
+    assert "token_binding_status: unbound" in meta
     assert "source: m365-audit" in meta
     assert "T1528" in meta
     assert "T1114.002" in meta
@@ -59,7 +62,7 @@ def test_anomalous_token_then_mail_access_matches() -> None:
 
 def test_file_access_other_risk_or_mismatched_user_does_not_match() -> None:
     package = _load_package()
-    for scenario in ("neg-1", "neg-2", "neg-3"):
+    for scenario in ("neg-1", "neg-2", "neg-3", "neg-4"):
         cases = [case for case in package.cases if case.scenario == scenario]
         assert not _correlation_hit(cases, package.correlation)  # type: ignore[arg-type]
 
