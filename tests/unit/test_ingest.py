@@ -192,6 +192,31 @@ def test_normalize_entra_signin_maps_location_fields() -> None:
     assert document["longitude"] == -74.01
 
 
+def test_normalize_entra_signin_maps_token_risk_fields() -> None:
+    document = normalize_entra_signin(
+        {
+            **SIGNIN_RAW,
+            "riskEventTypes": ["anomalousToken", "passwordSpray"],
+            "tokenProtectionStatus": "notProtected",
+            "tokenIssuerType": "AzureAD",
+            "authenticationProtocol": "OAuth2",
+            "originalTransferMethod": "tokenProtection",
+        }
+    )
+    assert document["risk_event_types"] == ["anomalousToken", "passwordSpray"]
+    assert document["token_protection_status"] == "notprotected"
+    assert document["token_issuer_type"] == "azuread"
+    assert document["authentication_protocol"] == "oauth2"
+    assert document["original_transfer_method"] == "tokenprotection"
+
+
+def test_normalize_entra_signin_parses_string_risk_events() -> None:
+    document = normalize_entra_signin(
+        {**SIGNIN_RAW, "riskEventTypes": "anomalousToken, passwordSpray"}
+    )
+    assert document["risk_event_types"] == ["anomalousToken", "passwordSpray"]
+
+
 def test_normalize_entra_signin_omits_empty_device() -> None:
     document = normalize_entra_signin({**SIGNIN_RAW, "deviceDetail": {}})
     assert "device" not in document
@@ -685,11 +710,11 @@ def test_ingest_identity_dry_run_uses_repository_samples() -> None:
     results = ingest_identity(dry_run=True)
     assert [result.source for result in results] == ["entra-signin", "entra-audit"]
     assert {result.source: result.read for result in results} == {
-        "entra-signin": 6,
+        "entra-signin": 7,
         "entra-audit": 5,
     }
     assert {result.source: result.unique for result in results} == {
-        "entra-signin": 6,
+        "entra-signin": 7,
         "entra-audit": 5,
     }
     assert all(result.written == 0 for result in results)

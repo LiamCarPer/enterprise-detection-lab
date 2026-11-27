@@ -2,7 +2,7 @@
 
 ## Scope
 
-Twenty-three synthetic benign corpora are used to measure false-positive behavior across the detection set.
+Twenty-four synthetic benign corpora are used to measure false-positive behavior across the detection set.
 
 | Detection | Dataset | Unit | Cases | Matches | FPR |
 |---|---|---|---:|---:|---:|
@@ -16,6 +16,7 @@ Twenty-three synthetic benign corpora are used to measure false-positive behavio
 | `DET-IDN-005` | `identity-oauth-admin-consent.json` | event | 20 | 0 | 0.00 |
 | `DET-IDN-006` | `identity-session-replay.json` | scenario | 6 | 0 | 0.00 |
 | `DET-IDN-007` | `identity-impossible-travel.json` | scenario | 6 | 0 | 0.00 |
+| `DET-IDN-008` | `identity-anomalous-token-mail.json` | scenario | 6 | 0 | 0.00 |
 | `DET-SAA-001` | `m365-audit.json` | event | 20 | 0 | 0.00 |
 | `DET-SAA-001` | `m365-forwarding.json` | event | 20 | 0 | 0.00 |
 | `DET-SAA-002` | `github-audit.json` | event | 20 | 0 | 0.00 |
@@ -35,7 +36,7 @@ The endpoint baseline also has a before/after tuning result: the initial query m
 
 The SaaS forwarding baseline has the same measurement: the initial query matched 8/20 internal forwarding rules, and the tuned query matches 0/20. See [`saas-forwarding-tuning.md`](saas-forwarding-tuning.md).
 
-The identity correlation baseline contains six scenarios with only one step, mismatched users, or activity outside the 30-minute window. The OAuth consent baseline contains six scenarios with admin consent, low-risk sign-in, missing offline access, or mismatched users. The session-replay baseline contains six scenarios with same-IP, different-session, low-risk, and mismatched-user behavior. The impossible-travel baseline contains six scenarios with same-country, low-risk, failed, and mismatched-user behavior. The identity-to-SaaS correlation baseline contains six scenarios, the delegation baseline contains ten, and the mail-access baseline contains seven. The forwarding-chain baseline contains six, the forwarding-delivery baseline contains eight, the external-delivery/DLP baseline contains six, and the denied-exception baseline contains ten. All eleven are evaluated at scenario level.
+The identity correlation baseline contains six scenarios with only one step, mismatched users, or activity outside the 30-minute window. The OAuth consent baseline contains six scenarios with admin consent, low-risk sign-in, missing offline access, or mismatched users. The session-replay baseline contains six scenarios with same-IP, different-session, low-risk, and mismatched-user behavior. The impossible-travel baseline contains six scenarios with same-country, low-risk, failed, and mismatched-user behavior. The anomalous-token baseline contains six scenarios with sign-in-only, mail-only, file-access, normal, mismatched-user, and failed-mail behavior. The identity-to-SaaS correlation baseline contains six scenarios, the delegation baseline contains ten, and the mail-access baseline contains seven. The forwarding-chain baseline contains six, the forwarding-delivery baseline contains eight, the external-delivery/DLP baseline contains six, and the denied-exception baseline contains ten. All twelve are evaluated at scenario level.
 
 ## Baseline contents
 
@@ -48,6 +49,7 @@ The identity correlation baseline contains six scenarios with only one step, mis
 - **Identity OAuth admin consent:** approved admin and tenant consents, tenant-wide grants to verified applications, and user consents outside the admin path.
 - **Identity session replay:** interactive-only, non-interactive-only, same-IP, different-session, low-risk new-IP, and mismatched-user scenarios.
 - **Identity impossible travel:** interactive-only, risky-only, same-country, low-risk new-country, failed new-country, and mismatched-user scenarios.
+- **Identity anomalous token to mail:** sign-in-only, mail-only, file-access, normal sign-in, mismatched-user, and failed-mail scenarios.
 - **Microsoft 365 audit:** file and mail access, mailbox rules without forwarding, mailbox permission changes, Teams activity, and sign-ins.
 - **Microsoft 365 forwarding:** internal forwarding rules to the tenant accepted domain.
 - **GitHub audit:** pushes, pull requests, issues, member onboarding, team changes, repository changes, and sign-ins.
@@ -139,6 +141,10 @@ edl detection baseline \
 edl detection baseline \
   --id DET-IDN-007 \
   --dataset lab/datasets/synthetic/benign-baseline/identity-impossible-travel.json
+
+edl detection baseline \
+  --id DET-IDN-008 \
+  --dataset lab/datasets/synthetic/benign-baseline/identity-anomalous-token-mail.json
 
 edl detection baseline \
   --id DET-SAA-003 \

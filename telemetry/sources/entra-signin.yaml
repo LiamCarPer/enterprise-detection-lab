@@ -37,11 +37,12 @@ known_gaps:
   - Conditional Access and risk fields are only partially represented.
   - Session IDs are not guaranteed to be present or stable across every sign-in flow.
   - Location enrichment can be stale or inaccurate; the lab uses synthetic coordinates.
+  - Token-protection and risk-event fields vary by licensing and export shape.
   - Free-tier retention is too short for long historical replay.
 sample_data:
   path: lab/datasets/synthetic/entra-signin/reference.json
   synthetic: true
   license: synthetic
   provenance: Generated for this repository. No real users, tenants, or IPs.
-  sha256: 28770cf6c689cda6d36b789ecc17f94120b294e5df2b63d91f26e2baab8e4b92
+  sha256: e6c585ac75743fe9ddf2cff1c9ed652185a8e5a6d2b1c6c8b1f87207d164cb80
 notes: Entra identity source contract.

@@ -1,0 +1,55 @@
+id: INV-009
+title: Anomalous Token Sign-In to Mail Collection
+version: 1.0.0
+status: tested
+domains:
+  - identity
+  - saas
+scenario: A non-interactive sign-in with an anomalous-token risk detection and missing token protection is followed by mailbox access for the same user.
+hypothesis: A stolen or replayed token may have been used to collect email.
+detections:
+  - DET-IDN-008
+owner: detection-engineering
+created: "2026-11-27"
+updated: "2026-11-27"
+evidence:
+  - id: e1
+    type: event
+    source: entra-signin
+    path: evidence/e1.json
+    provenance: Synthetic event from lab/datasets/synthetic/entra-signin/reference.json
+    description: Non-interactive high-risk sign-in with anomalousToken and notProtected token status at 09:10 UTC.
+    sha256: 8e5b00909d3bf3a11c71899bd8f08e267231e2270bb1543930a2789a86d8b554
+  - id: e2
+    type: event
+    source: m365-audit
+    path: evidence/e2.json
+    provenance: Synthetic event from lab/datasets/synthetic/m365-audit/reference.json
+    description: MailItemsAccessed on the executive mailbox at 09:20 UTC.
+    sha256: 665ffae652f900ee63b15259c0af4679ac285e064716ce7c0cc6f69a1944b191
+timeline:
+  - timestamp: "2026-11-01T09:10:00Z"
+    event: Anomalous-token sign-in without token protection for analyst@example.test
+    source: entra-signin
+    evidence_id: e1
+  - timestamp: "2026-11-01T09:20:00Z"
+    event: MailItemsAccessed on executive@example.test
+    source: m365-audit
+    evidence_id: e2
+lessons:
+  - The anomalous-token risk detection is the primary identity signal.
+  - Missing token protection strengthens the case for token theft.
+  - Mail access by the same user follows within the correlation window.
+  - The evidence does not show the token exchange or the client application that used the token.
+  - Mailbox access could be explained by a legitimate client with a risk false positive.
+response:
+  - Revoke the user's sessions and refresh tokens.
+  - Require credential reset and MFA re-registration if compromise is suspected.
+  - Review mailbox access, rules, delegation, and forwarding changes.
+  - Review other mail, file, and cloud activity from the same session and IP.
+  - Strengthen token-protection and conditional-access policy coverage.
+references:
+  - https://attack.mitre.org/techniques/T1528/
+  - https://attack.mitre.org/techniques/T1114/002/
+executive_summary: A synthetic identity chain shows an anomalous-token sign-in without token protection followed by mailbox access. The token risk and mail access are observed; token theft and actor intent remain inferred.
+notes: Synthetic investigation built from the local lab datasets. No production or customer data.

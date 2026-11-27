@@ -47,14 +47,14 @@ def test_identity_ingest_is_idempotent_and_queryable() -> None:
             index_prefix=TEST_PREFIX,
         )
         assert [result.source for result in first] == ["entra-signin", "entra-audit"]
-        expected = {"entra-signin": 6, "entra-audit": 5}
+        expected = {"entra-signin": 7, "entra-audit": 5}
         assert {result.source: result.read for result in first} == expected
         assert {result.source: result.unique for result in first} == expected
         assert {result.source: result.written for result in first} == expected
         assert {result.source: sum(result.counts.values()) for result in first} == expected
 
         hits_before = _search("entra-signin")
-        assert len(hits_before) == 6
+        assert len(hits_before) == 7
         ids_before = sorted(str(hit["_id"]) for hit in hits_before)
 
         sources = [hit["_source"] for hit in hits_before]
@@ -66,6 +66,13 @@ def test_identity_ingest_is_idempotent_and_queryable() -> None:
         assert sources[0]["result"] == "success"
         assert sources[0]["ingest_time"] == "2026-11-22T12:00:00Z"
 
+        token_risk = next(
+            source for source in sources if source["event_time"] == "2026-11-01T09:10:00Z"
+        )
+        assert token_risk["risk_event_types"] == ["anomalousToken"]
+        assert token_risk["token_protection_status"] == "notprotected"
+        assert token_risk["token_issuer_type"] == "azuread"
+
         second = ingest_identity(
             config.ROOT,
             client=client,
@@ -76,7 +83,7 @@ def test_identity_ingest_is_idempotent_and_queryable() -> None:
 
         hits_after = _search("entra-signin")
         assert sorted(str(hit["_id"]) for hit in hits_after) == ids_before
-        assert len(hits_after) == 6
+        assert len(hits_after) == 7
 
         audit_hits = _search("entra-audit")
         assert len(audit_hits) == 5

@@ -81,7 +81,7 @@ The source contracts, event classes, and known gaps are listed in [`docs/telemet
 | Profile | Starting access | Objective | Likely techniques | Current coverage |
 |---|---|---|---|---|
 | Opportunistic external attacker | Internet-facing service or phishing | Initial access, execution, and credential theft | Phishing, malicious files, scripting, valid accounts | Partial |
-| Credential and session attacker | Valid password, phished session, or stolen token | Identity persistence and cloud/SaaS access | Valid accounts, token theft, MFA abuse, account manipulation | Partial; OAuth consent, session replay, and impossible travel are covered, token theft remains a gap |
+| Credential and session attacker | Valid password, phished session, or stolen token | Identity persistence and cloud/SaaS access | Valid accounts, token theft, MFA abuse, account manipulation | Partial; OAuth consent, session replay, impossible travel, and anomalous-token mail access are covered; token theft before detection remains a gap |
 | SaaS data thief | Compromised mailbox or delegated access | Mail collection and external exfiltration | Mailbox delegation, mail access, forwarding rules, external delivery | Covered for the modeled mailbox path |
 | Data-handling insider or careless user | Authorized mailbox and external recipient | Send data outside an approved boundary | External delivery, DLP policy match, approval bypass | Covered for the modeled email and DLP path |
 | Cloud control-plane attacker | Cloud credentials or role assumption | Persistence, credential creation, and logging evasion | Access-key creation, account creation, logging tamper | Covered for selected paths; role and resource abuse are gaps |
@@ -100,6 +100,7 @@ The source contracts, event classes, and known gaps are listed in [`docs/telemet
 | Admin consent and tenant-wide grant | Admin consent → tenant-wide OAuth permission grant | T1528, T1098 | `DET-IDN-005` | [`INV-006`](../investigations/06-admin-oauth-grant/) | Covered for the modeled path |
 | Session replay | Interactive MFA sign-in → non-interactive risky use from a new IP with the same session | T1078, T1550.001 | `DET-IDN-006` | [`INV-007`](../investigations/07-session-replay/) | Covered for the modeled path |
 | Impossible travel | Interactive MFA sign-in → risky sign-in from a new country | T1078, T1550.001 | `DET-IDN-007` | [`INV-008`](../investigations/08-impossible-travel/) | Covered for the modeled path |
+| Anomalous token to mail access | Anomalous-token sign-in without token protection → mailbox access | T1528, T1114.002 | `DET-IDN-008` | [`INV-009`](../investigations/09-anomalous-token-mail/) | Covered for the modeled path |
 | Network tunneling and malware | DNS tunneling or high-severity network alert | T1071.004, T1071, T1105 | `DET-NET-001`, `DET-NET-002` | None | Partial |
 | Kubernetes execution and privilege | Privileged pod or shell in container | T1610, T1611, T1059, T1609 | `DET-K8S-001`, `DET-K8S-002` | None | Partial |
 | GitHub organization takeover | Organization owner added | T1098 | `DET-SAA-002` | None | Partial |
@@ -131,8 +132,8 @@ The matrix records the technique mappings used by tested detections, plus the ga
 | Defense Evasion | T1562.008 Disable Cloud Logs | CloudTrail | `DET-CLD-002` | Covered | Trail and logging changes only |
 | Defense Evasion | T1027 Obfuscated Files or Information | Sysmon | `DET-END-001` | Partial | Encoded command evidence, not full obfuscation analysis |
 | Credential Access | T1003 OS Credential Dumping | Sysmon, Windows Security | None | Gap | No tested credential-access detection |
-| Credential Access | T1528 Steal Application Access Token | Entra sign-in/audit, CloudTrail, SaaS audit | `DET-IDN-004`, `DET-IDN-005` | Partial | User and admin consent paths covered; token replay remains a gap |
-| Collection | T1114.002 Remote Email Collection | Microsoft 365 audit | `DET-SAA-004`, `DET-SAA-005`, `DET-SAA-006` | Covered | Mail access must follow a modeled delegation path |
+| Credential Access | T1528 Steal Application Access Token | Entra sign-in/audit, CloudTrail, SaaS audit | `DET-IDN-004`, `DET-IDN-005`, `DET-IDN-008` | Partial | Consent, anomalous-token, and mail-access paths covered; token issuance and binding gaps remain |
+| Collection | T1114.002 Remote Email Collection | Microsoft 365 audit | `DET-SAA-004`, `DET-SAA-005`, `DET-SAA-006`, `DET-IDN-008` | Covered for modeled paths | Mail access must follow a modeled delegation or token-risk path |
 | Command and Control | T1071 Application Layer Protocol | Suricata | `DET-NET-002` | Partial | Signature-dependent |
 | Command and Control | T1071.004 DNS | Zeek | `DET-NET-001` | Partial | Long TXT queries only |
 | Exfiltration | T1048.003 Exfiltration Over Unencrypted Non-C2 Protocol | Exchange message trace, Purview DLP, ServiceNow approvals | `DET-SAA-007`, `DET-SAA-008`, `DET-SAA-009` | Covered for external email | Other exfiltration channels remain gaps |
@@ -152,6 +153,7 @@ The matrix records the technique mappings used by tested detections, plus the ga
 - **Admin and tenant-wide OAuth grants.** The modeled chain connects admin consent with failed publisher and redirect trust to a tenant-wide permission grant.
 - **Session replay.** The modeled chain connects an interactive MFA sign-in to non-interactive risky use of the same session from a different IP.
 - **Impossible travel.** The modeled chain connects an interactive MFA sign-in to a risky sign-in from a different country.
+- **Anomalous token to mail access.** The modeled chain connects an anomalous-token risk on an unprotected sign-in to mailbox access.
 
 ### Thin areas
 
@@ -165,7 +167,7 @@ The matrix records the technique mappings used by tested detections, plus the ga
 | Gap | Why it matters | Telemetry available | Missing | Priority |
 |---|---|---|---|---|
 | Token and session theft | Bypasses password and MFA controls and enables replay | Entra sign-in/audit, CloudTrail, SaaS audit | Token-specific detection and session correlation | High |
-| Token theft and application governance | Session replay and impossible travel are covered, but stolen tokens before first use and unmanaged application inventory remain | Entra sign-in/audit, CloudTrail, SaaS audit | Token-theft detection, approved-application inventory, and publisher reputation | High |
+| Token theft before detection and application governance | Session replay, impossible travel, and anomalous-token mail access are covered, but token issuance and binding gaps and unmanaged application inventory remain | Entra sign-in/audit, CloudTrail, SaaS audit | Token issuance and binding telemetry, approved-application inventory, and publisher reputation | High |
 | Cloud role and resource persistence | Persistence beyond access keys and logging changes | CloudTrail | Role trust, function, and resource-change detections | High |
 | Endpoint credential access and lateral movement | Common path to ransomware and domain compromise | Sysmon, Windows Security | Credential-dumping and remote-service detections | High |
 | Kubernetes RBAC and host escape | Cluster compromise and container escape | Kubernetes audit, Falco | RBAC-abuse detection and host-escape investigation | High |
@@ -216,7 +218,7 @@ The matrix records the technique mappings used by tested detections, plus the ga
 
 ### Next detection candidates
 
-1. Token-theft signal enrichment and token-protection coverage across Entra sign-in and cloud/SaaS activity.
+1. Token issuance and binding telemetry, plus token-protection coverage across Entra sign-in and cloud/SaaS activity.
 2. Approved-application inventory and publisher-reputation enrichment.
 3. Cloud role trust and resource-persistence detection.
 4. Endpoint credential access and remote-service detection.

@@ -1,0 +1,17 @@
+{
+  "CreationTime": "2026-11-01T09:20:00Z",
+  "Id": "00000000-0000-4000-8000-000000010202",
+  "Operation": "MailItemsAccessed",
+  "UserId": "analyst@example.test",
+  "Workload": "Exchange",
+  "RecordType": 2,
+  "ClientIP": "203.0.113.11",
+  "ObjectId": "executive@example.test\\Inbox",
+  "ResultStatus": "Success",
+  "Parameters": [
+    {
+      "Name": "MailAccessType",
+      "Value": "Bind"
+    }
+  ]
+}

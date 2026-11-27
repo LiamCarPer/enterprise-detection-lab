@@ -1,0 +1,94 @@
+[
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002311",
+      "createdDateTime": "2026-11-13T15:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "198.51.100.80",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": false,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "high",
+      "riskEventTypes": [
+        "anomalousToken"
+      ],
+      "tokenProtectionStatus": "notProtected",
+      "tokenIssuerType": "AzureAD",
+      "authenticationProtocol": "OAuth2"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "benign-1",
+    "note": "Anomalous-token sign-in only"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-13T16:00:00Z",
+      "Id": "00000000-0000-4000-8000-000000002312",
+      "Operation": "MailItemsAccessed",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "198.51.100.80",
+      "ObjectId": "executive@example.test\\Inbox",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "MailAccessType",
+          "Value": "Bind"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "benign-2",
+    "note": "Mail access only"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002313",
+      "createdDateTime": "2026-11-13T17:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "198.51.100.80",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": false,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "none",
+      "riskEventTypes": [],
+      "tokenProtectionStatus": "protected",
+      "tokenIssuerType": "AzureAD",
+      "authenticationProtocol": "OAuth2"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "benign-3",
+    "note": "Normal sign-in"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-13T17:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000002314",
+      "Operation": "MailItemsAccessed",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "198.51.100.80",
+      "ObjectId": "executive@example.test\\Inbox",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "MailAccessType",
+          "Value": "Bind"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "benign-3",
+    "note": "Normal mail access"
+  }
+]

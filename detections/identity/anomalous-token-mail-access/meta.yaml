@@ -1,0 +1,67 @@
+id: DET-IDN-008
+title: Anomalous Token Sign-In Followed by Mail Access
+version: 1.0.0
+status: tested
+domain: identity
+severity: high
+hypothesis: An anomalous-token risk detection on an unprotected session followed by mailbox access can indicate token theft and mail collection.
+description: Correlates a successful sign-in with an anomalous-token risk detection and missing token protection with a successful Microsoft 365 mail-access event for the same user within 30 minutes.
+owner: detection-engineering
+created: "2026-11-27"
+updated: "2026-11-27"
+attack:
+  - T1528
+  - T1114.002
+telemetry:
+  - source: entra-signin
+    event_class: sign_in
+    required_fields:
+      - id
+      - createdDateTime
+      - userPrincipalName
+      - status
+      - riskLevelDuringSignIn
+      - riskEventTypes
+      - tokenProtectionStatus
+      - tokenIssuerType
+  - source: m365-audit
+    event_class: mail_access
+    required_fields:
+      - CreationTime
+      - Id
+      - Operation
+      - UserId
+      - Workload
+      - RecordType
+      - ObjectId
+      - ResultStatus
+queries:
+  opensearch: queries/opensearch.json
+correlation:
+  window_seconds: 1800
+  group_by:
+    - user
+  steps:
+    - source: entra-signin
+      event_class: sign_in
+      filters:
+        all:
+          result: success
+          risk_event_types: anomalousToken
+          token_protection_status: notprotected
+    - source: m365-audit
+      event_class: mail_access
+      filters:
+        all:
+          result: success
+tests:
+  positive: 4
+  negative: 6
+  benign: 4
+false_positives:
+  - A legitimate token refresh that Entra flags as anomalous and is followed by normal mail access.
+  - A client that does not support token protection but is otherwise trusted.
+  - A risk false positive followed by routine mailbox activity.
+runbook: runbook.md
+metrics: metrics.json
+notes: notes.md

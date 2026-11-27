@@ -421,6 +421,22 @@ def classify_suricata(raw: Mapping[str, Any]) -> str:
 
 def normalize_entra_signin(raw: Mapping[str, Any]) -> dict[str, Any]:
     """Map Entra sign-in fields to the canonical identity shape."""
+    risk_events = raw.get("riskEventTypes") or raw.get("riskEventTypes_v2")
+    risk_event_types: list[str] = []
+    if isinstance(risk_events, list):
+        risk_event_types = sorted(
+            {str(event) for event in risk_events if isinstance(event, str) and event}
+        )
+    elif isinstance(risk_events, str):
+        risk_event_types = sorted(
+            {event.strip() for event in risk_events.replace(",", " ").split() if event.strip()}
+        )
+
+    token_protection_status = raw.get("tokenProtectionStatus")
+    token_issuer_type = raw.get("tokenIssuerType")
+    authentication_protocol = raw.get("authenticationProtocol")
+    original_transfer_method = raw.get("originalTransferMethod")
+
     location = raw.get("location")
     country: Any = None
     city: Any = None
@@ -446,6 +462,25 @@ def normalize_entra_signin(raw: Mapping[str, Any]) -> dict[str, Any]:
         "conditional_access_status": raw.get("conditionalAccessStatus"),
         "risk_level": raw.get("riskLevelDuringSignIn"),
         "session_id": raw.get("sessionId"),
+        "risk_event_types": risk_event_types,
+        "token_protection_status": (
+            token_protection_status.lower()
+            if isinstance(token_protection_status, str)
+            else token_protection_status
+        ),
+        "token_issuer_type": (
+            token_issuer_type.lower() if isinstance(token_issuer_type, str) else token_issuer_type
+        ),
+        "authentication_protocol": (
+            authentication_protocol.lower()
+            if isinstance(authentication_protocol, str)
+            else authentication_protocol
+        ),
+        "original_transfer_method": (
+            original_transfer_method.lower()
+            if isinstance(original_transfer_method, str)
+            else original_transfer_method
+        ),
         "country": country,
         "city": city,
         "latitude": latitude,

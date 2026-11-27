@@ -1,0 +1,33 @@
+{
+  "id": "00000000-0000-4000-8000-000000000007",
+  "createdDateTime": "2026-11-01T09:10:00Z",
+  "userPrincipalName": "analyst@example.test",
+  "appDisplayName": "Office 365",
+  "ipAddress": "198.51.100.98",
+  "status": "success",
+  "authenticationRequirement": "multiFactorAuthentication",
+  "isInteractive": false,
+  "conditionalAccessStatus": "success",
+  "riskLevelDuringSignIn": "high",
+  "riskEventTypes": [
+    "anomalousToken"
+  ],
+  "tokenProtectionStatus": "notProtected",
+  "tokenIssuerType": "AzureAD",
+  "authenticationProtocol": "OAuth2",
+  "originalTransferMethod": "tokenProtection",
+  "sessionId": "session-20261101-token",
+  "location": {
+    "countryOrRegion": "US",
+    "city": "New York",
+    "geoCoordinates": {
+      "latitude": 40.71,
+      "longitude": -74.01
+    }
+  },
+  "deviceDetail": {
+    "operatingSystem": "Linux",
+    "browser": "Firefox",
+    "deviceId": "device-laptop-03"
+  }
+}

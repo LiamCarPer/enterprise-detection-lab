@@ -1,0 +1,143 @@
+[
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002305",
+      "createdDateTime": "2026-11-13T12:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "198.51.100.80",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": false,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "high",
+      "riskEventTypes": [
+        "anomalousToken"
+      ],
+      "tokenProtectionStatus": "notProtected",
+      "tokenIssuerType": "AzureAD",
+      "authenticationProtocol": "OAuth2"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "neg-1",
+    "note": "Anomalous-token sign-in"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-13T12:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000002306",
+      "Operation": "FileAccessed",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "198.51.100.80",
+      "ObjectId": "executive@example.test\\Inbox",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "MailAccessType",
+          "Value": "Bind"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "neg-1",
+    "note": "File access is not mail access"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002307",
+      "createdDateTime": "2026-11-13T13:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "198.51.100.80",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": false,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "high",
+      "riskEventTypes": [
+        "passwordSpray"
+      ],
+      "tokenProtectionStatus": "notProtected",
+      "tokenIssuerType": "AzureAD",
+      "authenticationProtocol": "OAuth2"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "neg-2",
+    "note": "High risk without anomalous token"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-13T13:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000002308",
+      "Operation": "MailItemsAccessed",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "198.51.100.80",
+      "ObjectId": "executive@example.test\\Inbox",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "MailAccessType",
+          "Value": "Bind"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "neg-2",
+    "note": "Mail access after a different risk detection"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002309",
+      "createdDateTime": "2026-11-13T14:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "198.51.100.80",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": false,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "high",
+      "riskEventTypes": [
+        "anomalousToken"
+      ],
+      "tokenProtectionStatus": "notProtected",
+      "tokenIssuerType": "AzureAD",
+      "authenticationProtocol": "OAuth2"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "neg-3",
+    "note": "Anomalous-token sign-in"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-13T14:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000002310",
+      "Operation": "MailItemsAccessed",
+      "UserId": "finance@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "198.51.100.80",
+      "ObjectId": "executive@example.test\\Inbox",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "MailAccessType",
+          "Value": "Bind"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "neg-3",
+    "note": "Mail access by a different user"
+  }
+]

@@ -1,0 +1,96 @@
+[
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002301",
+      "createdDateTime": "2026-11-13T10:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "198.51.100.80",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": false,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "high",
+      "riskEventTypes": [
+        "anomalousToken"
+      ],
+      "tokenProtectionStatus": "notProtected",
+      "tokenIssuerType": "AzureAD",
+      "authenticationProtocol": "OAuth2"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "pos-1",
+    "note": "Anomalous-token sign-in"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-13T10:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000002302",
+      "Operation": "MailItemsAccessed",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "198.51.100.80",
+      "ObjectId": "executive@example.test\\Inbox",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "MailAccessType",
+          "Value": "Bind"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "pos-1",
+    "note": "Mailbox access after the token risk"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002303",
+      "createdDateTime": "2026-11-13T11:00:00Z",
+      "userPrincipalName": "finance@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "198.51.100.80",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": false,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "high",
+      "riskEventTypes": [
+        "anomalousToken"
+      ],
+      "tokenProtectionStatus": "notProtected",
+      "tokenIssuerType": "AzureAD",
+      "authenticationProtocol": "OAuth2"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "pos-2",
+    "note": "Anomalous-token sign-in"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-13T11:15:00Z",
+      "Id": "00000000-0000-4000-8000-000000002304",
+      "Operation": "MailItemsAccessed",
+      "UserId": "finance@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "198.51.100.80",
+      "ObjectId": "finance@example.test\\Inbox",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "MailAccessType",
+          "Value": "Bind"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "pos-2",
+    "note": "Mailbox access after the token risk"
+  }
+]

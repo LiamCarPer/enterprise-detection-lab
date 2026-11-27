@@ -1,0 +1,28 @@
+{
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "bool": {
+            "filter": [
+              { "term": { "source": "entra-signin" } },
+              { "term": { "result": "success" } },
+              { "term": { "risk_event_types": "anomalousToken" } },
+              { "term": { "token_protection_status": "notprotected" } }
+            ]
+          }
+        },
+        {
+          "bool": {
+            "filter": [
+              { "term": { "source": "m365-audit" } },
+              { "term": { "event_class": "mail_access" } },
+              { "term": { "result": "success" } }
+            ]
+          }
+        }
+      ],
+      "minimum_should_match": 1
+    }
+  }
+}
