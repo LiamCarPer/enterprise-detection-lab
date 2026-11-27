@@ -9,6 +9,7 @@
 
 - Both events share the `analyst@example.test` identity.
 - The sign-in is non-interactive, high risk, and flagged with `anomalousToken`.
+- The token was issued two days earlier.
 - Token protection is `notProtected` and token binding is `unbound`.
 - The mailbox access follows within 10 minutes.
 - No token exchange, client application, or downstream cloud activity is observed.

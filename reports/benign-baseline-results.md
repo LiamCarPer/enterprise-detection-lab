@@ -16,7 +16,7 @@ Twenty-four synthetic benign corpora are used to measure false-positive behavior
 | `DET-IDN-005` | `identity-oauth-admin-consent.json` | event | 20 | 0 | 0.00 |
 | `DET-IDN-006` | `identity-session-replay.json` | scenario | 6 | 0 | 0.00 |
 | `DET-IDN-007` | `identity-impossible-travel.json` | scenario | 6 | 0 | 0.00 |
-| `DET-IDN-008` | `identity-anomalous-token-mail.json` | scenario | 7 | 0 | 0.00 |
+| `DET-IDN-008` | `identity-anomalous-token-mail.json` | scenario | 8 | 0 | 0.00 |
 | `DET-SAA-001` | `m365-audit.json` | event | 20 | 0 | 0.00 |
 | `DET-SAA-001` | `m365-forwarding.json` | event | 20 | 0 | 0.00 |
 | `DET-SAA-002` | `github-audit.json` | event | 20 | 0 | 0.00 |
@@ -36,7 +36,7 @@ The endpoint baseline also has a before/after tuning result: the initial query m
 
 The SaaS forwarding baseline has the same measurement: the initial query matched 8/20 internal forwarding rules, and the tuned query matches 0/20. See [`saas-forwarding-tuning.md`](saas-forwarding-tuning.md).
 
-The identity correlation baseline contains six scenarios with only one step, mismatched users, or activity outside the 30-minute window. The OAuth consent baseline contains six scenarios with admin consent, low-risk sign-in, missing offline access, or mismatched users. The session-replay baseline contains six scenarios with same-IP, different-session, low-risk, and mismatched-user behavior. The impossible-travel baseline contains six scenarios with same-country, low-risk, failed, and mismatched-user behavior. The anomalous-token baseline contains seven scenarios with sign-in-only, mail-only, file-access, normal, mismatched-user, failed-mail, and bound-token behavior. The identity-to-SaaS correlation baseline contains six scenarios, the delegation baseline contains ten, and the mail-access baseline contains seven. The forwarding-chain baseline contains six, the forwarding-delivery baseline contains eight, the external-delivery/DLP baseline contains six, and the denied-exception baseline contains ten. All twelve are evaluated at scenario level.
+The identity correlation baseline contains six scenarios with only one step, mismatched users, or activity outside the 30-minute window. The OAuth consent baseline contains six scenarios with admin consent, low-risk sign-in, missing offline access, or mismatched users. The session-replay baseline contains six scenarios with same-IP, different-session, low-risk, and mismatched-user behavior. The impossible-travel baseline contains six scenarios with same-country, low-risk, failed, and mismatched-user behavior. The anomalous-token baseline contains seven scenarios with sign-in-only, mail-only, file-access, normal, mismatched-user, failed-mail, bound-token, and recent-token behavior. The identity-to-SaaS correlation baseline contains six scenarios, the delegation baseline contains ten, and the mail-access baseline contains seven. The forwarding-chain baseline contains six, the forwarding-delivery baseline contains eight, the external-delivery/DLP baseline contains six, and the denied-exception baseline contains ten. All twelve are evaluated at scenario level.
 
 ## Baseline contents
 

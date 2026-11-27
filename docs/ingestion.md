@@ -91,7 +91,7 @@ Common fields:
 | `dedup_origin` | `declared` when the contract key was complete; `hash` for the fallback. |
 | `raw` | Original event. Mapped but not indexed. Synthetic data only in this lab. |
 
-Entra sign-in additions: `app`, `auth_requirement`, `is_interactive`, `conditional_access_status`, `risk_level`, `session_id`, `risk_event_types`, `token_protection_status`, `token_binding_status`, `token_issuer_type`, `authentication_protocol`, `original_transfer_method`, `country`, `city`, `latitude`, `longitude`, and `device.os` / `device.browser` / `device.id`.
+Entra sign-in additions: `app`, `auth_requirement`, `is_interactive`, `conditional_access_status`, `risk_level`, `session_id`, `risk_event_types`, `token_protection_status`, `token_binding_status`, `token_issued_at`, `long_lived_token`, `token_issuer_type`, `authentication_protocol`, `original_transfer_method`, `country`, `city`, `latitude`, `longitude`, and `device.os` / `device.browser` / `device.id`.
 
 Entra audit additions: `app`, `resource.name` / `resource.type` / `resource.count`, `consent_type`, `scopes`, `offline_access`, `app_owner_organization_id`, `publisher_verified`, `redirect_uri_trusted`, `redirect_uri`, and `tenant_wide`.
 

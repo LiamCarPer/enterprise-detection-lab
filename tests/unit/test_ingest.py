@@ -199,6 +199,7 @@ def test_normalize_entra_signin_maps_token_risk_fields() -> None:
             "riskEventTypes": ["anomalousToken", "passwordSpray"],
             "tokenProtectionStatus": "notProtected",
             "tokenBindingStatus": "Unbound",
+            "tokenIssuedAt": "2026-10-30T09:10:00Z",
             "tokenIssuerType": "AzureAD",
             "authenticationProtocol": "OAuth2",
             "originalTransferMethod": "tokenProtection",
@@ -207,6 +208,8 @@ def test_normalize_entra_signin_maps_token_risk_fields() -> None:
     assert document["risk_event_types"] == ["anomalousToken", "passwordSpray"]
     assert document["token_protection_status"] == "notprotected"
     assert document["token_binding_status"] == "unbound"
+    assert document["token_issued_at"] == "2026-10-30T09:10:00Z"
+    assert document["long_lived_token"] is True
     assert document["token_issuer_type"] == "azuread"
     assert document["authentication_protocol"] == "oauth2"
     assert document["original_transfer_method"] == "tokenprotection"
@@ -217,6 +220,12 @@ def test_normalize_entra_signin_parses_string_risk_events() -> None:
         {**SIGNIN_RAW, "riskEventTypes": "anomalousToken, passwordSpray"}
     )
     assert document["risk_event_types"] == ["anomalousToken", "passwordSpray"]
+
+
+def test_normalize_entra_signin_ignores_invalid_token_issue_time() -> None:
+    document = normalize_entra_signin({**SIGNIN_RAW, "tokenIssuedAt": "not-a-time"})
+    assert "long_lived_token" not in document
+    assert document["token_issued_at"] == "not-a-time"
 
 
 def test_normalize_entra_signin_omits_empty_device() -> None:

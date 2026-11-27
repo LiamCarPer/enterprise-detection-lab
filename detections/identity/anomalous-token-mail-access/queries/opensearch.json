@@ -9,7 +9,8 @@
               { "term": { "result": "success" } },
               { "term": { "risk_event_types": "anomalousToken" } },
               { "term": { "token_protection_status": "notprotected" } },
-              { "term": { "token_binding_status": "unbound" } }
+              { "term": { "token_binding_status": "unbound" } },
+              { "term": { "long_lived_token": true } }
             ]
           }
         },

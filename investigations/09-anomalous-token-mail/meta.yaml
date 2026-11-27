@@ -19,7 +19,7 @@ evidence:
     path: evidence/e1.json
     provenance: Synthetic event from lab/datasets/synthetic/entra-signin/reference.json
     description: Non-interactive high-risk sign-in with anomalousToken, notProtected token status, and unbound token at 09:10 UTC.
-    sha256: 57659649fbd0d9920e965b0123ebdfcccd0277da40279b87165e2677a2a7f705
+    sha256: 1da1db357677b5e87ba2da029b585697860b0aa104a4c31fea14af82f38977f6
   - id: e2
     type: event
     source: m365-audit

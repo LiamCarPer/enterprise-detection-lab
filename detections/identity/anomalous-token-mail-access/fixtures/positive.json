@@ -17,7 +17,8 @@
       "tokenProtectionStatus": "notProtected",
       "tokenIssuerType": "AzureAD",
       "authenticationProtocol": "OAuth2",
-      "tokenBindingStatus": "Unbound"
+      "tokenBindingStatus": "Unbound",
+      "tokenIssuedAt": "2026-11-11T10:00:00Z"
     },
     "source": "entra-signin",
     "synthetic": true,
@@ -65,7 +66,8 @@
       "tokenProtectionStatus": "notProtected",
       "tokenIssuerType": "AzureAD",
       "authenticationProtocol": "OAuth2",
-      "tokenBindingStatus": "Unbound"
+      "tokenBindingStatus": "Unbound",
+      "tokenIssuedAt": "2026-11-11T11:00:00Z"
     },
     "source": "entra-signin",
     "synthetic": true,

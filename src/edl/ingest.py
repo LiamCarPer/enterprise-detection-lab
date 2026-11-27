@@ -434,6 +434,17 @@ def normalize_entra_signin(raw: Mapping[str, Any]) -> dict[str, Any]:
 
     token_protection_status = raw.get("tokenProtectionStatus")
     token_binding_status = raw.get("tokenBindingStatus")
+    token_issued_at = raw.get("tokenIssuedAt")
+    long_lived_token: bool | None = None
+    if isinstance(token_issued_at, str) and token_issued_at:
+        try:
+            issued = parse_timestamp(token_issued_at, source="entra-signin", field="tokenIssuedAt")
+            signed_in = parse_timestamp(
+                raw.get("createdDateTime"), source="entra-signin", field="createdDateTime"
+            )
+            long_lived_token = (signed_in - issued).total_seconds() >= 86400
+        except IngestError:
+            long_lived_token = None
     token_issuer_type = raw.get("tokenIssuerType")
     authentication_protocol = raw.get("authenticationProtocol")
     original_transfer_method = raw.get("originalTransferMethod")
@@ -474,6 +485,8 @@ def normalize_entra_signin(raw: Mapping[str, Any]) -> dict[str, Any]:
             if isinstance(token_binding_status, str)
             else token_binding_status
         ),
+        "token_issued_at": token_issued_at,
+        "long_lived_token": long_lived_token,
         "token_issuer_type": (
             token_issuer_type.lower() if isinstance(token_issuer_type, str) else token_issuer_type
         ),

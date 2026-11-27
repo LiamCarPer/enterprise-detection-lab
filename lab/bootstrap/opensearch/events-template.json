@@ -31,6 +31,8 @@
         "risk_event_types": { "type": "keyword" },
         "token_protection_status": { "type": "keyword" },
         "token_binding_status": { "type": "keyword" },
+        "token_issued_at": { "type": "keyword" },
+        "long_lived_token": { "type": "boolean" },
         "token_issuer_type": { "type": "keyword" },
         "authentication_protocol": { "type": "keyword" },
         "original_transfer_method": { "type": "keyword" },

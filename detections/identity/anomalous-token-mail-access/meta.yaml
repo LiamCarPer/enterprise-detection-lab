@@ -50,6 +50,7 @@ correlation:
           risk_event_types: anomalousToken
           token_protection_status: notprotected
           token_binding_status: unbound
+          long_lived_token: true
     - source: m365-audit
       event_class: mail_access
       filters:
@@ -57,7 +58,7 @@ correlation:
           result: success
 tests:
   positive: 4
-  negative: 8
+  negative: 10
   benign: 4
 false_positives:
   - A legitimate token refresh that Entra flags as anomalous and is followed by normal mail access.

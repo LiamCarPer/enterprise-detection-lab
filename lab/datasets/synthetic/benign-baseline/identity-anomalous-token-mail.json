@@ -17,7 +17,8 @@
       "tokenProtectionStatus": "notProtected",
       "tokenIssuerType": "AzureAD",
       "authenticationProtocol": "OAuth2",
-      "tokenBindingStatus": "Unbound"
+      "tokenBindingStatus": "Unbound",
+      "tokenIssuedAt": "2026-11-12T09:00:00Z"
     },
     "source": "entra-signin",
     "synthetic": true,
@@ -63,7 +64,8 @@
       "tokenProtectionStatus": "notProtected",
       "tokenIssuerType": "AzureAD",
       "authenticationProtocol": "OAuth2",
-      "tokenBindingStatus": "Unbound"
+      "tokenBindingStatus": "Unbound",
+      "tokenIssuedAt": "2026-11-12T10:00:00Z"
     },
     "source": "entra-signin",
     "synthetic": true,
@@ -107,7 +109,8 @@
       "tokenProtectionStatus": "protected",
       "tokenIssuerType": "AzureAD",
       "authenticationProtocol": "OAuth2",
-      "tokenBindingStatus": "Bound"
+      "tokenBindingStatus": "Bound",
+      "tokenIssuedAt": "2026-11-14T10:00:00Z"
     },
     "source": "entra-signin",
     "synthetic": true,
@@ -153,7 +156,8 @@
       "tokenProtectionStatus": "notProtected",
       "tokenIssuerType": "AzureAD",
       "authenticationProtocol": "OAuth2",
-      "tokenBindingStatus": "Unbound"
+      "tokenBindingStatus": "Unbound",
+      "tokenIssuedAt": "2026-11-12T12:00:00Z"
     },
     "source": "entra-signin",
     "synthetic": true,
@@ -199,7 +203,8 @@
       "tokenProtectionStatus": "notProtected",
       "tokenIssuerType": "AzureAD",
       "authenticationProtocol": "OAuth2",
-      "tokenBindingStatus": "Unbound"
+      "tokenBindingStatus": "Unbound",
+      "tokenIssuedAt": "2026-11-12T13:00:00Z"
     },
     "source": "entra-signin",
     "synthetic": true,
@@ -245,7 +250,8 @@
       "tokenProtectionStatus": "notProtected",
       "tokenBindingStatus": "Bound",
       "tokenIssuerType": "AzureAD",
-      "authenticationProtocol": "OAuth2"
+      "authenticationProtocol": "OAuth2",
+      "tokenIssuedAt": "2026-11-12T14:00:00Z"
     },
     "source": "entra-signin",
     "synthetic": true,
@@ -272,5 +278,52 @@
     "source": "m365-audit",
     "synthetic": true,
     "scenario": "bound-token"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000002413",
+      "createdDateTime": "2026-11-14T15:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "198.51.100.92",
+      "status": "success",
+      "authenticationRequirement": "multiFactorAuthentication",
+      "isInteractive": false,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "high",
+      "riskEventTypes": [
+        "anomalousToken"
+      ],
+      "tokenProtectionStatus": "notProtected",
+      "tokenBindingStatus": "Unbound",
+      "tokenIssuedAt": "2026-11-14T14:00:00Z",
+      "tokenIssuerType": "AzureAD",
+      "authenticationProtocol": "OAuth2"
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "recent-token"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-14T15:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000002414",
+      "Operation": "MailItemsAccessed",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "198.51.100.92",
+      "ObjectId": "executive@example.test\\Inbox",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "MailAccessType",
+          "Value": "Bind"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "recent-token"
   }
 ]
