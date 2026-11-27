@@ -2,7 +2,7 @@
 
 | Timestamp | Event | Source | Evidence |
 |---|---|---|---|
-| 2026-11-02T10:00:00Z | Admin consent to Contoso Analytics with failed publisher and redirect trust | entra-audit | e1 |
+| 2026-11-02T10:00:00Z | Admin consent to non-approved Contoso Analytics with failed publisher and redirect trust and untrusted publisher reputation | entra-audit | e1 |
 | 2026-11-02T10:05:00Z | Tenant-wide OAuth2 permission grant to Contoso Analytics | entra-audit | e2 |
 
 ## Correlation notes

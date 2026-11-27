@@ -12,8 +12,8 @@ Twenty-four synthetic benign corpora are used to measure false-positive behavior
 | `DET-CLD-001` | `cloudtrail.json` | event | 20 | 0 | 0.00 |
 | `DET-CLD-002` | `cloudtrail.json` | event | 20 | 0 | 0.00 |
 | `DET-IDN-003` | `identity-correlation.json` | scenario | 6 | 0 | 0.00 |
-| `DET-IDN-004` | `identity-oauth-consent.json` | scenario | 6 | 0 | 0.00 |
-| `DET-IDN-005` | `identity-oauth-admin-consent.json` | event | 20 | 0 | 0.00 |
+| `DET-IDN-004` | `identity-oauth-consent.json` | scenario | 7 | 0 | 0.00 |
+| `DET-IDN-005` | `identity-oauth-admin-consent.json` | event | 21 | 0 | 0.00 |
 | `DET-IDN-006` | `identity-session-replay.json` | scenario | 6 | 0 | 0.00 |
 | `DET-IDN-007` | `identity-impossible-travel.json` | scenario | 6 | 0 | 0.00 |
 | `DET-IDN-008` | `identity-anomalous-token-mail.json` | scenario | 8 | 0 | 0.00 |

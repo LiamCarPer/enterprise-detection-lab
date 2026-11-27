@@ -272,10 +272,63 @@ def test_normalize_entra_audit_maps_consent_fields() -> None:
     assert document["scopes"] == ["mail.read", "offline_access"]
     assert document["offline_access"] is True
     assert document["app_owner_organization_id"] == "11111111-1111-4111-8111-111111111111"
+    assert document["approved_app"] is False
+    assert document["publisher_reputation"] == "unknown"
     assert document["publisher_verified"] is False
     assert document["redirect_uri_trusted"] is True
     assert document["redirect_uri"] == "https://login.contoso.example/callback"
     assert document["tenant_wide"] is False
+
+
+def test_normalize_entra_audit_enriches_approved_application() -> None:
+    document = normalize_entra_audit(
+        {
+            "id": "00000000-0000-4000-8000-000000001907",
+            "activityDateTime": "2026-11-07T10:00:00Z",
+            "operationName": "Consent to application",
+            "initiatedBy": {"user": {"userPrincipalName": "admin@example.test"}},
+            "targetResources": [
+                {
+                    "displayName": "Approved Analytics",
+                    "type": "ServicePrincipal",
+                    "appId": "00000000-0000-4000-8000-000000009101",
+                    "appOwnerOrganizationId": "22222222-2222-4222-8222-222222222222",
+                    "consentType": "Admin",
+                    "redirectUri": "https://login.approved.example/callback",
+                    "publisherVerified": False,
+                    "redirectUriTrusted": False,
+                }
+            ],
+            "result": "success",
+        }
+    )
+    assert document["app_id"] == "00000000-0000-4000-8000-000000009101"
+    assert document["approved_app"] is True
+    assert document["publisher_reputation"] == "trusted"
+
+
+def test_normalize_entra_audit_rejects_approved_app_with_other_redirect() -> None:
+    document = normalize_entra_audit(
+        {
+            "id": "00000000-0000-4000-8000-000000001908",
+            "activityDateTime": "2026-11-07T10:05:00Z",
+            "operationName": "Consent to application",
+            "initiatedBy": {"user": {"userPrincipalName": "admin@example.test"}},
+            "targetResources": [
+                {
+                    "displayName": "Approved Analytics",
+                    "type": "ServicePrincipal",
+                    "appId": "00000000-0000-4000-8000-000000009101",
+                    "appOwnerOrganizationId": "22222222-2222-4222-8222-222222222222",
+                    "consentType": "Admin",
+                    "redirectUri": "https://login.attacker.example/callback",
+                }
+            ],
+            "result": "success",
+        }
+    )
+    assert document["approved_app"] is False
+    assert document["publisher_reputation"] == "trusted"
 
 
 def test_normalize_entra_audit_parses_string_scopes() -> None:

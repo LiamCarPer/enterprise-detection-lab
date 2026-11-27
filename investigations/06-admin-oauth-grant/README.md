@@ -2,7 +2,7 @@
 
 ## Scenario
 
-An administrator grants admin consent to an external application with an unverified publisher and untrusted redirect URI. Five minutes later, a tenant-wide OAuth permission grant is recorded for the same application.
+An administrator grants admin consent to an external application outside the approved inventory with an unverified publisher, untrusted redirect URI, and untrusted publisher reputation. Five minutes later, a tenant-wide OAuth permission grant is recorded for the same application.
 
 ## Scope
 
@@ -20,12 +20,12 @@ An admin or tenant-wide OAuth grant to an untrusted application may provide dura
 
 | Time (UTC) | Source | Evidence | Observation |
 |---|---|---|---|
-| 10:00 | entra-audit | e1 | Admin consent to `Contoso Analytics` with failed publisher and redirect trust |
+| 10:00 | entra-audit | e1 | Admin consent to non-approved `Contoso Analytics` with failed publisher and redirect trust and untrusted publisher reputation |
 | 10:05 | entra-audit | e2 | Tenant-wide `Add OAuth2PermissionGrant` for `Contoso Analytics` |
 
 ## Inference boundary
 
-The observed events are synthetic lab records. The consent and grant records confirm the application, administrator, tenant-wide scope, and failed trust checks. The investigation does not observe application access after the grant, and it does not prove the application publisher's intent.
+The observed events are synthetic lab records. The consent and grant records confirm the application, administrator, tenant-wide scope, failed trust checks, and untrusted publisher reputation. The investigation does not observe application access after the grant, and it does not prove the application publisher's intent.
 
 ## Detections linked
 

@@ -52,7 +52,7 @@ This matrix tracks the engineering capabilities implemented in the lab and the a
 | `reports/detection-metrics.md` | Complete | Aggregated fixture metrics for twenty-five detections with explicit limitations |
 | `lab/datasets/synthetic/benign-baseline/` + `reports/` | Complete | Twenty-four benign corpora, including SaaS, network, Kubernetes, and twelve scenario baselines, plus endpoint and SaaS tuning results |
 | `detections/exceptions.yaml` + `docs/exception-policy.md` | Complete | Reviewed exceptions with owner, scope, expiry, change ticket, and compensating controls |
-| `config/tenant.yaml` + `schemas/tenant.schema.json` | Complete | Versioned accepted mail domains with schema validation during ingestion and repository checks |
+| `config/tenant.yaml` + `schemas/tenant.schema.json` | Complete | Versioned accepted mail domains, approved-application inventory with redirect allowlists, and publisher reputation with schema validation during ingestion and repository checks |
 | `docs/capability-matrix.md` + `docs/requirements-traceability.md` | Complete | Capability and engineering-requirement traceability |
 
 ## Next evidence

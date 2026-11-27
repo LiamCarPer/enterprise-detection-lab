@@ -93,7 +93,9 @@ Common fields:
 
 Entra sign-in additions: `app`, `auth_requirement`, `is_interactive`, `conditional_access_status`, `risk_level`, `session_id`, `risk_event_types`, `token_protection_status`, `token_binding_status`, `token_issued_at`, `long_lived_token`, `token_issuer_type`, `authentication_protocol`, `original_transfer_method`, `country`, `city`, `latitude`, `longitude`, and `device.os` / `device.browser` / `device.id`.
 
-Entra audit additions: `app`, `resource.name` / `resource.type` / `resource.count`, `consent_type`, `scopes`, `offline_access`, `app_owner_organization_id`, `publisher_verified`, `redirect_uri_trusted`, `redirect_uri`, and `tenant_wide`.
+Entra audit additions: `app`, `resource.name` / `resource.type` / `resource.count`, `consent_type`, `scopes`, `offline_access`, `app_id`, `app_owner_organization_id`, `approved_app`, `publisher_reputation`, `publisher_verified`, `redirect_uri_trusted`, `redirect_uri`, and `tenant_wide`.
+
+`approved_app` is true only when the target application `appId` matches an entry in [`config/tenant.yaml`](../config/tenant.yaml) and any supplied redirect URI is on that entry's allowlist. `publisher_reputation` is read from the same configuration by application owner organization and falls back to `unknown`; it does not infer trust from publisher verification alone. Both fields are policy context for the lab and must be refreshed from a reviewed inventory and reputation feed in a real deployment.
 
 Sysmon additions:
 

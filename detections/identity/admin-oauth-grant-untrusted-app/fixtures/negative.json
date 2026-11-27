@@ -166,5 +166,39 @@
     "synthetic": true,
     "scenario": "neg-5",
     "note": "Delegated grant is not tenant-wide"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001906",
+      "activityDateTime": "2026-11-07T10:00:00Z",
+      "operationName": "Consent to application",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test",
+          "ipAddress": "203.0.113.20"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Approved Analytics",
+          "type": "ServicePrincipal",
+          "appId": "00000000-0000-4000-8000-000000009101",
+          "appOwnerOrganizationId": "22222222-2222-4222-8222-222222222222",
+          "scopes": [
+            "User.Read"
+          ],
+          "publisherVerified": false,
+          "redirectUriTrusted": false,
+          "redirectUri": "https://login.approved.example/callback",
+          "tenantWide": false,
+          "consentType": "Admin"
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "neg-6",
+    "note": "Approved application with weak trust flags is suppressed"
   }
 ]

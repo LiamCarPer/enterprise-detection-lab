@@ -166,5 +166,38 @@
     "synthetic": true,
     "scenario": "pos-5",
     "note": "Tenant-wide delegated grant with an untrusted redirect URI"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001706",
+      "activityDateTime": "2026-11-07T09:30:00Z",
+      "operationName": "Add OAuth2PermissionGrant",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test",
+          "ipAddress": "203.0.113.20"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Known Bad Analytics",
+          "type": "ServicePrincipal",
+          "appId": "00000000-0000-4000-8000-000000009199",
+          "appOwnerOrganizationId": "44444444-4444-4444-8444-444444444444",
+          "scopes": [
+            "Directory.Read.All"
+          ],
+          "publisherVerified": true,
+          "redirectUriTrusted": true,
+          "redirectUri": "https://login.known-bad.example/callback",
+          "tenantWide": true
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "pos-6",
+    "note": "Verified publisher with untrusted reputation"
   }
 ]

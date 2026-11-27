@@ -1,18 +1,18 @@
 id: INV-005
 title: OAuth Consent Grant to External Application
-version: 1.0.0
+version: 1.1.0
 status: tested
 domains:
   - identity
   - saas
-scenario: A medium-risk single-factor sign-in is followed by user consent to an external application with mail and offline-access scopes, then the application reads an executive mailbox.
+scenario: A medium-risk single-factor sign-in is followed by user consent to an external application outside the approved inventory with mail and offline-access scopes, then the application reads an executive mailbox.
 hypothesis: Consent phishing or an illicit application grant may have provided durable access to mail without a second sign-in prompt.
 detections:
   - DET-IDN-001
   - DET-IDN-004
 owner: detection-engineering
 created: "2026-11-26"
-updated: "2026-11-26"
+updated: "2026-11-27"
 evidence:
   - id: e1
     type: event
@@ -25,9 +25,9 @@ evidence:
     type: event
     source: entra-audit
     path: evidence/e2.json
-    provenance: Synthetic event from lab/datasets/synthetic/entra-audit/reference.json
-    description: User consent to Contoso Analytics with Mail.Read and offline_access at 09:05 UTC.
-    sha256: 12978c9f57d9b84558bbcd8e5d0578a3d464f3332a11b5c8fc6149f2abb657d3
+    provenance: Synthetic event derived from lab/datasets/synthetic/entra-audit/reference.json
+    description: User consent to the non-approved Contoso Analytics application with Mail.Read, offline_access, and failed publisher and redirect trust at 09:05 UTC.
+    sha256: 5306739a0fb56a35d394508da09c67b6df6a29c02b1b298fd68f77a121472e61
   - id: e3
     type: event
     source: m365-audit
@@ -41,7 +41,7 @@ timeline:
     source: entra-signin
     evidence_id: e1
   - timestamp: "2026-11-01T09:05:00Z"
-    event: User consent grant to Contoso Analytics with mail and offline-access scopes
+    event: User consent grant to non-approved Contoso Analytics with mail, offline-access, and failed publisher and redirect trust
     source: entra-audit
     evidence_id: e2
   - timestamp: "2026-11-01T09:22:00Z"
@@ -52,7 +52,7 @@ lessons:
   - User consent with offline access can create durable application access without another password prompt.
   - The consent record identifies the application and scopes, but not the application publisher's intent.
   - Mail access by the application is observed; token exchange and actor attribution remain inferred.
-  - Publisher verification, redirect-URI checks, and tenant application governance are still needed.
+  - The application is absent from the approved inventory and has failed publisher and redirect trust; the inventory and reputation feed must be maintained.
   - Admin consent is a separate path and is intentionally excluded from this detection.
 response:
   - Revoke the user's consent and refresh tokens.
@@ -65,5 +65,5 @@ references:
   - https://attack.mitre.org/techniques/T1078/
   - https://attack.mitre.org/techniques/T1528/
   - https://attack.mitre.org/techniques/T1114/002/
-executive_summary: A synthetic identity chain shows a medium-risk single-factor sign-in, user consent to an external application with mail and offline-access scopes, and mail access by that application. The consent and access events are observed; token exchange and actor intent remain inferred.
+executive_summary: A synthetic identity chain shows a medium-risk single-factor sign-in, user consent to an external application outside the approved inventory with mail and offline-access scopes, and mail access by that application. The consent and access events are observed; token exchange and actor intent remain inferred.
 notes: Synthetic investigation built from the local lab datasets. No production or customer data.

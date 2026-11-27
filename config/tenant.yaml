@@ -1,3 +1,26 @@
 version: 1
 accepted_mail_domains:
   - example.test
+approved_applications:
+  - app_id: "00000000-0000-4000-8000-000000009101"
+    display_name: "Approved Analytics"
+    owner_organization_id: "22222222-2222-4222-8222-222222222222"
+    publisher: "Example Approved Publisher"
+    redirect_uris:
+      - "https://login.approved.example/callback"
+  - app_id: "00000000-0000-4000-8000-000000009102"
+    display_name: "Approved Reporting"
+    owner_organization_id: "33333333-3333-4333-8333-333333333333"
+    publisher: "Example Reporting Publisher"
+    redirect_uris:
+      - "https://login.approved-reporting.example/callback"
+publisher_reputation:
+  - organization_id: "22222222-2222-4222-8222-222222222222"
+    publisher: "Example Approved Publisher"
+    reputation: trusted
+  - organization_id: "33333333-3333-4333-8333-333333333333"
+    publisher: "Example Reporting Publisher"
+    reputation: trusted
+  - organization_id: "44444444-4444-4444-8444-444444444444"
+    publisher: "Example Untrusted Publisher"
+    reputation: untrusted

@@ -2,13 +2,13 @@
 
 ## Alert meaning
 
-An administrator completed a successful admin or tenant consent, or a tenant-wide OAuth permission grant, to an application with an unverified publisher or untrusted redirect URI. The grant can provide durable access for every user in the tenant.
+An administrator completed a successful admin or tenant consent, or a tenant-wide OAuth permission grant, to an application outside the approved inventory with an unverified publisher, an untrusted redirect URI, or an untrusted publisher reputation. The grant can provide durable access for every user in the tenant.
 
 ## Triage
 
-1. Confirm the operation, consent type, tenant-wide flag, and trust fields.
-2. Review the application name, owner organization, publisher, redirect URI, and requested scopes.
-3. Verify whether the application is approved and whether the redirect URI is expected.
+1. Confirm the operation, consent type, tenant-wide flag, approved-application flag, and trust fields.
+2. Review the application name, owner organization, publisher, publisher reputation, redirect URI, and requested scopes.
+3. Verify why the application is absent from the approved inventory and whether the redirect URI is expected.
 4. Check whether the grant was part of a documented onboarding or emergency change.
 5. Review other grants to the same application and other administrators involved.
 6. Pivot to Microsoft 365 audit and Exchange message trace for application access after the grant.
@@ -17,7 +17,7 @@ An administrator completed a successful admin or tenant consent, or a tenant-wid
 ## Evidence
 
 - Consent or grant event, operation name, target application, and `consent_type`
-- `tenant_wide`, `publisher_verified`, `redirect_uri_trusted`, and `redirect_uri`
+- `tenant_wide`, `app_id`, `approved_app`, `publisher_reputation`, `publisher_verified`, `redirect_uri_trusted`, and `redirect_uri`
 - `scopes` and application owner organization
 - Administrator identity, source IP, and event time
 - Approved application inventory or change record
@@ -28,7 +28,7 @@ An administrator completed a successful admin or tenant consent, or a tenant-wid
 Escalate when:
 
 - The application is not approved.
-- The publisher is unverified or the redirect URI is untrusted.
+- The publisher is unverified or untrusted, or the redirect URI is untrusted.
 - The grant is tenant-wide and includes mail, file, or directory scopes.
 - The application accesses sensitive mailboxes or files after the grant.
 - Multiple administrators or applications show the same pattern.
@@ -44,8 +44,8 @@ Escalate when:
 
 ## False positives
 
-- Approved internal application onboarding before publisher verification completes.
-- A tenant-wide grant to a verified application whose redirect URI is not yet in the trusted inventory.
+- An approved application is suppressed unless its redirect URI is outside the configured allowlist.
+- A tenant-wide grant to a verified application whose redirect URI is not yet in the trusted inventory and that is not approved.
 - A break-glass or emergency application grant with an approved change record.
 
 ## Correlation limits

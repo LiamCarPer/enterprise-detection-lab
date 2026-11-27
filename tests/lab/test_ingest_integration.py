@@ -114,6 +114,9 @@ def test_identity_ingest_is_idempotent_and_queryable() -> None:
         )
         assert admin_consent["publisher_verified"] is False
         assert admin_consent["redirect_uri_trusted"] is False
+        assert admin_consent["app_id"] == "00000000-0000-4000-8000-000000009101"
+        assert admin_consent["approved_app"] is True
+        assert admin_consent["publisher_reputation"] == "trusted"
 
         tenant_grant = next(
             hit["_source"]

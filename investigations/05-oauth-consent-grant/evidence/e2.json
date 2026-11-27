@@ -17,7 +17,11 @@
       "scopes": [
         "Mail.Read",
         "offline_access"
-      ]
+      ],
+      "appId": "00000000-0000-4000-8000-000000009198",
+      "publisherVerified": false,
+      "redirectUriTrusted": false,
+      "redirectUri": "https://login.contoso.example/callback"
     }
   ],
   "result": "success"

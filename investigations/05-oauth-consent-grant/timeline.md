@@ -3,7 +3,7 @@
 | Timestamp | Event | Source | Evidence |
 |---|---|---|---|
 | 2026-11-01T08:55:00Z | Medium-risk single-factor sign-in for analyst@example.test | entra-signin | e1 |
-| 2026-11-01T09:05:00Z | User consent to Contoso Analytics with Mail.Read and offline_access | entra-audit | e2 |
+| 2026-11-01T09:05:00Z | User consent to non-approved Contoso Analytics with Mail.Read, offline_access, and failed publisher and redirect trust | entra-audit | e2 |
 | 2026-11-01T09:22:00Z | Contoso Analytics accessed the executive mailbox | m365-audit | e3 |
 
 ## Correlation notes

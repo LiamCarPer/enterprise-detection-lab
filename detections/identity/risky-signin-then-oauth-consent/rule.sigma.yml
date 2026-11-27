@@ -1,9 +1,9 @@
 title: User OAuth Consent With Offline Access
 id: 00000000-0000-4000-8000-000000000104
 status: test
-description: Component rule for the consent-grant step; the risky-sign-in correlation is defined in detection metadata and the native query.
+description: Component rule for the consent-grant step; approved-application, risky-sign-in, and temporal correlation checks are defined in detection metadata and the native query.
 author: detection-engineering
-date: 2026/11/26
+date: 2026/11/27
 logsource:
   product: azure
   service: auditlogs

@@ -153,5 +153,59 @@
     "synthetic": true,
     "scenario": "neg-3",
     "note": "Consent without offline access"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001507",
+      "createdDateTime": "2026-11-05T13:00:00Z",
+      "userPrincipalName": "analyst@example.test",
+      "appDisplayName": "Office 365",
+      "ipAddress": "203.0.113.60",
+      "status": "success",
+      "authenticationRequirement": "singleFactorAuthentication",
+      "isInteractive": true,
+      "conditionalAccessStatus": "success",
+      "riskLevelDuringSignIn": "medium",
+      "deviceDetail": {
+        "operatingSystem": "Windows 11",
+        "browser": "Chrome"
+      }
+    },
+    "source": "entra-signin",
+    "synthetic": true,
+    "scenario": "neg-4",
+    "note": "Risky sign-in before an approved application consent"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000001508",
+      "activityDateTime": "2026-11-05T13:05:00Z",
+      "operationName": "Consent to application",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "analyst@example.test",
+          "ipAddress": "203.0.113.60"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Approved Analytics",
+          "type": "ServicePrincipal",
+          "appId": "00000000-0000-4000-8000-000000009101",
+          "appOwnerOrganizationId": "22222222-2222-4222-8222-222222222222",
+          "consentType": "User",
+          "scopes": [
+            "Mail.Read",
+            "offline_access"
+          ],
+          "redirectUri": "https://login.approved.example/callback"
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "neg-4",
+    "note": "Approved application consent is excluded"
   }
 ]

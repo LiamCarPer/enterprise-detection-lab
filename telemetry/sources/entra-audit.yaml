@@ -34,10 +34,11 @@ known_gaps:
   - Free-tier retention is too short for long historical replay.
   - Export licensing and throttling are not replicated.
   - Consent scopes and application owner fields are modeled from target resources; real export shapes vary.
+  - Approved-application and publisher-reputation decisions come from the local tenant configuration; a production deployment needs a reviewed inventory and reputation feed.
 sample_data:
   path: lab/datasets/synthetic/entra-audit/reference.json
   synthetic: true
   license: synthetic
   provenance: Generated for this repository. No real users, tenants, or IPs.
-  sha256: 64615c565ac85d293b92beba0e9b8254658e11f95103410330a823f2a6436b26
+  sha256: 6930e9f982d99415db4a5296f7107ec25d82432e34c89c9f8d2b4c0a45298d00
 notes: Entra identity source contract.

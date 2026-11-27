@@ -15,7 +15,7 @@ import httpx
 from . import config
 from .errors import IngestError
 from .telemetry import TelemetrySource, load_sources
-from .tenant import accepted_mail_domains
+from .tenant import accepted_mail_domains, approved_application, publisher_reputation
 from .utils import read_json, sha256_file
 
 Normalizer = Callable[[Mapping[str, Any]], dict[str, Any]]
@@ -561,6 +561,18 @@ def normalize_entra_audit(raw: Mapping[str, Any]) -> dict[str, Any]:
             document["resource"] = resource
 
             consent_type = first.get("consentType")
+            app_id = first.get("appId")
+            owner_organization_id = first.get("appOwnerOrganizationId")
+            redirect_uri = first.get("redirectUri")
+            approved = approved_application(
+                app_id if isinstance(app_id, str) else None,
+                redirect_uri if isinstance(redirect_uri, str) else None,
+            )
+            document["app_id"] = app_id
+            document["approved_app"] = approved is not None
+            document["publisher_reputation"] = publisher_reputation(
+                owner_organization_id if isinstance(owner_organization_id, str) else None
+            )
             document["consent_type"] = (
                 consent_type.lower() if isinstance(consent_type, str) else consent_type
             )
@@ -577,10 +589,10 @@ def normalize_entra_audit(raw: Mapping[str, Any]) -> dict[str, Any]:
             if scopes:
                 document["scopes"] = scopes
                 document["offline_access"] = "offline_access" in scopes
-            document["app_owner_organization_id"] = first.get("appOwnerOrganizationId")
+            document["app_owner_organization_id"] = owner_organization_id
             document["publisher_verified"] = first.get("publisherVerified")
             document["redirect_uri_trusted"] = first.get("redirectUriTrusted")
-            document["redirect_uri"] = first.get("redirectUri")
+            document["redirect_uri"] = redirect_uri
             document["tenant_wide"] = first.get("tenantWide")
     return _compact(document)
 

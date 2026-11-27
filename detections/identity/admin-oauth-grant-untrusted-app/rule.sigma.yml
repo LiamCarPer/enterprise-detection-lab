@@ -1,9 +1,9 @@
 title: Admin or Tenant OAuth Grant
 id: 00000000-0000-4000-8000-000000000105
 status: test
-description: Component rule for admin consent and tenant-wide OAuth grants; publisher and redirect-URI trust checks are defined in the native query.
+description: Component rule for admin consent and tenant-wide OAuth grants; approved-application, publisher-reputation, publisher-verification, and redirect-URI trust checks are defined in the native query.
 author: detection-engineering
-date: 2026/11/26
+date: 2026/11/27
 logsource:
   product: azure
   service: auditlogs

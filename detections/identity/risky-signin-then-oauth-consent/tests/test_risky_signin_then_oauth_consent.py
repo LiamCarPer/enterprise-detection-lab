@@ -9,8 +9,8 @@ from edl.telemetry import load_sources
 
 PACKAGE = Path(__file__).resolve().parents[1]
 FIXTURE_KINDS = ("positive", "negative", "benign")
-EXPECTED_FIXTURE_COUNTS = {"positive": 4, "negative": 6, "benign": 4}
-EXPECTED_SCENARIO_COUNTS = {"positive": 2, "negative": 3, "benign": 3}
+EXPECTED_FIXTURE_COUNTS = {"positive": 4, "negative": 8, "benign": 4}
+EXPECTED_SCENARIO_COUNTS = {"positive": 2, "negative": 4, "benign": 3}
 
 
 def test_query_uses_consent_and_signin_fields() -> None:
@@ -23,6 +23,7 @@ def test_query_uses_consent_and_signin_fields() -> None:
     assert '"consent_type": "user"' in query
     assert '"offline_access": true' in query
     assert '"resource.type": "ServicePrincipal"' in query
+    assert '"approved_app": false' in query
 
 
 def test_correlation_metadata_uses_a_thirty_minute_window() -> None:
@@ -60,7 +61,7 @@ def test_risky_signin_then_user_consent_matches() -> None:
 
 def test_admin_or_low_risk_consent_does_not_match() -> None:
     package = _load_package()
-    for scenario in ("neg-1", "neg-2", "neg-3"):
+    for scenario in ("neg-1", "neg-2", "neg-3", "neg-4"):
         cases = [case for case in package.cases if case.scenario == scenario]
         assert not _correlation_hit(cases, package.correlation)  # type: ignore[arg-type]
 
@@ -70,4 +71,12 @@ def test_missing_offline_access_blocks_the_sequence() -> None:
     cases = [case for case in package.cases if case.scenario == "pos-2"]
     consent = next(case for case in cases if case.source == "entra-audit")
     consent.event.document.pop("offline_access")
+    assert not _correlation_hit(cases, package.correlation)  # type: ignore[arg-type]
+
+
+def test_approved_app_consent_is_excluded() -> None:
+    package = _load_package()
+    cases = [case for case in package.cases if case.scenario == "neg-4"]
+    consent = next(case for case in cases if case.source == "entra-audit")
+    assert consent.event.document["approved_app"] is True
     assert not _correlation_hit(cases, package.correlation)  # type: ignore[arg-type]

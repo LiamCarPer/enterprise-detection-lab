@@ -2,8 +2,21 @@
   "query": {
     "bool": {
       "filter": [
-        { "term": { "source": "entra-audit" } },
-        { "term": { "result": "success" } },
+        {
+          "term": {
+            "source": "entra-audit"
+          }
+        },
+        {
+          "term": {
+            "approved_app": false
+          }
+        },
+        {
+          "term": {
+            "result": "success"
+          }
+        },
         {
           "terms": {
             "action": [
@@ -16,9 +29,21 @@
         {
           "bool": {
             "should": [
-              { "term": { "consent_type": "admin" } },
-              { "term": { "consent_type": "tenant" } },
-              { "term": { "tenant_wide": true } }
+              {
+                "term": {
+                  "consent_type": "admin"
+                }
+              },
+              {
+                "term": {
+                  "consent_type": "tenant"
+                }
+              },
+              {
+                "term": {
+                  "tenant_wide": true
+                }
+              }
             ],
             "minimum_should_match": 1
           }
@@ -26,8 +51,21 @@
         {
           "bool": {
             "should": [
-              { "term": { "publisher_verified": false } },
-              { "term": { "redirect_uri_trusted": false } }
+              {
+                "term": {
+                  "publisher_verified": false
+                }
+              },
+              {
+                "term": {
+                  "redirect_uri_trusted": false
+                }
+              },
+              {
+                "term": {
+                  "publisher_reputation": "untrusted"
+                }
+              }
             ],
             "minimum_should_match": 1
           }

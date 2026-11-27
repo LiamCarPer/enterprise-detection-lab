@@ -12,7 +12,7 @@
     {
       "displayName": "Contoso Analytics",
       "type": "ServicePrincipal",
-      "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
+      "appOwnerOrganizationId": "44444444-4444-4444-8444-444444444444",
       "consentType": "Tenant",
       "scopes": [
         "Mail.Read"
@@ -20,7 +20,8 @@
       "publisherVerified": false,
       "redirectUriTrusted": false,
       "redirectUri": "https://login.contoso.example/callback",
-      "tenantWide": true
+      "tenantWide": true,
+      "appId": "00000000-0000-4000-8000-000000009199"
     }
   ],
   "result": "success"

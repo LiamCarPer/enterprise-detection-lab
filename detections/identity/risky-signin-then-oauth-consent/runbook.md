@@ -2,14 +2,14 @@
 
 ## Alert meaning
 
-A user completed a successful interactive sign-in with medium or high risk and single-factor authentication, then granted a user consent to an application with `offline_access` within 30 minutes. The sequence can indicate consent phishing and durable application access.
+A user completed a successful interactive sign-in with medium or high risk and single-factor authentication, then granted a user consent to an application outside the approved inventory with `offline_access` within 30 minutes. The sequence can indicate consent phishing and durable application access.
 
 ## Triage
 
 1. Confirm both events share the same user and fall inside the 30-minute window.
 2. Review the sign-in risk detections, source IP, device, and authentication method.
-3. Review the application name, owner organization, publisher, redirect URI, and requested scopes.
-4. Confirm whether the application is approved for the tenant and whether the user intended to connect it.
+3. Review the application name, owner organization, publisher, publisher reputation, redirect URI, and requested scopes.
+4. Confirm why the application is absent from the approved inventory and whether the user intended to connect it.
 5. Check for application mail, file, or directory access after the consent.
 6. Review other users who consented to the same application.
 7. Pivot to Microsoft 365 audit, Exchange message trace, and CloudTrail for the same application and time window.
@@ -18,7 +18,7 @@ A user completed a successful interactive sign-in with medium or high risk and s
 
 - Risky sign-in event and risk detection names
 - Consent event, target service principal, `consent_type`, `scopes`, and `offline_access`
-- Application owner organization and publisher details
+- Application owner organization, publisher details, and publisher reputation
 - `user`, `src_ip`, `event_time`, and event IDs for both steps
 - Application access after consent
 - Approved application inventory or change ticket
@@ -44,7 +44,7 @@ Escalate when:
 
 ## False positives
 
-- Approved application onboarding that uses user consent with offline access.
+- Unreviewed but legitimate application onboarding that uses user consent with offline access.
 - A legitimate personal-productivity application that the user intended to connect.
 - A risk false positive followed by an approved consent workflow.
 

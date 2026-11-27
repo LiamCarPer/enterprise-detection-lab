@@ -1,14 +1,14 @@
 id: DET-IDN-004
 title: Risky Sign-In Followed by OAuth Consent Grant
-version: 1.0.0
+version: 1.1.0
 status: tested
 domain: identity
 severity: high
 hypothesis: A risky single-factor sign-in followed by user consent to an application with offline access can indicate consent phishing and durable access to mail or files.
-description: Correlates a successful elevated-risk single-factor sign-in with a successful user consent grant that includes offline_access for the same user within 30 minutes.
+description: Correlates a successful elevated-risk single-factor sign-in with a successful user consent grant to an application outside the approved inventory that includes offline_access for the same user within 30 minutes.
 owner: detection-engineering
 created: "2026-11-26"
-updated: "2026-11-26"
+updated: "2026-11-27"
 attack:
   - T1078
   - T1528
@@ -66,12 +66,13 @@ correlation:
           consent_type: user
           offline_access: true
           resource.type: ServicePrincipal
+          approved_app: false
 tests:
   positive: 4
-  negative: 6
+  negative: 8
   benign: 4
 false_positives:
-  - Approved application onboarding that uses user consent with offline access.
+  - Unreviewed but legitimate application onboarding that uses user consent with offline access.
   - A legitimate personal-productivity application that the user intended to connect.
   - A risk false positive followed by an approved consent workflow.
 runbook: runbook.md
