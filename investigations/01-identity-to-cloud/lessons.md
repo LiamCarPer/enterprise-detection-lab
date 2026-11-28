@@ -18,3 +18,4 @@
 - Add a correlation detection for access key creation followed by logging shutdown.
 - Index the target user and access key ID for faster cloud pivots.
 - Add application owner and automation allow-lists after reviewing approved workflows.
+- External role trust changes provide a durable path into the account and should be reviewed with any subsequent role assumptions.

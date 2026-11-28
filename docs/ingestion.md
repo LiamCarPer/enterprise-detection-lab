@@ -118,8 +118,9 @@ AWS CloudTrail additions:
 - `user`, `identity_type`, `identity_arn`, `src_ip`, `user_agent`
 - `action` (the API name), `service` (the event source), `account`, `region`
 - `event_id` (the CloudTrail UUID), `result`, and `error_code`
+- `role_name`, `trust_policy_parsed`, `trust_principal_accounts`, `trust_external_accounts`, `trust_wildcard`, `trust_external`, `trust_service_principals`, and `trust_federated_principals` for IAM role trust changes
 
-CloudTrail management events use the declared `management_event` class. The raw request and response bodies remain available in `raw` but are not indexed.
+CloudTrail management events use the declared `management_event` class. For `CreateRole` and `UpdateAssumeRolePolicy`, the normalizer URL-decodes and parses `requestParameters.policyDocument`, then derives trust fields. AWS account principals are compared with `recipientAccountId`; wildcard AWS principals and external account principals set `trust_external`. Service and federated principals are recorded for triage but do not set `trust_external` by themselves. The raw request and response bodies remain available in `raw` but are not indexed, and malformed policy documents set `trust_policy_parsed: false` without crashing ingestion.
 
 SaaS additions:
 

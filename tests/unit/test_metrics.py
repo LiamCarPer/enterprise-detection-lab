@@ -16,6 +16,7 @@ from edl.metrics import (
 DETECTIONS = {
     "DET-CLD-001",
     "DET-CLD-002",
+    "DET-CLD-003",
     "DET-END-001",
     "DET-END-002",
     "DET-IDN-001",
@@ -128,7 +129,7 @@ def test_load_detection_metrics_from_repository() -> None:
 def test_render_and_check_metrics_report(tmp_path: Path) -> None:
     metrics = load_detection_metrics()
     report = render_metrics_report(metrics)
-    assert "Event-level cases: 197" in report
+    assert "Event-level cases: 212" in report
     assert "Scenario-level cases: 150" in report
     assert "DET-IDN-001" in report
     assert "Synthetic fixture replay" in report

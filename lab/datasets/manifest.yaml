@@ -34,7 +34,7 @@ datasets:
     synthetic: true
     license: synthetic
     provenance: Generated for this repository. No real accounts, principals, or keys.
-    sha256: 5208849dd52ae458ce91fb00d8755ba39af1a761964dc64f52f1c8feb90fa065
+    sha256: 38769e3db372b05bcc962cb08df34fbe38ad1fc25afe5f8cc1c26f35d04ca8e0
   - id: synthetic-m365-audit-reference
     source: m365-audit
     path: lab/datasets/synthetic/m365-audit/reference.json

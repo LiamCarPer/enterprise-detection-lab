@@ -204,13 +204,13 @@ def test_cloud_ingest_is_idempotent_and_queryable() -> None:
             index_prefix=TEST_PREFIX,
         )
         assert [result.source for result in first] == ["aws-cloudtrail"]
-        assert first[0].read == 2
-        assert first[0].unique == 2
-        assert first[0].written == 2
-        assert first[0].counts == {first[0].indices[0]: 2}
+        assert first[0].read == 3
+        assert first[0].unique == 3
+        assert first[0].written == 3
+        assert first[0].counts == {first[0].indices[0]: 3}
 
         hits = _search("aws-cloudtrail")
-        assert len(hits) == 2
+        assert len(hits) == 3
         cloud_ids = sorted(str(hit["_id"]) for hit in hits)
         events = [hit["_source"] for hit in hits]
 
@@ -230,13 +230,20 @@ def test_cloud_ingest_is_idempotent_and_queryable() -> None:
         assert stop_logging["action"] == "StopLogging"
         assert stop_logging["service"] == "cloudtrail.amazonaws.com"
 
+        trust_change = events[2]
+        assert trust_change["action"] == "UpdateAssumeRolePolicy"
+        assert trust_change["role_name"] == "LabCrossAccountRole"
+        assert trust_change["trust_policy_parsed"] is True
+        assert trust_change["trust_external"] is True
+        assert trust_change["trust_external_accounts"] == ["444455556666"]
+
         second = ingest_cloud(
             config.ROOT,
             client=client,
             ingest_time=datetime(2026, 11, 23, 12, 0, tzinfo=UTC),
             index_prefix=TEST_PREFIX,
         )
-        assert second[0].counts == {second[0].indices[0]: 2}
+        assert second[0].counts == {second[0].indices[0]: 3}
         assert sorted(str(hit["_id"]) for hit in _search("aws-cloudtrail")) == cloud_ids
     finally:
         client.delete_matching(f"{TEST_PREFIX}-*")

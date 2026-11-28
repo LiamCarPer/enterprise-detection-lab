@@ -7,6 +7,7 @@
 | 2026-11-01T09:12:00Z | Owner added to the new service principal | entra-audit | e3 |
 | 2026-11-01T09:25:00Z | IAM access key created for analyst | aws-cloudtrail | e4 |
 | 2026-11-01T09:30:00Z | CloudTrail logging stopped on lab-trail | aws-cloudtrail | e5 |
+| 2026-11-01T09:35:00Z | LabCrossAccountRole trust policy changed to trust external account 444455556666 | aws-cloudtrail | e6 |
 
 ## Correlation notes
 

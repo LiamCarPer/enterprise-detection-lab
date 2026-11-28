@@ -11,6 +11,7 @@ Twenty-eight synthetic benign corpora are used to measure false-positive behavio
 | `DET-END-001` | `endpoint.json` | event | 20 | 0 | 0.00 |
 | `DET-CLD-001` | `cloudtrail.json` | event | 20 | 0 | 0.00 |
 | `DET-CLD-002` | `cloudtrail.json` | event | 20 | 0 | 0.00 |
+| `DET-CLD-003` | `cloudtrail.json` | event | 20 | 0 | 0.00 |
 | `DET-IDN-003` | `identity-correlation.json` | scenario | 6 | 0 | 0.00 |
 | `DET-IDN-004` | `identity-oauth-consent.json` | scenario | 7 | 0 | 0.00 |
 | `DET-IDN-005` | `identity-oauth-admin-consent.json` | event | 21 | 0 | 0.00 |
@@ -100,6 +101,10 @@ edl detection baseline \
 
 edl detection baseline \
   --id DET-CLD-002 \
+  --dataset lab/datasets/synthetic/benign-baseline/cloudtrail.json
+
+edl detection baseline \
+  --id DET-CLD-003 \
   --dataset lab/datasets/synthetic/benign-baseline/cloudtrail.json
 
 edl detection baseline \

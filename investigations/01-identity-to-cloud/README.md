@@ -2,7 +2,7 @@
 
 ## Scenario
 
-A medium-risk single-factor sign-in precedes service principal creation, owner assignment, IAM access key creation, and CloudTrail logging shutdown in the local lab.
+A medium-risk single-factor sign-in precedes service principal creation, owner assignment, IAM access key creation, an external role trust change, and CloudTrail logging shutdown in the local lab.
 
 ## Scope
 
@@ -23,6 +23,7 @@ An identity compromise may have been used to establish application persistence a
 | 09:12 | entra-audit | e3 | Owner added to the new service principal |
 | 09:25 | aws-cloudtrail | e4 | IAM access key created for `analyst` |
 | 09:30 | aws-cloudtrail | e5 | CloudTrail logging stopped on `lab-trail` |
+| 09:35 | aws-cloudtrail | e6 | `LabCrossAccountRole` trust policy changed to trust external account `444455556666` |
 
 ## Inference boundary
 
@@ -34,6 +35,7 @@ The observed events are synthetic lab records. The attacker narrative is an infe
 - `DET-IDN-002` — owner added to a service principal
 - `DET-CLD-001` — IAM access key created
 - `DET-CLD-002` — CloudTrail logging stopped
+- `DET-CLD-003` — IAM role trust policy changed to external principal
 
 ## Query
 

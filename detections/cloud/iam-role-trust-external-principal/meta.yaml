@@ -1,0 +1,43 @@
+id: DET-CLD-003
+title: IAM Role Trust Policy Changed to External Principal
+version: 1.0.0
+status: tested
+domain: cloud
+severity: high
+hypothesis: Changing an IAM role trust policy to trust an external AWS account or a wildcard principal can establish cross-account access or persistence.
+description: Detects a successful IAM CreateRole or UpdateAssumeRolePolicy operation whose trust policy allows a wildcard principal or an AWS account other than the recipient account.
+owner: detection-engineering
+created: "2026-11-28"
+updated: "2026-11-28"
+attack:
+  - T1098.003
+tags:
+  - cloud
+  - aws
+  - iam
+  - persistence
+  - trust-policy
+telemetry:
+  - source: aws-cloudtrail
+    event_class: management_event
+    required_fields:
+      - eventTime
+      - eventSource
+      - eventName
+      - userIdentity
+      - sourceIPAddress
+      - recipientAccountId
+      - eventID
+queries:
+  opensearch: queries/opensearch.json
+tests:
+  positive: 5
+  negative: 5
+  benign: 5
+false_positives:
+  - An approved cross-account role for a documented partner or CI/CD account.
+  - A break-glass or recovery role with an approved change record.
+  - A vendor integration that requires an external AWS principal.
+runbook: runbook.md
+metrics: metrics.json
+notes: notes.md

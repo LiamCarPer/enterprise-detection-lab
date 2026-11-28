@@ -1,0 +1,132 @@
+[
+  {
+    "event": {
+      "eventTime": "2026-11-28T09:00:00Z",
+      "eventVersion": "1.11",
+      "eventSource": "iam.amazonaws.com",
+      "eventName": "UpdateAssumeRolePolicy",
+      "awsRegion": "eu-west-1",
+      "sourceIPAddress": "203.0.113.10",
+      "userAgent": "aws-cli/2.0",
+      "userIdentity": {
+        "type": "IAMUser",
+        "arn": "arn:aws:iam::123456789012:user/analyst"
+      },
+      "requestParameters": {
+        "roleName": "PartnerRole",
+        "policyDocument": "%7B%22Version%22%3A%20%222012-10-17%22%2C%20%22Statement%22%3A%20%5B%7B%22Effect%22%3A%20%22Allow%22%2C%20%22Principal%22%3A%20%7B%22AWS%22%3A%20%22arn%3Aaws%3Aiam%3A%3A444455556666%3Aroot%22%7D%2C%20%22Action%22%3A%20%22sts%3AAssumeRole%22%7D%5D%7D"
+      },
+      "responseElements": null,
+      "errorCode": "",
+      "errorMessage": "",
+      "eventID": "00000000-0000-4000-8000-000000006101",
+      "recipientAccountId": "123456789012"
+    },
+    "source": "aws-cloudtrail",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "eventTime": "2026-11-28T09:05:00Z",
+      "eventVersion": "1.11",
+      "eventSource": "iam.amazonaws.com",
+      "eventName": "CreateRole",
+      "awsRegion": "eu-west-1",
+      "sourceIPAddress": "203.0.113.10",
+      "userAgent": "aws-cli/2.0",
+      "userIdentity": {
+        "type": "IAMUser",
+        "arn": "arn:aws:iam::123456789012:user/analyst"
+      },
+      "requestParameters": {
+        "roleName": "ExternalDeployRole",
+        "policyDocument": "%7B%22Version%22%3A%20%222012-10-17%22%2C%20%22Statement%22%3A%20%5B%7B%22Effect%22%3A%20%22Allow%22%2C%20%22Principal%22%3A%20%7B%22AWS%22%3A%20%22arn%3Aaws%3Aiam%3A%3A444455556666%3Arole/deployer%22%7D%2C%20%22Action%22%3A%20%22sts%3AAssumeRole%22%7D%5D%7D"
+      },
+      "responseElements": null,
+      "errorCode": "",
+      "errorMessage": "",
+      "eventID": "00000000-0000-4000-8000-000000006102",
+      "recipientAccountId": "123456789012"
+    },
+    "source": "aws-cloudtrail",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "eventTime": "2026-11-28T09:10:00Z",
+      "eventVersion": "1.11",
+      "eventSource": "iam.amazonaws.com",
+      "eventName": "UpdateAssumeRolePolicy",
+      "awsRegion": "eu-west-1",
+      "sourceIPAddress": "203.0.113.10",
+      "userAgent": "aws-cli/2.0",
+      "userIdentity": {
+        "type": "IAMUser",
+        "arn": "arn:aws:iam::123456789012:user/analyst"
+      },
+      "requestParameters": {
+        "roleName": "WildcardRole",
+        "policyDocument": "%7B%22Version%22%3A%20%222012-10-17%22%2C%20%22Statement%22%3A%20%5B%7B%22Effect%22%3A%20%22Allow%22%2C%20%22Principal%22%3A%20%22%2A%22%2C%20%22Action%22%3A%20%22sts%3AAssumeRole%22%7D%5D%7D"
+      },
+      "responseElements": null,
+      "errorCode": "",
+      "errorMessage": "",
+      "eventID": "00000000-0000-4000-8000-000000006103",
+      "recipientAccountId": "123456789012"
+    },
+    "source": "aws-cloudtrail",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "eventTime": "2026-11-28T09:15:00Z",
+      "eventVersion": "1.11",
+      "eventSource": "iam.amazonaws.com",
+      "eventName": "CreateRole",
+      "awsRegion": "eu-west-1",
+      "sourceIPAddress": "203.0.113.10",
+      "userAgent": "aws-cli/2.0",
+      "userIdentity": {
+        "type": "IAMUser",
+        "arn": "arn:aws:iam::123456789012:user/analyst"
+      },
+      "requestParameters": {
+        "roleName": "MultiPartnerRole",
+        "policyDocument": "%7B%22Version%22%3A%20%222012-10-17%22%2C%20%22Statement%22%3A%20%5B%7B%22Effect%22%3A%20%22Allow%22%2C%20%22Principal%22%3A%20%7B%22AWS%22%3A%20%5B%22arn%3Aaws%3Aiam%3A%3A444455556666%3Aroot%22%2C%20%22arn%3Aaws%3Aiam%3A%3A555566667777%3Aroot%22%5D%7D%2C%20%22Action%22%3A%20%22sts%3AAssumeRole%22%7D%5D%7D"
+      },
+      "responseElements": null,
+      "errorCode": "",
+      "errorMessage": "",
+      "eventID": "00000000-0000-4000-8000-000000006104",
+      "recipientAccountId": "123456789012"
+    },
+    "source": "aws-cloudtrail",
+    "synthetic": true
+  },
+  {
+    "event": {
+      "eventTime": "2026-11-28T09:20:00Z",
+      "eventVersion": "1.11",
+      "eventSource": "iam.amazonaws.com",
+      "eventName": "UpdateAssumeRolePolicy",
+      "awsRegion": "eu-west-1",
+      "sourceIPAddress": "203.0.113.10",
+      "userAgent": "aws-cli/2.0",
+      "userIdentity": {
+        "type": "IAMUser",
+        "arn": "arn:aws:iam::123456789012:user/analyst"
+      },
+      "requestParameters": {
+        "roleName": "VendorRole",
+        "policyDocument": "%7B%22Version%22%3A%20%222012-10-17%22%2C%20%22Statement%22%3A%20%5B%7B%22Effect%22%3A%20%22Allow%22%2C%20%22Principal%22%3A%20%7B%22AWS%22%3A%20%22444455556666%22%7D%2C%20%22Action%22%3A%20%22sts%3AAssumeRole%22%7D%5D%7D"
+      },
+      "responseElements": null,
+      "errorCode": "",
+      "errorMessage": "",
+      "eventID": "00000000-0000-4000-8000-000000006105",
+      "recipientAccountId": "123456789012"
+    },
+    "source": "aws-cloudtrail",
+    "synthetic": true
+  }
+]

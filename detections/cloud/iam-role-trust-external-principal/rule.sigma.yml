@@ -1,0 +1,22 @@
+title: IAM Role Trust Policy Changed to External Principal
+id: 00000000-0000-4000-8000-000000000113
+status: test
+description: Detects IAM role trust changes that allow a wildcard or external AWS account. Trust-policy parsing is performed by the normalizer; the native query uses the derived trust fields.
+author: detection-engineering
+date: 2026/11/28
+logsource:
+  product: aws
+  service: cloudtrail
+detection:
+  selection:
+    eventSource: iam.amazonaws.com
+    eventName:
+      - CreateRole
+      - UpdateAssumeRolePolicy
+  condition: selection
+falsepositives:
+  - Approved cross-account partner roles
+  - Documented vendor integrations
+level: high
+tags:
+  - attack.t1098.003

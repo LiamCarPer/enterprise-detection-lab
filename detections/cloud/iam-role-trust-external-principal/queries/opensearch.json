@@ -1,0 +1,20 @@
+{
+  "query": {
+    "bool": {
+      "filter": [
+        { "term": { "source": "aws-cloudtrail" } },
+        { "term": { "service": "iam.amazonaws.com" } },
+        {
+          "terms": {
+            "action": [
+              "CreateRole",
+              "UpdateAssumeRolePolicy"
+            ]
+          }
+        },
+        { "term": { "result": "success" } },
+        { "term": { "trust_external": true } }
+      ]
+    }
+  }
+}

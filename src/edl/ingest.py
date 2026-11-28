@@ -9,6 +9,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
+from urllib.parse import unquote
 
 import httpx
 
@@ -770,6 +771,101 @@ def normalize_windows_security(raw: Mapping[str, Any]) -> dict[str, Any]:
     return _compact(document)
 
 
+def _principal_values(value: Any) -> list[str]:
+    if isinstance(value, str):
+        return [value]
+    if isinstance(value, list):
+        return [item for item in value if isinstance(item, str)]
+    return []
+
+
+def _aws_account_from_principal(value: str) -> str | None:
+    if value.isdigit() and len(value) == 12:
+        return value
+    if value.startswith("arn:"):
+        parts = value.split(":")
+        if len(parts) >= 5 and parts[4]:
+            return parts[4]
+    return None
+
+
+def _cloudtrail_trust(raw: Mapping[str, Any]) -> dict[str, Any]:
+    """Derive role-trust attributes from a CloudTrail request body."""
+    if raw.get("eventName") not in {"CreateRole", "UpdateAssumeRolePolicy"}:
+        return {}
+    parameters = raw.get("requestParameters")
+    if not isinstance(parameters, Mapping):
+        return {}
+
+    result: dict[str, Any] = {}
+    role_name = parameters.get("roleName")
+    if isinstance(role_name, str) and role_name:
+        result["role_name"] = role_name
+
+    policy_document = parameters.get("policyDocument")
+    if policy_document is None:
+        return result
+
+    parsed: Any = None
+    if isinstance(policy_document, Mapping):
+        parsed = policy_document
+    elif isinstance(policy_document, str):
+        try:
+            parsed = json.loads(unquote(policy_document))
+        except (TypeError, ValueError):
+            parsed = None
+    if not isinstance(parsed, Mapping):
+        result["trust_policy_parsed"] = False
+        return result
+
+    result["trust_policy_parsed"] = True
+    statements = parsed.get("Statement")
+    if isinstance(statements, Mapping):
+        statements = [statements]
+    if not isinstance(statements, list):
+        statements = []
+
+    principal_accounts: set[str] = set()
+    service_principals: set[str] = set()
+    federated_principals: set[str] = set()
+    wildcard = False
+    for statement in statements:
+        if not isinstance(statement, Mapping) or statement.get("Effect") != "Allow":
+            continue
+        principal = statement.get("Principal")
+        if isinstance(principal, str):
+            aws_values = [principal]
+        elif isinstance(principal, Mapping):
+            aws_values = _principal_values(principal.get("AWS"))
+            service_principals.update(_principal_values(principal.get("Service")))
+            federated_principals.update(_principal_values(principal.get("Federated")))
+        else:
+            aws_values = []
+        for value in aws_values:
+            if value == "*":
+                wildcard = True
+                continue
+            account = _aws_account_from_principal(value)
+            if account is not None:
+                principal_accounts.add(account)
+
+    recipient = raw.get("recipientAccountId")
+    external_accounts = sorted(
+        account
+        for account in principal_accounts
+        if not isinstance(recipient, str) or account != recipient
+    )
+    result["trust_principal_accounts"] = sorted(principal_accounts)
+    result["trust_external_accounts"] = external_accounts
+    result["trust_wildcard"] = wildcard
+    result["trust_external"] = wildcard or bool(external_accounts)
+    if service_principals:
+        result["trust_service_principals"] = sorted(service_principals)
+    if federated_principals:
+        result["trust_federated_principals"] = sorted(federated_principals)
+    return result
+
+
 def normalize_aws_cloudtrail(raw: Mapping[str, Any]) -> dict[str, Any]:
     """Map AWS CloudTrail fields to the canonical cloud shape."""
     identity = raw.get("userIdentity")
@@ -794,6 +890,7 @@ def normalize_aws_cloudtrail(raw: Mapping[str, Any]) -> dict[str, Any]:
         "error_code": error_code,
         "user_agent": _meaningful(raw.get("userAgent")),
     }
+    document.update(_cloudtrail_trust(raw))
     return _compact(document)
 
 

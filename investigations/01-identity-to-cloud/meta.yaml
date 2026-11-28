@@ -1,20 +1,21 @@
 id: INV-001
 title: Identity Persistence to Cloud Credential Access
-version: 1.0.0
+version: 1.1.0
 status: tested
 domains:
   - identity
   - cloud
-scenario: A medium-risk single-factor sign-in is followed by service principal creation, owner assignment, IAM access key creation, and CloudTrail logging shutdown.
+scenario: A medium-risk single-factor sign-in is followed by service principal creation, owner assignment, IAM access key creation, an external role trust change, and CloudTrail logging shutdown.
 hypothesis: An identity compromise may have been used to establish application persistence and then create durable cloud credentials while reducing audit visibility.
 detections:
   - DET-IDN-001
   - DET-IDN-002
   - DET-CLD-001
   - DET-CLD-002
+  - DET-CLD-003
 owner: detection-engineering
 created: "2026-11-23"
-updated: "2026-11-23"
+updated: "2026-11-28"
 evidence:
   - id: e1
     type: event
@@ -51,6 +52,13 @@ evidence:
     provenance: Synthetic event from lab/datasets/synthetic/aws-cloudtrail/reference.json
     description: CloudTrail logging stopped at 09:30 UTC.
     sha256: 15bae13671f5a1f2ac45465f4acfe670d9ff1d3882566572950aecb6faae4274
+  - id: e6
+    type: event
+    source: aws-cloudtrail
+    path: evidence/e6.json
+    provenance: Synthetic event from lab/datasets/synthetic/aws-cloudtrail/reference.json
+    description: IAM role trust policy changed to trust an external AWS account at 09:35 UTC.
+    sha256: b009081bc7abf91efe19eef88541cf8e7b95dd6b6af8ae80dc01e78d796d0b4a
 timeline:
   - timestamp: "2026-11-01T08:55:00Z"
     event: Medium-risk single-factor sign-in for analyst@example.test
@@ -72,10 +80,14 @@ timeline:
     event: CloudTrail logging stopped on lab-trail
     source: aws-cloudtrail
     evidence_id: e5
+  - timestamp: "2026-11-01T09:35:00Z"
+    event: LabCrossAccountRole trust policy changed to trust external account
+    source: aws-cloudtrail
+    evidence_id: e6
 lessons:
   - The identity-to-cloud link is an inference based on the analyst identity, source IP, and timing; no AssumeRole event was observed.
   - Service principal ownership changes are broad and require an approval and owner check.
-  - Access key creation and logging shutdown are high-signal cloud actions that should trigger immediate review.
+  - Access key creation, external role trust, and logging shutdown are high-signal cloud actions that should trigger immediate review.
   - The lab lacks email and endpoint context for the initial sign-in, limiting initial-access attribution.
   - The investigation query is evidence retrieval, not proof of a single actor.
 response:
@@ -84,9 +96,11 @@ response:
   - Deactivate the new IAM access key and rotate the analyst credentials.
   - Re-enable CloudTrail logging and validate organization-trail coverage.
   - Review IAM policy and role changes for the same identity and source IP.
+  - Revert the external role trust and review any assumption activity by the external principal.
 references:
   - https://attack.mitre.org/techniques/T1098/002/
   - https://attack.mitre.org/techniques/T1098/001/
+  - https://attack.mitre.org/techniques/T1098/003/
   - https://attack.mitre.org/techniques/T1562/008/
-executive_summary: A synthetic identity chain shows a risky sign-in, application ownership persistence, IAM access key creation, and CloudTrail logging shutdown. The observed events are linked by identity, IP, and timing; the actor attribution remains an inference.
+executive_summary: A synthetic identity chain shows a risky sign-in, application ownership persistence, IAM access key creation, an external role trust change, and CloudTrail logging shutdown. The observed events are linked by identity, IP, and timing; the actor attribution remains an inference.
 notes: Synthetic investigation built from the local lab datasets. No production or customer data.

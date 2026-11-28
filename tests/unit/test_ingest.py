@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from datetime import UTC, datetime
 from pathlib import Path
+from urllib.parse import quote
 
 import pytest
 
@@ -1233,6 +1234,190 @@ def test_normalize_aws_cloudtrail_handles_missing_identity() -> None:
     assert "identity_arn" not in document
 
 
+def _trust_policy_document(statement: object) -> str:
+    return quote(
+        json.dumps(
+            {
+                "Version": "2012-10-17",
+                "Statement": statement,
+            }
+        )
+    )
+
+
+def test_normalize_aws_cloudtrail_detects_external_role_trust() -> None:
+    document = normalize_aws_cloudtrail(
+        {
+            **CLOUDTRAIL_RAW,
+            "eventName": "UpdateAssumeRolePolicy",
+            "requestParameters": {
+                "roleName": "CrossAccountRole",
+                "policyDocument": _trust_policy_document(
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "AWS": [
+                                "arn:aws:iam::444455556666:root",
+                                "arn:aws:iam::123456789012:root",
+                            ]
+                        },
+                        "Action": "sts:AssumeRole",
+                    }
+                ),
+            },
+        }
+    )
+    assert document["role_name"] == "CrossAccountRole"
+    assert document["trust_policy_parsed"] is True
+    assert document["trust_principal_accounts"] == ["123456789012", "444455556666"]
+    assert document["trust_external_accounts"] == ["444455556666"]
+    assert document["trust_wildcard"] is False
+    assert document["trust_external"] is True
+
+
+def test_normalize_aws_cloudtrail_detects_wildcard_role_trust() -> None:
+    document = normalize_aws_cloudtrail(
+        {
+            **CLOUDTRAIL_RAW,
+            "eventName": "CreateRole",
+            "requestParameters": {
+                "roleName": "PublicRole",
+                "policyDocument": _trust_policy_document(
+                    {"Effect": "Allow", "Principal": "*", "Action": "sts:AssumeRole"}
+                ),
+            },
+        }
+    )
+    assert document["trust_wildcard"] is True
+    assert document["trust_external"] is True
+    assert "trust_external_accounts" not in document
+
+
+def test_normalize_aws_cloudtrail_records_same_account_and_service_trust() -> None:
+    document = normalize_aws_cloudtrail(
+        {
+            **CLOUDTRAIL_RAW,
+            "eventName": "UpdateAssumeRolePolicy",
+            "requestParameters": {
+                "roleName": "ServiceRole",
+                "policyDocument": _trust_policy_document(
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "AWS": "arn:aws:iam::123456789012:root",
+                            "Service": "lambda.amazonaws.com",
+                            "Federated": "arn:aws:iam::123456789012:saml-provider/lab",
+                        },
+                        "Action": "sts:AssumeRole",
+                    }
+                ),
+            },
+        }
+    )
+    assert document["trust_external"] is False
+    assert "trust_external_accounts" not in document
+    assert document["trust_service_principals"] == ["lambda.amazonaws.com"]
+    assert document["trust_federated_principals"] == ["arn:aws:iam::123456789012:saml-provider/lab"]
+
+
+def test_normalize_aws_cloudtrail_ignores_missing_role_request_body() -> None:
+    document = normalize_aws_cloudtrail(
+        {
+            **CLOUDTRAIL_RAW,
+            "eventName": "UpdateAssumeRolePolicy",
+            "requestParameters": "not-a-mapping",
+        }
+    )
+    assert "role_name" not in document
+    assert "trust_policy_parsed" not in document
+
+
+def test_normalize_aws_cloudtrail_ignores_role_without_policy_document() -> None:
+    document = normalize_aws_cloudtrail(
+        {
+            **CLOUDTRAIL_RAW,
+            "eventName": "CreateRole",
+            "requestParameters": {"roleName": "NoPolicyRole"},
+        }
+    )
+    assert document["role_name"] == "NoPolicyRole"
+    assert "trust_policy_parsed" not in document
+
+
+def test_normalize_aws_cloudtrail_accepts_mapping_policy_document() -> None:
+    document = normalize_aws_cloudtrail(
+        {
+            **CLOUDTRAIL_RAW,
+            "eventName": "UpdateAssumeRolePolicy",
+            "requestParameters": {
+                "policyDocument": {
+                    "Statement": {
+                        "Effect": "Allow",
+                        "Principal": {"AWS": "arn:aws:iam::444455556666:root"},
+                        "Action": "sts:AssumeRole",
+                    }
+                }
+            },
+        }
+    )
+    assert document["trust_policy_parsed"] is True
+    assert document["trust_external"] is True
+
+
+def test_normalize_aws_cloudtrail_ignores_invalid_trust_statements() -> None:
+    document = normalize_aws_cloudtrail(
+        {
+            **CLOUDTRAIL_RAW,
+            "eventName": "UpdateAssumeRolePolicy",
+            "requestParameters": {
+                "policyDocument": {
+                    "Statement": "not-a-list",
+                }
+            },
+        }
+    )
+    assert document["trust_policy_parsed"] is True
+    assert document["trust_external"] is False
+
+    document = normalize_aws_cloudtrail(
+        {
+            **CLOUDTRAIL_RAW,
+            "eventName": "UpdateAssumeRolePolicy",
+            "requestParameters": {
+                "policyDocument": {
+                    "Statement": [
+                        "not-a-mapping",
+                        {
+                            "Effect": "Deny",
+                            "Principal": {"AWS": "arn:aws:iam::444455556666:root"},
+                        },
+                        {"Effect": "Allow", "Principal": ["not-a-principal"]},
+                        {"Effect": "Allow", "Principal": {"AWS": "not-an-account"}},
+                    ]
+                }
+            },
+        }
+    )
+    assert document["trust_external"] is False
+    assert "trust_principal_accounts" not in document
+
+
+def test_normalize_aws_cloudtrail_marks_malformed_trust_policy() -> None:
+    document = normalize_aws_cloudtrail(
+        {
+            **CLOUDTRAIL_RAW,
+            "eventName": "UpdateAssumeRolePolicy",
+            "requestParameters": {
+                "roleName": "BrokenRole",
+                "policyDocument": "%7Bnot-json",
+            },
+        }
+    )
+    assert document["role_name"] == "BrokenRole"
+    assert document["trust_policy_parsed"] is False
+    assert "trust_external" not in document
+
+
 def test_normalize_event_cloudtrail_uses_declared_key_and_event_class() -> None:
     event = normalize_event(
         _cloud_source(),
@@ -1260,8 +1445,8 @@ def test_load_cloud_sources_rejects_non_cloud() -> None:
 def test_ingest_cloud_dry_run_uses_repository_sample() -> None:
     results = ingest_cloud(dry_run=True)
     assert [result.source for result in results] == ["aws-cloudtrail"]
-    assert results[0].read == 2
-    assert results[0].unique == 2
+    assert results[0].read == 3
+    assert results[0].unique == 3
     assert results[0].indices == ("edl-events-aws-cloudtrail-2026.11.01",)
 
 
