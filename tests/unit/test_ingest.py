@@ -822,11 +822,11 @@ def test_ingest_identity_dry_run_uses_repository_samples() -> None:
     assert [result.source for result in results] == ["entra-signin", "entra-audit"]
     assert {result.source: result.read for result in results} == {
         "entra-signin": 7,
-        "entra-audit": 5,
+        "entra-audit": 6,
     }
     assert {result.source: result.unique for result in results} == {
         "entra-signin": 7,
-        "entra-audit": 5,
+        "entra-audit": 6,
     }
     assert all(result.written == 0 for result in results)
 
@@ -1669,9 +1669,10 @@ def test_ingest_saas_dry_run_uses_repository_samples() -> None:
         "m365-dlp",
         "servicenow-approval",
     ]
-    assert [result.read for result in results] == [7, 2, 10, 7, 6]
+    assert [result.read for result in results] == [9, 2, 10, 7, 6]
     assert results[0].indices == (
         "edl-events-m365-audit-2026.11.01",
+        "edl-events-m365-audit-2026.11.23",
         "edl-events-m365-audit-2026.11.25",
     )
     assert results[1].indices == ("edl-events-github-audit-2026.11.25",)

@@ -41,5 +41,5 @@ sample_data:
   synthetic: true
   license: synthetic
   provenance: Generated for this repository. No real users, tenants, or IPs.
-  sha256: 6930e9f982d99415db4a5296f7107ec25d82432e34c89c9f8d2b4c0a45298d00
+  sha256: 7e2824799723a16396f442447eef8b66c18d588de33a8bc38f14d0d82dffa727
 notes: Entra identity source contract.

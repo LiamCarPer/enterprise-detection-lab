@@ -1,0 +1,11 @@
+{
+  "CreationTime": "2026-11-23T10:20:00Z",
+  "Id": "00000000-0000-4000-8000-000000010207",
+  "Operation": "FileDownloaded",
+  "UserId": "Contoso Files",
+  "Workload": "SharePoint",
+  "RecordType": 6,
+  "ClientIP": "198.51.100.45",
+  "ObjectId": "https://example.sharepoint.com/sites/finance/Shared Documents/forecast.xlsx",
+  "ResultStatus": "Success"
+}

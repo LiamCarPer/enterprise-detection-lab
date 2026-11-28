@@ -22,6 +22,7 @@ INVESTIGATIONS = (
     config.ROOT / "investigations" / "07-session-replay",
     config.ROOT / "investigations" / "08-impossible-travel",
     config.ROOT / "investigations" / "09-anomalous-token-mail",
+    config.ROOT / "investigations" / "10-sensitive-oauth-file-access",
 )
 EXPECTED_DETECTIONS = {
     "INV-001": {
@@ -65,6 +66,9 @@ EXPECTED_DETECTIONS = {
     },
     "INV-009": {
         "DET-IDN-008",
+    },
+    "INV-010": {
+        "DET-IDN-010",
     },
 }
 

@@ -77,6 +77,23 @@ def test_identity_oauth_app_mail_access_has_no_benign_sequence_matches() -> None
         client.close()
 
 
+def test_identity_oauth_app_file_access_has_no_benign_sequence_matches() -> None:
+    client = OpenSearchClient()
+    try:
+        result = run_baseline(
+            "DET-IDN-010",
+            BASELINE_DIR / "identity-oauth-app-file-access.json",
+            client=client,
+            latency_runs=1,
+        )
+        assert result.evaluation_unit == "scenario"
+        assert result.sample_size == 8
+        assert result.matched_count == 0
+        assert result.false_positive_rate == 0.0
+    finally:
+        client.close()
+
+
 def test_identity_impossible_travel_has_no_benign_sequence_matches() -> None:
     client = OpenSearchClient()
     try:

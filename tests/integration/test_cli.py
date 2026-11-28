@@ -725,6 +725,7 @@ def test_ingest_saas_json() -> None:
     ]
     assert payload[0]["indices"] == [
         "edl-events-m365-audit-2026.11.01",
+        "edl-events-m365-audit-2026.11.23",
         "edl-events-m365-audit-2026.11.25",
     ]
     assert payload[1]["indices"] == ["edl-events-github-audit-2026.11.25"]

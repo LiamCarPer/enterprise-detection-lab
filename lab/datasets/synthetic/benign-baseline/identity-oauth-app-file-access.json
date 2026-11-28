@@ -1,0 +1,352 @@
+[
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000009821",
+      "activityDateTime": "2026-11-23T09:00:00Z",
+      "operationName": "Consent to application",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "analyst@example.test",
+          "ipAddress": "203.0.113.71"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Approved Analytics",
+          "type": "ServicePrincipal",
+          "appId": "00000000-0000-4000-8000-000000009101",
+          "appOwnerOrganizationId": "22222222-2222-4222-8222-222222222222",
+          "consentType": "User",
+          "scopes": [
+            "Files.Read.All",
+            "offline_access"
+          ],
+          "publisherVerified": true,
+          "redirectUriTrusted": true,
+          "redirectUri": "https://login.approved.example/callback",
+          "tenantWide": false
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "approved-app-access"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-23T09:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000009822",
+      "Operation": "FileAccessed",
+      "UserId": "Approved Analytics",
+      "Workload": "SharePoint",
+      "RecordType": 6,
+      "ClientIP": "198.51.100.71",
+      "ObjectId": "https://example.sharepoint.com/sites/finance/Shared Documents/forecast.xlsx",
+      "ResultStatus": "Success"
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "approved-app-access"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000009823",
+      "activityDateTime": "2026-11-23T10:00:00Z",
+      "operationName": "Consent to application",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "analyst@example.test",
+          "ipAddress": "203.0.113.71"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Contoso Profile",
+          "type": "ServicePrincipal",
+          "appId": "00000000-0000-4000-8000-000000009811",
+          "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
+          "consentType": "User",
+          "scopes": [
+            "User.Read",
+            "offline_access"
+          ],
+          "publisherVerified": true,
+          "redirectUriTrusted": true,
+          "redirectUri": "https://login.contoso.example/callback",
+          "tenantWide": false
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "no-sensitive-scope"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-23T10:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000009824",
+      "Operation": "FileAccessed",
+      "UserId": "Contoso Profile",
+      "Workload": "SharePoint",
+      "RecordType": 6,
+      "ClientIP": "198.51.100.71",
+      "ObjectId": "https://example.sharepoint.com/sites/finance/Shared Documents/forecast.xlsx",
+      "ResultStatus": "Success"
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "no-sensitive-scope"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000009825",
+      "activityDateTime": "2026-11-23T11:00:00Z",
+      "operationName": "Consent to application",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "analyst@example.test",
+          "ipAddress": "203.0.113.71"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Contoso Files",
+          "type": "ServicePrincipal",
+          "appId": "00000000-0000-4000-8000-000000009811",
+          "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
+          "consentType": "User",
+          "scopes": [
+            "Files.Read.All",
+            "offline_access"
+          ],
+          "publisherVerified": true,
+          "redirectUriTrusted": true,
+          "redirectUri": "https://login.contoso.example/callback",
+          "tenantWide": false
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "user-access"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-23T11:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000009826",
+      "Operation": "FileAccessed",
+      "UserId": "analyst@example.test",
+      "Workload": "SharePoint",
+      "RecordType": 6,
+      "ClientIP": "198.51.100.71",
+      "ObjectId": "https://example.sharepoint.com/sites/finance/Shared Documents/forecast.xlsx",
+      "ResultStatus": "Success"
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "user-access"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-23T12:00:00Z",
+      "Id": "00000000-0000-4000-8000-000000009827",
+      "Operation": "FileAccessed",
+      "UserId": "Contoso Files",
+      "Workload": "SharePoint",
+      "RecordType": 6,
+      "ClientIP": "198.51.100.71",
+      "ObjectId": "https://example.sharepoint.com/sites/finance/Shared Documents/forecast.xlsx",
+      "ResultStatus": "Success"
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "app-access-only"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000009828",
+      "activityDateTime": "2026-11-23T13:00:00Z",
+      "operationName": "Consent to application",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "analyst@example.test",
+          "ipAddress": "203.0.113.71"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Contoso Files",
+          "type": "ServicePrincipal",
+          "appId": "00000000-0000-4000-8000-000000009811",
+          "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
+          "consentType": "User",
+          "scopes": [
+            "Files.Read.All",
+            "offline_access"
+          ],
+          "publisherVerified": true,
+          "redirectUriTrusted": true,
+          "redirectUri": "https://login.contoso.example/callback",
+          "tenantWide": false
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "consent-only"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000009829",
+      "activityDateTime": "2026-11-23T14:00:00Z",
+      "operationName": "Consent to application",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "analyst@example.test",
+          "ipAddress": "203.0.113.71"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Contoso Files",
+          "type": "ServicePrincipal",
+          "appId": "00000000-0000-4000-8000-000000009811",
+          "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
+          "consentType": "User",
+          "scopes": [
+            "Files.Read.All",
+            "offline_access"
+          ],
+          "publisherVerified": true,
+          "redirectUriTrusted": true,
+          "redirectUri": "https://login.contoso.example/callback",
+          "tenantWide": false
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "app-mismatch"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-23T14:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000009830",
+      "Operation": "FileAccessed",
+      "UserId": "Contoso Reporting",
+      "Workload": "SharePoint",
+      "RecordType": 6,
+      "ClientIP": "198.51.100.71",
+      "ObjectId": "https://example.sharepoint.com/sites/finance/Shared Documents/forecast.xlsx",
+      "ResultStatus": "Success"
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "app-mismatch"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000009831",
+      "activityDateTime": "2026-11-23T15:00:00Z",
+      "operationName": "Consent to application",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "analyst@example.test",
+          "ipAddress": "203.0.113.71"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Contoso Files",
+          "type": "ServicePrincipal",
+          "appId": "00000000-0000-4000-8000-000000009811",
+          "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
+          "consentType": "User",
+          "scopes": [
+            "Files.Read.All",
+            "offline_access"
+          ],
+          "publisherVerified": true,
+          "redirectUriTrusted": true,
+          "redirectUri": "https://login.contoso.example/callback",
+          "tenantWide": false
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "late-access"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-23T16:30:00Z",
+      "Id": "00000000-0000-4000-8000-000000009832",
+      "Operation": "FileAccessed",
+      "UserId": "Contoso Files",
+      "Workload": "SharePoint",
+      "RecordType": 6,
+      "ClientIP": "198.51.100.71",
+      "ObjectId": "https://example.sharepoint.com/sites/finance/Shared Documents/forecast.xlsx",
+      "ResultStatus": "Success"
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "late-access"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000009833",
+      "activityDateTime": "2026-11-23T17:00:00Z",
+      "operationName": "Consent to application",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "analyst@example.test",
+          "ipAddress": "203.0.113.71"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Contoso Mail",
+          "type": "ServicePrincipal",
+          "appId": "00000000-0000-4000-8000-000000009811",
+          "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
+          "consentType": "User",
+          "scopes": [
+            "Mail.Read",
+            "offline_access"
+          ],
+          "publisherVerified": true,
+          "redirectUriTrusted": true,
+          "redirectUri": "https://login.contoso.example/callback",
+          "tenantWide": false
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "mail-scope-file-access"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-23T17:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000009834",
+      "Operation": "FileAccessed",
+      "UserId": "Contoso Mail",
+      "Workload": "SharePoint",
+      "RecordType": 6,
+      "ClientIP": "198.51.100.71",
+      "ObjectId": "https://example.sharepoint.com/sites/finance/Shared Documents/forecast.xlsx",
+      "ResultStatus": "Success"
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "mail-scope-file-access"
+  }
+]

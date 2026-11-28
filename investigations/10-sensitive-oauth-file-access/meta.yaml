@@ -1,0 +1,68 @@
+id: INV-010
+title: Sensitive OAuth Grant to Application File Access
+version: 1.0.0
+status: tested
+domains:
+  - identity
+  - saas
+scenario: A user consents to an external application with a file scope and offline access, then the application accesses and downloads a finance file from SharePoint.
+hypothesis: Consent phishing or an illicit integration may have provided durable access to files without another sign-in prompt.
+detections:
+  - DET-IDN-010
+owner: detection-engineering
+created: "2026-11-28"
+updated: "2026-11-28"
+evidence:
+  - id: e1
+    type: event
+    source: entra-audit
+    path: evidence/e1.json
+    provenance: Synthetic event from lab/datasets/synthetic/entra-audit/reference.json
+    description: User consent to the non-approved Contoso Files application with Files.Read.All and offline_access at 10:00 UTC.
+    sha256: c38bc8a1032a3d08d10d5b996d4d2dcb2669111890228092ea49973bea9a8548
+  - id: e2
+    type: event
+    source: m365-audit
+    path: evidence/e2.json
+    provenance: Synthetic event from lab/datasets/synthetic/m365-audit/reference.json
+    description: FileAccessed by Contoso Files on the finance SharePoint site at 10:15 UTC.
+    sha256: 23a3ef859c3b4aad81d7bdd02f3a7e5506fe81cb54db24debd5c9b4b034bcdfb
+  - id: e3
+    type: event
+    source: m365-audit
+    path: evidence/e3.json
+    provenance: Synthetic event from lab/datasets/synthetic/m365-audit/reference.json
+    description: FileDownloaded by Contoso Files from the finance SharePoint site at 10:20 UTC.
+    sha256: 04c1a69d9513e1757cb6b30b56c11307decef1df13a60a4d1112dc19cc5b8b26
+timeline:
+  - timestamp: "2026-11-23T10:00:00Z"
+    event: User consent to non-approved Contoso Files with Files.Read.All and offline_access
+    source: entra-audit
+    evidence_id: e1
+  - timestamp: "2026-11-23T10:15:00Z"
+    event: Contoso Files accessed a finance SharePoint file
+    source: m365-audit
+    evidence_id: e2
+  - timestamp: "2026-11-23T10:20:00Z"
+    event: Contoso Files downloaded the finance SharePoint file
+    source: m365-audit
+    evidence_id: e3
+lessons:
+  - User consent with offline access can create durable application access to files without another password prompt.
+  - The consent record identifies the application and scopes, but not the application publisher's intent.
+  - File access and download by the application are observed; token exchange and actor attribution remain inferred.
+  - The application is absent from the approved inventory and has failed publisher and redirect trust; the inventory and reputation feed must be maintained.
+  - Admin consent and tenant-wide grants are separate paths with different approval expectations.
+response:
+  - Revoke the user's consent and refresh tokens.
+  - Disable or remove the application service principal after preserving evidence.
+  - Revoke application credentials and review granted permissions.
+  - Review SharePoint and OneDrive access for the application and other consenting users.
+  - Remove external sharing or permission changes created by the application.
+  - Reset the user's credentials if the originating session is suspicious.
+  - Add the application to a tenant deny or approval workflow.
+references:
+  - https://attack.mitre.org/techniques/T1528/
+  - https://attack.mitre.org/techniques/T1213/002/
+executive_summary: A synthetic identity chain shows user consent to an external application with a file scope and offline access, followed by file access and download from a finance SharePoint site. The consent and file activity are observed; token exchange and actor intent remain inferred.
+notes: Synthetic investigation built from the local lab datasets. No production or customer data.

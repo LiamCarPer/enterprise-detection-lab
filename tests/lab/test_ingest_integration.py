@@ -47,7 +47,7 @@ def test_identity_ingest_is_idempotent_and_queryable() -> None:
             index_prefix=TEST_PREFIX,
         )
         assert [result.source for result in first] == ["entra-signin", "entra-audit"]
-        expected = {"entra-signin": 7, "entra-audit": 5}
+        expected = {"entra-signin": 7, "entra-audit": 6}
         assert {result.source: result.read for result in first} == expected
         assert {result.source: result.unique for result in first} == expected
         assert {result.source: result.written for result in first} == expected
@@ -89,7 +89,7 @@ def test_identity_ingest_is_idempotent_and_queryable() -> None:
         assert len(hits_after) == 7
 
         audit_hits = _search("entra-audit")
-        assert len(audit_hits) == 5
+        assert len(audit_hits) == 6
         service_principal = next(
             hit["_source"]
             for hit in audit_hits
@@ -128,6 +128,15 @@ def test_identity_ingest_is_idempotent_and_queryable() -> None:
         )
         assert tenant_grant["tenant_wide"] is True
         assert tenant_grant["consent_type"] == "tenant"
+
+        file_consent = next(
+            hit["_source"]
+            for hit in audit_hits
+            if hit["_source"].get("app_identity") == "contoso files"
+        )
+        assert file_consent["scope_categories"] == ["files"]
+        assert file_consent["sensitive_scope"] is True
+        assert file_consent["approved_app"] is False
     finally:
         client.delete_matching(f"{TEST_PREFIX}-*")
         client.close()
@@ -250,12 +259,13 @@ def test_saas_ingest_is_idempotent_and_queryable() -> None:
             "m365-dlp",
             "servicenow-approval",
         ]
-        assert [result.read for result in first] == [7, 2, 10, 7, 6]
-        assert [result.unique for result in first] == [7, 2, 10, 7, 6]
-        assert [result.written for result in first] == [7, 2, 10, 7, 6]
+        assert [result.read for result in first] == [9, 2, 10, 7, 6]
+        assert [result.unique for result in first] == [9, 2, 10, 7, 6]
+        assert [result.written for result in first] == [9, 2, 10, 7, 6]
         assert first[0].counts == {
             first[0].indices[0]: 5,
             first[0].indices[1]: 2,
+            first[0].indices[2]: 2,
         }
         assert first[1].counts == {first[1].indices[0]: 2}
         assert first[2].counts == {
@@ -270,7 +280,7 @@ def test_saas_ingest_is_idempotent_and_queryable() -> None:
         }
 
         m365_hits = _search("m365-audit")
-        assert len(m365_hits) == 7
+        assert len(m365_hits) == 9
         m365_ids = sorted(str(hit["_id"]) for hit in m365_hits)
         m365_event = next(
             hit["_source"]
@@ -291,6 +301,13 @@ def test_saas_ingest_is_idempotent_and_queryable() -> None:
         )
         assert app_access["app_identity"] == "contoso analytics"
         assert app_access["app_access"] is True
+        file_access = next(
+            hit["_source"]
+            for hit in m365_hits
+            if hit["_source"].get("app_identity") == "contoso files"
+        )
+        assert file_access["app_access"] is True
+        assert file_access["event_class"] == "sharepoint"
 
         github_hits = _search("github-audit")
         assert len(github_hits) == 2

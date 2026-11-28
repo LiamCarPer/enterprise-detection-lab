@@ -1,0 +1,106 @@
+[
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000009801",
+      "activityDateTime": "2026-11-22T19:00:00Z",
+      "operationName": "Consent to application",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "analyst@example.test",
+          "ipAddress": "203.0.113.21"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Approved Analytics",
+          "type": "ServicePrincipal",
+          "appId": "00000000-0000-4000-8000-000000009101",
+          "appOwnerOrganizationId": "22222222-2222-4222-8222-222222222222",
+          "consentType": "User",
+          "scopes": [
+            "Files.Read.All",
+            "offline_access"
+          ],
+          "publisherVerified": false,
+          "redirectUriTrusted": true,
+          "redirectUri": "https://login.approved.example/callback",
+          "tenantWide": false
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "benign-1",
+    "note": "Approved application consent"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-22T19:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000009802",
+      "Operation": "FileAccessed",
+      "UserId": "Approved Analytics",
+      "Workload": "SharePoint",
+      "RecordType": 6,
+      "ClientIP": "198.51.100.45",
+      "ObjectId": "https://example.sharepoint.com/sites/finance/Shared Documents/forecast.xlsx",
+      "ResultStatus": "Success"
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "benign-1",
+    "note": "Approved application file access"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-22T20:00:00Z",
+      "Id": "00000000-0000-4000-8000-000000009803",
+      "Operation": "FileAccessed",
+      "UserId": "analyst@example.test",
+      "Workload": "SharePoint",
+      "RecordType": 6,
+      "ClientIP": "198.51.100.45",
+      "ObjectId": "https://example.sharepoint.com/sites/finance/Shared Documents/forecast.xlsx",
+      "ResultStatus": "Success"
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "benign-2",
+    "note": "Normal user file access"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000009804",
+      "activityDateTime": "2026-11-22T21:00:00Z",
+      "operationName": "Consent to application",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test",
+          "ipAddress": "203.0.113.21"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Approved Reporting",
+          "type": "ServicePrincipal",
+          "appId": "00000000-0000-4000-8000-000000009102",
+          "appOwnerOrganizationId": "33333333-3333-4333-8333-333333333333",
+          "consentType": "Admin",
+          "scopes": [
+            "Sites.Read.All",
+            "offline_access"
+          ],
+          "publisherVerified": false,
+          "redirectUriTrusted": true,
+          "redirectUri": "https://login.approved-reporting.example/callback",
+          "tenantWide": false
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "benign-3",
+    "note": "Approved application consent without file access"
+  }
+]

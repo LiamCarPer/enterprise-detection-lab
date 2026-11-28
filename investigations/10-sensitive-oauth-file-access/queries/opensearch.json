@@ -1,0 +1,23 @@
+{
+  "size": 50,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "range": {
+            "event_time": {
+              "gte": "2026-11-23T09:45:00Z",
+              "lte": "2026-11-23T10:30:00Z"
+            }
+          }
+        }
+      ],
+      "should": [
+        { "term": { "app_identity": "contoso files" } },
+        { "term": { "user": "Contoso Files" } },
+        { "term": { "resource.name": "Contoso Files" } }
+      ],
+      "minimum_should_match": 1
+    }
+  }
+}
