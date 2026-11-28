@@ -2,7 +2,7 @@
 
 ## Scope
 
-Twenty-seven synthetic benign corpora are used to measure false-positive behavior across the detection set.
+Twenty-eight synthetic benign corpora are used to measure false-positive behavior across the detection set.
 
 | Detection | Dataset | Unit | Cases | Matches | FPR |
 |---|---|---|---:|---:|---:|
@@ -20,6 +20,7 @@ Twenty-seven synthetic benign corpora are used to measure false-positive behavio
 | `DET-IDN-009` | `identity-oauth-app-mail-access.json` | scenario | 8 | 0 | 0.00 |
 | `DET-IDN-010` | `identity-oauth-app-file-access.json` | scenario | 8 | 0 | 0.00 |
 | `DET-IDN-011` | `identity-oauth-app-teams-activity.json` | scenario | 8 | 0 | 0.00 |
+| `DET-IDN-012` | `identity-unused-oauth-grant.json` | scenario | 6 | 0 | 0.00 |
 | `DET-SAA-001` | `m365-audit.json` | event | 20 | 0 | 0.00 |
 | `DET-SAA-001` | `m365-forwarding.json` | event | 20 | 0 | 0.00 |
 | `DET-SAA-002` | `github-audit.json` | event | 20 | 0 | 0.00 |
@@ -160,6 +161,10 @@ edl detection baseline \
 edl detection baseline \
   --id DET-IDN-011 \
   --dataset lab/datasets/synthetic/benign-baseline/identity-oauth-app-teams-activity.json
+
+edl detection baseline \
+  --id DET-IDN-012 \
+  --dataset lab/datasets/synthetic/benign-baseline/identity-unused-oauth-grant.json
 
 edl detection baseline \
   --id DET-SAA-003 \

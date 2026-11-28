@@ -1,0 +1,111 @@
+id: DET-IDN-012
+title: Unused Sensitive OAuth Grant
+version: 1.0.0
+status: tested
+domain: identity
+severity: medium
+hypothesis: A sensitive OAuth grant that is never followed by application activity may be abandoned, over-scoped, or created for persistence and left dormant.
+description: Retrospective review detection for a successful unapproved consent or OAuth permission grant with a sensitive scope and offline access when the same application has no successful Microsoft 365 mail, file, or Teams activity in the following 30 days.
+owner: detection-engineering
+created: "2026-11-28"
+updated: "2026-11-28"
+attack:
+  - T1528
+tags:
+  - identity
+  - entra-id
+  - oauth
+  - consent
+  - access-review
+  - correlation
+telemetry:
+  - source: entra-audit
+    event_class: audit
+    required_fields:
+      - id
+      - activityDateTime
+      - operationName
+      - initiatedBy
+      - targetResources
+      - result
+  - source: m365-audit
+    event_class: mail_access
+    required_fields:
+      - CreationTime
+      - Id
+      - Operation
+      - UserId
+      - Workload
+      - RecordType
+      - ResultStatus
+  - source: m365-audit
+    event_class: sharepoint
+    required_fields:
+      - CreationTime
+      - Id
+      - Operation
+      - UserId
+      - Workload
+      - RecordType
+      - ResultStatus
+  - source: m365-audit
+    event_class: teams
+    required_fields:
+      - CreationTime
+      - Id
+      - Operation
+      - UserId
+      - Workload
+      - RecordType
+      - ResultStatus
+queries:
+  opensearch: queries/opensearch.json
+correlation:
+  window_seconds: 2592000
+  group_by:
+    - app_identity
+  steps:
+    - source: entra-audit
+      event_class: audit
+      filters:
+        all:
+          action:
+            - Consent to application
+            - Add OAuth2PermissionGrant
+            - Add delegated permission grant
+          result: success
+          approved_app: false
+          sensitive_scope: true
+          offline_access: true
+    - source: m365-audit
+      event_class: mail_access
+      exclude: true
+      filters:
+        all:
+          result: success
+          app_access: true
+    - source: m365-audit
+      event_class: sharepoint
+      exclude: true
+      filters:
+        all:
+          result: success
+          app_access: true
+    - source: m365-audit
+      event_class: teams
+      exclude: true
+      filters:
+        all:
+          result: success
+          app_access: true
+tests:
+  positive: 5
+  negative: 6
+  benign: 9
+false_positives:
+  - A seasonal or intermittent application whose activity falls outside the review window.
+  - An application that uses an API or workload not represented in the audited telemetry.
+  - An approved application with a stale inventory entry or redirect allowlist.
+runbook: runbook.md
+metrics: metrics.json
+notes: notes.md

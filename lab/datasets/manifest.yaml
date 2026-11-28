@@ -266,6 +266,13 @@ datasets:
     license: synthetic
     provenance: Generated for this repository. No real users, tenants, or IPs.
     sha256: 8d017fe0751bfc116a7f2f7a36c3f9f5e848cb1d4160498cf71c553c40037db6
+  - id: synthetic-identity-unused-oauth-grant-benign-baseline
+    source: entra-audit+m365-audit
+    path: lab/datasets/synthetic/benign-baseline/identity-unused-oauth-grant.json
+    synthetic: true
+    license: synthetic
+    provenance: Generated for this repository. No real users, tenants, or IPs.
+    sha256: c420bf5e9635d3de24b81588bd395e52bc5cd564e8759047d8f8c89ca2af6d85
   - id: synthetic-identity-session-replay-benign-baseline
     source: entra-signin
     path: lab/datasets/synthetic/benign-baseline/identity-session-replay.json

@@ -1,0 +1,23 @@
+title: Sensitive OAuth Grant
+id: 00000000-0000-4000-8000-000000000112
+status: test
+description: Component rule for sensitive OAuth grants; the unused-grant review window and application-activity exclusion are defined in detection metadata and the native query.
+author: detection-engineering
+date: 2026/11/28
+logsource:
+  product: azure
+  service: auditlogs
+detection:
+  selection:
+    operationName:
+      - Consent to application
+      - Add OAuth2PermissionGrant
+      - Add delegated permission grant
+    result: success
+  condition: selection
+falsepositives:
+  - Seasonal or intermittent applications
+  - Activity outside audited workloads
+level: medium
+tags:
+  - attack.t1528

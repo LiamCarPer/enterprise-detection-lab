@@ -1,0 +1,148 @@
+[
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000010401",
+      "activityDateTime": "2026-10-01T09:00:00Z",
+      "operationName": "Consent to application",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "analyst@example.test",
+          "ipAddress": "203.0.113.23"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Contoso Analytics",
+          "type": "ServicePrincipal",
+          "appId": "00000000-0000-4000-8000-000000010311",
+          "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
+          "consentType": "User",
+          "scopes": [
+            "Mail.Read",
+            "offline_access"
+          ],
+          "publisherVerified": false,
+          "redirectUriTrusted": true,
+          "redirectUri": "https://login.contoso.example/callback",
+          "tenantWide": false
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "pos-1",
+    "note": "Sensitive grant with no application activity"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000010402",
+      "activityDateTime": "2026-10-02T09:00:00Z",
+      "operationName": "Consent to application",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test",
+          "ipAddress": "203.0.113.23"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Contoso Reporting",
+          "type": "ServicePrincipal",
+          "appId": "00000000-0000-4000-8000-000000010311",
+          "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
+          "consentType": "Admin",
+          "scopes": [
+            "Files.Read.All",
+            "offline_access"
+          ],
+          "publisherVerified": false,
+          "redirectUriTrusted": true,
+          "redirectUri": "https://login.contoso.example/callback",
+          "tenantWide": false
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "pos-2",
+    "note": "Sensitive grant with user-only mail access"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-10-02T09:10:00Z",
+      "Id": "00000000-0000-4000-8000-000000010403",
+      "Operation": "MailItemsAccessed",
+      "UserId": "analyst@example.test",
+      "Workload": "Exchange",
+      "RecordType": 2,
+      "ClientIP": "198.51.100.47",
+      "ObjectId": "analyst@example.test\\Inbox",
+      "ResultStatus": "Success",
+      "Parameters": [
+        {
+          "Name": "MailAccessType",
+          "Value": "Bind"
+        }
+      ]
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "pos-2",
+    "note": "User mail access does not count as application activity"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000010404",
+      "activityDateTime": "2026-10-03T09:00:00Z",
+      "operationName": "Consent to application",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test",
+          "ipAddress": "203.0.113.23"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Contoso Teams",
+          "type": "ServicePrincipal",
+          "appId": "00000000-0000-4000-8000-000000010311",
+          "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
+          "consentType": "Tenant",
+          "scopes": [
+            "Chat.Read.All",
+            "offline_access"
+          ],
+          "publisherVerified": false,
+          "redirectUriTrusted": true,
+          "redirectUri": "https://login.contoso.example/callback",
+          "tenantWide": true
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "pos-3",
+    "note": "Sensitive grant with activity after the review window"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-04T09:00:00Z",
+      "Id": "00000000-0000-4000-8000-000000010405",
+      "Operation": "MessageRead",
+      "UserId": "Contoso Teams",
+      "Workload": "MicrosoftTeams",
+      "RecordType": 25,
+      "ClientIP": "198.51.100.47",
+      "ObjectId": "19:finance-channel@thread.skype",
+      "ResultStatus": "Success",
+      "Parameters": []
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "pos-3",
+    "note": "Application activity outside the 30-day review window"
+  }
+]

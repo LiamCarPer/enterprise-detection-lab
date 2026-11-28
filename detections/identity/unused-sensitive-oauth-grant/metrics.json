@@ -1,0 +1,18 @@
+{
+  "detection_id": "DET-IDN-012",
+  "measured_at": "2026-11-28T09:43:13.805381Z",
+  "sample_size": 12,
+  "evaluation_unit": "scenario",
+  "precision": 1.0,
+  "recall": 1.0,
+  "false_positive_rate": 0.0,
+  "latency_ms_p50": 2.618,
+  "latency_ms_p95": 7.088,
+  "method": "Synthetic sequence replay against OpenSearch; native query plus correlation evaluation.",
+  "limitations": [
+    "Curated synthetic scenarios; sample size 12.",
+    "Correlation metrics are scenario-level; each fixture scenario is one evaluation case.",
+    "Window and grouping are evaluated by the runner; production scheduling is out of scope.",
+    "Sigma rule is not executed; the native OpenSearch query is the tested path."
+  ]
+}

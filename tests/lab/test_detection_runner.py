@@ -71,6 +71,7 @@ def test_all_detections_execute() -> None:
             "DET-IDN-009",
             "DET-IDN-010",
             "DET-IDN-011",
+            "DET-IDN-012",
             "DET-END-001",
             "DET-END-002",
             "DET-CLD-001",

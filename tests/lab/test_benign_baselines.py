@@ -111,6 +111,23 @@ def test_identity_oauth_app_teams_activity_has_no_benign_sequence_matches() -> N
         client.close()
 
 
+def test_identity_unused_oauth_grant_has_no_benign_matches() -> None:
+    client = OpenSearchClient()
+    try:
+        result = run_baseline(
+            "DET-IDN-012",
+            BASELINE_DIR / "identity-unused-oauth-grant.json",
+            client=client,
+            latency_runs=1,
+        )
+        assert result.evaluation_unit == "scenario"
+        assert result.sample_size == 6
+        assert result.matched_count == 0
+        assert result.false_positive_rate == 0.0
+    finally:
+        client.close()
+
+
 def test_identity_impossible_travel_has_no_benign_sequence_matches() -> None:
     client = OpenSearchClient()
     try:
