@@ -358,6 +358,26 @@ def test_normalize_entra_audit_categorizes_full_uri_scopes() -> None:
     assert document["offline_access"] is True
 
 
+def test_normalize_entra_audit_categorizes_teams_scopes() -> None:
+    document = normalize_entra_audit(
+        {
+            "operationName": "Consent to application",
+            "initiatedBy": {"user": {"userPrincipalName": "analyst@example.test"}},
+            "targetResources": [
+                {
+                    "displayName": "Contoso Chat",
+                    "type": "ServicePrincipal",
+                    "consentType": "User",
+                    "scopes": ["ChannelMessage.Read.All", "offline_access"],
+                }
+            ],
+            "result": "success",
+        }
+    )
+    assert document["scope_categories"] == ["teams"]
+    assert document["sensitive_scope"] is True
+
+
 def test_normalize_entra_audit_omits_non_sensitive_scope_markers() -> None:
     document = normalize_entra_audit(
         {
@@ -1427,6 +1447,23 @@ def test_normalize_m365_audit_tags_application_mail_access() -> None:
         }
     )
     assert document["app_identity"] == "contoso analytics"
+    assert document["app_access"] is True
+
+
+def test_normalize_m365_audit_tags_application_teams_activity() -> None:
+    document = normalize_m365_audit(
+        {
+            "CreationTime": "2026-11-24T10:00:00Z",
+            "Id": "00000000-0000-4000-8000-000000010208",
+            "Operation": "MessageRead",
+            "UserId": "Contoso Chat",
+            "Workload": "MicrosoftTeams",
+            "RecordType": 25,
+            "ObjectId": "19:finance-channel@thread.skype",
+            "ResultStatus": "Success",
+        }
+    )
+    assert document["app_identity"] == "contoso chat"
     assert document["app_access"] is True
 
 

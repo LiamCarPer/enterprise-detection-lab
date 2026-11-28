@@ -259,6 +259,13 @@ datasets:
     license: synthetic
     provenance: Generated for this repository. No real users, tenants, or IPs.
     sha256: 99fceeba7a7848161dc24f0bad5e7c2b8223c6b1e5b712a4ffde4bc39eb26e67
+  - id: synthetic-identity-oauth-app-teams-activity-benign-baseline
+    source: entra-audit+m365-audit
+    path: lab/datasets/synthetic/benign-baseline/identity-oauth-app-teams-activity.json
+    synthetic: true
+    license: synthetic
+    provenance: Generated for this repository. No real users, tenants, or IPs.
+    sha256: 8d017fe0751bfc116a7f2f7a36c3f9f5e848cb1d4160498cf71c553c40037db6
   - id: synthetic-identity-session-replay-benign-baseline
     source: entra-signin
     path: lab/datasets/synthetic/benign-baseline/identity-session-replay.json

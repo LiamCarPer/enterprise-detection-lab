@@ -1,0 +1,24 @@
+title: Sensitive OAuth Grant to Application
+id: 00000000-0000-4000-8000-000000000111
+status: test
+description: Component rule for consent or OAuth permission grants with sensitive Teams scopes; approved-application, scope, and post-consent access checks are defined in detection metadata and the native query.
+author: detection-engineering
+date: 2026/11/28
+logsource:
+  product: azure
+  service: auditlogs
+detection:
+  selection:
+    operationName:
+      - Consent to application
+      - Add OAuth2PermissionGrant
+      - Add delegated permission grant
+    result: success
+  condition: selection
+falsepositives:
+  - Unreviewed but legitimate Teams application onboarding
+  - Production integration approved outside the normal workflow
+level: high
+tags:
+  - attack.t1528
+  - attack.t1213

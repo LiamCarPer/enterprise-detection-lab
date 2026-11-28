@@ -1,0 +1,158 @@
+[
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000009901",
+      "activityDateTime": "2026-11-24T09:00:00Z",
+      "operationName": "Consent to application",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "analyst@example.test",
+          "ipAddress": "203.0.113.22"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Contoso Chat",
+          "type": "ServicePrincipal",
+          "appId": "00000000-0000-4000-8000-000000009321",
+          "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
+          "consentType": "User",
+          "scopes": [
+            "ChannelMessage.Read.All",
+            "offline_access"
+          ],
+          "publisherVerified": false,
+          "redirectUriTrusted": true,
+          "redirectUri": "https://login.contoso.example/callback",
+          "tenantWide": false
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "pos-1",
+    "note": "User grant with a sensitive Teams scope"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-24T09:15:00Z",
+      "Id": "00000000-0000-4000-8000-000000009911",
+      "Operation": "MessageRead",
+      "UserId": "Contoso Chat",
+      "Workload": "MicrosoftTeams",
+      "RecordType": 25,
+      "ClientIP": "198.51.100.46",
+      "ObjectId": "19:finance-channel@thread.skype",
+      "ResultStatus": "Success"
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "pos-1",
+    "note": "Teams activity by the consented application"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000009902",
+      "activityDateTime": "2026-11-24T10:00:00Z",
+      "operationName": "Consent to application",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test",
+          "ipAddress": "203.0.113.22"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Contoso Notify",
+          "type": "ServicePrincipal",
+          "appId": "00000000-0000-4000-8000-000000009321",
+          "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
+          "consentType": "Admin",
+          "scopes": [
+            "ChannelMessage.Send",
+            "offline_access"
+          ],
+          "publisherVerified": false,
+          "redirectUriTrusted": true,
+          "redirectUri": "https://login.contoso.example/callback",
+          "tenantWide": false
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "pos-2",
+    "note": "Admin grant with a sensitive Teams scope"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-24T10:15:00Z",
+      "Id": "00000000-0000-4000-8000-000000009912",
+      "Operation": "MessageSent",
+      "UserId": "Contoso Notify",
+      "Workload": "MicrosoftTeams",
+      "RecordType": 25,
+      "ClientIP": "198.51.100.46",
+      "ObjectId": "19:finance-channel@thread.skype",
+      "ResultStatus": "Success"
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "pos-2",
+    "note": "Teams activity by the consented application"
+  },
+  {
+    "event": {
+      "id": "00000000-0000-4000-8000-000000009903",
+      "activityDateTime": "2026-11-24T11:00:00Z",
+      "operationName": "Consent to application",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "admin@example.test",
+          "ipAddress": "203.0.113.22"
+        }
+      },
+      "targetResources": [
+        {
+          "displayName": "Contoso Teams",
+          "type": "ServicePrincipal",
+          "appId": "00000000-0000-4000-8000-000000009321",
+          "appOwnerOrganizationId": "11111111-1111-4111-8111-111111111111",
+          "consentType": "Tenant",
+          "scopes": [
+            "Chat.Read.All",
+            "offline_access"
+          ],
+          "publisherVerified": false,
+          "redirectUriTrusted": true,
+          "redirectUri": "https://login.contoso.example/callback",
+          "tenantWide": true
+        }
+      ],
+      "result": "success"
+    },
+    "source": "entra-audit",
+    "synthetic": true,
+    "scenario": "pos-3",
+    "note": "Tenant grant with a sensitive Teams scope"
+  },
+  {
+    "event": {
+      "CreationTime": "2026-11-24T11:15:00Z",
+      "Id": "00000000-0000-4000-8000-000000009913",
+      "Operation": "MessageRead",
+      "UserId": "Contoso Teams",
+      "Workload": "MicrosoftTeams",
+      "RecordType": 25,
+      "ClientIP": "198.51.100.46",
+      "ObjectId": "19:finance-channel@thread.skype",
+      "ResultStatus": "Success"
+    },
+    "source": "m365-audit",
+    "synthetic": true,
+    "scenario": "pos-3",
+    "note": "Teams activity by the consented application"
+  }
+]

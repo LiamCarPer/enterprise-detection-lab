@@ -71,6 +71,14 @@ SENSITIVE_SCOPE_CATEGORIES: dict[str, str] = {
     "directory.accessasuser.all": "directory",
     "rolemanagement.read.all": "directory",
     "rolemanagement.readwrite.directory": "directory",
+    "channel.readbasic.all": "teams",
+    "channelmessage.read.all": "teams",
+    "channelmessage.send": "teams",
+    "chat.read": "teams",
+    "chat.read.all": "teams",
+    "chat.readwrite.all": "teams",
+    "team.readbasic.all": "teams",
+    "teamsettings.read.all": "teams",
 }
 
 APP_ACCESS_OPERATIONS: frozenset[str] = frozenset(
@@ -82,6 +90,10 @@ APP_ACCESS_OPERATIONS: frozenset[str] = frozenset(
         "FilePreviewed",
         "FileUploaded",
         "MailItemsAccessed",
+        "ChatCreated",
+        "MessageRead",
+        "MessageSent",
+        "TeamCreated",
     }
 )
 

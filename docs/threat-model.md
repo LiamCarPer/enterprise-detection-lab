@@ -99,6 +99,7 @@ The source contracts, event classes, and known gaps are listed in [`docs/telemet
 | OAuth consent to application access | Risky sign-in → sensitive consent with offline access → application inventory and reputation checks → application mail access | T1078, T1528, T1114.002 | `DET-IDN-001`, `DET-IDN-004`, `DET-IDN-009` | [`INV-005`](../investigations/05-oauth-consent-grant/) | Covered for the modeled path |
 | Admin consent and tenant-wide grant | Admin consent → approved-application and reputation checks → tenant-wide OAuth permission grant | T1528, T1098 | `DET-IDN-005` | [`INV-006`](../investigations/06-admin-oauth-grant/) | Covered for the modeled path |
 | Sensitive OAuth grant to application file access | User consent → file scope → inventory check → SharePoint file access and download | T1528, T1213.002 | `DET-IDN-010` | [`INV-010`](../investigations/10-sensitive-oauth-file-access/) | Covered for the modeled path |
+| Sensitive OAuth grant to application Teams activity | User consent → Teams scope → inventory check → application message or chat activity | T1528, T1213 | `DET-IDN-011` | None | Covered for the modeled path |
 | Session replay | Interactive MFA sign-in → non-interactive risky use from a new IP with the same session | T1078, T1550.001 | `DET-IDN-006` | [`INV-007`](../investigations/07-session-replay/) | Covered for the modeled path |
 | Impossible travel | Interactive MFA sign-in → risky sign-in from a new country | T1078, T1550.001 | `DET-IDN-007` | [`INV-008`](../investigations/08-impossible-travel/) | Covered for the modeled path |
 | Anomalous token to mail access | Long-lived, unbound anomalous-token sign-in without token protection → mailbox access | T1528, T1114.002 | `DET-IDN-008` | [`INV-009`](../investigations/09-anomalous-token-mail/) | Covered for the modeled path |
@@ -133,8 +134,9 @@ The matrix records the technique mappings used by tested detections, plus the ga
 | Defense Evasion | T1562.008 Disable Cloud Logs | CloudTrail | `DET-CLD-002` | Covered | Trail and logging changes only |
 | Defense Evasion | T1027 Obfuscated Files or Information | Sysmon | `DET-END-001` | Partial | Encoded command evidence, not full obfuscation analysis |
 | Credential Access | T1003 OS Credential Dumping | Sysmon, Windows Security | None | Gap | No tested credential-access detection |
-| Credential Access | T1528 Steal Application Access Token | Entra sign-in/audit, CloudTrail, SaaS audit | `DET-IDN-004`, `DET-IDN-005`, `DET-IDN-008`, `DET-IDN-009`, `DET-IDN-010` | Partial | Consent, scope, approved-application, publisher-reputation, anomalous-token, binding, age, mail-access, and file-access paths covered; full token-issuance context remains a gap |
+| Credential Access | T1528 Steal Application Access Token | Entra sign-in/audit, CloudTrail, SaaS audit | `DET-IDN-004`, `DET-IDN-005`, `DET-IDN-008`, `DET-IDN-009`, `DET-IDN-010`, `DET-IDN-011` | Partial | Consent, scope, approved-application, publisher-reputation, anomalous-token, binding, age, mail-access, file-access, and Teams-activity paths covered; full token-issuance context remains a gap |
 | Collection | T1114.002 Remote Email Collection | Microsoft 365 audit | `DET-SAA-004`, `DET-SAA-005`, `DET-SAA-006`, `DET-IDN-008`, `DET-IDN-009` | Covered for modeled paths | Mail access must follow a modeled delegation, token-risk, or sensitive OAuth grant path |
+| Collection | T1213 Data from Information Repositories | Entra audit, Microsoft 365 audit | `DET-IDN-011` | Partial | Teams activity must follow a sensitive OAuth grant by the same application |
 | Collection | T1213.002 Data from Information Repositories: SharePoint | Entra audit, Microsoft 365 audit | `DET-IDN-010` | Covered for modeled path | File access must follow a sensitive OAuth grant by the same application |
 | Command and Control | T1071 Application Layer Protocol | Suricata | `DET-NET-002` | Partial | Signature-dependent |
 | Command and Control | T1071.004 DNS | Zeek | `DET-NET-001` | Partial | Long TXT queries only |
@@ -153,6 +155,7 @@ The matrix records the technique mappings used by tested detections, plus the ga
 - **Data-handling exception bypass.** The repository distinguishes an approved transfer from a denied or revoked request that was bypassed, including a DLP match.
 - **OAuth consent to application access.** The modeled chain connects a risky sign-in, a sensitive consent with offline access, an approved-application and publisher-reputation check, and application mail access.
 - **Sensitive OAuth grant to application file access.** The modeled chain connects a sensitive file consent, an approved-application check, and application file access and download from SharePoint.
+- **Sensitive OAuth grant to application Teams activity.** The modeled chain connects a sensitive Teams consent, an approved-application check, and application message or chat activity.
 - **Admin and tenant-wide OAuth grants.** The modeled chain connects admin consent and tenant-wide grants to approved-application, publisher-verification, redirect-trust, and publisher-reputation checks.
 - **Session replay.** The modeled chain connects an interactive MFA sign-in to non-interactive risky use of the same session from a different IP.
 - **Impossible travel.** The modeled chain connects an interactive MFA sign-in to a risky sign-in from a different country.
@@ -170,7 +173,7 @@ The matrix records the technique mappings used by tested detections, plus the ga
 | Gap | Why it matters | Telemetry available | Missing | Priority |
 |---|---|---|---|---|
 | Token and session theft | Bypasses password and MFA controls and enables replay | Entra sign-in/audit, CloudTrail, SaaS audit | Full token-issuance context and cross-service token correlation | High |
-| OAuth grant lifecycle and cross-workload activity | Sensitive scope analysis plus post-consent mail and file access are covered, but unused grants, periodic access review, and Teams application activity remain | Entra audit, Microsoft 365 audit | Unused-grant discovery, review workflow, and Teams access correlation | High |
+| OAuth grant lifecycle | Sensitive scope analysis plus post-consent mail, file, and Teams activity are covered, but unused grants and periodic access review remain | Entra audit, Microsoft 365 audit | Unused-grant discovery and review workflow | High |
 | Cloud role and resource persistence | Persistence beyond access keys and logging changes | CloudTrail | Role trust, function, and resource-change detections | High |
 | Endpoint credential access and lateral movement | Common path to ransomware and domain compromise | Sysmon, Windows Security | Credential-dumping and remote-service detections | High |
 | Kubernetes RBAC and host escape | Cluster compromise and container escape | Kubernetes audit, Falco | RBAC-abuse detection and host-escape investigation | High |
@@ -222,7 +225,7 @@ The matrix records the technique mappings used by tested detections, plus the ga
 ### Next detection candidates
 
 1. Full token issuance context and token-protection policy coverage across Entra sign-in and cloud/SaaS activity.
-2. OAuth grant lifecycle: unused grants, access review, and Teams application activity.
+2. OAuth grant lifecycle: unused grants and periodic access review.
 3. Cloud role trust and resource-persistence detection.
 4. Endpoint credential access and remote-service detection.
 5. Kubernetes RBAC escalation detection.
