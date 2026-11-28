@@ -50,6 +50,7 @@ EXPECTED_DETECTIONS = {
     "INV-005": {
         "DET-IDN-001",
         "DET-IDN-004",
+        "DET-IDN-009",
     },
     "INV-006": {
         "DET-IDN-005",

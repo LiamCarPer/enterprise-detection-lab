@@ -2,7 +2,7 @@
 
 ## Scope
 
-Twenty-four synthetic benign corpora are used to measure false-positive behavior across the detection set.
+Twenty-five synthetic benign corpora are used to measure false-positive behavior across the detection set.
 
 | Detection | Dataset | Unit | Cases | Matches | FPR |
 |---|---|---|---:|---:|---:|
@@ -17,6 +17,7 @@ Twenty-four synthetic benign corpora are used to measure false-positive behavior
 | `DET-IDN-006` | `identity-session-replay.json` | scenario | 6 | 0 | 0.00 |
 | `DET-IDN-007` | `identity-impossible-travel.json` | scenario | 6 | 0 | 0.00 |
 | `DET-IDN-008` | `identity-anomalous-token-mail.json` | scenario | 8 | 0 | 0.00 |
+| `DET-IDN-009` | `identity-oauth-app-mail-access.json` | scenario | 8 | 0 | 0.00 |
 | `DET-SAA-001` | `m365-audit.json` | event | 20 | 0 | 0.00 |
 | `DET-SAA-001` | `m365-forwarding.json` | event | 20 | 0 | 0.00 |
 | `DET-SAA-002` | `github-audit.json` | event | 20 | 0 | 0.00 |
@@ -145,6 +146,10 @@ edl detection baseline \
 edl detection baseline \
   --id DET-IDN-008 \
   --dataset lab/datasets/synthetic/benign-baseline/identity-anomalous-token-mail.json
+
+edl detection baseline \
+  --id DET-IDN-009 \
+  --dataset lab/datasets/synthetic/benign-baseline/identity-oauth-app-mail-access.json
 
 edl detection baseline \
   --id DET-SAA-003 \

@@ -93,9 +93,9 @@ Common fields:
 
 Entra sign-in additions: `app`, `auth_requirement`, `is_interactive`, `conditional_access_status`, `risk_level`, `session_id`, `risk_event_types`, `token_protection_status`, `token_binding_status`, `token_issued_at`, `long_lived_token`, `token_issuer_type`, `authentication_protocol`, `original_transfer_method`, `country`, `city`, `latitude`, `longitude`, and `device.os` / `device.browser` / `device.id`.
 
-Entra audit additions: `app`, `resource.name` / `resource.type` / `resource.count`, `consent_type`, `scopes`, `offline_access`, `app_id`, `app_owner_organization_id`, `approved_app`, `publisher_reputation`, `publisher_verified`, `redirect_uri_trusted`, `redirect_uri`, and `tenant_wide`.
+Entra audit additions: `app`, `resource.name` / `resource.type` / `resource.count`, `consent_type`, `scopes`, `scope_categories`, `sensitive_scope`, `offline_access`, `app_id`, `app_identity`, `app_owner_organization_id`, `approved_app`, `publisher_reputation`, `publisher_verified`, `redirect_uri_trusted`, `redirect_uri`, and `tenant_wide`.
 
-`approved_app` is true only when the target application `appId` matches an entry in [`config/tenant.yaml`](../config/tenant.yaml) and any supplied redirect URI is on that entry's allowlist. `publisher_reputation` is read from the same configuration by application owner organization and falls back to `unknown`; it does not infer trust from publisher verification alone. Both fields are policy context for the lab and must be refreshed from a reviewed inventory and reputation feed in a real deployment.
+`scope_categories` classifies mail, file, and directory scopes, and `sensitive_scope` is true when at least one category matches. `approved_app` is true only when the target application `appId` matches an entry in [`config/tenant.yaml`](../config/tenant.yaml) and any supplied redirect URI is on that entry's allowlist. `publisher_reputation` is read from the same configuration by application owner organization and falls back to `unknown`; it does not infer trust from publisher verification alone. `app_identity` is the lowercased target application display name. These fields are policy context for the lab and must be refreshed from a reviewed inventory and reputation feed in a real deployment.
 
 Sysmon additions:
 
@@ -123,11 +123,13 @@ CloudTrail management events use the declared `management_event` class. The raw 
 
 SaaS additions:
 
-- Microsoft 365: `workload`, `record_type`, `object_id`, `rule_name`, `forward_to`, `forward_domain`, `forward_domains`, and `forward_external`
+- Microsoft 365: `workload`, `record_type`, `object_id`, `rule_name`, `forward_to`, `forward_domain`, `forward_domains`, `forward_external`, `app_identity`, and `app_access`
 - GitHub: `organization`, `repository`, `target_user`, `role` (from `permission`), `user_agent`, and `service=github`
 - Exchange Online message trace: `message_trace_id`, `message_id`, `sender`, `recipient`, `recipients`, `recipient_domain`, `recipient_domains`, `external_recipient`, `subject`, `related_recipient`, `related_external`, `mailbox`, `trace_event`, `trace_action`, `trace_detail`, `delivery_status`, `directionality`, `size_bytes`, `from_ip`, `to_ip`, `client_ip`, `tenant_id`, `source_component`, `trace_reference`, `trace_index`, and `service=exchange`
 - Microsoft Purview DLP: `policy_name`, `severity`, `status`, `recipient`, `delivery_recipient`, `content_scope`, `subject`, `message_id`, `workload`, `detection_method`, `dlp_action`, and `service=purview-dlp`
 - ServiceNow approvals: `request_number`, `decision`, `mailbox`, `requested_by`, `approver`, `recipient`, `delivery_recipient`, `message_id`, `content_scope`, `expires_on`, `approver_role`, `authority`, `approval_group`, `renewal_of`, `subject`, and `service=servicenow-approval`
+
+Microsoft 365 `app_identity` is populated for application activity operations such as `MailItemsAccessed`, `FileAccessed`, and `FileDownloaded` when `UserId` is not a user principal name. `app_access` is true when the event has an application identity. This is a display-name heuristic; a production pipeline should prefer an application ID from workload context when it is available.
 
 Microsoft 365 event classes follow the operation and workload: mailbox permission grants map to `mailbox_permission`, `MailItemsAccessed` maps to `mail_access`, Exchange maps to `mailbox`, SharePoint/OneDrive to `sharepoint`, Teams to `teams`, and other workloads to `audit`. GitHub maps `git.*` actions to `git`, login actions to `authentication`, and other audit actions to `audit_log`. Exchange Online message trace maps the detail `Event` to `deliver`, `forward`, `redirect`, `send`, `receive`, `fail`, `defer`, `expand`, `transfer`, or `resolve`, with unknown events mapped to `other`; `result` is `success` for delivery-style events, `failure` for `FAIL`, and `pending` for `DEFER`.
 

@@ -39,6 +39,7 @@ known_gaps:
   - The committed sample is synthetic and minimal.
   - Unified audit log licensing and retention vary by plan.
   - Workload-specific schemas are not fully represented.
+  - Application identity is inferred from a non-UPN `UserId` on selected access operations; real exports may provide an application ID in workload context.
 notes: SaaS source contract.
 sample_data:
   path: lab/datasets/synthetic/m365-audit/reference.json

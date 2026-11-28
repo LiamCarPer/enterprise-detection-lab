@@ -1,0 +1,80 @@
+id: DET-IDN-009
+title: Sensitive OAuth Grant Followed by Application Mail Access
+version: 1.0.0
+status: tested
+domain: identity
+severity: high
+hypothesis: A consent or OAuth permission grant to an unapproved application with mail scopes and offline access, followed by mailbox access by that application, can indicate consent phishing and email collection.
+description: Correlates a successful Entra audit consent or OAuth permission grant to an application outside the approved inventory with a sensitive mail scope and offline access, followed by successful Microsoft 365 mailbox access by the same application within 60 minutes.
+owner: detection-engineering
+created: "2026-11-28"
+updated: "2026-11-28"
+attack:
+  - T1528
+  - T1114.002
+tags:
+  - identity
+  - entra-id
+  - oauth
+  - consent
+  - microsoft-365
+  - correlation
+telemetry:
+  - source: entra-audit
+    event_class: audit
+    required_fields:
+      - id
+      - activityDateTime
+      - operationName
+      - initiatedBy
+      - targetResources
+      - result
+  - source: m365-audit
+    event_class: mail_access
+    required_fields:
+      - CreationTime
+      - Id
+      - Operation
+      - UserId
+      - Workload
+      - RecordType
+      - ResultStatus
+      - ObjectId
+queries:
+  opensearch: queries/opensearch.json
+correlation:
+  window_seconds: 3600
+  group_by:
+    - app_identity
+  steps:
+    - source: entra-audit
+      event_class: audit
+      filters:
+        all:
+          action:
+            - Consent to application
+            - Add OAuth2PermissionGrant
+            - Add delegated permission grant
+          result: success
+          approved_app: false
+          sensitive_scope: true
+          scope_categories: mail
+          offline_access: true
+    - source: m365-audit
+      event_class: mail_access
+      filters:
+        all:
+          action: MailItemsAccessed
+          result: success
+          app_access: true
+tests:
+  positive: 6
+  negative: 12
+  benign: 4
+false_positives:
+  - An unreviewed but legitimate mail application that the user intended to connect.
+  - An approved application whose inventory entry is stale or whose redirect URI changed.
+  - A production integration whose consent was granted outside the normal approval workflow.
+runbook: runbook.md
+metrics: metrics.json
+notes: notes.md

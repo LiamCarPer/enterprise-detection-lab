@@ -33,6 +33,7 @@ The observed events are synthetic lab records. The consent record confirms the a
 
 - `DET-IDN-001` — successful risky sign-in with single-factor authentication
 - `DET-IDN-004` — risky sign-in followed by OAuth consent grant
+- `DET-IDN-009` — sensitive OAuth grant followed by application mail access
 
 ## Query
 

@@ -35,6 +35,7 @@ known_gaps:
   - Export licensing and throttling are not replicated.
   - Consent scopes and application owner fields are modeled from target resources; real export shapes vary.
   - Approved-application and publisher-reputation decisions come from the local tenant configuration; a production deployment needs a reviewed inventory and reputation feed.
+  - Scope categories cover a fixed set of mail, file, and directory scopes; other delegated and application permissions are not classified.
 sample_data:
   path: lab/datasets/synthetic/entra-audit/reference.json
   synthetic: true

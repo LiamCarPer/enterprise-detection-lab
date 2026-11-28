@@ -4,7 +4,7 @@
 
 A reproducible local lab for developing and testing enterprise detection content across identity, endpoint, cloud, SaaS, network, and Kubernetes telemetry.
 
-**Status:** Alpha. Identity, endpoint, cloud, SaaS, network, and Kubernetes telemetry ingestion, twenty-five core detections, nine investigations, CI, and aggregated fixture metrics are complete. The next focus is broader detection coverage and automation.
+**Status:** Alpha. Identity, endpoint, cloud, SaaS, network, and Kubernetes telemetry ingestion, twenty-six core detections, nine investigations, CI, and aggregated fixture metrics are complete. The next focus is broader detection coverage and automation.
 
 [Quick start](#quick-start) · [Architecture](#architecture) · [Project status](#project-status) · [Documentation](#documentation)
 
@@ -241,16 +241,16 @@ Investigations are **Tested** when the timeline, evidence, queries, response, an
 | SaaS ingestion | Complete | Microsoft 365 audit, GitHub audit, Exchange Online message trace, Purview DLP, and ServiceNow approvals, normalized and replay-safe |
 | Network ingestion | Complete | Zeek and Suricata, normalized and replay-safe |
 | Kubernetes ingestion | Complete | Kubernetes audit and Falco, normalized and replay-safe |
-| Detection packages | In progress | Twenty-five tested detections; production validation pending |
+| Detection packages | In progress | Twenty-six tested detections; production validation pending |
 | Detection testing | Complete | Normalized fixture replay, temporary-index isolation, pass/fail gate, and metrics generation |
-| Tested detections | 25 of 25 | All core detections pass fixture replay |
+| Tested detections | 26 of 26 | All core detections pass fixture replay |
 | Investigations | Complete | Nine tested investigation packages with hashed evidence |
 | Tested investigations | 9 of 9 | `INV-001` through `INV-009` pass evidence and detection-link checks |
 | CI | Complete | GitHub Actions quality and OpenSearch-backed test jobs |
-| Metrics reporting | Complete | Aggregated fixture metrics for twenty-five detections in `reports/detection-metrics.md` |
-| Benign baseline | Complete | Twenty-four corpora, including two tuning studies and twelve scenario-level correlation baselines |
+| Metrics reporting | Complete | Aggregated fixture metrics for twenty-six detections in `reports/detection-metrics.md` |
+| Benign baseline | Complete | Twenty-five corpora, including two tuning studies and thirteen scenario-level correlation baselines |
 | Exception catalog | Complete | Reviewed exceptions with owner, scope, expiry, and compensating controls |
-| Correlation detections | Complete | `DET-IDN-003`, `DET-IDN-004`, `DET-IDN-006`, `DET-IDN-007`, `DET-IDN-008`, `DET-SAA-003`, `DET-SAA-004`, `DET-SAA-005`, `DET-SAA-006`, `DET-SAA-007`, `DET-SAA-008`, and `DET-SAA-009` evaluate ordered identity and SaaS sequences |
+| Correlation detections | Complete | `DET-IDN-003`, `DET-IDN-004`, `DET-IDN-006`, `DET-IDN-007`, `DET-IDN-008`, `DET-IDN-009`, `DET-SAA-003`, `DET-SAA-004`, `DET-SAA-005`, `DET-SAA-006`, `DET-SAA-007`, `DET-SAA-008`, and `DET-SAA-009` evaluate ordered identity and SaaS sequences |
 | Detection depth | In progress | Broader coverage, tuning, and automation across the ingested sources |
 | Automation | Planned | Enrichment, triage, evidence, and approval-gated response |
 

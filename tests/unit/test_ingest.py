@@ -271,6 +271,9 @@ def test_normalize_entra_audit_maps_consent_fields() -> None:
     assert document["consent_type"] == "user"
     assert document["scopes"] == ["mail.read", "offline_access"]
     assert document["offline_access"] is True
+    assert document["scope_categories"] == ["mail"]
+    assert document["sensitive_scope"] is True
+    assert document["app_identity"] == "contoso analytics"
     assert document["app_owner_organization_id"] == "11111111-1111-4111-8111-111111111111"
     assert document["approved_app"] is False
     assert document["publisher_reputation"] == "unknown"
@@ -329,6 +332,50 @@ def test_normalize_entra_audit_rejects_approved_app_with_other_redirect() -> Non
     )
     assert document["approved_app"] is False
     assert document["publisher_reputation"] == "trusted"
+
+
+def test_normalize_entra_audit_categorizes_full_uri_scopes() -> None:
+    document = normalize_entra_audit(
+        {
+            "operationName": "Consent to application",
+            "initiatedBy": {"user": {"userPrincipalName": "analyst@example.test"}},
+            "targetResources": [
+                {
+                    "displayName": "Contoso Files",
+                    "type": "ServicePrincipal",
+                    "consentType": "User",
+                    "scopes": [
+                        "https://graph.microsoft.com/Files.Read.All",
+                        "offline_access",
+                    ],
+                }
+            ],
+            "result": "success",
+        }
+    )
+    assert document["scope_categories"] == ["files"]
+    assert document["sensitive_scope"] is True
+    assert document["offline_access"] is True
+
+
+def test_normalize_entra_audit_omits_non_sensitive_scope_markers() -> None:
+    document = normalize_entra_audit(
+        {
+            "operationName": "Consent to application",
+            "initiatedBy": {"user": {"userPrincipalName": "analyst@example.test"}},
+            "targetResources": [
+                {
+                    "displayName": "Contoso Profile",
+                    "type": "ServicePrincipal",
+                    "consentType": "User",
+                    "scopes": ["User.Read"],
+                }
+            ],
+            "result": "success",
+        }
+    )
+    assert "scope_categories" not in document
+    assert "sensitive_scope" not in document
 
 
 def test_normalize_entra_audit_parses_string_scopes() -> None:
@@ -1364,6 +1411,40 @@ def test_normalize_m365_audit_maps_mail_rule_fields() -> None:
     assert document["forward_to"] == "external@example.net"
     assert document["forward_domain"] == "example.net"
     assert document["src_ip"] == "203.0.113.10"
+
+
+def test_normalize_m365_audit_tags_application_mail_access() -> None:
+    document = normalize_m365_audit(
+        {
+            "CreationTime": "2026-11-25T10:00:00Z",
+            "Id": "00000000-0000-4000-8000-000000010206",
+            "Operation": "MailItemsAccessed",
+            "UserId": "Contoso Analytics",
+            "Workload": "Exchange",
+            "RecordType": 2,
+            "ObjectId": "executive@example.test\\Inbox",
+            "ResultStatus": "Success",
+        }
+    )
+    assert document["app_identity"] == "contoso analytics"
+    assert document["app_access"] is True
+
+
+def test_normalize_m365_audit_does_not_tag_user_mail_access_as_application() -> None:
+    document = normalize_m365_audit(
+        {
+            "CreationTime": "2026-11-25T10:05:00Z",
+            "Id": "00000000-0000-4000-8000-000000010207",
+            "Operation": "MailItemsAccessed",
+            "UserId": "analyst@example.test",
+            "Workload": "Exchange",
+            "RecordType": 2,
+            "ObjectId": "executive@example.test\\Inbox",
+            "ResultStatus": "Success",
+        }
+    )
+    assert "app_identity" not in document
+    assert document["app_access"] is False
 
 
 def test_normalize_m365_audit_handles_parameter_mapping_and_failure() -> None:

@@ -104,6 +104,9 @@ def test_identity_ingest_is_idempotent_and_queryable() -> None:
         assert consent["consent_type"] == "user"
         assert consent["scopes"] == ["mail.read", "offline_access"]
         assert consent["offline_access"] is True
+        assert consent["scope_categories"] == ["mail"]
+        assert consent["sensitive_scope"] is True
+        assert consent["app_identity"] == "contoso analytics"
         assert consent["resource"]["name"] == "Contoso Analytics"
 
         admin_consent = next(
@@ -280,6 +283,14 @@ def test_saas_ingest_is_idempotent_and_queryable() -> None:
         assert m365_event["forward_to"] == "external@example.net"
         assert m365_event["rule_name"] == "Forward external invoices"
         assert m365_event["dedup_origin"] == "declared"
+        app_access = next(
+            hit["_source"]
+            for hit in m365_hits
+            if hit["_source"]["action"] == "MailItemsAccessed"
+            and hit["_source"]["user"] == "Contoso Analytics"
+        )
+        assert app_access["app_identity"] == "contoso analytics"
+        assert app_access["app_access"] is True
 
         github_hits = _search("github-audit")
         assert len(github_hits) == 2

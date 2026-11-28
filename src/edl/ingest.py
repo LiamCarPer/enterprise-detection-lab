@@ -43,6 +43,66 @@ DOMAIN_SOURCES: dict[str, tuple[str, ...]] = {
 }
 
 
+SENSITIVE_SCOPE_CATEGORIES: dict[str, str] = {
+    "mail.read": "mail",
+    "mail.readbasic": "mail",
+    "mail.readbasic.all": "mail",
+    "mail.readwrite": "mail",
+    "mail.readwrite.shared": "mail",
+    "mail.send": "mail",
+    "mail.send.shared": "mail",
+    "mailboxsettings.read": "mail",
+    "mailboxsettings.readwrite": "mail",
+    "files.read": "files",
+    "files.read.all": "files",
+    "files.readwrite": "files",
+    "files.readwrite.all": "files",
+    "sites.read.all": "files",
+    "sites.readwrite.all": "files",
+    "sites.selected": "files",
+    "directory.read.all": "directory",
+    "directory.readwrite.all": "directory",
+    "user.read.all": "directory",
+    "user.readwrite.all": "directory",
+    "group.read.all": "directory",
+    "group.readwrite.all": "directory",
+    "application.read.all": "directory",
+    "application.readwrite.all": "directory",
+    "directory.accessasuser.all": "directory",
+    "rolemanagement.read.all": "directory",
+    "rolemanagement.readwrite.directory": "directory",
+}
+
+APP_ACCESS_OPERATIONS: frozenset[str] = frozenset(
+    {
+        "FileAccessed",
+        "FileDeleted",
+        "FileDownloaded",
+        "FileModified",
+        "FilePreviewed",
+        "FileUploaded",
+        "MailItemsAccessed",
+    }
+)
+
+
+def _scope_categories(scopes: Sequence[str]) -> list[str]:
+    """Return the sensitive data categories covered by consent scopes."""
+    categories = {
+        category
+        for scope in scopes
+        if (category := SENSITIVE_SCOPE_CATEGORIES.get(scope.rsplit("/", 1)[-1])) is not None
+    }
+    return sorted(categories)
+
+
+def _m365_app_identity(user: Any, operation: str) -> str | None:
+    """Return an application identity for app-only workload activity."""
+    if operation in APP_ACCESS_OPERATIONS and isinstance(user, str) and user and "@" not in user:
+        return user.lower()
+    return None
+
+
 @dataclass(frozen=True)
 class CanonicalEvent:
     """One validated event ready to be written to OpenSearch."""
@@ -589,6 +649,15 @@ def normalize_entra_audit(raw: Mapping[str, Any]) -> dict[str, Any]:
             if scopes:
                 document["scopes"] = scopes
                 document["offline_access"] = "offline_access" in scopes
+                categories = _scope_categories(scopes)
+                if categories:
+                    document["scope_categories"] = categories
+                    document["sensitive_scope"] = True
+            document["app_identity"] = (
+                first["displayName"].lower()
+                if isinstance(first.get("displayName"), str) and first["displayName"]
+                else None
+            )
             document["app_owner_organization_id"] = owner_organization_id
             document["publisher_verified"] = first.get("publisherVerified")
             document["redirect_uri_trusted"] = first.get("redirectUriTrusted")
@@ -729,6 +798,8 @@ def normalize_m365_audit(raw: Mapping[str, Any]) -> dict[str, Any]:
     identity = _meaningful(parameters.get("Identity") or parameters.get("Mailbox"))
     folder = _meaningful(parameters.get("FolderName"))
     operation = str(raw.get("Operation", ""))
+    user = raw.get("UserId")
+    app_identity = _m365_app_identity(user, operation)
     group: Any = None
     group_member: Any = None
     mailbox = identity
@@ -754,17 +825,18 @@ def normalize_m365_audit(raw: Mapping[str, Any]) -> dict[str, Any]:
             if folder is None and folder_part:
                 folder = folder_part.strip() or None
     delegate = _meaningful(parameters.get("User") or parameters.get("Member"))
-    user = raw.get("UserId")
     self_delegation: bool | None = None
     if isinstance(delegate, str) and isinstance(user, str) and delegate and user:
         self_delegation = delegate.lower() == user.lower()
     document: dict[str, Any] = {
         "event_id": raw.get("Id"),
-        "user": raw.get("UserId"),
+        "user": user,
         "src_ip": _meaningful(raw.get("ClientIP")),
         "action": raw.get("Operation"),
         "result": _normalize_result(raw.get("ResultStatus")),
         "workload": raw.get("Workload"),
+        "app_identity": app_identity,
+        "app_access": app_identity is not None,
         "record_type": str(record_type) if record_type is not None else None,
         "object_id": raw.get("ObjectId"),
         "rule_name": _meaningful(parameters.get("Name")),

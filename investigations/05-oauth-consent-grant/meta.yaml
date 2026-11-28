@@ -1,6 +1,6 @@
 id: INV-005
 title: OAuth Consent Grant to External Application
-version: 1.1.0
+version: 1.2.0
 status: tested
 domains:
   - identity
@@ -10,9 +10,10 @@ hypothesis: Consent phishing or an illicit application grant may have provided d
 detections:
   - DET-IDN-001
   - DET-IDN-004
+  - DET-IDN-009
 owner: detection-engineering
 created: "2026-11-26"
-updated: "2026-11-27"
+updated: "2026-11-28"
 evidence:
   - id: e1
     type: event
